@@ -87,7 +87,7 @@ public class LauncherAppState {
         mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
 
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
+        recreateWidgetPreviewDb();
         mIconCache = new IconCache(sContext);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
@@ -119,6 +119,13 @@ public class LauncherAppState {
 
         PreferenceManager.getDefaultSharedPreferences(sContext)
                 .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
+    }
+    
+    public void recreateWidgetPreviewDb() {
+        if (mWidgetPreviewCacheDb != null) {
+            mWidgetPreviewCacheDb.close();
+        }
+        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
     }
 
     /**
