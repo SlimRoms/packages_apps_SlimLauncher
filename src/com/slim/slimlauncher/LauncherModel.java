@@ -169,7 +169,6 @@ public class LauncherModel extends BroadcastReceiver {
                         boolean matchPackageNamesOnly);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
-        public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void dumpLogsToLocalData();
     }
@@ -586,6 +585,7 @@ public class LauncherModel extends BroadcastReceiver {
                     case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                    case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                         if (!sBgWorkspaceItems.contains(modelItem)) {
                             sBgWorkspaceItems.add(modelItem);
                         }
@@ -874,6 +874,7 @@ public class LauncherModel extends BroadcastReceiver {
                             // Fall through
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                             if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                                     item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                 sBgWorkspaceItems.add(item);
@@ -894,6 +895,57 @@ public class LauncherModel extends BroadcastReceiver {
             }
         };
         runOnWorkerThread(r);
+    }
+
+    /**
+     * Checks whether there is an all apps shortcut in the database
+     */
+    static boolean hasAllAppsShortcut() {
+        for (ItemInfo info : sBgWorkspaceItems) {
+            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether there is more than 1 all apps shortcut in the database
+     */
+    static boolean hasMultipleAllAppsShortcuts() {
+        boolean foundOne = false;
+        for (ItemInfo info : sBgWorkspaceItems) {
+            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                if (!foundOne) {
+                    foundOne = true;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Add an all apps shortcut to the database if there aren't any already
+     */
+    private ItemInfo addAllAppsShortcutIfNecessary() {
+        if (hasAllAppsShortcut()) return null;
+
+        DeviceProfile grid = mApp.getDynamicGrid().getDeviceProfile();
+        int allAppsIndex = grid.hotseatAllAppsRank;
+
+        ShortcutInfo allAppsShortcut = new ShortcutInfo();
+        allAppsShortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS;
+        allAppsShortcut.title = mApp.getContext().getResources()
+                .getString(R.string.all_apps_button_label);
+        allAppsShortcut.container = ItemInfo.NO_ID;
+        allAppsShortcut.spanX = 1;
+        allAppsShortcut.spanY = 1;
+        LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
+                LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
+
+        return allAppsShortcut;
     }
 
     /**
@@ -936,6 +988,7 @@ public class LauncherModel extends BroadcastReceiver {
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                             sBgWorkspaceItems.remove(item);
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -1520,41 +1573,27 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item,
-                                           AtomicBoolean deleteOnInvalidPlacement) {
+                                           AtomicBoolean deleteOnItemOverlap) {
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             final int countX = (int) grid.numColumns;
             final int countY = (int) grid.numRows;
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Return early if we detect that an item is under the hotseat button
-                if (mCallbacks == null) {
-                    deleteOnInvalidPlacement.set(true);
-                    Log.e(TAG, "Error loading shortcut into hotseat " + item
-                            + " into position (" + item.screenId + ":" + item.cellX + ","
-                            + item.cellY + ") occupied by all apps");
-                    return false;
-                }
-                final ItemInfo[][] hotseatItems =
-                        occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
-                if (item.screenId >= grid.numHotseatIcons) {
-                    Log.e(TAG, "Error loading shortcut " + item
-                            + " into hotseat position " + item.screenId
-                            + ", position out of bounds: (0 to " + (grid.numHotseatIcons - 1)
-                            + ")");
-                    return false;
-                }
-                if (hotseatItems != null) {
-                    if (hotseatItems[(int) item.screenId][0] != null) {
+                if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                            [(int) item.screenId][0] != null) {
                         Log.e(TAG, "Error loading shortcut into hotseat " + item
                                 + " into position (" + item.screenId + ":" + item.cellX + ","
                                 + item.cellY + ") occupied by "
                                 + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                                 [(int) item.screenId][0]);
+                        if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                                [(int) item.screenId][0].itemType ==
+                                LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                            deleteOnItemOverlap.set(true);
+                        }
                         return false;
-                    } else {
-                        hotseatItems[(int) item.screenId][0] = item;
-                        return true;
                     }
                 } else {
                     final ItemInfo[][] items = new ItemInfo[(int) grid.numHotseatIcons][1];
@@ -1687,7 +1726,7 @@ public class LauncherModel extends BroadcastReceiver {
                     LauncherAppWidgetInfo appWidgetInfo;
                     int container;
                     long id;
-                    Intent intent;
+                    Intent intent = null;
 
                     while (!mStopped && c.moveToNext()) {
                         AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(false);
@@ -1697,32 +1736,42 @@ public class LauncherModel extends BroadcastReceiver {
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                            case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                                 id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
-                                try {
-                                    intent = Intent.parseUri(intentDescription, 0);
-                                    ComponentName cn = intent.getComponent();
-                                    if (cn != null && !isValidPackageComponent(manager, cn)) {
-                                        if (!mAppsCanBeOnRemoveableStorage) {
-                                            // Log the invalid package, and remove it from the db
-                                            Launcher.addDumpLog(TAG, "Invalid package removed: " + cn, true);
-                                            itemsToRemove.add(id);
-                                        } else {
-                                            // If apps can be on external storage, then we just
-                                            // leave them for the user to remove (maybe add
-                                            // visual treatment to it)
-                                            Launcher.addDumpLog(TAG, "Invalid package found: " + cn, true);
+                                if (itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                                    try {
+                                        intent = Intent.parseUri(intentDescription, 0);
+                                        ComponentName cn = intent.getComponent();
+                                        if (cn != null && !isValidPackageComponent(manager, cn)) {
+                                            if (!mAppsCanBeOnRemoveableStorage) {
+                                               // Log the invalid package, and remove it from the db
+                                                Launcher.addDumpLog(TAG,
+                                                        "Invalid package removed: " + cn, true);
+                                                itemsToRemove.add(id);
+                                            } else {
+                                                // If apps can be on external storage, then we just
+                                                // leave them for the user to remove (maybe add
+                                                // visual treatment to it)
+                                                Launcher.addDumpLog(TAG,
+                                                        "Invalid package found: " + cn, true);
+                                            }
+                                            continue;
                                         }
+                                    } catch (URISyntaxException e) {
+                                        Launcher.addDumpLog(TAG,
+                                                "Invalid uri: " + intentDescription, true);
                                         continue;
                                     }
-                                } catch (URISyntaxException e) {
-                                    Launcher.addDumpLog(TAG, "Invalid uri: " + intentDescription, true);
-                                    continue;
                                 }
 
                                 if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                     info = getShortcutInfo(manager, intent, context, c, iconIndex,
                                             titleIndex, mLabelCache);
+                                } else if (itemType ==
+                                        LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                                    info = getShortcutInfo(c, context,
+                                            titleIndex);
                                 } else {
                                     info = getShortcutInfo(c, context, iconTypeIndex,
                                             iconPackageIndex, iconResourceIndex, iconIndex,
@@ -1754,8 +1803,10 @@ public class LauncherModel extends BroadcastReceiver {
                                     // Skip loading items that are out of bounds
                                     if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                                         if (checkItemDimensions(info)) {
-                                            Launcher.addDumpLog(TAG, "Skipped loading out of bounds shortcut: "
-                                                    + info + ", " + grid.numColumns + "x" + grid.numRows, true);
+                                            Launcher.addDumpLog(TAG,
+                                                    "Skipped loading out of bounds shortcut: "
+                                                    + info + ", " + grid.numColumns + "x"
+                                                            + grid.numRows, true);
                                             continue;
                                         }
                                     }
@@ -1915,6 +1966,19 @@ public class LauncherModel extends BroadcastReceiver {
                 if (mStopped) {
                     clearSBgDataStructures();
                     return false;
+                }
+
+                // Add an all apps button to the database if there isn't one already
+                ItemInfo allAppsButton = addAllAppsShortcutIfNecessary();
+                if (allAppsButton != null) {
+                    // Check if there was an icon occupying the default position and remove
+                    if (occupied.containsKey(allAppsButton.container)) {
+                        if (occupied.get(allAppsButton.container)
+                                [(int) allAppsButton.screenId][0] != null) {
+                            itemsToRemove.add(occupied.get(allAppsButton.container)
+                                    [(int) allAppsButton.screenId][0].id);
+                        }
+                    }
                 }
 
                 if (itemsToRemove.size() > 0) {
@@ -2827,6 +2891,18 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
         return false;
+    }
+
+    /**
+     * Make an ShortcutInfo object for a shortcut that isn't an application.
+     */
+    private ShortcutInfo getShortcutInfo(Cursor c, Context context,
+                                         int titleIndex) {
+        final ShortcutInfo info = new ShortcutInfo();
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS;
+
+        info.title = c.getString(titleIndex);
+        return info;
     }
 
     /**
