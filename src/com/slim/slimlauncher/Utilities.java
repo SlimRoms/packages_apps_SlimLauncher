@@ -37,6 +37,9 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -48,6 +51,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Toast;
 
+import com.slim.slimlauncher.palette.Palette;
 import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
@@ -205,13 +209,36 @@ public final class Utilities {
         }
     }
 
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
+        return createIconBitmap(icon, context, null);
+    }
+
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    public static Bitmap createIconBitmap(Drawable icon, Context context) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context,
+            IconPackHelper iconPackHelper) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
+            }
+
+            Drawable iconMask = null;
+            Drawable iconBack = null;
+            Drawable iconPaletteBack = null;
+            Drawable iconUpon = null;
+            float scale = 1f;
+            int defaultSwatchColor = 0;
+            int backTintColor = 0;
+            IconPackHelper.SwatchType swatchType = IconPackHelper.SwatchType.None;
+
+            if (iconPackHelper != null) {
+                iconMask = iconPackHelper.getIconMask();
+                iconBack = iconPackHelper.getIconBack();
+                iconPaletteBack = iconPackHelper.getIconPaletteBack();
+                iconUpon = iconPackHelper.getIconUpon();
+                scale = iconPackHelper.getIconScale();
+                swatchType = iconPackHelper.getSwatchType();
             }
 
             int width = sIconWidth;
@@ -245,7 +272,7 @@ public final class Utilities {
             int textureWidth = sIconTextureWidth;
             int textureHeight = sIconTextureHeight;
 
-            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
@@ -264,9 +291,69 @@ public final class Utilities {
                 canvas.drawRect(left, top, left+width, top+height, debugPaint);
             }
 
+            if (swatchType != IconPackHelper.SwatchType.None) {
+                Palette palette = Palette.generate(bitmap, IconPackHelper.NUM_PALETTE_COLORS);
+                switch (swatchType) {
+                    case Vibrant:
+                        backTintColor = palette.getVibrantColor(defaultSwatchColor);
+                        break;
+                    case VibrantLight:
+                        backTintColor = palette.getLightVibrantColor(defaultSwatchColor);
+                        break;
+                    case VibrantDark:
+                        backTintColor = palette.getDarkVibrantColor(defaultSwatchColor);
+                        break;
+                    case Muted:
+                        backTintColor = palette.getMutedColor(defaultSwatchColor);
+                        break;
+                    case MutedLight:
+                        backTintColor = palette.getLightMutedColor(defaultSwatchColor);
+                        break;
+                    case MutedDark:
+                        backTintColor = palette.getDarkMutedColor(defaultSwatchColor);
+                        break;
+                }
+            }
+
             sOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left+width, top+height);
+            canvas.save();
+            canvas.scale(scale, scale, width / 2, height/2);
             icon.draw(canvas);
+            canvas.restore();
+            if (iconMask != null) {
+                iconMask.setBounds(icon.getBounds());
+                ((BitmapDrawable) iconMask).getPaint().setXfermode(
+                        new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+                iconMask.draw(canvas);
+            }
+            Drawable back = null;
+            if (swatchType != IconPackHelper.SwatchType.None) {
+                back = iconPaletteBack;
+                defaultSwatchColor = iconPackHelper.getDefaultSwatchColor();
+            } else if (iconBack != null) {
+                back = iconBack;
+            }
+            if (back != null) {
+                canvas.setBitmap(null);
+                Bitmap finalBitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                        Bitmap.Config.ARGB_8888);
+                canvas.setBitmap(finalBitmap);
+                back.setBounds(icon.getBounds());
+                Paint paint = ((BitmapDrawable) back).getPaint();
+                paint.setXfermode(
+                        new PorterDuffXfermode(PorterDuff.Mode.DST_OVER));
+                if (backTintColor != 0) {
+                    paint.setColorFilter(new PorterDuffColorFilter(backTintColor,
+                            PorterDuff.Mode.MULTIPLY));
+                }
+                back.draw(canvas);
+                canvas.drawBitmap(bitmap, null, icon.getBounds(), null);
+                bitmap = finalBitmap;
+            }
+            if (iconUpon != null) {
+                iconUpon.draw(canvas);
+            }
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
