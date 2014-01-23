@@ -3140,6 +3140,8 @@ public class Launcher extends Activity
                     DragOptions dragOptions = new DragOptions();
                     if (itemUnderLongClick instanceof BubbleTextView) {
                         BubbleTextView icon = (BubbleTextView) itemUnderLongClick;
+                        Log.d("LAUNCHER-TEST", "name-" + icon.getText());
+                        Log.d("LAUNCHER-TEST", "has deep shortcuts - " + icon.hasDeepShortcuts());
                         if (icon.hasDeepShortcuts()) {
                             DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
                             if (dsc != null) {

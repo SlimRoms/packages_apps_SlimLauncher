@@ -638,6 +638,8 @@ public class LauncherModel extends BroadcastReceiver
         final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
         final ContentResolver cr = context.getContentResolver();
 
+        Log.d("TEST", "itemId=" + itemId);
+
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
             public void run() {
@@ -1252,7 +1254,7 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    void forceReload() {
+    public void forceReload() {
         resetLoadedState(true, true);
 
         // Do this here because if the launcher activity is running it will be restarted.
@@ -3593,11 +3595,18 @@ public class LauncherModel extends BroadcastReceiver
         info.user = UserHandleCompat.myUserHandle();
 
         Bitmap icon = iconInfo.loadIcon(c, info);
+        Bitmap customIcon = iconInfo.loadCustomIcon(c);
         // the fallback icon
         if (icon == null) {
             mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
         } else {
+            Log.d("TEST", "HERE");
             info.setIcon(icon);
+        }
+        Log.d("TEST", "customIcon == null ? " + (customIcon == null));
+        if (customIcon != null) {
+            info.useCustomIcon = true;
+            info.setIcon(customIcon);
         }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
@@ -3618,6 +3627,18 @@ public class LauncherModel extends BroadcastReceiver
         info.promisedIntent = intent;
         info.status = promiseType;
         return info;
+    }
+
+    public static void restoreCustomShortcutIcons(Context context, IconCache iconCache) {
+        for (ItemInfo info : sBgItemsIdMap) {
+            if (info instanceof ShortcutInfo) {
+                ShortcutInfo si = (ShortcutInfo) info;
+                if (si.useCustomIcon) {
+                    si.removeCustomIcon();
+                    updateItemInDatabase(context, si);
+                }
+            }
+        }
     }
 
     /**
@@ -3667,7 +3688,18 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         final ShortcutInfo info = new ShortcutInfo();
-        mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
+        info.title = Utilities.trim(c.getString(iconInfo.titleIndex));
+        Bitmap bitmap = iconInfo.loadIcon(c, info);
+        Bitmap customBitmap = iconInfo.loadCustomIcon(c);
+        if (bitmap == null) {
+            mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
+        } else {
+            info.setIcon(bitmap);
+        }
+        if (customBitmap != null) {
+            info.useCustomIcon = true;
+            info.setIcon(customBitmap);
+        }
         if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
             Bitmap icon = iconInfo.loadIcon(c);
             info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
@@ -3678,7 +3710,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         // from the db
-        if (TextUtils.isEmpty(info.title) && c != null) {
+        if (TextUtils.isEmpty(info.title)) {
             info.title = iconInfo.getTitle(c);
         }
 

@@ -77,7 +77,7 @@
     <array name="launch_broadcast_targets" translatable="false"></array>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false"></string>
+    <string name="icon_provider_class" translatable="false">org.slim.launcher.SlimIconProvider</string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>

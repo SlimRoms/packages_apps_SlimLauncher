@@ -124,6 +124,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".IconPickerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.IconPicker"
+            android:launchMode="singleTop" />
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"

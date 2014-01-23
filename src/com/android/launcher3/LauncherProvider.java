@@ -73,7 +73,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 28;
 
     public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
@@ -815,7 +815,9 @@ public class LauncherProvider extends ContentProvider {
                             !LauncherDbUtils.prepareScreenZeroToHostQsb(db)) {
                         break;
                     }
-                case 27: {
+                case 27:
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN customIcon BLOB;");
+                case 28: {
                     // DB Upgraded successfully
                     return;
                 }
