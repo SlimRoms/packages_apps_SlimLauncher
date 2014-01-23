@@ -163,10 +163,13 @@ public class Launcher extends Activity
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
+
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
     public static final int REQUEST_TRANSITION_EFFECTS = 14;
 
     private static final float OVERSHOOT_TENSION = 1.4f;
+
+    static final int REQUEST_PICK_ICON = 13;
 
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
