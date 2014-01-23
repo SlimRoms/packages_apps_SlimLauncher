@@ -7,4 +7,8 @@
         android:defaultValue="@bool/allow_rotation"
         android:persistent="true" />
 
+    <Preference
+        android:key="icon_pack"
+        android:title="@string/pref_icon_pack_title" />
+
 </PreferenceScreen>
