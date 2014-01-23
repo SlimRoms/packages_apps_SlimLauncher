@@ -15,4 +15,8 @@
         android:summary="@string/lock_workspace_summary"
         android:defaultValue="false" />
 
+    <Preference
+        android:key="icon_pack"
+        android:title="@string/pref_icon_pack_title" />
+
 </PreferenceScreen>
