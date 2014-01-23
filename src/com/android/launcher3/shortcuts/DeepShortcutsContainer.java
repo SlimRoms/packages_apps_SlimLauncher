@@ -23,6 +23,7 @@ import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -33,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,6 +47,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.IconCache;
+import com.android.launcher3.IconPickerActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -56,7 +59,9 @@ import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -65,6 +70,8 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
+import org.slim.launcher.SlimLauncher;
 
 import java.util.Collections;
 import java.util.List;
@@ -128,14 +135,37 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
         int numShortcuts = Math.min(ids.size(), ShortcutFilter.MAX_SHORTCUTS);
+
         for (int i = 0; i < numShortcuts; i++) {
             final DeepShortcutView shortcut =
                     (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
-            if (i < numShortcuts - 1) {
+            if (i < numShortcuts -
+                    ((originalIcon.getParent() instanceof AllAppsRecyclerView) ? 1 : 0)) {
                 ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
             }
             shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
             addView(shortcut);
+        }
+
+        // show Edit action here
+        final DeepShortcutView editShortcut =
+                (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
+        if (!(originalIcon.getParent() instanceof AllAppsRecyclerView)) {
+            addView(editShortcut);
+            final UnbadgedShortcutInfo editInfo = new UnbadgedShortcutInfo(null, getContext());
+            editInfo.title = "Edit";
+            editInfo.setIcon(IconPickerActivity.drawableToBitmap(getContext().getDrawable(R.drawable.edit_target_selector)));
+            editShortcut.applyShortcutInfo(editInfo, this);
+
+            editShortcut.getBubbleText().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (originalIcon.getTag() instanceof ShortcutInfo) {
+                        SlimLauncher.getInstance().updateShortcut((ItemInfo) originalIcon.getTag());
+                    }
+                    DeepShortcutsContainer.this.close();
+                }
+            });
         }
         setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
                 numShortcuts, originalIcon.getContentDescription().toString()));
@@ -440,6 +470,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Long clicked on a shortcut.
         mDeferContainerRemoval = true;
         DeepShortcutView sv = (DeepShortcutView) v.getParent();
+
+        if (sv.getFinalInfo().intent == null) return false;
         sv.setWillDrawIcon(false);
 
         // Move the icon to align with the center-top of the touch point
@@ -642,7 +674,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             return null;
         }
         List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
-        if (!ids.isEmpty()) {
+        Log.d("TEST", "name=" + icon.getText());
+        Log.d("TEST", "parent - " + icon.getParent().getClass().getName());
+        if (!ids.isEmpty() || !(icon.getParent() instanceof AllAppsRecyclerView)) {
             // There are shortcuts associated with the app, so defer its drag.
             final DeepShortcutsContainer container =
                     (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(

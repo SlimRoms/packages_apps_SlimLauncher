@@ -19,6 +19,7 @@ package org.slim.launcher.settings;
 public interface SettingsKeys {
 
     String DEFAULT_HOMESCREEN = "default_homescreen";
+    String KEY_ICON_PACK = "icon_pack";
 
     // Homescreen
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";

@@ -28,6 +28,10 @@ public abstract class SQLiteCacheHelper {
         mIgnoreWrites = false;
     }
 
+    public SQLiteDatabase getDatabase() {
+        return mOpenHelper.getWritableDatabase();
+    }
+
     /**
      * @see SQLiteDatabase#delete(String, String, String[])
      */
