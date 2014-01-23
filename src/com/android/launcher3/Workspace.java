@@ -118,6 +118,9 @@ public class Workspace extends PagedView
 
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
+    public static final int LONG_PRESS_TIME = 500;
+    private long mLastTouch;
+
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
     private long mCustomContentShowTime = -1;
@@ -1173,7 +1176,7 @@ public class Workspace extends PagedView
         }
 
         // Get the canonical child id to uniquely represent this view in this screen
-        ItemInfo info = (ItemInfo) child.getTag();
+        final ItemInfo info = (ItemInfo) child.getTag();
         int childId = mLauncher.getViewIdForItem(info);
 
         boolean markCellsAsOccupied = !(child instanceof Folder);
@@ -1186,7 +1189,30 @@ public class Workspace extends PagedView
 
         if (!(child instanceof Folder)) {
             child.setHapticFeedbackEnabled(false);
-            child.setOnLongClickListener(mLongClickListener);
+            //child.setOnLongClickListener(mLongClickListener);
+            child.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch(motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            mLastTouch = System.currentTimeMillis();
+                            return false;
+                        case MotionEvent.ACTION_MOVE:
+                            if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
+                                mLongClickListener.onLongClick(view);
+                                return true;
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
+                                //mLauncher.constructShortcutMenu(view, (ShortcutInfo) info);
+                                return true;
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
         }
         if (child instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) child);

@@ -10,6 +10,7 @@
     <string name="set_string">Set</string>
     <string name="off_string">Off</string>
     <string name="error_message_title">Error</string>
+    <string name="edit">Edit</string>
 
     <string name="storage_permission_denied">Can\'t access storage</string>
 
@@ -77,5 +78,17 @@
     <string name="shortcut_action_launcher_overview">Overview mode</string>
     <string name="shortcut_action_launcher_settings">Launcher settings</string>
     <string name="shortcut_action_launcher_homescreen">Default homescreen</string>
+
+    <!-- Icon Pack  -->
+    <string name="general_title">General</string>
+    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
+    <string name="default_iconpack_title">Default</string>
+    <string name="icon_packs_title">Icon packs</string>
+    <string name="no_iconpacks_summary">No icon packs installed</string>
+    <string name="pref_icon_pack_title">Icon pack</string>
+    <string name="reset_custom_icons">Reset Custom Icons</string>
+
+    <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
+    <string name="edit_target_label">Edit</string>
 
 </resources>

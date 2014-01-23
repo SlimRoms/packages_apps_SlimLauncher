@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -52,7 +53,8 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView,
+        ShortcutInfo.ShortcutListener {
 
     private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
@@ -162,6 +164,8 @@ public class BubbleTextView extends TextView
             boolean promiseStateChanged) {
         applyIconAndLabel(info.getIcon(iconCache), info);
         setTag(info);
+        info.setListener(this);
+
         if (promiseStateChanged || info.isPromise()) {
             applyState(promiseStateChanged);
         }
@@ -175,6 +179,8 @@ public class BubbleTextView extends TextView
 
         // Verify high res immediately
         verifyHighRes();
+
+        info.addListener(this);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -673,6 +679,24 @@ public class BubbleTextView extends TextView
                 }
         }
         return 0;
+    }
+
+    @Override
+    public void onTitleChanged(ItemInfo item) {
+        setText(item.title);
+    }
+
+    @Override
+    public void onIconChanged(ItemInfo item) {
+        Bitmap b = null;
+        if (item instanceof ShortcutInfo) {
+            b = ((ShortcutInfo) item).getIcon(null);
+        } else if (item instanceof AppInfo) {
+            b = ((AppInfo) item).iconBitmap;
+        }
+        if (b != null) {
+            setIcon(new BitmapDrawable(getResources(), b));
+        }
     }
 
     /**

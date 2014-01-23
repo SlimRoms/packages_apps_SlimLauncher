@@ -33,6 +33,8 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
+import java.util.ArrayList;
+
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
@@ -96,6 +98,14 @@ public class ShortcutInfo extends ItemInfo {
      * The application icon.
      */
     private Bitmap mIcon;
+
+    private Bitmap mCustomIcon;
+    public boolean useCustomIcon;
+
+    /**
+     * Title change listener
+     */
+    private ArrayList<ShortcutListener> mListeners = new ArrayList<>();
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -162,6 +172,8 @@ public class ShortcutInfo extends ItemInfo {
      * Whether this shortcut holds a launcher action
      */
     public boolean launcherAction = false;
+
+    public boolean customIcon = false;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -231,10 +243,32 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void setIcon(Bitmap b) {
-        mIcon = b;
+        if (useCustomIcon) {
+            mCustomIcon = b;
+        } else {
+            mIcon = b;
+        }
+        for (ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
+    }
+
+    public void removeCustomIcon() {
+        useCustomIcon = false;
+        mCustomIcon = null;
     }
 
     public Bitmap getIcon(IconCache iconCache) {
+        if (mIcon == null) {
+            updateIcon(iconCache);
+        }
+        if (mCustomIcon == null) {
+            return mIcon;
+        }
+        return mCustomIcon;
+    }
+
+    public Bitmap getDefaultIcon(IconCache iconCache) {
         if (mIcon == null) {
             updateIcon(iconCache);
         }
@@ -252,6 +286,19 @@ public class ShortcutInfo extends ItemInfo {
         updateIcon(iconCache, shouldUseLowResIcon());
     }
 
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        for (ShortcutListener i : mListeners) {
+            i.onTitleChanged(this);
+        }
+    }
+
+    public void setListener(ShortcutListener listener) {
+        if (!mListeners.contains(listener) && listener != null) {
+            mListeners.add(listener);
+        }
+    }
+
     @Override
     void onAddToDatabase(Context context, ContentValues values) {
         super.onAddToDatabase(context, values);
@@ -265,8 +312,13 @@ public class ShortcutInfo extends ItemInfo {
         values.put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingFallbackIcon && !usingLowResIcon) {
-            writeBitmap(values, mIcon);
+            writeBitmap(values, mIcon, false);
         }
+
+        if (useCustomIcon) {
+            writeBitmap(values, mCustomIcon, true);
+        }
+
         if (iconResource != null) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
                     iconResource.packageName);
@@ -352,6 +404,11 @@ public class ShortcutInfo extends ItemInfo {
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+    }
+
+    interface ShortcutListener {
+        void onTitleChanged(ItemInfo item);
+        void onIconChanged(ItemInfo item);
     }
 
     @Override

@@ -140,4 +140,6 @@
 
     <style name="SearchButton"></style>
 
+    <style name="Theme.IconPicker" parent="android:Theme.Holo.Wallpaper" />
+
 </resources>
