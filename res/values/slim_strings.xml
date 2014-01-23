@@ -127,6 +127,14 @@
     <string name="gesture_target_last_app">Last app</string>
     <string name="gesture_target_custom">Custom</string>
 
+
+    <!-- Icon Pack  -->
+    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
+    <string name="default_iconpack_title">Default icons</string>
+    <string name="icon_packs_title">Icon packs</string>
+    <string name="no_iconpacks_summary">No icon packs installed</string>
+    <string name="pref_icon_pack_title">Icon pack</string>
+
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Hidden apps</string>
     <string name="hidden_apps_summary">Hide apps from the drawer</string>

@@ -53,6 +53,7 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
     }
 
     public Drawable getIcon(int density) {
+        android.util.Log.d("TEST", "getIcon in V16");
         Drawable d = null;
         if (mActivityInfo.getIconResource() != 0) {
             Resources resources;
