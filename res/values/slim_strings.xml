@@ -49,6 +49,13 @@
 
     <string name="icon_size_title">Icon size</string>
 
+    <!-- Icon Pack  -->
+    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
+    <string name="default_iconpack_title">Default icons</string>
+    <string name="icon_packs_title">Icon packs</string>
+    <string name="no_iconpacks_summary">No icon packs installed</string>
+    <string name="pref_icon_pack_title">Icon pack</string>
+
     <!-- Gestures -->
     <string name="gestures_title">Gestures</string>
     <string name="gesture_default">nothing</string>

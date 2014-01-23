@@ -12,6 +12,8 @@ public interface SettingsKeys {
     public static final String KEY_ICON_SIZE = "icon_size";
     public static final String KEY_DOCK_ICONS = "dock_icon_count";
 
+    public static final String KEY_ICON_PACK = "icon_pack";
+
     public static final String KEY_DOCK_HIDE_LABELS = "dock_hide_icon_labels";
 
     public static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";

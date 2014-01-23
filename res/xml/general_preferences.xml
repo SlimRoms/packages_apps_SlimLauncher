@@ -10,4 +10,8 @@
         launcher:min="70"
         launcher:defaultValue="100"/>
 
+    <Preference
+        android:key="icon_pack"
+        android:title="@string/pref_icon_pack_title" />
+
 </PreferenceScreen>
