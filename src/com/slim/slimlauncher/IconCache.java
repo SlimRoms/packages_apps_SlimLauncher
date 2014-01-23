@@ -44,6 +44,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import android.preference.PreferenceManager;
+
+import com.slim.slimlauncher.settings.SettingsProvider;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,12 +62,15 @@ public class IconCache {
     private static final String TAG = "Launcher.IconCache";
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
+
     private static final String RESOURCE_FILE_PREFIX = "icon_";
 
     // Empty class name is used for storing package default entry.
     private static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = false;
+
+    private IconPackHelper mIconPackHelper;
 
     private static class CacheEntry {
         public Bitmap icon;
@@ -114,6 +122,9 @@ public class IconCache {
         // need to set mIconDpi before getting default icon
         UserHandleCompat myUser = UserHandleCompat.myUserHandle();
         mDefaultIcons.put(myUser, makeDefaultIcon(myUser));
+
+        mIconPackHelper = new IconPackHelper(context);
+        loadIconPack();
     }
 
     public Drawable getFullResDefaultActivityIcon() {
@@ -159,7 +170,14 @@ public class IconCache {
             resources = null;
         }
         if (resources != null) {
-            int iconId = info.getIconResource();
+            int iconId = 0;
+            if (mIconPackHelper != null && mIconPackHelper.isIconPackLoaded()) {
+                iconId = mIconPackHelper.getResourceIdForActivityIcon(info);
+                if (iconId != 0) {
+                    return getFullResIcon(mIconPackHelper.getIconPackResources(), iconId);
+                }
+            }
+            iconId = info.getIconResource();
             if (iconId != 0) {
                 return getFullResIcon(resources, iconId);
             }
@@ -179,6 +197,15 @@ public class IconCache {
         d.draw(c);
         c.setBitmap(null);
         return b;
+    }
+
+    private void loadIconPack() {
+        mIconPackHelper.unloadIconPack();
+        String iconPack = SettingsProvider.getString(mContext,
+                SettingsProvider.KEY_ICON_PACK, "");
+        if (!TextUtils.isEmpty(iconPack) && !mIconPackHelper.loadIconPack(iconPack)) {
+            SettingsProvider.putString(mContext, SettingsProvider.KEY_ICON_PACK, "");
+        }
     }
 
     /**
@@ -209,6 +236,7 @@ public class IconCache {
      */
     public synchronized void flush() {
         mCache.clear();
+        loadIconPack();
     }
 
     /**
@@ -296,6 +324,17 @@ public class IconCache {
         return mDefaultIcons.get(user) == icon;
     }
 
+    public Drawable getIconForInfo(LauncherActivityInfoCompat info) {
+        int iconId = 0;
+        if (mIconPackHelper != null && mIconPackHelper.isIconPackLoaded()) {
+            iconId = mIconPackHelper.getResourceIdForActivityIcon(info);
+            if (iconId != 0) {
+                return getFullResIcon(mIconPackHelper.getIconPackResources(), iconId);
+            }
+        }
+        return info.getBadgedIcon(mIconDpi);
+    }
+
     /**
      * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
      * This method is not thread safe, it must be called from a synchronized method.
@@ -322,8 +361,14 @@ public class IconCache {
                 }
 
                 entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
-                entry.icon = Utilities.createIconBitmap(
-                        info.getBadgedIcon(mIconDpi), mContext, unreadNum);
+                Drawable icon = getIconForInfo(info);
+                if (mIconPackHelper.isIconPackLoaded() && (mIconPackHelper
+                        .getResourceIdForActivityIcon(info) == 0)) {
+                    entry.icon = Utilities.createIconBitmap(
+                            icon, mContext, mIconPackHelper);
+                } else {
+                    entry.icon = Utilities.createIconBitmap(icon, mContext, unreadNum);
+                }
             } else {
                 entry.title = "";
                 Bitmap preloaded = getPreloadedIcon(componentName, user);
@@ -346,6 +391,11 @@ public class IconCache {
                         if (DEBUG) Log.d(TAG, "using default icon for " +
                                 componentName.toShortString());
                         entry.icon = getDefaultIcon(user);
+                    }
+                    if (mIconPackHelper.isIconPackLoaded() && (mIconPackHelper
+                            .getResourceIdForActivityIcon(componentName) == 0)) {
+                        entry.icon = Utilities.createIconBitmap(
+                        (new BitmapDrawable(entry.icon)), mContext, mIconPackHelper);
                     }
                 }
             }
@@ -387,7 +437,14 @@ public class IconCache {
             try {
                 ApplicationInfo info = mPackageManager.getApplicationInfo(packageName, 0);
                 entry.title = info.loadLabel(mPackageManager);
-                entry.icon = Utilities.createIconBitmap(info.loadIcon(mPackageManager), mContext);
+                Drawable icon = info.loadIcon(mPackageManager);
+                if (mIconPackHelper.isIconPackLoaded() && (mIconPackHelper
+                        .getResourceIdForActivityIcon(cn) == 0)) {
+                    entry.icon = Utilities.createIconBitmap(
+                            icon, mContext, mIconPackHelper);
+                } else {
+                    entry.icon = Utilities.createIconBitmap(icon, mContext);
+                }
             } catch (NameNotFoundException e) {
                 if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
             }

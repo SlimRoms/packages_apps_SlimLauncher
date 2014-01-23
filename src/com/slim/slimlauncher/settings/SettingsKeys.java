@@ -29,6 +29,7 @@ public interface SettingsKeys {
     // General
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
     public static final String KEY_LOCK_WORKSPACE = "lock_workspace";
+    public static final String KEY_ICON_PACK = "icon_pack";
 
     // Drawer
     public static final String KEY_DRAWER_STYLE = "drawer_style";
