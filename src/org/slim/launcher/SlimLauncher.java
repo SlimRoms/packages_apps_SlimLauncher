@@ -81,6 +81,10 @@ public class SlimLauncher extends Launcher {
                 break;
             case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
                 updateAppDrawerSearchBar();
+                break;
+            case SettingsProvider.KEY_DOCK_BACKGROUND:
+                getHotseat().updateCustomColor();
+                break;
         }
     }
 

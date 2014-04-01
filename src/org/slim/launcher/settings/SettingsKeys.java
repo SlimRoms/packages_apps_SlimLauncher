@@ -23,13 +23,13 @@ public interface SettingsKeys {
     // Homescreen
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     String KEY_HOMESCREEN_GRID = "homescreen_grid";
-    String KEY_SHOW_SHADOW = "show_shadow";
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
 
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";
+    String KEY_DOCK_BACKGROUND = "hotseat_background_color";
 
     // Gestures
     String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";

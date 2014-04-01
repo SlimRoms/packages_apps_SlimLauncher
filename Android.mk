@@ -39,7 +39,7 @@ LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/res \
     frameworks/support/v7/recyclerview/res
 
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_PROGUARD_ENABLED:= disabled
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
