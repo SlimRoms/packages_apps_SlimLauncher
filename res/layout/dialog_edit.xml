@@ -36,6 +36,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/hide_app_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -52,7 +53,7 @@
         <TextView
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
-            android:text="Hide App"
+            android:text="@string/hide_app_title"
             android:textAppearance="?android:textAppearanceLarge"
             android:textStyle="bold"
             android:layout_width="match_parent"

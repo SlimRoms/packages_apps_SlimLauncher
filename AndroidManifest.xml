@@ -131,6 +131,16 @@
             android:theme="@style/Theme.IconPicker"
             android:launchMode="singleTop" />
 
+        <activity android:name="org.slim.launcher.settings.HiddenAppsActivity"
+            android:label="@string/hidden_apps_title"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Settings">
+            <intent-filter>
+                <action android:name=".settings.HiddenAppsActivity"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
