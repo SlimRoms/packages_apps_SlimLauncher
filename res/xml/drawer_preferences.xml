@@ -3,6 +3,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:title="@string/hidden_apps_title"
+        android:summary="@string/hidden_apps_summary">
+        <intent android:action=".settings.HiddenAppsActivity" />
+    </Preference>
+
     <SwitchPreference
         android:key="drawer_search_bar"
         android:title="@string/drawer_search_bar_title"

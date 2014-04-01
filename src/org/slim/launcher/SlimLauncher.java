@@ -1,6 +1,7 @@
 package org.slim.launcher;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +48,7 @@ import org.slim.launcher.util.SlimUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SlimLauncher extends Launcher {
@@ -117,14 +121,41 @@ public class SlimLauncher extends Launcher {
         if (info instanceof ShortcutInfo || info instanceof AppInfo) {
             mEditItemInfo = info;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            View layout = View.inflate(this, R.layout.dialog_edit, null);
+            final View layout = View.inflate(this, R.layout.dialog_edit, null);
             mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
             mDialogIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            String[] flattened = SettingsProvider.getString(this,
+                    SettingsProvider.KEY_HIDDEN_APPS, "").split("\\|");
+            final ArrayList<ComponentName> hiddenApps = new ArrayList<>();
+            for (String flat : flattened) {
+                ComponentName cmp = ComponentName.unflattenFromString(flat);
+                if (cmp != null) {
+                    hiddenApps.add(cmp);
+                }
+            }
             if (info instanceof ShortcutInfo) {
                 mDialogIcon.setImageBitmap(((ShortcutInfo) info).getIcon(
                         LauncherAppState.getInstance().getIconCache()));
             } else {
-                mDialogIcon.setImageBitmap(((AppInfo) info).iconBitmap);
+                final AppInfo appInfo = (AppInfo) info;
+                mDialogIcon.setImageBitmap(appInfo.iconBitmap);
+
+                ViewGroup editContainer = (ViewGroup) layout.findViewById(R.id.hide_app_container);
+                editContainer.setVisibility(View.VISIBLE);
+                final CheckBox checkBox = (CheckBox) editContainer.findViewById(R.id.hide_app);
+                checkBox.setChecked(hiddenApps.contains(appInfo.componentName));
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked && !hiddenApps.contains(appInfo.componentName)) {
+                            hiddenApps.add(appInfo.componentName);
+                        } else if (hiddenApps.contains(appInfo.componentName)) {
+                            hiddenApps.remove(appInfo.componentName);
+                        }
+                        checkBox.setTag(hiddenApps);
+                    }
+                });
+                checkBox.setTag(hiddenApps);
             }
             mDialogIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -178,6 +209,14 @@ public class SlimLauncher extends Launcher {
                                         LauncherAppState.getInstance().getIconCache().putCustomIconInDB(d, info);
                                     }
                                 }
+                                String hidden = "";
+                                for (ComponentName cmp : hiddenApps) {
+                                    if (!hidden.isEmpty())
+                                        hidden += "|";
+                                    hidden += cmp.flattenToString();
+                                }
+                                SettingsProvider.putString(SlimLauncher.this,
+                                        SettingsProvider.KEY_HIDDEN_APPS, hidden);
                             }
                             mEditItemInfo = null;
                         }
@@ -202,7 +241,15 @@ public class SlimLauncher extends Launcher {
                 break;
             case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
                 updateAppDrawerSearchBar();
+                break;
+            case SettingsProvider.KEY_HIDDEN_APPS:
+                updateHiddenApps();
+                break;
         }
+    }
+
+    private void updateHiddenApps() {
+        getAppsView().onAppsUpdated();
     }
 
     private void updateAppDrawerSearchBar() {
