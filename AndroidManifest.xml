@@ -139,6 +139,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".settings.HiddenAppsActivity"
+            android:label="@string/hidden_apps_title"
+            android:exported="false"
+            android:theme="@style/Settings.Theme">
+            <intent-filter>
+                <action android:name=".settings.HiddenAppsActivity"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name="com.slim.slimlauncher.settings.SettingsActivity"
             android:icon="@mipmap/ic_launcher_settings"
             android:label="@string/slim_application_name"

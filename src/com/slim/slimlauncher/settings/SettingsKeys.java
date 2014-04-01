@@ -47,6 +47,8 @@ public interface SettingsKeys {
     public static final String HIDE_FOLDER_NAME = "hide_folder_name";
     public static final String KEY_SMART_FOLDER = "smart_folder";
 
+    public static final String KEY_HIDDEN_APPS = "hidden_apps";
+
     // Gestures
     public static final String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";
     public static final String MIDDLE_UP_GESTURE_ACTION = "middle_up_gesture_action";

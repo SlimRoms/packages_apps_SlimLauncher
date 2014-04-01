@@ -531,6 +531,7 @@ public class Launcher extends Activity
 
         mWorkspace.reloadSettings();
 
+        mAppsCustomizeContent.filterContent();
         mAppsCustomizeContent.updateGridSize();
         mAppsCustomizeContent.invalidateOnDataChange();
         mHotseat.updateHotseat();
