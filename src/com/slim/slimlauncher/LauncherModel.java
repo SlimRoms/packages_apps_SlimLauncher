@@ -19,8 +19,16 @@ package com.slim.slimlauncher;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentProviderClient;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -42,7 +50,9 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.util.Pair;
+
 import com.slim.slimlauncher.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;

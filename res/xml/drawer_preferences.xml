@@ -3,6 +3,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:title="@string/hidden_apps_title"
+        android:summary="@string/hidden_apps_summary">
+        <intent android:action=".settings.HiddenAppsActivity" />
+    </Preference>
+
     <com.slim.slimlauncher.preference.DoubleNumberPickerPreference
         android:key="drawer_grid"
         android:summary="@string/grid_size_summary"

@@ -18,6 +18,8 @@ public interface SettingsKeys {
 
     public static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
 
+    public static final String KEY_HIDDEN_APPS = "hidden_apps";
+
     // Gestures
     public static final String UP_GESTURE_ACTION = "up_gesture_action";
     public static final String DOWN_GESTURE_ACTION = "down_gesture_action";

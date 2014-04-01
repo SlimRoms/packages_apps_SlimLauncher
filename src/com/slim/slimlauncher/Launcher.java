@@ -512,6 +512,7 @@ public class Launcher extends Activity
         mGrid.layout(this);
         mWorkspace.reloadSettings();
 
+        mAppsCustomizeContent.filterContent();
         mAppsCustomizeContent.updateGridSize();
         mHotseat.updateHotseat();
 
