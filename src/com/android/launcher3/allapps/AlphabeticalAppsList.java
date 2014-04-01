@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
 
@@ -26,9 +27,13 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.ComponentKey;
 
+import org.slim.launcher.settings.SettingsPreferenceFragment;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,6 +52,8 @@ public class AlphabeticalAppsList {
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
 
     private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
+
+    private ArrayList<ComponentName> mHiddenApps = new ArrayList<>();
 
     /**
      * Info about a section in the alphabetic list
@@ -226,6 +233,19 @@ public class AlphabeticalAppsList {
         updateAdapterItems();
     }
 
+    private void updateHiddenAppsList(Context context) {
+        String[] flattened = SettingsProvider.getString(context,
+                SettingsProvider.KEY_HIDDEN_APPS, "").split("\\|");
+        mHiddenApps = new ArrayList<>();
+        for (String flat : flattened) {
+            ComponentName cmp = ComponentName.unflattenFromString(flat);
+            if (cmp != null) {
+                Log.d("TEST", "flat=" + flat);
+                mHiddenApps.add(cmp);
+            }
+        }
+    }
+
     /**
      * Sets the adapter to notify when this dataset changes.
      */
@@ -350,7 +370,7 @@ public class AlphabeticalAppsList {
     /**
      * Updates internals when the set of apps are updated.
      */
-    private void onAppsUpdated() {
+    public void onAppsUpdated() {
         // Sort the list of apps
         mApps.clear();
         mApps.addAll(mComponentToAppMap.values());
@@ -394,8 +414,21 @@ public class AlphabeticalAppsList {
             }
         }
 
+        filterApps();
+
         // Recompose the set of adapter items from the current set of apps
         updateAdapterItems();
+    }
+
+    private void filterApps() {
+        updateHiddenAppsList(mLauncher);
+        Iterator<AppInfo> iterator = mApps.iterator();
+        while (iterator.hasNext()) {
+            AppInfo appInfo = iterator.next();
+            if (mHiddenApps.contains(appInfo.componentName)) {
+                iterator.remove();
+            }
+        }
     }
 
     /**

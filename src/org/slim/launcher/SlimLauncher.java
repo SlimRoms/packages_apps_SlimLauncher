@@ -202,7 +202,15 @@ public class SlimLauncher extends Launcher {
                 break;
             case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
                 updateAppDrawerSearchBar();
+                break;
+            case SettingsProvider.KEY_HIDDEN_APPS:
+                updateHiddenApps();
+                break;
         }
+    }
+
+    private void updateHiddenApps() {
+        getAppsView().onAppsUpdated();
     }
 
     private void updateAppDrawerSearchBar() {

@@ -218,6 +218,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchBarController.refreshSearchResult();
     }
 
+    public void onAppsUpdated() {
+        mApps.onAppsUpdated();
+        mAppsRecyclerView.invalidate();
+    }
+
     /**
      * Updates existing apps in the list
      */

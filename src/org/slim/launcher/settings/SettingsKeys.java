@@ -28,6 +28,7 @@ public interface SettingsKeys {
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
+    String KEY_HIDDEN_APPS = "hidden_apps";
 
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";
