@@ -22,24 +22,23 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
+import org.slim.launcher.settings.SettingsKeys;
+import org.slim.launcher.settings.SettingsProvider;
 
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LaunchSourceProvider {
@@ -53,6 +52,9 @@ public class Hotseat extends FrameLayout
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mBackgroundColor;
+    private int mDefaultBackgroundColor;
+    private int mThemeBackgroundColor = -1;
+    private int mCustomBackgroundColor;
     @ViewDebug.ExportedProperty(category = "launcher")
     private ColorDrawable mBackground;
     private ValueAnimator mBackgroundColorAnimator;
@@ -71,19 +73,23 @@ public class Hotseat extends FrameLayout
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
-        mBackground = new ColorDrawable(mBackgroundColor);
+        mDefaultBackgroundColor = ContextCompat.getColor(context, R.color.hotseat_default_color);
+        int themeBackground = ContextCompat.getColor(context, R.color.hotseat_background_color);
+        @SuppressWarnings("ResourceType")
+        String themeBack  = getResources().getString(R.color.hotseat_background_color);
+        Log.d("TEST", "themeBack - " + themeBack);
+        if (!themeBack.equalsIgnoreCase("#0")) {
+            mThemeBackgroundColor = themeBackground;
+            mBackground = new ColorDrawable(mThemeBackgroundColor);
+        } else {
+            mBackground = new ColorDrawable(mBackgroundColor);
+        }
         setBackground(mBackground);
+        updateCustomColor();
     }
 
     public CellLayout getLayout() {
         return mContent;
-    }
-
-    /**
-     * Returns whether there are other icons than the all apps button in the hotseat.
-     */
-    public boolean hasIcons() {
-        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
     }
 
     /**
@@ -114,9 +120,9 @@ public class Hotseat extends FrameLayout
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet) {
-            mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
         mContent.setIsHotseat(true);
 
@@ -178,7 +184,22 @@ public class Hotseat extends FrameLayout
         targetParent.containerType = LauncherLogProto.HOTSEAT;
     }
 
+    public void updateCustomColor() {
+        if (mThemeBackgroundColor != -1) return;
+        mCustomBackgroundColor = SettingsProvider.getInt(getContext(),
+                SettingsKeys.KEY_DOCK_BACKGROUND, mDefaultBackgroundColor);
+        if (mDefaultBackgroundColor != mCustomBackgroundColor) {
+            mBackground.setColor(mCustomBackgroundColor);
+        } else {
+            Log.d("TEST", "set default");
+            mBackground.setColor(mBackgroundColor);
+        }
+        setBackground(mBackground);
+    }
+
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (mThemeBackgroundColor != -1 ||
+                mCustomBackgroundColor != mDefaultBackgroundColor) return;
         if (!mHasVerticalHotseat) {
             int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
             if (mBackgroundColorAnimator != null) {
@@ -216,6 +237,12 @@ public class Hotseat extends FrameLayout
     }
 
     public int getBackgroundDrawableColor() {
+        if (mCustomBackgroundColor != mDefaultBackgroundColor) {
+            return mCustomBackgroundColor;
+        }
+        if (mThemeBackgroundColor != -1) {
+            return mThemeBackgroundColor;
+        }
         return mBackgroundColor;
     }
 }

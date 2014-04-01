@@ -11,4 +11,8 @@
         launcher:min="1"
         launcher:max="7" />
 
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="hotseat_background_color"
+        android:title="@string/hotseat_color_title" />
+
 </PreferenceScreen>

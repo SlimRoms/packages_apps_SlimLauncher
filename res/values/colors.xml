@@ -50,4 +50,8 @@
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
+
+    <color name="hotseat_background_color">#0000</color>
+    <color name="hotseat_default_color">#77ffffff</color>
+
 </resources>

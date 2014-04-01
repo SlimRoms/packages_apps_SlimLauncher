@@ -368,7 +368,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         View arrowView = new View(getContext());
         ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                 width, height, !mIsAboveIcon));
-        arrowDrawable.getPaint().setColor(Color.WHITE);
+        arrowDrawable.getPaint().setColor(getContext().getColor(R.color.quantum_panel_bg_color));
         arrowView.setBackground(arrowDrawable);
         arrowView.setElevation(getElevation());
         addView(arrowView, mIsAboveIcon ? getChildCount() : 0, layoutParams);
