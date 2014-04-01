@@ -91,4 +91,11 @@
     <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
     <string name="edit_target_label">Edit</string>
 
+    <!-- Hidden apps -->
+    <string name="hide_app_title">Hide app from App Drawer.</string>
+    <string name="hidden_apps_title">Hidden apps</string>
+    <string name="hidden_apps_summary">Hide apps from the drawer</string>
+    <string name="hidden_apps_shortcuts_title">Remove shortcuts</string>
+    <string name="hidden_apps_widgets_title">Remove widgets</string>
+
 </resources>
