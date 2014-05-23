@@ -7,6 +7,11 @@
         android:title="@string/homescreen_title" />
 
     <header
+        android:fragment="com.slim.slimlauncher.settings.HotwordFragment"
+        android:id="@+id/pref_hotword"
+        android:title="@string/pref_hotwords_title"/>
+
+    <header
         android:fragment="com.slim.slimlauncher.settings.DockFragment"
         android:id="@+id/pref_dock"
         android:title="@string/dock_title" />

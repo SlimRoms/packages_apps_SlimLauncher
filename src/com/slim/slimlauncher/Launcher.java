@@ -58,6 +58,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -71,6 +72,9 @@ import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -114,6 +118,7 @@ import com.slim.slimlauncher.compat.PackageInstallerCompat;
 import com.slim.slimlauncher.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 import com.slim.slimlauncher.compat.UserManagerCompat;
+import com.slim.slimlauncher.settings.HotwordFragment;
 import com.slim.slimlauncher.settings.SettingsActivity;
 import com.slim.slimlauncher.settings.SettingsProvider;
 import com.slim.slimlauncher.util.ColorUtils;
@@ -130,6 +135,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -137,6 +143,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -153,6 +160,7 @@ public class Launcher extends Activity
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
     static final boolean DEBUG_DUMP_LOG = false;
+    static final boolean DEBUG_HOTWORD = false;
 
     static final boolean ENABLE_DEBUG_INTENTS = false; // allow DebugIntents to run
 
@@ -381,6 +389,117 @@ public class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    private SpeechRecognizer mSpeechRecognizer;
+    private AudioManager mAudioManager;
+    private Intent mRecognizerIntent;
+    private boolean mHotwordMatched;
+    private String[] mHotwords;
+    private String[] mHotwordsActions;
+    private static final int MUTE_STREAM = AudioManager.STREAM_MUSIC;
+
+    private Runnable mUnmuteRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mAudioManager.setStreamMute(MUTE_STREAM, false);
+        }
+    };
+
+    private RecognitionListener mSpeechListener = new RecognitionListener() {
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+            // ignore
+
+        }
+
+        @Override
+        public void onResults(Bundle results) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "onResults");
+            onPartialResults(results);
+            if (!mHotwordMatched) {
+                setupHotwordRecognition();
+            }
+        }
+
+        @Override
+        public void onReadyForSpeech(Bundle params) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "onReadyForSpeech");
+
+            // Let the beep beep go away, then un-mute
+            mHandler.removeCallbacks(mUnmuteRunnable);
+            mHandler.post(mUnmuteRunnable);
+        }
+
+        @Override
+        public void onPartialResults(Bundle partialResults) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "onPartialResults");
+
+            ArrayList<String> data = partialResults.getStringArrayList(
+                    SpeechRecognizer.RESULTS_RECOGNITION);
+            if (data == null) {
+                return;
+            }
+
+            // Check if the result we have match something we know
+            for (String recognizedWord : data) {
+                String trimmedRec = recognizedWord.trim();
+
+                int index = 0;
+                for (String trigger : mHotwords) {
+                    if (trigger.trim().equalsIgnoreCase(trimmedRec)) {
+                        mHotwordMatched = true;
+                        if (DEBUG_HOTWORD) Log.d(TAG, "Matched hotword: " + trimmedRec);
+
+                        // Start action
+                        try {
+                            Intent intent = Intent.parseUri(mHotwordsActions[index], 0);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } catch (URISyntaxException e) {
+                            Log.e(TAG, "Unable to start hotword action "
+                                    + mHotwordsActions[index], e);
+                        }
+                        break;
+                    }
+                    index++;
+                }
+            }
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params) {
+            // ignore
+        }
+
+        @Override
+        public void onError(int error) {
+            if (error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT
+                    || error == SpeechRecognizer.ERROR_NO_MATCH) {
+                // Nothing was heard, restart
+                setupHotwordRecognition();
+            } else if (error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
+                // Ignore, we tried to restart too quickly
+            } else {
+                Log.e(TAG, "Speech recognition error: " + error);
+            }
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer) {
+            // ignore
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+            // ignore
+        }
+
+    };
+
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -427,6 +546,11 @@ public class Launcher extends Activity
         }
 
         super.onCreate(savedInstanceState);
+
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        LauncherAppState.setApplicationContext(getApplicationContext());
+        LauncherAppState app = LauncherAppState.getInstance();
 
         initializeDynamicGrid();
 
@@ -1039,7 +1163,7 @@ public class Launcher extends Activity
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
         CellLayout cellLayout =
-                (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
+                mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
@@ -1200,6 +1324,9 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+
+        // Start hotword recognition
+        setupHotwordRecognition();
     }
 
     @Override
@@ -1218,6 +1345,9 @@ public class Launcher extends Activity
         if (mWorkspace.getCustomContentCallbacks() != null) {
             mWorkspace.getCustomContentCallbacks().onHide();
         }
+
+        // Clear hotword recognition if needed
+        clearHotwordRecognition();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
@@ -2718,6 +2848,9 @@ public class Launcher extends Activity
             } else {
                 showOverviewMode(true);
             }
+
+            // Restart hotword
+            setupHotwordRecognition();
         } else if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(true);
         } else if (mWorkspace.getOpenFolder() != null) {
@@ -3406,7 +3539,7 @@ public class Launcher extends Activity
         // There was a one-off crash where the folder had a parent already.
         if (folder.getParent() == null) {
             mDragLayer.addView(folder);
-            mDragController.addDropTarget((DropTarget) folder);
+            mDragController.addDropTarget(folder);
         } else {
             Log.w(TAG, "Opening folder (" + folder + ") which already has a parent (" +
                     folder.getParent() + ").");
@@ -3526,7 +3659,7 @@ public class Launcher extends Activity
                 return null;
             }
         } else {
-            return (CellLayout) mWorkspace.getScreenWithId(screenId);
+            return mWorkspace.getScreenWithId(screenId);
         }
     }
 
@@ -4318,6 +4451,9 @@ public class Launcher extends Activity
         updateRunning();
         closeFolder();
 
+        // Cancel the hotword recognition
+        clearHotwordRecognition();
+
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
@@ -4545,7 +4681,7 @@ public class Launcher extends Activity
     protected void updateGlobalSearchIcon(Drawable.ConstantState d) {
         if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) return;
         final View searchButtonContainer = findViewById(R.id.search_button_container);
-        final View searchButton = (ImageView) findViewById(R.id.search_button);
+        final View searchButton = findViewById(R.id.search_button);
         updateButtonWithDrawable(R.id.search_button, d);
         invalidatePressedFocusedStates(searchButtonContainer, searchButton);
     }
@@ -5712,6 +5848,94 @@ public class Launcher extends Activity
             mLauncherCallbacks.onPageSwitch(newPage, newPageIndex);
         }
     }
+
+    /**
+     * Setup hotword recognition to start voice search
+     */
+    public void setupHotwordRecognition() {
+        if (DEBUG_HOTWORD) Log.d(TAG, "setupHotwordRecognition");
+
+        // Check if hotwords are enabled
+        if (!SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_ENABLE_HOTWORD, false)) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "Hotword disabled, setup aborted");
+            return;
+        }
+
+        // Don't enable if music is playing and user chooses to
+        if (SettingsProvider.getBoolean(this, SettingsProvider.KEY_DISABLE_HOTWORD_MUSIC, true)
+                && mAudioManager.isMusicActive()) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "Music is playing, not enabling hotword");
+            return;
+        }
+
+        if (mSpeechRecognizer == null) {
+            mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+            mSpeechRecognizer.setRecognitionListener(mSpeechListener);
+
+            mRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            mRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            mRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "com.android.launcher3");
+            mRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
+            mRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        }
+
+        // Read hotwords configuration
+        Set<String> hotwords = SettingsProvider.getStringSet(
+                this, HotwordFragment.PREFS_HOTWORDS_ENTRIES, null);
+
+        if (hotwords == null) {
+            if (DEBUG_HOTWORD) Log.d(TAG, "Cancelled hotwords: no hotword setup");
+            return;
+        } else {
+            mHotwords = new String[hotwords.size()];
+            mHotwordsActions = new String[hotwords.size()];
+
+            int index = 0;
+            for (String entry : hotwords) {
+                String hotword = SettingsProvider.getString(
+                        this, HotwordFragment.PREFS_PREFIX_HOTWORD + entry, "ERROR");
+                String action = SettingsProvider.getString(
+                        this, HotwordFragment.PREFS_PREFIX_ACTION + entry, "ERROR");
+
+                if (DEBUG_HOTWORD) {
+                    Log.d(TAG, "Adding hotword: " + hotword + ", action: " + action);
+                }
+
+                mHotwords[index] = hotword;
+                mHotwordsActions[index] = action;
+
+                index++;
+            }
+        }
+
+        // Mute system beep-beep
+        // Dear Google, you are utterly stupid for putting the beep on STREAM_MUSIC.
+        // Sincerely, someone who tries to use your APIs for a seamless experience.
+        mHandler.removeCallbacks(mUnmuteRunnable);
+        mAudioManager.setStreamMute(MUTE_STREAM, true);
+
+        mHotwordMatched = false;
+
+        mSpeechRecognizer.startListening(mRecognizerIntent);
+    }
+
+    public void clearHotwordRecognition() {
+        if (DEBUG_HOTWORD) Log.d(TAG, "clearHotwordRecognition");
+
+        if (mAudioManager != null) {
+            // Unmute if we're muted, but only after some time to avoid hearing the
+            // beep when opening an app if it's happening
+            mHandler.removeCallbacks(mUnmuteRunnable);
+            mHandler.postDelayed(mUnmuteRunnable, 200);
+        }
+
+        if (mSpeechRecognizer != null) {
+            mSpeechRecognizer.cancel();
+        }
+    }
+
+
 
     /**
      * Prints out out state for debugging.

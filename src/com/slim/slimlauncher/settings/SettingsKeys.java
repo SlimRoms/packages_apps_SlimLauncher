@@ -27,6 +27,9 @@ public interface SettingsKeys {
     public static final String KEY_HOMESCREEN_ICON_SIZE = "homescreen_icon_size";
     public static final String KEY_SHOW_SHADOWS = "show_shadows";
 
+    public static final String KEY_ENABLE_HOTWORD = "enable_hotword";
+    public static final String KEY_DISABLE_HOTWORD_MUSIC = "disable_hotword_music";
+
     // General
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
     public static final String KEY_LOCK_WORKSPACE = "lock_workspace";

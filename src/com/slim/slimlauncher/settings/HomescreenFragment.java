@@ -17,6 +17,7 @@
 package com.slim.slimlauncher.settings;
 
 import android.os.Bundle;
+import android.preference.Preference;
 
 import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.preference.DoubleNumberPickerPreference;
@@ -33,6 +34,17 @@ public class HomescreenFragment extends SettingsPreferenceFragment {
 
         mHomescreenGrid = (DoubleNumberPickerPreference)
                 findPreference(SettingsProvider.KEY_HOMESCREEN_GRID);
+
+        Preference customHotwords = findPreference("custom_hotwords");
+        /*customHotwords.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getFragmentManager().beginTransaction().replace(
+                        android.R.id.content, new HotwordCustomFragment())
+                        .addToBackStack(preference.getKey()).commit();
+                return true;
+            }
+        });*/
 
 
         if (mProfile != null) {
