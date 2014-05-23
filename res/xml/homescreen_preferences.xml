@@ -38,4 +38,28 @@
         android:title="@string/hide_status_bar_title"
         android:defaultValue="false" />
 
+    <PreferenceCategory
+        android:title="@string/pref_hotwords_title" />
+
+
+    <CheckBoxPreference
+        android:key="enable_hotword"
+        android:title="@string/pref_title_enable_hotwords"
+        android:summary="@string/pref_desc_enable_hotwords"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="disable_hotword_music"
+        android:title="@string/pref_title_disable_hotword_music"
+        android:summary="@string/pref_desc_disable_hotword_music"
+        android:dependency="enable_hotword"
+        android:defaultValue="true" />
+
+    <PreferenceScreen
+        android:key="custom_hotwords"
+        android:fragment="com.slim.slimlauncher.settings.HotwordCustomFragment"
+        android:dependency="enable_hotword"
+        android:title="@string/pref_title_custom_hotwords"
+        android:summary="@string/pref_desc_custom_hotwords" />
+
 </PreferenceScreen>

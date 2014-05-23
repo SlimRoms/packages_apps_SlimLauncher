@@ -25,6 +25,10 @@ public interface SettingsKeys {
     public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
     public static final String KEY_HOMESCREEN_HIDE_LABELS = "homescreen_hide_icon_labels";
     public static final String KEY_HOMESCREEN_ICON_SIZE = "homescreen_icon_size";
+
+    public static final String KEY_ENABLE_HOTWORD = "enable_hotword";
+    public static final String KEY_DISABLE_HOTWORD_MUSIC = "disable_hotword_music";
+
     public static final String KEY_SHOW_STATUS_BAR = "hide_status_bar";
 
     // General
