@@ -4430,6 +4430,7 @@ public class Workspace extends PagedView
         long mAnimationStartTime;
         float mAnimationStartOffset;
         int mNumScreens;
+        boolean mCompletedInitialOffset;
 
         public WallpaperOffsetInterpolator() {
             mChoreographer = Choreographer.getInstance();
@@ -4444,7 +4445,8 @@ public class Workspace extends PagedView
         private void updateOffset(boolean force) {
             if (mWaitingForUpdate || force) {
                 mWaitingForUpdate = false;
-                if (computeScrollOffset() && mWindowToken != null) {
+                if ((!mCompletedInitialOffset || computeScrollOffset()) && mWindowToken != null) {
+                    mCompletedInitialOffset = true;
                     try {
                         mWallpaperManager.setWallpaperOffsets(mWindowToken,
                                 mWallpaperOffset.getCurrX(), 0.5f);
