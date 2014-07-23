@@ -2619,7 +2619,7 @@ public class Workspace extends SmoothPagedView
             setTranslationY(finalWorkspaceTranslationY);
         }
 
-        if (stateIsNormal) {
+        if (stateIsNormal || stateIsNormalHidden) {
             animateBackgroundGradient(0f, animated);
         } else {
             animateBackgroundGradient(getResources().getInteger(
