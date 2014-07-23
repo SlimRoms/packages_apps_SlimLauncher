@@ -20,6 +20,7 @@ package com.slim.slimlauncher;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
@@ -66,6 +67,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -92,10 +95,12 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.slim.slimlauncher.DropTarget.DragObject;
@@ -156,6 +161,8 @@ public class Launcher extends Activity
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
+
+    private static final float OVERSHOOT_TENSION = 1.4f;
 
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
@@ -278,6 +285,9 @@ public class Launcher extends Activity
     private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
+    protected RecyclerView mAppDrawer;
+    private AppDrawerListAdapter mAppDrawerAdapter;
+    private AppDrawerScrubber mScrubber;
 
     private boolean mHideHomescreenIconLabels;
     private boolean mLockWorkspace;
@@ -329,6 +339,8 @@ public class Launcher extends Activity
     private long mAutoAdvanceTimeLeft = -1;
     private HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
         new HashMap<View, AppWidgetProviderInfo>();
+
+    private AppDrawerListAdapter.DrawerType mDrawerType;
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
@@ -520,6 +532,8 @@ public class Launcher extends Activity
 
         mLockWorkspace = SettingsProvider.getBoolean(this,
                 SettingsProvider.KEY_LOCK_WORKSPACE, false);
+        mDrawerType = AppDrawerListAdapter.DrawerType.getModeForValue(
+                SettingsProvider.getInt(this, SettingsProvider.KEY_DRAWER_STYLE, 0));
     }
 
     public void updateDynamicGrid() {
@@ -543,12 +557,21 @@ public class Launcher extends Activity
 
         mWorkspace.reloadSettings();
 
+        mAppDrawerAdapter.reset();
+
         mAppsCustomizeContent.filterContent();
         mAppsCustomizeContent.updateGridSize();
         mAppsCustomizeContent.invalidateOnDataChange();
         mHotseat.updateHotseat();
 
+        updateScrubberVisibility();
+
         mModel.startLoader(true, mWorkspace.getCurrentPage());
+    }
+
+    public void updateDrawerType() {
+        mDrawerType = AppDrawerListAdapter.DrawerType.getModeForValue(
+                SettingsProvider.getInt(this, SettingsProvider.KEY_DRAWER_STYLE, 0));
     }
 
     @Override
@@ -581,6 +604,33 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.populateCustomContentContainer();
         }
+    }
+
+    private void initializeScrubber() {
+        if (mScrubber == null) {
+            FrameLayout view = (FrameLayout) findViewById(R.id.app_drawer_container);
+            mScrubber = (AppDrawerScrubber) view.findViewById(R.id.app_drawer_scrubber);
+            mScrubber.setSource(mAppDrawer);
+            mScrubber.setScrubberIndicator((TextView) view.findViewById(R.id.scrubberIndicator));
+            updateScrubberVisibility();
+        }
+    }
+
+    public void updateScrubber() {
+        mScrubber.updateSections();
+    }
+
+    public void updateScrubberVisibility() {
+        if (mDrawerType.getValue() == AppDrawerListAdapter.DrawerType.VERTICAL_FOLDER) {
+            mScrubber.setVisibility(View.VISIBLE);
+        } else {
+            mScrubber.setVisibility(View.GONE);
+        }
+    }
+
+    public void initializeAdapter() {
+        mAppDrawerAdapter = new AppDrawerListAdapter(this);
+        mAppDrawerAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -1504,6 +1554,9 @@ public class Launcher extends Activity
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeContent.setup(this, dragController);
 
+        // Setup AppDrawer
+        setupAppDrawer();
+
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
         dragController.setScrollView(mDragLayer);
@@ -1527,6 +1580,20 @@ public class Launcher extends Activity
 
             boolean show = shouldShowWeightWatcher();
             mWeightWatcher.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void setupAppDrawer() {
+        if (mAppDrawer == null) {
+            FrameLayout view = (FrameLayout) findViewById(R.id.app_drawer_container);
+            mAppDrawer = (RecyclerView) view.findViewById(R.id.app_drawer_recyclerview);
+            mAppDrawer.setLayoutManager(new LinearLayoutManager(this));
+            if (mAppDrawerAdapter == null) {
+                initializeAdapter();
+            }
+            mAppDrawer.setHasFixedSize(true);
+            mAppDrawer.setAdapter(mAppDrawerAdapter);
+            initializeScrubber();
         }
     }
 
@@ -3105,7 +3172,7 @@ public class Launcher extends Activity
         return false;
     }
 
-    boolean startActivitySafely(View v, Intent intent, Object tag) {
+    public boolean startActivitySafely(View v, Intent intent, Object tag) {
         boolean success = false;
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
@@ -3475,6 +3542,7 @@ public class Launcher extends Activity
         }
 
         boolean material = Utilities.isLmpOrAbove();
+        int drawerType = mDrawerType.getValue();
 
         final Resources res = getResources();
 
@@ -3486,7 +3554,15 @@ public class Launcher extends Activity
 
         final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mWorkspace;
-        final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
+        final View toView;
+
+        if ((drawerType == AppDrawerListAdapter.DrawerType.VERTICAL ||
+                drawerType == AppDrawerListAdapter.DrawerType.VERTICAL_FOLDER) && 
+                contentType == AppsCustomizePagedView.ContentType.Applications) {
+            toView = findViewById(R.id.app_drawer_container);
+        } else {
+            toView = mAppsCustomizeTabHost;
+        }
 
         final ArrayList<View> layerViews = new ArrayList<View>();
 
@@ -3505,18 +3581,29 @@ public class Launcher extends Activity
             final AppsCustomizePagedView content = (AppsCustomizePagedView)
                     toView.findViewById(R.id.apps_customize_pane_content);
 
-            final View page = content.getPageAt(content.getCurrentPage());
+            final View page = content != null ? content.getPageAt(content.getCurrentPage())
+                    : toView.findViewById(R.id.app_drawer_view);
             final View revealView = toView.findViewById(R.id.fake_page);
 
             final boolean isWidgetTray = contentType == AppsCustomizePagedView.ContentType.Widgets;
             if (isWidgetTray) {
                 revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
             } else {
-                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
+                if (drawerType == AppDrawerListAdapter.DrawerType.VERTICAL ||
+                        drawerType == AppDrawerListAdapter.DrawerType.VERTICAL_FOLDER) {
+                    revealView.setBackgroundColor(res.getColor(R.color.app_drawer_background));
+                    updateStatusBarColor(res.getColor(R.color.app_drawer_background));
+                } else {
+                    revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
+                }
             }
 
             // Hide the real page background, and swap in the fake one
-            content.setPageBackgroundsVisible(false);
+            if (content != null) {
+                content.setPageBackgroundsVisible(false);
+            } else {
+                toView.setBackgroundColor(Color.TRANSPARENT);
+            }
             revealView.setVisibility(View.VISIBLE);
             // We need to hide this view as the animation start will be posted.
             revealView.setAlpha(0);
@@ -3557,6 +3644,11 @@ public class Launcher extends Activity
 
             mStateAnimation.play(panelAlphaAndDrift);
 
+            final View drawerContent = content == null ?
+                    toView.findViewById(R.id.app_drawer_recyclerview) : null;
+            final View drawerScrubber = content == null ?
+                    toView.findViewById(R.id.scrubber_container) : null;
+
             if (page != null) {
                 page.setVisibility(View.VISIBLE);
                 page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -3575,14 +3667,32 @@ public class Launcher extends Activity
                 itemsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
                 itemsAlpha.setStartDelay(itemsAlphaStagger);
                 mStateAnimation.play(itemsAlpha);
+
+                if (drawerContent != null) {
+                    drawerContent.setTranslationY(toView.getHeight());
+                    ObjectAnimator slideIn = ObjectAnimator.ofFloat(drawerContent,
+                            "translationY", 1000, 0);
+                    slideIn.setInterpolator(new OvershootInterpolator(OVERSHOOT_TENSION));
+                    slideIn.setStartDelay(revealDuration / 2);
+                    mStateAnimation.play(slideIn);
+                }
+                /*if (drawerScrubber != null) {
+                    drawerScrubber.setAlpha(0f);
+                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(drawerScrubber,
+                            "alpha", 0f, 1f);
+                    fadeIn.setStartDelay(revealDuration / 2);
+                    mStateAnimation.play(fadeIn);
+                }*/
             }
 
             View pageIndicators = toView.findViewById(R.id.apps_customize_page_indicator);
-            pageIndicators.setAlpha(0.01f);
-            ObjectAnimator indicatorsAlpha =
-                    ObjectAnimator.ofFloat(pageIndicators, "alpha", 1f);
-            indicatorsAlpha.setDuration(revealDuration);
-            mStateAnimation.play(indicatorsAlpha);
+            if (pageIndicators != null) {
+                pageIndicators.setAlpha(0.01f);
+                ObjectAnimator indicatorsAlpha =
+                        ObjectAnimator.ofFloat(pageIndicators, "alpha", 1f);
+                indicatorsAlpha.setDuration(revealDuration);
+                mStateAnimation.play(indicatorsAlpha);
+            }
 
             if (material) {
                 float startRadius = 0;
@@ -3604,7 +3714,11 @@ public class Launcher extends Activity
                     if (page != null) {
                         page.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
-                    content.setPageBackgroundsVisible(true);
+                    if (content != null) {
+                        content.setPageBackgroundsVisible(true);
+                    } else {
+                        toView.setBackgroundColor(res.getColor(R.color.app_drawer_background));
+                    }
 
                     // Hide the search bar
                     if (mSearchDropTargetBar != null) {
@@ -3690,7 +3804,9 @@ public class Launcher extends Activity
         }
 
         boolean material = Utilities.isLmpOrAbove();
-        Resources res = getResources();
+        int drawerType = mDrawerType.getValue();
+
+        final Resources res = getResources();
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
         final int fadeOutDuration = res.getInteger(R.integer.config_appsCustomizeFadeOutTime);
@@ -3700,7 +3816,17 @@ public class Launcher extends Activity
 
         final float scaleFactor = (float)
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
-        final View fromView = mAppsCustomizeTabHost;
+        final View fromView;
+
+        if ((drawerType == AppDrawerListAdapter.DrawerType.VERTICAL ||
+                drawerType == AppDrawerListAdapter.DrawerType.VERTICAL_FOLDER) &&
+                mAppsCustomizeContent.getContentType()
+                != AppsCustomizePagedView.ContentType.Widgets) {
+            fromView = (FrameLayout) findViewById(R.id.app_drawer_container);
+        } else {
+            fromView = mAppsCustomizeTabHost;
+        }
+
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
         final ArrayList<View> layerViews = new ArrayList<View>();
@@ -3723,10 +3849,11 @@ public class Launcher extends Activity
             final AppsCustomizePagedView content = (AppsCustomizePagedView)
                     fromView.findViewById(R.id.apps_customize_pane_content);
 
-            final View page = content.getPageAt(content.getNextPage());
+            final View page = content != null ? content.getPageAt(content.getNextPage())
+                    : fromView.findViewById(R.id.app_drawer_view);
 
             // We need to hide side pages of the Apps / Widget tray to avoid some ugly edge cases
-            int count = content.getChildCount();
+            int count = content != null ? content.getChildCount() : 0;
             for (int i = 0; i < count; i++) {
                 View child = content.getChildAt(i);
                 if (child != page) {
@@ -3739,14 +3866,21 @@ public class Launcher extends Activity
             // don't perform all these no-op animations. In particularly, this was causing
             // the all-apps button to pop in and out.
             if (fromView.getVisibility() == View.VISIBLE) {
-                AppsCustomizePagedView.ContentType contentType = content.getContentType();
+                AppsCustomizePagedView.ContentType contentType =
+                        mAppsCustomizeContent.getContentType();
                 final boolean isWidgetTray =
                         contentType == AppsCustomizePagedView.ContentType.Widgets;
 
                 if (isWidgetTray) {
                     revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
                 } else {
-                    revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
+                    if (drawerType == AppDrawerListAdapter.DrawerType.VERTICAL ||
+                            drawerType == AppDrawerListAdapter.DrawerType.VERTICAL_FOLDER) {
+                        revealView.setBackgroundColor(res.getColor(
+                                R.color.app_drawer_background));
+                    } else {
+                        revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
+                    }
                 }
 
                 int width = revealView.getMeasuredWidth();
@@ -3755,7 +3889,12 @@ public class Launcher extends Activity
 
                 // Hide the real page background, and swap in the fake one
                 revealView.setVisibility(View.VISIBLE);
-                content.setPageBackgroundsVisible(false);
+                if (content != null) {
+                    content.setPageBackgroundsVisible(false);
+                } else {
+                    fromView.setBackgroundColor(Color.TRANSPARENT);
+                    updateStatusBarColor(Color.TRANSPARENT, 0);
+                }
 
                 revealView.setTranslationY(0);
 
@@ -3802,6 +3941,9 @@ public class Launcher extends Activity
                     mStateAnimation.play(panelAlpha);
                 }
 
+                final View drawerScrubber = content == null ?
+                        fromView.findViewById(R.id.scrubber_container) : null;
+
                 if (page != null) {
                     page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
@@ -3818,15 +3960,24 @@ public class Launcher extends Activity
                     itemsAlpha.setDuration(100);
                     itemsAlpha.setInterpolator(decelerateInterpolator);
                     mStateAnimation.play(itemsAlpha);
+
+                    if (drawerScrubber != null) {
+                        drawerScrubber.setAlpha(1f);
+                        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(drawerScrubber,
+                                "alpha", 1f, 0f);
+                        mStateAnimation.play(fadeOut);
+                    }
                 }
 
                 View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
-                pageIndicators.setAlpha(1f);
-                ObjectAnimator indicatorsAlpha =
-                        LauncherAnimUtils.ofFloat(pageIndicators, "alpha", 0f);
-                indicatorsAlpha.setDuration(revealDuration);
-                indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
-                mStateAnimation.play(indicatorsAlpha);
+                if (pageIndicators != null) {
+                    pageIndicators.setAlpha(1f);
+                    ObjectAnimator indicatorsAlpha =
+                            LauncherAnimUtils.ofFloat(pageIndicators, "alpha", 0f);
+                    indicatorsAlpha.setDuration(revealDuration);
+                    indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
+                    mStateAnimation.play(indicatorsAlpha);
+                }
 
                 width = revealView.getMeasuredWidth();
 
@@ -3867,9 +4018,13 @@ public class Launcher extends Activity
                     if (page != null) {
                         page.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
-                    content.setPageBackgroundsVisible(true);
+                    if (content != null) {
+                        content.setPageBackgroundsVisible(true);
+                    } else {
+                        fromView.setBackgroundColor(res.getColor(R.color.app_drawer_background));
+                    }
                     // Unhide side pages
-                    int count = content.getChildCount();
+                    int count = content != null ? content.getChildCount() : 0;
                     for (int i = 0; i < count; i++) {
                         View child = content.getChildAt(i);
                         child.setVisibility(View.VISIBLE);
@@ -3881,7 +4036,9 @@ public class Launcher extends Activity
                         page.setTranslationY(0);
                         page.setAlpha(1);
                     }
-                    content.setCurrentPage(content.getNextPage());
+                    if (content != null) {
+                        content.setCurrentPage(content.getNextPage());
+                    }
 
                     mAppsCustomizeContent.updateCurrentPageScroll();
 
@@ -3925,6 +4082,20 @@ public class Launcher extends Activity
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
         }
+    }
+
+    private void updateStatusBarColor(int color) {
+        updateStatusBarColor(color, 300);
+    }
+
+    private void updateStatusBarColor(int color, int duration) {
+        final Window window = getWindow();
+        ObjectAnimator animator = ObjectAnimator.ofInt(window,
+                "statusBarColor", window.getStatusBarColor(), color);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setDuration(duration);
+        animator.start();
+        window.setNavigationBarColor(color);
     }
 
     @Override
@@ -4362,6 +4533,7 @@ public class Launcher extends Activity
         if (!LauncherAppState.isDisableAllApps() &&
                 addedApps != null && mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(addedApps);
+            mAppDrawerAdapter.addApps(addedApps);
         }
     }
 
@@ -4752,6 +4924,9 @@ public class Launcher extends Activity
                         LauncherModel.getSortedWidgetsAndShortcuts(this));
             }
         } else {
+            if (mAppDrawerAdapter != null) {
+                mAppDrawerAdapter.setApps(apps);
+            }
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setApps(apps);
                 mAppsCustomizeContent.onPackagesUpdated(
@@ -4781,6 +4956,7 @@ public class Launcher extends Activity
         if (!LauncherAppState.isDisableAllApps() &&
                 mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
+            mAppDrawerAdapter.updateApps(apps);
         }
     }
 
@@ -4897,6 +5073,7 @@ public class Launcher extends Activity
         if (!LauncherAppState.isDisableAllApps() &&
                 mAppsCustomizeContent != null) {
             mAppsCustomizeContent.removeApps(appInfos);
+            mAppDrawerAdapter.removeApps(appInfos);
         }
     }
 
@@ -5167,14 +5344,22 @@ public class Launcher extends Activity
         if (mWorkspace != null) mWorkspace.setAlpha(1f);
         if (mHotseat != null) mHotseat.setAlpha(1f);
         if (mPageIndicators != null) mPageIndicators.setAlpha(1f);
-        if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
+        showSearch();
     }
 
     void hideWorkspaceSearchAndHotseat() {
         if (mWorkspace != null) mWorkspace.setAlpha(0f);
         if (mHotseat != null) mHotseat.setAlpha(0f);
         if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
+        hideSearch();
+    }
+
+    void hideSearch() {
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
+    }
+
+    void showSearch() {
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
     }
 
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
