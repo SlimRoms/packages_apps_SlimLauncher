@@ -63,6 +63,12 @@
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
+        <include layout="@layout/app_drawer_container"
+            android:id="@+id/app_drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </com.slim.slimlauncher.DragLayer>
 
     <ViewStub
@@ -73,3 +79,4 @@
         android:layout="@layout/launcher_overlay" />
 
 </com.slim.slimlauncher.LauncherRootView>
+
