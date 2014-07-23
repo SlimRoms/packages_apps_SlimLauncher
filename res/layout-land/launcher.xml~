@@ -40,14 +40,14 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:pageIndicator="@id/page_indicator">
-        </com.slim.slimlauncher.Workspace>
+            android:layout_gravity="center"
+            launcher:defaultScreen="@integer/config_workspaceDefaultScreen" />
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="end" />
 
         <include
             android:id="@+id/search_drop_target_bar"
@@ -57,37 +57,13 @@
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
-        <!-- Keep these behind the workspace so that they are not visible when
-             we go into AllApps -->
-        <include
-            android:id="@+id/page_indicator"
-            layout="@layout/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
-
-        <com.slim.slimlauncher.DrawableStateProxyView
-            android:id="@+id/voice_button_proxy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="top|end"
-            android:clickable="true"
-            android:onClick="onClickVoiceButton"
-            android:importantForAccessibility="no"
-            launcher:sourceViewId="@+id/voice_button" />
-
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
-        <include layout="@layout/app_drawer_container"
-            android:id="@+id/app_drawer_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
+<<<<<<< HEAD
     </com.slim.slimlauncher.DragLayer>
 
     <ViewStub
@@ -98,3 +74,12 @@
         android:layout="@layout/launcher_overlay" />
 
 </com.slim.slimlauncher.LauncherRootView>
+=======
+        <include layout="@layout/app_drawer_container"
+            android:id="@+id/app_drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </com.android.launcher3.DragLayer>
+</FrameLayout>
+>>>>>>> d932452... Trebuchet: Implement new app drawer.

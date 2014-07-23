@@ -41,17 +41,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:pageIndicator="@id/page_indicator">
+            launcher:pageIndicator="@+id/page_indicator">
         </com.slim.slimlauncher.Workspace>
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/search_drop_target_bar"
-            layout="@layout/search_drop_target_bar" />
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
@@ -66,6 +62,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
+        <include
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
+
+        <!-- This is the search bar voice button proxy view.  It allows us to have a larger
+             touch target than the microphone constrained by the search bar bounds. -->
         <com.slim.slimlauncher.DrawableStateProxyView
             android:id="@+id/voice_button_proxy"
             android:layout_width="0dp"
@@ -82,12 +84,6 @@
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
-        <include layout="@layout/app_drawer_container"
-            android:id="@+id/app_drawer_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
     </com.slim.slimlauncher.DragLayer>
 
     <ViewStub
@@ -97,4 +93,14 @@
         android:inflatedId="@+id/launcher_overlay"
         android:layout="@layout/launcher_overlay" />
 
+<<<<<<< HEAD
 </com.slim.slimlauncher.LauncherRootView>
+=======
+        <include layout="@layout/app_drawer_container"
+            android:id="@+id/app_drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </com.android.launcher3.DragLayer>
+</FrameLayout>
+>>>>>>> d932452... Trebuchet: Implement new app drawer.
