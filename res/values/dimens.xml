@@ -112,4 +112,9 @@
 
     <dimen name="shortcut_picker_left_padding">70dip</dimen>
 
+    <dimen name="scrubber_bottom_padding">30dp</dimen>
+
+    <!-- Vertical app drawer padding -->
+    <dimen name="vertical_app_drawer_icon_padding">5px</dimen>
+
 </resources>
