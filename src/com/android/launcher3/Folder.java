@@ -228,7 +228,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     /**
      * Creates a new UserFolder, inflated from R.layout.user_folder.
      *
-     * @param context The application's context.
+     * @param launcher The application's context.
      * @return A new UserFolder.
      */
     @SuppressLint("InflateParams")
