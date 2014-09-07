@@ -208,7 +208,8 @@ public class LauncherAppState {
                 availableWidth, availableHeight);
         return grid;
     }
-    DynamicGrid getDynamicGrid() {
+
+    public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
     }
 

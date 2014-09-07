@@ -166,4 +166,14 @@
     </style>
     <style name="CustomClingText">
     </style>
+
+    <style name="NumberPickerInputText">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textColorHighlight">@android:color/primary_text_light</item>
+        <item name="android:textColorHint">@android:color/primary_text_light</item>
+        <item name="android:textColorLink">@android:color/primary_text_light</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

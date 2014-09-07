@@ -2,5 +2,13 @@
 <resources>
     <string name="google_title">Google</string>
 
+    <!-- Homescreen -->
     <string name="show_search_bar_title">Show search bar</string>
+    <string name="grid_size_title">Grid size</string>
+    <string name="grid_size_summary">Choose the number of rows/columns</string>
+    <string name="homescreen_workspace_rows_title">Rows</string>
+    <string name="homescreen_workspace_columns_title">Columns</string>
+
+    <string name="icon_size_title">Icon size</string>
+
 </resources>

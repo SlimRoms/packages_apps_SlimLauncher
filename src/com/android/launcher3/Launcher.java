@@ -1761,7 +1761,7 @@ public class Launcher extends Activity
                 public void onSharedPreferenceChanged(
                         SharedPreferences sharedPreferences, String key) {
                     if (!isFinishing()) {
-                        Launcher.this.recreate();
+                        finish();
                     }
                 }
             };
