@@ -63,6 +63,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -98,6 +99,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.settings.SettingsActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -429,6 +431,9 @@ public class Launcher extends Activity
 
         setupViews();
         grid.layout(this);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         registerContentObservers();
 
@@ -978,7 +983,7 @@ public class Launcher extends Activity
     }
 
     protected void startSettings() {
-       Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+       Intent i = new Intent(this, SettingsActivity.class);
        startActivity(i);
        if (mWorkspace.isInOverviewMode()) {
            mWorkspace.exitOverviewMode(false);
@@ -1750,9 +1755,23 @@ public class Launcher extends Activity
         }
     }
 
+    private final SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferencesObserver =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(
+                        SharedPreferences sharedPreferences, String key) {
+                    if (!isFinishing()) {
+                        Launcher.this.recreate();
+                    }
+                }
+            };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);

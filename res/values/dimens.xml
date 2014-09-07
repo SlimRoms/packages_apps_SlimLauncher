@@ -32,10 +32,6 @@
     <!-- The offset for the text in the cling -->
     <dimen name="cling_text_block_offset_x">0dp</dimen>
     <dimen name="cling_text_block_offset_y">0dp</dimen>
-    <!-- entries for custom clings, will be set in overlays -->
-    <add-resource type="dimen" name="custom_cling_margin_top" />
-    <add-resource type="dimen" name="custom_cling_margin_right" />
-    <add-resource type="dimen" name="custom_cling_margin_left" />
 
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>

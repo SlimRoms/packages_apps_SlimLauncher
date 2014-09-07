@@ -24,7 +24,7 @@
     <permission
         android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="system|signature" />
+        android:protectionLevel="dangerous" />
     <permission
         android:name="com.android.launcher3.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
@@ -117,6 +117,8 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="com.android.launcher3.settings.SettingsActivity" />
 
         <!-- Debugging tools -->
         <activity

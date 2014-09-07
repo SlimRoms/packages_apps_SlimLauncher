@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -113,6 +114,9 @@ public class LauncherAppState {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
+
+        PreferenceManager.getDefaultSharedPreferences(sContext)
+                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
     }
 
     /**
@@ -123,6 +127,9 @@ public class LauncherAppState {
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
+
+        PreferenceManager.getDefaultSharedPreferences(sContext)
+                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
     }
 
     /**
@@ -135,6 +142,16 @@ public class LauncherAppState {
             // workspace on the next load
             mModel.resetLoadedState(false, true);
             mModel.startLoaderFromBackground();
+        }
+    };
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferencesObserver = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                              String key) {
+                Log.i(TAG, "Preference " + key + " changed - updating DynamicGrid.");
+                mDynamicGrid.getDeviceProfile().updateFromPreferences(sContext);
         }
     };
 
