@@ -17,19 +17,14 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.*;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.Display;
 
 import java.lang.ref.WeakReference;
 
@@ -118,9 +113,6 @@ public class LauncherAppState {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
-
-        PreferenceManager.getDefaultSharedPreferences(sContext)
-                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
     }
 
     /**
@@ -128,8 +120,6 @@ public class LauncherAppState {
      */
     public void onTerminate() {
         sContext.unregisterReceiver(mModel);
-        PreferenceManager.getDefaultSharedPreferences(sContext)
-                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
@@ -145,20 +135,6 @@ public class LauncherAppState {
             // workspace on the next load
             mModel.resetLoadedState(false, true);
             mModel.startLoaderFromBackground();
-        }
-    };
-
-    private final OnSharedPreferenceChangeListener mSharedPreferencesObserver = new OnSharedPreferenceChangeListener() {
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                String key) {
-
-            if (LauncherPreferences.isLauncherPreference(key)) {
-                Log.i(TAG, "Preference " + key + " changed - updating DynamicGrid.");
-                mDynamicGrid.getDeviceProfile().updateFromPreferences(
-                        PreferenceManager.getDefaultSharedPreferences(sContext));
-            }
         }
     };
 
@@ -213,8 +189,6 @@ public class LauncherAppState {
         Utilities.setIconSize(grid.iconSizePx);
         grid.updateFromConfiguration(context.getResources(), width, height,
                 availableWidth, availableHeight);
-
-        grid.updateFromPreferences(PreferenceManager.getDefaultSharedPreferences(context));
         return grid;
     }
     DynamicGrid getDynamicGrid() {
