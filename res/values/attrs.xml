@@ -158,6 +158,11 @@
     <declare-styleable name="CustomClingText">
     </declare-styleable>
 
+    <declare-styleable name="NumberPickerPreference">
+        <attr name="maxExternal" format="string" />
+        <attr name="minExternal" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="DoubleNumberPickerPreference">
         <attr name="defaultValue1" format="integer" />
         <attr name="defaultValue2" format="integer" />
@@ -174,13 +179,13 @@
     </declare-styleable>
 
     <declare-styleable name="SeekBarDialogPreference">
-        <attr name="max" format="integer"/>
-        <attr name="min" format="integer"/>
         <attr name="prefix" format="string" />
         <attr name="suffix" format="string" />
     </declare-styleable>
 
     <declare-styleable name="Preference">
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer" />
         <attr name="defaultValue" format="string|boolean|integer|reference|float" />
     </declare-styleable>
 

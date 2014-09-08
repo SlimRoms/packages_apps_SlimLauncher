@@ -1,5 +1,6 @@
 package com.android.launcher3.settings;
 
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
@@ -23,7 +24,8 @@ public class SettingsFragment extends PreferenceFragment {
 
         DynamicGrid grid = LauncherAppState.getInstance().getDynamicGrid();
 
-        DoubleNumberPickerPreference dnpp = (DoubleNumberPickerPreference) findPreference(SettingsProvider.KEY_HOMESCREEN_GRID);
+        DoubleNumberPickerPreference dnpp = (DoubleNumberPickerPreference)
+                findPreference(SettingsProvider.KEY_HOMESCREEN_GRID);
 
 
         if (grid != null) {
@@ -45,6 +47,11 @@ public class SettingsFragment extends PreferenceFragment {
                     SettingsProvider.KEY_ICON_SIZE, 0) < 1) {
                 SettingsProvider.putInt(getActivity(),
                         SettingsProvider.KEY_ICON_SIZE, (int) prof.iconSize);
+            }
+            if (SettingsProvider.getInt(getActivity(),
+                    SettingsProvider.KEY_DOCK_ICONS, 0) < 1) {
+                SettingsProvider.putInt(getActivity(),
+                        SettingsProvider.KEY_DOCK_ICONS, (int) prof.numHotseatIcons);
             }
         }
 

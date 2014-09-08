@@ -15,6 +15,7 @@ public class SettingsProvider {
     public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
     public static final String KEY_ICON_SIZE = "icon_size";
+    public static final String KEY_DOCK_ICONS = "dock_icon_count";
 
     public static SharedPreferences get(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);

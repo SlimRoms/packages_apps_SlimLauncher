@@ -34,7 +34,7 @@ public class DeviceProfile {
     public float iconSize;
     private int iconSizeOriginal;
     float iconTextSize;
-    float numHotseatIcons;
+    public float numHotseatIcons;
     float hotseatIconSize;
 
     boolean isLandscape;
@@ -257,6 +257,12 @@ public class DeviceProfile {
             iconSizePx = tempSize;
             //hotseatIconSize = tempSize;
             hotseatIconSizePx = iconSizePx;
+        }
+
+        int prefNumHotseatIcons = SettingsProvider.getInt(context, SettingsProvider.KEY_DOCK_ICONS, 0);
+        if (prefNumHotseatIcons > 0) {
+            numHotseatIcons = prefNumHotseatIcons;
+            hotseatAllAppsRank = (int) (numHotseatIcons / 2);
         }
     }
 

@@ -3,6 +3,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory android:title="@string/homescreen_title" />
+
     <CheckBoxPreference
         android:key="show_search_bar"
         android:title="@string/show_search_bar_title"
@@ -18,6 +20,17 @@
         launcher:min2="1"
         launcher:pickerTitle1="@string/homescreen_workspace_rows_title"
         launcher:pickerTitle2="@string/homescreen_workspace_columns_title" />
+
+    <PreferenceCategory android:title="@string/dock_title" />
+
+    <com.android.launcher3.preference.NumberPickerPreference
+        android:key="dock_icon_count"
+        android:title="@string/dock_icons_title"
+        android:summary="@string/dock_icons_summary"
+        launcher:min="1"
+        launcher:max="9" />
+
+    <PreferenceCategory android:title="@string/general_title" />
 
     <com.android.launcher3.preference.SeekBarDialogPreference
         android:key="icon_size"
