@@ -22,7 +22,7 @@ public class SeekBarDialogPreference extends DialogPreference implements SeekBar
     public SeekBarDialogPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray prefType = context.obtainStyledAttributes(attrs,
-                R.styleable.DialogPreference, 0, 0);
+                R.styleable.Preference, 0, 0);
         TypedArray seekBarType = context.obtainStyledAttributes(attrs,
                 R.styleable.SeekBarDialogPreference, 0, 0);
 

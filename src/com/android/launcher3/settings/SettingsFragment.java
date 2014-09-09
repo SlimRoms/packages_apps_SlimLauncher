@@ -44,11 +44,6 @@ public class SettingsFragment extends PreferenceFragment {
                 dnpp.setDefault2((int) prof.numRows);
             }
             if (SettingsProvider.getInt(getActivity(),
-                    SettingsProvider.KEY_ICON_SIZE, 0) < 1) {
-                SettingsProvider.putInt(getActivity(),
-                        SettingsProvider.KEY_ICON_SIZE, (int) prof.iconSize);
-            }
-            if (SettingsProvider.getInt(getActivity(),
                     SettingsProvider.KEY_DOCK_ICONS, 0) < 1) {
                 SettingsProvider.putInt(getActivity(),
                         SettingsProvider.KEY_DOCK_ICONS, (int) prof.numHotseatIcons);

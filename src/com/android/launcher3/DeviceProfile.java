@@ -15,10 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.AppsCustomizePagedView;
-import com.android.launcher3.CellLayout;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
@@ -130,7 +126,7 @@ public class DeviceProfile {
         }
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         iconSizeOriginal = DynamicGrid.pxFromDp(iconSize, dm);
-        iconSizePx = (int) iconSizeOriginal;
+        iconSizePx = iconSizeOriginal;
 
         // Interpolate the icon text size
         points.clear();
@@ -227,9 +223,6 @@ public class DeviceProfile {
     }
 
     void updateFromPreferences(Context context) {
-
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-
         showSearchBar = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
 
@@ -251,11 +244,8 @@ public class DeviceProfile {
 
         int prefIconSize = SettingsProvider.getInt(context, SettingsProvider.KEY_ICON_SIZE, 0);
         if (prefIconSize > 0) {
-            int tempSize = (int) ((double) prefIconSize / 100.0 * prefIconSize);
-            Log.d("ICON_SIZE", "size=" + tempSize + " : original size=" + iconSizeOriginal + " : prefIconSize=" + prefIconSize);
-            //iconSize = tempSize;
+            int tempSize = (int) ((double) prefIconSize / 100.0 * iconSizeOriginal);
             iconSizePx = tempSize;
-            //hotseatIconSize = tempSize;
             hotseatIconSizePx = iconSizePx;
         }
 
@@ -384,7 +374,6 @@ public class DeviceProfile {
 
     public void layout(Launcher launcher) {
         FrameLayout.LayoutParams lp;
-        Resources res = launcher.getResources();
         boolean hasVerticalBarLayout = isVerticalBarLayout();
 
         // Layout the search bar space

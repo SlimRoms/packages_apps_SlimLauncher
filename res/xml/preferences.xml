@@ -34,6 +34,9 @@
 
     <com.android.launcher3.preference.SeekBarDialogPreference
         android:key="icon_size"
-        android:title="@string/icon_size_title" />
+        android:title="@string/icon_size_title"
+        launcher:max="150"
+        launcher:min="20"
+        launcher:defaultValue="100"/>
 
 </PreferenceScreen>
