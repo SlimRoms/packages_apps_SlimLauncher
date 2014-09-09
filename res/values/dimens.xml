@@ -37,6 +37,7 @@
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
     <dimen name="workspace_spring_loaded_page_spacing">15dp</dimen>
+    <dimen name="overview_panel_top_padding">20dp</dimen>
     <dimen name="overview_panel_bottom_padding">50dp</dimen>
     <dimen name="overview_panel_buttonSpacing">60dp</dimen>
     <dimen name="overview_mode_page_offset">130dp</dimen>
@@ -93,4 +94,7 @@
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_name_padding">10dp</dimen>
+
+    <dimen name="shortcut_picker_left_padding">70dip</dimen>
+
 </resources>

@@ -14,9 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.PagedViewIcon
+<com.slim.slimlauncher.PagedViewIcon
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.slim.slimlauncher"
 
     style="@style/WorkspaceIcon.AppsCustomize"
 

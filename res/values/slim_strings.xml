@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="slim_application_name">SlimLauncher</string>
+
     <string name="google_title">Google</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Default Screen</string>
+
+    <string name="launcher_settings_title">Launcher settings</string>
+    <string name="error_message_title">Error</string>
+
+    <string name="scroll_wallpaper_title">Scroll wallpaper</string>
+    <string name="scroll_wallpaper_summary">Pan wallpaper while scrolling homescreens</string>
 
     <!-- Homescreen -->
     <string name="homescreen_title">Homescreen</string>
     <string name="general_title">General</string>
     <string name="dock_title">Dock</string>
+    <string name="drawer_title">Drawer</string>
 
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
@@ -17,5 +30,22 @@
     <string name="homescreen_workspace_columns_title">Columns</string>
 
     <string name="icon_size_title">Icon size</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gestures</string>
+    <string name="gestures_summary">Assign actions to homescreen gestures</string>
+    <string name="gesture_default">nothing</string>
+    <string name="gestures_up_gesture_title">Swipe up</string>
+    <string name="gestures_down_gesture_title">Swipe down</string>
+    <string name="gestures_pinch_gesture_title">Pinch</string>
+    <string name="gestures_spread_gesture_title">Spread</string>
+    <string name="gestures_double_tap_gesture_title">Double tap</string>ing>
+
+    <string name="profile_applist_title">Apps</string>
+    <string name="profile_choose_app">Choose app</string>
+    <string name="profiles_add">Add</string>
+    <string name="picker_activities">Activities</string>
+    <string name="select_custom_app_title">Select custom app</string>
+    <string name="select_custom_activity_title">Select custom activity</string>
 
 </resources>
