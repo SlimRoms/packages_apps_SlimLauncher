@@ -24,9 +24,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -158,6 +162,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                 folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
+        int color = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_BACKGROUND_COLOR, 0xffffffff);
+        ShapeDrawable sd = new ShapeDrawable(new RectShape());
+        sd.getPaint().setColor(color);
+        sd.getPaint().setStyle(Paint.Style.FILL_AND_STROKE);
+        sd.getPaint().setPathEffect(new CornerPathEffect(15));
+        folder.setBackground(sd);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;

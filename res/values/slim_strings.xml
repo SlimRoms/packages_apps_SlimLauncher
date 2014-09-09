@@ -5,6 +5,10 @@
 
     <string name="google_title">Google</string>
 
+    <string name="default_string">Default</string>
+    <string name="reset_string">Reset</string>
+    <string name="set_string">Set</string>
+
     <!-- Text for default screen button -->
     <string name="default_screen_button_text">Default Screen</string>
 
@@ -52,5 +56,20 @@
     <string name="picker_activities">Activities</string>
     <string name="select_custom_app_title">Select custom app</string>
     <string name="select_custom_activity_title">Select custom activity</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Color Picker</string>
+    <string name="press_color_to_apply">Press on color below to apply</string>
+    <string name="arrow_right">→</string>
+    <string name="arrow_down">↓</string>
+    <string name="hex">Hex:</string>
+    <string name="hex_hint">#ff000000</string>
+    <string name="set">Set</string>
+
+    <!-- Folder -->
+    <string name="folder_title">Folder</string>
+    <string name="folder_background_color_title">Background Color</string>
+    <string name="hide_folder_name_title">Hide folder name</string>
+    <string name="hide_folder_name_summary">Do not show folder name when folder is open</string>
 
 </resources>

@@ -67,6 +67,19 @@
         android:summary="@string/hide_icon_labels_drawer_summary"
         android:defaultValue="false" />
 
+    <PreferenceCategory android:title="@string/folder_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="folder_background_color"
+        android:title="@string/folder_background_color_title"
+        android:defaultValue="0xffffffff" />
+
+    <CheckBoxPreference
+        android:key="hide_folder_name"
+        android:title="@string/hide_folder_name_title"
+        android:summary="@string/hide_folder_name_summary"
+        android:defaultValue="false" />
+
     <PreferenceCategory android:title="@string/general_title" />
 
     <com.slim.slimlauncher.preference.SeekBarDialogPreference

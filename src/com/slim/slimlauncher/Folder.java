@@ -53,6 +53,7 @@ import android.widget.TextView;
 
 import com.slim.slimlauncher.FolderInfo.FolderListener;
 import com.slim.slimlauncher.R;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -196,6 +197,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mAutoScrollHelper = new FolderAutoScrollHelper(mScrollView);
+
+        boolean hideFolderName = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.HIDE_FOLDER_NAME, false);
+        if (hideFolderName) {
+            mFolderName.setVisibility(View.GONE);
+            mFolderNameHeight = 0;
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {

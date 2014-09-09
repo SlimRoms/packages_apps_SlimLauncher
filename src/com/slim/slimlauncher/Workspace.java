@@ -2711,7 +2711,9 @@ public class Workspace extends SmoothPagedView
             return false;
         }
 
-        boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
+        ItemInfo dropOverViewInfo = (ItemInfo) dropOverView.getTag();
+        boolean aboveShortcut = (dropOverViewInfo.itemType == Favorites.ITEM_TYPE_APPLICATION
+                || dropOverViewInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT);
         boolean willBecomeShortcut =
                 (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
@@ -2757,9 +2759,7 @@ public class Workspace extends SmoothPagedView
         mCreateUserFolderOnDrop = false;
         final long screenId = (targetCell == null) ? mDragInfo.screenId : getIdForScreen(target);
 
-        ItemInfo dropOverViewInfo = (ItemInfo) v.getTag();
-        boolean aboveShortcut = (dropOverViewInfo.itemType == Favorites.ITEM_TYPE_APPLICATION
-                || dropOverViewInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT);
+        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
         boolean willBecomeShortcut = (newView.getTag() instanceof ShortcutInfo);
 
         if (aboveShortcut && willBecomeShortcut) {

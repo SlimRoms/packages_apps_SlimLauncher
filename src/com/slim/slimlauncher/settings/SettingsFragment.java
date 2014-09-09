@@ -1,8 +1,6 @@
 package com.slim.slimlauncher.settings;
 
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.Menu;
@@ -16,10 +14,12 @@ import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.preference.DoubleNumberPickerPreference;
 import com.slim.slimlauncher.preference.NumberPickerPreference;
 
-/**
- * Created by gmillz on 9/7/14.
- */
-public class SettingsFragment extends PreferenceFragment {
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
+public class SettingsFragment extends PreferenceFragment
+        implements Preference.OnPreferenceChangeListener {
+
+    private ColorPickerPreference mFolderBackground;
 
     private NumberPickerPreference mDockIcons;
     private DoubleNumberPickerPreference mHomescreenGrid;
@@ -32,6 +32,24 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+        int intColor;
+        String hexColor;
+
+        mFolderBackground = (ColorPickerPreference)
+                findPreference(SettingsProvider.FOLDER_BACKGROUND_COLOR);
+        mFolderBackground.setAlphaSliderEnabled(true);
+        mFolderBackground.setOnPreferenceChangeListener(this);
+        mFolderBackground.setDefaultColor(0xffffffff);
+        intColor = SettingsProvider.getInt(getActivity(),
+                SettingsProvider.FOLDER_BACKGROUND_COLOR, -2);
+        if (intColor == -2) {
+            intColor = 0xffffffff;
+            mFolderBackground.setSummary(getResources().getString(R.string.default_string));
+        } else {
+            hexColor = String.format("#%08x", (0xffffffff & intColor));
+            mFolderBackground.setSummary(hexColor);
+        }
+        mFolderBackground.setNewPreviewColor(intColor);
 
         DynamicGrid grid = LauncherAppState.getInstance().getDynamicGrid();
 
@@ -110,5 +128,19 @@ public class SettingsFragment extends PreferenceFragment {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference == mFolderBackground) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            SettingsProvider.putInt(getActivity(),
+                    SettingsProvider.FOLDER_BACKGROUND_COLOR, intHex);
+            return true;
+        }
+        return false;
     }
 }

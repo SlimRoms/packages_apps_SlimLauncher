@@ -105,6 +105,7 @@ public class DeviceProfile {
         ComponentName cn = new ComponentName(context.getPackageName(),
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
+        folderEdgeMarginPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         edgeMarginPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         folderEdgeMarginPx = edgeMarginPx;
         desiredWorkspaceLeftRightMarginPx = 2 * edgeMarginPx;
@@ -266,7 +267,7 @@ public class DeviceProfile {
                         context.getResources().getDimensionPixelSize(
                                 R.dimen.apps_customize_page_indicator_offset);
                 allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
-                (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+                        (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
             } else {
                 allAppsNumRows = (int) numRows + 1;
             }
@@ -282,7 +283,7 @@ public class DeviceProfile {
             Rect padding = getWorkspacePadding(isLandscape ?
                     CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
             allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
-            (iconSizePx + 2 * edgeMarginPx);
+                    (iconSizePx + 2 * edgeMarginPx);
             SettingsProvider.putCellCountX(context,
                     SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
         }

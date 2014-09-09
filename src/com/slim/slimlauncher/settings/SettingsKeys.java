@@ -22,4 +22,8 @@ public interface SettingsKeys {
     public static final String PINCH_GESTURE_ACTION = "pinch_gesture_action";
     public static final String SPREAD_GESTURE_ACTION = "spread_gesture_action";
     public static final String DOUBLE_TAP_GESTURE_ACTION = "double_tap_gesture_action";
+
+    // Folder
+    public static final String FOLDER_BACKGROUND_COLOR = "folder_background_color";
+    public static final String HIDE_FOLDER_NAME = "hide_folder_name";
 }
