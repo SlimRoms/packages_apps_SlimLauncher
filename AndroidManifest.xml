@@ -117,7 +117,8 @@
             </intent-filter>
         </activity>
         
-        <activity android:name="com.slim.slimlauncher.settings.SettingsActivity" />
+        <activity android:name="com.slim.slimlauncher.settings.SettingsActivity"
+            android:theme="@style/SettingsTheme" />
 
         <!-- Debugging tools -->
         <activity

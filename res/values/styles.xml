@@ -176,4 +176,6 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="SettingsTheme" parent="android:Theme.Holo.Light" />
+
 </resources>
