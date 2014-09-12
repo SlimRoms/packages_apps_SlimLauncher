@@ -407,6 +407,12 @@ public class Workspace extends SmoothPagedView
                                     float xVelocity, float yVelocity) {
                 if (!mIsDragOccuring && mTouchState !=
                         TOUCH_STATE_SCROLLING && !mMultitouchGestureDetected) {
+                    if (isInOverviewMode() &&
+                            GestureHelper.isSwipeUP(finish.getRawY(), start.getRawY())) {
+                        removeScreen(getPageNearestToCenterOfScreen());
+                        return true;
+                    }
+
                     switch(GestureHelper.identifyGesture(finish.getRawX(), finish.getRawY(),
                             start.getRawX(), start.getRawY())) {
                         case UP_LEFT:
@@ -449,6 +455,24 @@ public class Workspace extends SmoothPagedView
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
         setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+    }
+
+    private void removeScreen(int screen) {
+        long screenId = mScreenOrder.get(screen);
+
+        if (screenId == mDefaultScreenId) {
+            mDefaultScreenId = mScreenOrder.get(mScreenOrder.size() - 1 / 2);
+            updateDefaultScreenButton();
+            SettingsProvider.putLong(mLauncher,
+                    SettingsProvider.DEFAULT_HOMESCREEN, mDefaultScreenId);
+        }
+
+        CellLayout cl = mWorkspaceScreens.get(screenId);
+        mWorkspaceScreens.remove(screenId);
+        mScreenOrder.remove(screen);
+        setCurrentPage(mCurrentPage - 1);
+        removeView(cl);
+        mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
     }
 
     @Override
