@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.MenuItem;
 
 import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.util.AppHelper;
@@ -31,6 +32,8 @@ public class GestureFragment extends PreferenceFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mContext = getActivity();
 
@@ -67,6 +70,8 @@ public class GestureFragment extends PreferenceFragment
         });
 
         updatePrefs();
+
+        setHasOptionsMenu(true);
     }
 
     private void updatePrefs() {
@@ -115,6 +120,18 @@ public class GestureFragment extends PreferenceFragment
         if (requestCode != Activity.RESULT_CANCELED
                 && resultCode != Activity.RESULT_CANCELED) {
             mPicker.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getFragmentManager().beginTransaction().remove(this).commit();
+                getFragmentManager().popBackStack();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 }

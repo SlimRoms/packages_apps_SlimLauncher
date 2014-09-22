@@ -992,6 +992,14 @@ public class Launcher extends Activity
        }
     }
 
+    protected void startSystemSettings() {
+        Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        startActivity(i);
+        if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.exitOverviewMode(false);
+        }
+    }
+
     public interface QSBScroller {
         public void setScrollY(int scrollY);
     }
@@ -1189,6 +1197,13 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 startSettings();
+            }
+        });
+        settingsButton.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                startSystemSettings();
+                return true;
             }
         });
         settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());

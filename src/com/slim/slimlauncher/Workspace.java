@@ -4655,21 +4655,9 @@ public class Workspace extends SmoothPagedView
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private void expandStatusBar() {
-        try {
-            Object service  = getContext().getSystemService("statusbar");
-            Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-            Method expand = statusbarManager.getMethod("expandNotificationsPanel");
-            expand.invoke(service);
-        } catch(Exception e) {}
-    }
-
     private void performGestureAction(String gestureAction, String gesture) {
         Log.d(TAG, "gestureAction=" + gestureAction + " : gesture=" + gesture);
-        if (gestureAction.equals("expand_status_bar")) {
-            Log.d(TAG, "Expanding status bar");
-            expandStatusBar();
-        } else if (gestureAction.equals("default_homescreen")) {
+        if (gestureAction.equals("default_homescreen")) {
             setCurrentPage(getPageIndexForScreenId(mDefaultScreenId));
         } else if (gestureAction.equals("open_app_drawer")) {
             mLauncher.showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
@@ -4689,7 +4677,7 @@ public class Workspace extends SmoothPagedView
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mLauncher.startActivity(intent);
                 } catch (URISyntaxException e) {
-                    Log.e(TAG, "Unable to start hotword action " + gestureAction, e);
+                    Log.e(TAG, "Unable to start gesture action " + gestureAction, e);
                 }
             }
         }

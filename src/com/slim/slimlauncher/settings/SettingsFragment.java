@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.slim.slimlauncher.DeviceProfile;
 import com.slim.slimlauncher.DynamicGrid;
@@ -28,6 +31,8 @@ public class SettingsFragment extends PreferenceFragment {
 
         addPreferencesFromResource(R.xml.preferences);
 
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+
         DynamicGrid grid = LauncherAppState.getInstance().getDynamicGrid();
 
         mDockIcons = (NumberPickerPreference)
@@ -42,7 +47,8 @@ public class SettingsFragment extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 getFragmentManager().beginTransaction().replace(
-                        android.R.id.content, new GestureFragment()).commit();
+                        android.R.id.content, new GestureFragment())
+                        .addToBackStack("gesture").commit();
                 return true;
             }
         });
@@ -85,5 +91,24 @@ public class SettingsFragment extends PreferenceFragment {
 
         }
 
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 }

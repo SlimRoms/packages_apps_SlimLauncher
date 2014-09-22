@@ -57,6 +57,7 @@ public class DeviceProfile {
     int hotseatCellWidthPx;
     int hotseatCellHeightPx;
     int hotseatIconSizePx;
+    int originalHotseatIconSizePx;
     int hotseatBarHeightPx;
     int hotseatAllAppsRank;
     public int allAppsNumRows;
@@ -150,7 +151,8 @@ public class DeviceProfile {
         }
         // Hotseat
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-        hotseatIconSizePx = DynamicGrid.pxFromDp(hotseatIconSize, dm);
+        originalHotseatIconSizePx = DynamicGrid.pxFromDp(hotseatIconSize, dm);
+        hotseatIconSizePx = originalHotseatIconSizePx;
         hotseatAllAppsRank = (int) (numColumns / 2);
 
         // Calculate other vars based on Configuration
@@ -235,7 +237,7 @@ public class DeviceProfile {
         int prefIconSize = SettingsProvider.getInt(context, SettingsProvider.KEY_ICON_SIZE, 0);
         if (prefIconSize > 0) {
             iconSizePx = (int) ((double) prefIconSize / 100.0 * iconSizeOriginal);
-            hotseatIconSizePx = iconSizePx;
+            hotseatIconSizePx = (int) ((double) prefIconSize / 100.0 * originalHotseatIconSizePx);
             folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
             Paint textPaint = new Paint();
             textPaint.setTextSize(iconTextSizePx);
