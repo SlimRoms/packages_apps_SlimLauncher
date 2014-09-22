@@ -9,14 +9,12 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.slim.slimlauncher.settings.SettingsProvider;
-import com.slim.slimlauncher.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +39,7 @@ public class DeviceProfile {
 
     int desiredWorkspaceLeftRightMarginPx;
     int edgeMarginPx;
+    int folderEdgeMarginPx;
     Rect defaultWidgetPadding;
 
     int widthPx;
@@ -60,8 +59,8 @@ public class DeviceProfile {
     int hotseatIconSizePx;
     int hotseatBarHeightPx;
     int hotseatAllAppsRank;
-    int allAppsNumRows;
-    int allAppsNumCols;
+    public int allAppsNumRows;
+    public int allAppsNumCols;
     int searchBarSpaceWidthPx;
     int searchBarSpaceMaxWidthPx;
     int searchBarSpaceHeightPx;
@@ -106,6 +105,7 @@ public class DeviceProfile {
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+        folderEdgeMarginPx = edgeMarginPx;
         desiredWorkspaceLeftRightMarginPx = 2 * edgeMarginPx;
         pageIndicatorHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
 
@@ -208,22 +208,9 @@ public class DeviceProfile {
         heightPx = hPx;
         availableWidthPx = awPx;
         availableHeightPx = ahPx;
-
-        Rect padding = getWorkspacePadding(isLandscape ?
-                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
-        int pageIndicatorOffset =
-                resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
-        if (isLandscape) {
-            allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
-                    (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
-        } else {
-            allAppsNumRows = (int) numRows + 1;
-        }
-        allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
-                (iconSizePx + 2 * edgeMarginPx);
     }
 
-    void updateFromPreferences(Context context) {
+    public void updateFromPreferences(Context context) {
         showSearchBar = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
 
@@ -233,27 +220,69 @@ public class DeviceProfile {
             searchBarSpaceHeightPx = 2 * edgeMarginPx;
         }
 
-        int prefNumRows = SettingsProvider.getCellCountY(context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
+        int prefNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
         if (prefNumRows > 0) {
             numRows = prefNumRows;
         }
 
-        int prefNumColumns = SettingsProvider.getCellCountX(context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
+        int prefNumColumns = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
         if (prefNumColumns > 0) {
             numColumns = prefNumColumns;
         }
 
         int prefIconSize = SettingsProvider.getInt(context, SettingsProvider.KEY_ICON_SIZE, 0);
         if (prefIconSize > 0) {
-            int tempSize = (int) ((double) prefIconSize / 100.0 * iconSizeOriginal);
-            iconSizePx = tempSize;
+            iconSizePx = (int) ((double) prefIconSize / 100.0 * iconSizeOriginal);
             hotseatIconSizePx = iconSizePx;
+            folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+            Paint textPaint = new Paint();
+            textPaint.setTextSize(iconTextSizePx);
+
+            Paint.FontMetrics fm = textPaint.getFontMetrics();
+            cellWidthPx = iconSizePx;
+            cellHeightPx = iconSizePx + (int) Math.ceil(fm.bottom - fm.top);
+            folderCellWidthPx = cellWidthPx + 3 * edgeMarginPx;
+            folderCellHeightPx = cellHeightPx + (int) ((3f/2f) * edgeMarginPx);
         }
 
-        int prefNumHotseatIcons = SettingsProvider.getInt(context, SettingsProvider.KEY_DOCK_ICONS, 0);
+        int prefNumHotseatIcons = SettingsProvider.getInt(
+                context, SettingsProvider.KEY_DOCK_ICONS, 0);
         if (prefNumHotseatIcons > 0) {
             numHotseatIcons = prefNumHotseatIcons;
             hotseatAllAppsRank = (int) (numHotseatIcons / 2);
+        }
+
+        int prefAllAppNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumRows > 0) {
+            allAppsNumRows = prefAllAppNumRows;
+        } else {
+            if (isLandscape) {
+                int pageIndicatorOffset =
+                        context.getResources().getDimensionPixelSize(
+                                R.dimen.apps_customize_page_indicator_offset);
+                allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+            } else {
+                allAppsNumRows = (int) numRows + 1;
+            }
+            SettingsProvider.putCellCountY(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumRows);
+        }
+
+        int prefAllAppNumCols = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumCols > 0) {
+            allAppsNumCols = prefAllAppNumCols;
+        } else {
+            Rect padding = getWorkspacePadding(isLandscape ?
+                    CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+            allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
+            (iconSizePx + 2 * edgeMarginPx);
+            SettingsProvider.putCellCountX(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
         }
     }
 

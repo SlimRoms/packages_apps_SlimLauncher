@@ -60,6 +60,10 @@ public class NumberPickerPreference extends DialogPreference {
         }
     }
 
+    public void setDefaultValue(int defaultValue) {
+        mDefault = defaultValue;
+    }
+
     @Override
     protected View onCreateDialogView() {
         int max = mMax;

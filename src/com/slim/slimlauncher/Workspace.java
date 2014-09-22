@@ -55,10 +55,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -66,9 +63,9 @@ import android.widget.TextView;
 import com.slim.slimlauncher.FolderIcon.FolderRingAnimator;
 import com.slim.slimlauncher.Launcher.CustomContentCallbacks;
 import com.slim.slimlauncher.LauncherSettings.Favorites;
+import com.slim.slimlauncher.backup.BackupProtos;
 import com.slim.slimlauncher.settings.SettingsActivity;
 import com.slim.slimlauncher.settings.SettingsProvider;
-import com.slim.slimlauncher.R;
 
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
@@ -2737,7 +2734,9 @@ public class Workspace extends SmoothPagedView
         mCreateUserFolderOnDrop = false;
         final long screenId = (targetCell == null) ? mDragInfo.screenId : getIdForScreen(target);
 
-        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
+        ItemInfo dropOverViewInfo = (ItemInfo) v.getTag();
+        boolean aboveShortcut = (dropOverViewInfo.itemType == Favorites.ITEM_TYPE_APPLICATION
+                || dropOverViewInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT);
         boolean willBecomeShortcut = (newView.getTag() instanceof ShortcutInfo);
 
         if (aboveShortcut && willBecomeShortcut) {

@@ -50,7 +50,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.slim.slimlauncher.DropTarget.DragObject;
-import com.slim.slimlauncher.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
