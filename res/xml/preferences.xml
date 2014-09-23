@@ -27,6 +27,12 @@
         launcher:pickerTitle1="@string/homescreen_workspace_rows_title"
         launcher:pickerTitle2="@string/homescreen_workspace_columns_title" />
 
+    <CheckBoxPreference
+        android:key="homescreen_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_homescreen_summary"
+        android:defaultValue="false" />
+
     <PreferenceCategory android:title="@string/dock_title" />
 
     <com.slim.slimlauncher.preference.NumberPickerPreference
@@ -35,6 +41,12 @@
         android:summary="@string/dock_icons_summary"
         launcher:min="1"
         launcher:max="7" />
+
+    <CheckBoxPreference
+        android:key="dock_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_dock_summary"
+        android:defaultValue="true" />
 
     <PreferenceCategory android:title="@string/drawer_title" />
 
@@ -48,6 +60,12 @@
         launcher:min2="1"
         launcher:pickerTitle1="@string/homescreen_workspace_rows_title"
         launcher:pickerTitle2="@string/homescreen_workspace_columns_title" />
+
+    <CheckBoxPreference
+        android:key="drawer_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_drawer_summary"
+        android:defaultValue="false" />
 
     <PreferenceCategory android:title="@string/general_title" />
 

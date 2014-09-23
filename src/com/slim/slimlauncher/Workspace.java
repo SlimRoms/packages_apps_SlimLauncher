@@ -241,6 +241,8 @@ public class Workspace extends SmoothPagedView
     private Point mDisplaySize = new Point();
     private int mCameraDistance;
 
+    private boolean mHideIconLabels;
+
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
     private static final int REORDER_TIMEOUT = 250;
@@ -333,6 +335,8 @@ public class Workspace extends SmoothPagedView
 
         mScrollWallpaper = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_SCROLL_WALLPAPER, true);
+        mHideIconLabels = SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
@@ -934,9 +938,12 @@ public class Workspace extends SmoothPagedView
             layout = mLauncher.getHotseat().getLayout();
             child.setOnKeyListener(null);
 
+            boolean dockHideLabels = SettingsProvider.getBoolean(mLauncher,
+                    SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
+
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(false);
+                ((FolderIcon) child).setTextVisible(!dockHideLabels);
             }
 
             if (computeXYFromRank) {
@@ -948,7 +955,7 @@ public class Workspace extends SmoothPagedView
         } else {
             // Show folder title if not in the hotseat
             if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(true);
+                ((FolderIcon) child).setTextVisible(!mHideIconLabels);
             }
             layout = getScreenWithId(screenId);
             child.setOnKeyListener(new IconKeyEventListener());
@@ -3738,6 +3745,7 @@ public class Workspace extends SmoothPagedView
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
                         (FolderInfo) info, mIconCache);
+                ((FolderIcon) view).setTextVisible(!mHideIconLabels);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);

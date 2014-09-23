@@ -20,6 +20,11 @@
     <string name="dock_title">Dock</string>
     <string name="drawer_title">Drawer</string>
 
+    <string name="hide_icon_labels_title">Hide icon labels</string>
+    <string name="hide_icon_labels_drawer_summary">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_homescreen_summary">Hide icon labels on homescreen</string>
+    <string name="hide_icon_labels_dock_summary">Hide icon labels in dock</string>
+
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
 

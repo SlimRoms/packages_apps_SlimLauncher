@@ -1,17 +1,19 @@
 package com.slim.slimlauncher.settings;
 
-/**
- * Created by gmillz on 9/8/14.
- */
 public interface SettingsKeys {
 
     public static final String DEFAULT_HOMESCREEN = "default_homescreen";
 
     public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
+    public static final String KEY_HOMESCREEN_HIDE_LABELS = "homescreen_hide_icon_labels";
     public static final String KEY_DRAWER_GRID = "drawer_grid";
+    public static final String KEY_DRAWER_HIDE_LABELS = "drawer_hide_icon_labels";
     public static final String KEY_ICON_SIZE = "icon_size";
     public static final String KEY_DOCK_ICONS = "dock_icon_count";
+
+    public static final String KEY_DOCK_HIDE_LABELS = "dock_hide_icon_labels";
+
     public static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
 
     // Gestures

@@ -101,6 +101,7 @@ import android.widget.Toast;
 import com.slim.slimlauncher.DropTarget.DragObject;
 import com.slim.slimlauncher.settings.SettingsActivity;
 import com.slim.slimlauncher.R;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -247,6 +248,8 @@ public class Launcher extends Activity
     private boolean mAutoAdvanceRunning = false;
     private View mQsbBar;
 
+    private boolean mHideHomescreenIconLabels;
+
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
@@ -384,6 +387,9 @@ public class Launcher extends Activity
 
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
+
+        mHideHomescreenIconLabels = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
 
         // Determine the dynamic grid properties
         Point smallestSize = new Point();
@@ -1281,6 +1287,7 @@ public class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
+        favorite.setTextVisibility(!mHideHomescreenIconLabels);
         favorite.setOnClickListener(this);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS
                 && info.getIcon(mIconCache) == null) {
@@ -2100,6 +2107,9 @@ public class Launcher extends Activity
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
+        if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            newFolder.setTextVisible(!mHideHomescreenIconLabels);
+        }
         mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
         // Force measure the new folder icon
@@ -3798,6 +3808,7 @@ public class Launcher extends Activity
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
+                    newFolder.setTextVisible(!mHideHomescreenIconLabels);
                     workspace.addInScreenFromBind(newFolder, item.container, item.screenId, item.cellX,
                             item.cellY, 1, 1);
                     break;

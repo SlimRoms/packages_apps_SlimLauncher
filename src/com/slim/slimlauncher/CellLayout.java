@@ -50,6 +50,7 @@ import android.view.animation.LayoutAnimationController;
 
 import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.FolderIcon.FolderRingAnimator;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,7 +199,7 @@ public class CellLayout extends ViewGroup {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = mCellHeight = -1;
-        mFixedCellHeight = mFixedCellHeight = -1;
+        mFixedCellWidth = mFixedCellHeight = -1;
         mWidthGap = mOriginalWidthGap = 0;
         mHeightGap = mOriginalHeightGap = 0;
         mMaxGap = Integer.MAX_VALUE;
@@ -605,10 +606,12 @@ public class CellLayout extends ViewGroup {
             boolean markCells) {
         final LayoutParams lp = params;
 
-        // Hotseat icons - remove text
-        if (child instanceof BubbleTextView) {
+        // Hotseat icons
+        boolean hideDockLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
+        if (mIsHotseat && child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(!mIsHotseat);
+            bubbleChild.setTextVisibility(!hideDockLabels);
         }
 
         child.setScaleX(getChildrenScale());
