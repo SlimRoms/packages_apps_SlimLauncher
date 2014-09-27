@@ -2,120 +2,63 @@ package com.slim.slimlauncher.settings;
 
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.slim.slimlauncher.DeviceProfile;
-import com.slim.slimlauncher.DynamicGrid;
-import com.slim.slimlauncher.LauncherAppState;
 import com.slim.slimlauncher.R;
-import com.slim.slimlauncher.preference.DoubleNumberPickerPreference;
-import com.slim.slimlauncher.preference.NumberPickerPreference;
 
-import net.margaritov.preference.colorpicker.ColorPickerPreference;
-
-public class SettingsFragment extends PreferenceFragment
-        implements Preference.OnPreferenceChangeListener {
-
-    private ColorPickerPreference mFolderBackground;
-
-    private NumberPickerPreference mDockIcons;
-    private DoubleNumberPickerPreference mHomescreenGrid;
-    private DoubleNumberPickerPreference mDrawerGrid;
+public class SettingsFragment extends SettingsPreferenceFragment
+        implements Preference.OnPreferenceClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState, false);
 
         addPreferencesFromResource(R.xml.preferences);
 
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-        int intColor;
-        String hexColor;
-
-        mFolderBackground = (ColorPickerPreference)
-                findPreference(SettingsProvider.FOLDER_BACKGROUND_COLOR);
-        mFolderBackground.setAlphaSliderEnabled(true);
-        mFolderBackground.setOnPreferenceChangeListener(this);
-        mFolderBackground.setDefaultColor(0xffffffff);
-        intColor = SettingsProvider.getInt(getActivity(),
-                SettingsProvider.FOLDER_BACKGROUND_COLOR, -2);
-        if (intColor == -2) {
-            intColor = 0xffffffff;
-            mFolderBackground.setSummary(getResources().getString(R.string.default_string));
-        } else {
-            hexColor = String.format("#%08x", (0xffffffff & intColor));
-            mFolderBackground.setSummary(hexColor);
-        }
-        mFolderBackground.setNewPreviewColor(intColor);
-
-        DynamicGrid grid = LauncherAppState.getInstance().getDynamicGrid();
-
-        mDockIcons = (NumberPickerPreference)
-                findPreference(SettingsProvider.KEY_DOCK_ICONS);
-        mHomescreenGrid = (DoubleNumberPickerPreference)
-                findPreference(SettingsProvider.KEY_HOMESCREEN_GRID);
-        mDrawerGrid = (DoubleNumberPickerPreference)
-                findPreference(SettingsProvider.KEY_DRAWER_GRID);
-
         Preference gestures = findPreference("gestures");
-        gestures.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                getFragmentManager().beginTransaction().replace(
-                        android.R.id.content, new GestureFragment())
-                        .addToBackStack("gesture").commit();
-                return true;
-            }
-        });
+        if (gestures != null)
+            gestures.setOnPreferenceClickListener(this);
 
+        Preference homescreen = findPreference("key_homescreen");
+        homescreen.setOnPreferenceClickListener(this);
+        Preference folder = findPreference("key_folder");
+        folder.setOnPreferenceClickListener(this);
 
-        if (grid != null) {
-            DeviceProfile prof = grid.getDeviceProfile();
-            prof.updateFromPreferences(getActivity());
+        Preference drawer = findPreference("key_drawer");
+        drawer.setOnPreferenceClickListener(this);
 
-            if (SettingsProvider.getCellCountX(getActivity(),
-                    SettingsProvider.KEY_HOMESCREEN_GRID, 0) < 1) {
-                SettingsProvider.putCellCountX(getActivity(),
-                        SettingsProvider.KEY_HOMESCREEN_GRID, (int) prof.numColumns);
-                mHomescreenGrid.setDefault2((int) prof.numColumns);
-            }
-            if (SettingsProvider.getCellCountY(getActivity(),
-                    SettingsProvider.KEY_HOMESCREEN_GRID, 0) < 1) {
-                SettingsProvider.putCellCountY(getActivity(),
-                        SettingsProvider.KEY_HOMESCREEN_GRID, (int) prof.numRows);
-                mHomescreenGrid.setDefault1((int) prof.numRows);
-            }
-            if (SettingsProvider.getCellCountX(getActivity(),
-                    SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
-                SettingsProvider.putCellCountX(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID, prof.allAppsNumCols);
-                mDrawerGrid.setDefault2(prof.allAppsNumCols);
-            }
-            if (SettingsProvider.getCellCountY(getActivity(),
-                    SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
-                SettingsProvider.putCellCountY(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID, prof.allAppsNumRows);
-                mDrawerGrid.setDefault2(prof.allAppsNumRows);
-            }
-            if (SettingsProvider.getInt(getActivity(),
-                    SettingsProvider.KEY_DOCK_ICONS, 0) < 1) {
-                SettingsProvider.putInt(getActivity(),
-                        SettingsProvider.KEY_DOCK_ICONS, (int) prof.numHotseatIcons);
-                mDockIcons.setDefaultValue((int) prof.numHotseatIcons);
-            }
-
-        }
+        Preference dock = findPreference("key_dock");
+        dock.setOnPreferenceClickListener(this);
 
         setHasOptionsMenu(true);
     }
 
     @Override
+    public boolean onPreferenceClick(Preference preference) {
+        SettingsPreferenceFragment fragment = null;
+        if (preference.getKey().equals("key_homescreen")) {
+            fragment = new HomescreenFragment();
+        } else if (preference.getKey().equals("key_folder")) {
+            fragment = new FolderFragment();
+        } else if (preference.getKey().equals("gestures")) {
+            fragment = new GestureFragment();
+        } else if (preference.getKey().equals("key_drawer")) {
+            fragment = new DrawerFragment();
+        } else if (preference.getKey().equals("key_dock")) {
+            fragment = new DockFragment();
+        }
+        if (fragment != null) {
+            getFragmentManager().beginTransaction().replace(android.R.id.content, fragment)
+                    .addToBackStack(preference.getKey()).commit();
+        }
+        return true;
+    }
+
+    @Override
     public void onResume() {
-        super.onResume();
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+        super.onResume(null);
     }
 
     @Override
@@ -128,19 +71,5 @@ public class SettingsFragment extends PreferenceFragment
             default:
                 return super.onContextItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mFolderBackground) {
-            String hex = ColorPickerPreference.convertToARGB(
-                    Integer.valueOf(String.valueOf(newValue)));
-            preference.setSummary(hex);
-            int intHex = ColorPickerPreference.convertToColorInt(hex);
-            SettingsProvider.putInt(getActivity(),
-                    SettingsProvider.FOLDER_BACKGROUND_COLOR, intHex);
-            return true;
-        }
-        return false;
     }
 }

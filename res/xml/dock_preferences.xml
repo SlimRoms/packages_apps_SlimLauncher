@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:title="@string/dock_title">
+
+    <com.slim.slimlauncher.preference.NumberPickerPreference
+        android:key="dock_icon_count"
+        android:title="@string/dock_icons_title"
+        android:summary="@string/dock_icons_summary"
+        launcher:min="1"
+        launcher:max="7" />
+
+    <CheckBoxPreference
+        android:key="dock_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_dock_summary"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

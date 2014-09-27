@@ -63,11 +63,9 @@ import android.widget.TextView;
 import com.slim.slimlauncher.FolderIcon.FolderRingAnimator;
 import com.slim.slimlauncher.Launcher.CustomContentCallbacks;
 import com.slim.slimlauncher.LauncherSettings.Favorites;
-import com.slim.slimlauncher.backup.BackupProtos;
 import com.slim.slimlauncher.settings.SettingsActivity;
 import com.slim.slimlauncher.settings.SettingsProvider;
 
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
