@@ -217,11 +217,7 @@ public class DeviceProfile {
         showSearchBar = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
 
-        if (showSearchBar) {
-            searchBarSpaceHeightPx = searchBarHeightPx + 2 * edgeMarginPx;
-        } else {
-            searchBarSpaceHeightPx = 2 * edgeMarginPx;
-        }
+        searchBarSpaceHeightPx = searchBarHeightPx + (showSearchBar ? 2 * edgeMarginPx : 0);
 
         int prefNumRows = SettingsProvider.getCellCountY(
                 context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
@@ -406,6 +402,9 @@ public class DeviceProfile {
     }
 
     public void layout(Launcher launcher) {
+
+        updateFromPreferences(launcher);
+
         FrameLayout.LayoutParams lp;
         boolean hasVerticalBarLayout = isVerticalBarLayout();
 
@@ -434,25 +433,22 @@ public class DeviceProfile {
 
         // Layout the search bar
         View qsbBar = launcher.getQsbBar();
-        if (showSearchBar) {
-            ViewGroup.LayoutParams vglp = qsbBar.getLayoutParams();
-            vglp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            vglp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            qsbBar.setLayoutParams(vglp);
+        qsbBar.setVisibility(showSearchBar ? View.VISIBLE : View.GONE);
+        ViewGroup.LayoutParams vglp = qsbBar.getLayoutParams();
+        vglp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        vglp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        qsbBar.setLayoutParams(vglp);
 
-            // Layout the voice proxy
-            View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
-            if (voiceButtonProxy != null) {
-                if (!hasVerticalBarLayout) {
-                    lp = (FrameLayout.LayoutParams) voiceButtonProxy.getLayoutParams();
-                    lp.gravity = Gravity.TOP | Gravity.END;
-                    lp.width = (widthPx - searchBarSpaceWidthPx) / 2 +
-                            2 * iconSizePx;
-                    lp.height = searchBarSpaceHeightPx;
-                }
+        // Layout the voice proxy
+        View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
+        if (voiceButtonProxy != null) {
+            if (!hasVerticalBarLayout) {
+                lp = (FrameLayout.LayoutParams) voiceButtonProxy.getLayoutParams();
+                lp.gravity = Gravity.TOP | Gravity.END;
+                lp.width = (widthPx - searchBarSpaceWidthPx) / 2 +
+                        2 * iconSizePx;
+                lp.height = searchBarSpaceHeightPx;
             }
-        } else {
-            qsbBar.setVisibility(View.GONE);
         }
 
         // Layout the workspace
@@ -514,7 +510,7 @@ public class DeviceProfile {
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
                 lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                lp.bottomMargin = hotseatBarHeightPx;
+                lp.bottomMargin = Math.max(hotseatBarHeightPx, lp.bottomMargin);
                 pageIndicator.setLayoutParams(lp);
             }
         }

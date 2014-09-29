@@ -401,7 +401,7 @@ public class Launcher extends Activity
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
         // Lazy-initialize the dynamic grid
-        DeviceProfile grid = app.initDynamicGrid(this,
+        DeviceProfile profile = app.initDynamicGrid(this,
                 Math.min(smallestSize.x, smallestSize.y),
                 Math.min(largestSize.x, largestSize.y),
                 realSize.x, realSize.y,
@@ -412,7 +412,7 @@ public class Launcher extends Activity
                 Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
-        mIconCache.flushInvalidIcons(grid);
+        mIconCache.flushInvalidIcons(profile);
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
@@ -438,7 +438,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        grid.layout(this);
+        profile.layout(this);
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
@@ -1304,7 +1304,8 @@ public class Launcher extends Activity
      * Add an application shortcut to the workspace.
      *
      * @param data The intent describing the application.
-     * @param cellInfo The position on screen where to create the shortcut.
+     * @param cellX X-axis to create the shortcut.
+     * @param cellY Y-axis to create the shortcut.
      */
     void completeAddApplication(Intent data, long container, long screenId, int cellX, int cellY) {
         final int[] cellXY = mTmpAddItemCellCoordinates;
@@ -1336,7 +1337,6 @@ public class Launcher extends Activity
      * Add a shortcut to the workspace.
      *
      * @param data The intent describing the shortcut.
-     * @param cellInfo The position on screen where to create the shortcut.
      */
     private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
             int cellY) {
@@ -1421,7 +1421,6 @@ public class Launcher extends Activity
      * Add a widget to the workspace.
      *
      * @param appWidgetId The app widget id
-     * @param cellInfo The position on screen where to create the widget.
      */
     private void completeAddAppWidget(final int appWidgetId, long container, long screenId,
             AppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo) {
@@ -1801,7 +1800,9 @@ public class Launcher extends Activity
                 public void onSharedPreferenceChanged(
                         SharedPreferences sharedPreferences, String key) {
                     if (!isFinishing()) {
-                        finish();
+                        if (SettingsProvider.shouldFinish(key)) {
+                            finish();
+                        }
                     }
                 }
             };
@@ -1994,7 +1995,6 @@ public class Launcher extends Activity
      * @param componentName The name of the component
      * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
-     * @param position The location on the screen where it was dropped, optional
      */
     void processShortcutFromDrop(ComponentName componentName, long container, long screenId,
             int[] cell, int[] loc) {
@@ -2019,7 +2019,6 @@ public class Launcher extends Activity
      * @param info The PendingAppWidgetInfo of the widget being added.
      * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
-     * @param position The location on the screen where it was dropped, optional
      */
     void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
             int[] cell, int[] span, int[] loc) {
@@ -2391,7 +2390,7 @@ public class Launcher extends Activity
 
     void startApplicationDetailsActivity(ComponentName componentName) {
         String packageName = componentName.getPackageName();
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivitySafely(null, intent, "startApplicationDetailsActivity");
@@ -2597,7 +2596,6 @@ public class Launcher extends Activity
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      *
-     * @param folderInfo The FolderInfo describing the folder to open.
      */
     public void openFolder(FolderIcon folderIcon) {
         Folder folder = folderIcon.getFolder();
@@ -2735,6 +2733,12 @@ public class Launcher extends Activity
 
     Workspace getWorkspace() {
         return mWorkspace;
+    }
+
+    public void updateOverviewPanel() {
+        View defaultScreenPanel = mOverviewPanel.findViewById(R.id.default_home_screen_panel);
+
+        defaultScreenPanel.setVisibility(mWorkspace.getPageCount() > 1 ? View.VISIBLE : View.GONE);
     }
 
     public boolean isAllAppsVisible() {

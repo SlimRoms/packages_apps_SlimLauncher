@@ -119,6 +119,8 @@ public class Workspace extends SmoothPagedView
     boolean mDrawBackground = true;
     private float mBackgroundAlpha = 0;
 
+    private boolean mShowSearchBar;
+
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
     private long mCustomContentShowTime = -1;
@@ -335,6 +337,9 @@ public class Workspace extends SmoothPagedView
                 SettingsProvider.KEY_SCROLL_WALLPAPER, true);
         mHideIconLabels = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
+
+        mShowSearchBar = SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
@@ -1955,21 +1960,21 @@ public class Workspace extends SmoothPagedView
         View overviewPanel = mLauncher.getOverviewPanel();
         if (overviewPanel != null) {
             View defaultPageButton = overviewPanel.findViewById(R.id.default_screen_button);
-            defaultPageButton.setActivated(
-                    getScreenIdForPageIndex(getPageNearestToCenterOfScreen()) == mDefaultScreenId);
+            if (defaultPageButton != null) {
+                defaultPageButton.setActivated(
+                        getScreenIdForPageIndex(getCurrentPage()) == mDefaultScreenId);
+            }
         }
     }
 
     public void onClickDefaultScreenButton() {
         if (!isInOverviewMode()) return;
 
-        mDefaultScreenId = getScreenIdForPageIndex(getPageNearestToCenterOfScreen());
+        mDefaultScreenId = getScreenIdForPageIndex(getCurrentPage());
 
-        exitOverviewMode(getPageNearestToCenterOfScreen(), true);
+        updateDefaultScreenButton();
 
-        SettingsProvider.get(mLauncher).edit()
-                .putLong(SettingsProvider.DEFAULT_HOMESCREEN, mDefaultScreenId)
-                .commit();
+        SettingsProvider.putLong(mLauncher, SettingsProvider.DEFAULT_HOMESCREEN, mDefaultScreenId);
     }
 
     @Override
@@ -2038,6 +2043,8 @@ public class Workspace extends SmoothPagedView
             finalState = Workspace.State.NORMAL;
         }
 
+        mLauncher.updateOverviewPanel();
+
         Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
         if (workspaceAnim != null) {
             onTransitionPrepare();
@@ -2054,12 +2061,30 @@ public class Workspace extends SmoothPagedView
     int getOverviewModeTranslationY() {
         int childHeight = getNormalChildHeight();
         int viewPortHeight = getViewportHeight();
-        int scaledChildHeight = (int) (mOverviewModeShrinkFactor * childHeight);
+        int scaledChildHeight = (int) (getOverviewModeScaleY() * childHeight);
 
         int offset = (viewPortHeight - scaledChildHeight) / 2;
-        int offsetDelta = mOverviewModePageOffset - offset + mInsets.top;
+        int add = mShowSearchBar ? 26 : 14;
+        int density = getResources().getDisplayMetrics().densityDpi;
+        int offsetDelta = mOverviewModePageOffset - offset + (density / add);
 
         return offsetDelta;
+    }
+
+    float getOverviewModeScaleY() {
+        float childHeight = getNormalChildHeight();
+        int viewPortHeight = getViewportHeight();
+
+        Resources res = getResources();
+        int top = res.getDimensionPixelSize(R.dimen.overview_panel_top_padding);
+        top += res.getDimensionPixelSize(R.dimen.overview_mode_padding);
+        top += res.getDimensionPixelSize(R.dimen.overview_scaling_padding);
+
+        float scaledChildHeight = viewPortHeight - top;
+
+        float scale = scaledChildHeight / childHeight;
+
+        return scale;
     }
 
     boolean shouldVoiceButtonProxyBeVisible() {
@@ -2128,15 +2153,13 @@ public class Workspace extends SmoothPagedView
 
         if (oldStateIsOverview) {
             disableFreeScroll(snapPage);
-        } else if (stateIsOverview) {
-            enableFreeScroll();
         }
 
         if (state != State.NORMAL) {
             if (stateIsSpringLoaded) {
                 mNewScale = mSpringLoadedShrinkFactor;
             } else if (stateIsOverview) {
-                mNewScale = mOverviewModeShrinkFactor;
+                mNewScale = getOverviewModeScaleY();
             } else if (stateIsSmall){
                 mNewScale = mOverviewModeShrinkFactor - 0.3f;
             }
@@ -2233,14 +2256,17 @@ public class Workspace extends SmoothPagedView
             }
             ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(hotseat, "alpha",
                     finalHotseatAndPageIndicatorAlpha);
-            ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
-                    "alpha", finalSearchBarAlpha);
+            ObjectAnimator searchBarAlpha = null;
+            if (mShowSearchBar) {
+                searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
+                        "alpha", finalSearchBarAlpha);
+            }
             ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
                     "alpha", finalOverviewPanelAlpha);
 
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
-            searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+            if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
 
             if (workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
@@ -2254,7 +2280,7 @@ public class Workspace extends SmoothPagedView
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
-            anim.play(searchBarAlpha);
+            if (mShowSearchBar) anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
         } else {
@@ -2266,8 +2292,10 @@ public class Workspace extends SmoothPagedView
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
-            searchBar.setAlpha(finalSearchBarAlpha);
-            AlphaUpdateListener.updateVisibility(searchBar);
+            if (mShowSearchBar) {
+                searchBar.setAlpha(finalSearchBarAlpha);
+                AlphaUpdateListener.updateVisibility(searchBar);
+            }
             updateCustomContentVisibility();
             setScaleX(mNewScale);
             setScaleY(mNewScale);

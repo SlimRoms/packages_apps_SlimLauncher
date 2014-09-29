@@ -41,6 +41,8 @@
     <dimen name="overview_panel_bottom_padding">50dp</dimen>
     <dimen name="overview_panel_buttonSpacing">60dp</dimen>
     <dimen name="overview_mode_page_offset">130dp</dimen>
+    <dimen name="overview_scaling_padding">50dp</dimen>
+    <dimen name="overview_mode_padding">175dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>

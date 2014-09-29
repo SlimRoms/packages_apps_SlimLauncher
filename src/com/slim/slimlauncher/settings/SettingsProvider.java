@@ -3,14 +3,8 @@ package com.slim.slimlauncher.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-/**
- * Created by gmillz on 9/7/14.
- */
 public class SettingsProvider implements SettingsKeys {
-
-    public static final String SETTINGS_KEY = "com.slim.slimlauncher_preferences";
 
     public static SharedPreferences get(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -68,11 +62,19 @@ public class SettingsProvider implements SettingsKeys {
         return get(context).getLong(key, defValue);
     }
 
+    public static void putLong(Context context, String key, long value) {
+        put(context).putLong(key, value).commit();
+    }
+
     public static int getInt(Context context, String key, int defValue) {
         return get(context).getInt(key, defValue);
     }
 
     public static void putInt(Context context, String key, int value) {
         put(context).putInt(key, value);
+    }
+
+    public static boolean shouldFinish(String key) {
+        return !key.equals(DEFAULT_HOMESCREEN);
     }
 }
