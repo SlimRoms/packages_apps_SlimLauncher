@@ -32,6 +32,11 @@
         android:title="@string/general_title" />
 
     <header
+        android:fragment="com.slim.slimlauncher.settings.BackupRestoreFragment"
+        android:id="@+id/pref_backup_restore"
+        android:title="@string/backup_restore_title" />
+
+    <header
         android:id="@+id/slim_application_version"
         android:summary="@string/slim_application_copyright" />
 

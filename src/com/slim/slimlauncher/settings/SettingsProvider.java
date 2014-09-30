@@ -22,6 +22,10 @@ import android.preference.PreferenceManager;
 
 public class SettingsProvider implements SettingsKeys {
 
+    public static final String SETTINGS_KEY = "com.slim.slimlauncher_preferences";
+
+    public static final String KEY_SETTINGS_CHANGED = "settings_changed";
+
     public static SharedPreferences get(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -94,6 +98,14 @@ public class SettingsProvider implements SettingsKeys {
 
     public static void putInt(Context context, String key, int value) {
         put(context).putInt(key, value);
+    }
+
+    public static void remove(Context context, String key) {
+        put(context).remove(key).commit();
+    }
+
+    public static void clear(Context context) {
+        put(context).clear().commit();
     }
 
     public static boolean shouldFinish(String key) {
