@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.slim.slimlauncher.settings.SettingsProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Set;
 
 public class DeviceProfile {
     String name;
@@ -59,6 +61,7 @@ public class DeviceProfile {
     int hotseatIconSizePx;
     int originalHotseatIconSizePx;
     int hotseatBarHeightPx;
+    int hotseatBarHeightPxOriginal;
     int hotseatAllAppsRank;
     public int allAppsNumRows;
     public int allAppsNumCols;
@@ -67,6 +70,8 @@ public class DeviceProfile {
     int searchBarSpaceHeightPx;
     int searchBarHeightPx;
     int pageIndicatorHeightPx;
+
+    View pageIndicator;
 
     boolean showSearchBar;
 
@@ -188,7 +193,6 @@ public class DeviceProfile {
         */
 
         // Hotseat
-        hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
         hotseatCellWidthPx = iconSizePx;
         hotseatCellHeightPx = iconSizePx;
 
@@ -282,6 +286,14 @@ public class DeviceProfile {
                     (iconSizePx + 2 * edgeMarginPx);
             SettingsProvider.putCellCountX(context,
                     SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
+        }
+
+        hotseatBarHeightPxOriginal = iconSizePx + 4 * edgeMarginPx;
+        if (SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_HIDE_DOCK, false)) {
+            hotseatBarHeightPx = 0;
+        } else {
+            hotseatBarHeightPx = hotseatBarHeightPxOriginal;
         }
     }
 
@@ -465,7 +477,7 @@ public class DeviceProfile {
         // Layout the hotseat
         View hotseat = launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
-        if (hasVerticalBarLayout) {
+        if (isVerticalBarLayout()) {
             // Vertical hotseat
             lp.gravity = Gravity.RIGHT;
             lp.width = hotseatBarHeightPx;
@@ -496,10 +508,15 @@ public class DeviceProfile {
             hotseat.findViewById(R.id.layout).setPadding(2 * edgeMarginPx, 0,
                     2 * edgeMarginPx, 0);
         }
+        if (SettingsProvider.getBoolean(launcher,
+                SettingsProvider.KEY_HIDE_DOCK, false)) {
+            lp.width = 0;
+            lp.height = 0;
+        }
         hotseat.setLayoutParams(lp);
 
         // Layout the page indicators
-        View pageIndicator = launcher.findViewById(R.id.page_indicator);
+        pageIndicator = launcher.findViewById(R.id.page_indicator);
         if (pageIndicator != null) {
             if (hasVerticalBarLayout) {
                 // Hide the page indicators when we have vertical search/hotseat
@@ -514,5 +531,26 @@ public class DeviceProfile {
                 pageIndicator.setLayoutParams(lp);
             }
         }
+    }
+
+    public void updatePageIndicator(Context context) {
+        if (pageIndicator != null) {
+            FrameLayout.LayoutParams lp =
+                    (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
+            lp.bottomMargin = getNavigationBarHeight(context) + hotseatBarHeightPx;
+        }
+    }
+
+    private int getNavigationBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int orientation = context.getResources().getConfiguration().orientation;
+
+        int id = resources.getIdentifier(
+                orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape",
+                "dimen", "android");
+        if (id > 0) {
+            return resources.getDimensionPixelSize(id);
+        }
+        return 0;
     }
 }

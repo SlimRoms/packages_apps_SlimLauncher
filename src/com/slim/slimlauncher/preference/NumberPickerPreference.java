@@ -23,6 +23,8 @@ public class NumberPickerPreference extends DialogPreference {
     private String mMaxExternalKey, mMinExternalKey;
     private Preference mMaxExternalPreference, mMinExternalPreference;
 
+    private boolean mEnabled;
+
     private NumberPicker mNumberPicker;
 
     public NumberPickerPreference(Context context, AttributeSet attrs) {

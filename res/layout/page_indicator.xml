@@ -17,5 +17,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.slim.slimlauncher"
     android:animateLayoutChanges="true"
-    launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow">
+    launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow"
+    android:fitsSystemWindows="true">
 </com.slim.slimlauncher.PageIndicator>

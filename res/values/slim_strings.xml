@@ -52,6 +52,7 @@
     <string name="hide_icon_labels_homescreen_summary">Hide icon labels on homescreen</string>
     <string name="hide_icon_labels_dock_summary">Hide icon labels in dock</string>
 
+    <string name="hide_dock_title">Hide dock</string>
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
 

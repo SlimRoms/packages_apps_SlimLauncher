@@ -418,7 +418,6 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        mGrid.layout(this);
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
@@ -463,6 +462,8 @@ public class Launcher extends Activity
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
+
+        mGrid.layout(this);
 
         showFirstRunCling();
     }
@@ -511,6 +512,8 @@ public class Launcher extends Activity
 
         mGrid.layout(this);
         mWorkspace.reloadSettings();
+
+        mGrid.updatePageIndicator(this);
 
         mAppsCustomizeContent.filterContent();
         mAppsCustomizeContent.updateGridSize();

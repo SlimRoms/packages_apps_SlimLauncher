@@ -348,7 +348,6 @@ public class Workspace extends SmoothPagedView
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
-        mOverviewModePageOffset = res.getDimensionPixelSize(R.dimen.overview_mode_page_offset);
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
         mDefaultScreenId = SettingsProvider.getLong(context,
                 SettingsProvider.DEFAULT_HOMESCREEN, -1);
@@ -416,6 +415,14 @@ public class Workspace extends SmoothPagedView
                 SettingsProvider.SPREAD_GESTURE_ACTION, gesture_def);
         mDoubleTapGestureAction = SettingsProvider.getString(mLauncher,
                 SettingsProvider.DOUBLE_TAP_GESTURE_ACTION, gesture_def);
+
+        boolean hideDock = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_HIDE_DOCK, false);
+
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+
+        mOverviewModePageOffset = profile.iconSizePx + 140
+                + (hideDock ? profile.hotseatBarHeightPx - 50 : 0);
     }
 
     @Override
