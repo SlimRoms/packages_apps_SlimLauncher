@@ -19,6 +19,7 @@ package com.slim.slimlauncher.settings;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 
 import com.slim.slimlauncher.DeviceProfile;
@@ -29,6 +30,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
 
     DynamicGrid mGrid;
     DeviceProfile mProfile;
+
+    LayoutInflater mInflater;
 
     Context mContext;
 
@@ -43,6 +46,8 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
         }
 
         mContext = getActivity();
+
+        mInflater = LayoutInflater.from(mContext);
     }
 
     @Override

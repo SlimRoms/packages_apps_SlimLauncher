@@ -431,8 +431,7 @@ public class Launcher extends Activity
         initializeDynamicGrid();
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
-        mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
-                Context.MODE_PRIVATE);
+        mSharedPrefs = SettingsProvider.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
@@ -4784,23 +4783,20 @@ public class Launcher extends Activity
     }
 
     private boolean shouldShowWeightWatcher() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
-        boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, SHOW_WEIGHT_WATCHER_DEFAULT);
+        return SettingsProvider.getPrefs(this)
+                .getBoolean(SHOW_WEIGHT_WATCHER, SHOW_WEIGHT_WATCHER_DEFAULT);
 
-        return show;
     }
 
     private void toggleShowWeightWatcher() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = SettingsProvider.getPrefs(this);
         boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, true);
 
         show = !show;
 
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(SHOW_WEIGHT_WATCHER, show);
-        editor.commit();
+        editor.apply();
 
         if (mWeightWatcher != null) {
             mWeightWatcher.setVisibility(show ? View.VISIBLE : View.GONE);

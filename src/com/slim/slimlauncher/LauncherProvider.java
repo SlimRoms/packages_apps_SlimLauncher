@@ -51,6 +51,7 @@ import com.slim.slimlauncher.LauncherSettings.Favorites;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 import com.slim.slimlauncher.compat.UserManagerCompat;
 import com.slim.slimlauncher.config.ProviderConfig;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -58,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
@@ -271,8 +273,7 @@ public class LauncherProvider extends ContentProvider {
      * @param Should we load the old db for upgrade? first run only.
      */
     synchronized public boolean justLoadedOldDb() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = SettingsProvider.getPrefs(getContext());
 
         boolean loadedOldDb = false || sJustLoadedFromOldDb;
 
@@ -295,8 +296,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     public void clearFlagEmptyDbCreated() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE)
+        SettingsProvider.getPrefs(getContext())
             .edit()
             .remove(EMPTY_DATABASE_CREATED)
             .commit();
@@ -309,8 +309,7 @@ public class LauncherProvider extends ContentProvider {
      *   3) The default configuration for the particular device
      */
     synchronized public void loadDefaultFavoritesIfNecessary() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = SettingsProvider.getPrefs(getContext());
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
@@ -537,21 +536,19 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private void setFlagJustLoadedOldDb() {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+            SharedPreferences sp = SettingsProvider.getPrefs(mContext);
             SharedPreferences.Editor editor = sp.edit();
             editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, true);
             editor.putBoolean(EMPTY_DATABASE_CREATED, false);
-            editor.commit();
+            editor.apply();
         }
 
         private void setFlagEmptyDbCreated() {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+            SharedPreferences sp = SettingsProvider.getPrefs(mContext);
             SharedPreferences.Editor editor = sp.edit();
             editor.putBoolean(EMPTY_DATABASE_CREATED, true);
             editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, false);
-            editor.commit();
+            editor.apply();
         }
 
         // We rearrange the screens from the old launcher

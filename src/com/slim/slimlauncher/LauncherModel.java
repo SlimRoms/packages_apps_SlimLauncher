@@ -58,6 +58,7 @@ import com.slim.slimlauncher.compat.PackageInstallerCompat;
 import com.slim.slimlauncher.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 import com.slim.slimlauncher.compat.UserManagerCompat;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -1135,7 +1136,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Removes the specified items from the database
      * @param context
-     * @param item
+     * @param items
      */
     static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
@@ -2874,8 +2875,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Clear the list of apps
             mBgAllAppsList.clear();
-            SharedPreferences prefs = mContext.getSharedPreferences(
-                    LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+            SharedPreferences prefs = SettingsProvider.getPrefs(mContext);
             for (UserHandleCompat user : profiles) {
                 // Query for the set of apps
                 final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
@@ -2922,7 +2922,7 @@ public class LauncherModel extends BroadcastReceiver
                         newPackageSet.add(packageName);
                     }
 
-                    prefs.edit().putStringSet(shortcutsSetKey, newPackageSet).commit();
+                    prefs.edit().putStringSet(shortcutsSetKey, newPackageSet).apply();
                 }
             }
             // Huh? Shouldn't this be inside the Runnable below?
@@ -3042,8 +3042,7 @@ public class LauncherModel extends BroadcastReceiver
                     // Auto add shortcuts for added packages.
                     if (ADD_MANAGED_PROFILE_SHORTCUTS
                             && !UserHandleCompat.myUserHandle().equals(mUser)) {
-                        SharedPreferences prefs = context.getSharedPreferences(
-                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+                        SharedPreferences prefs = SettingsProvider.getPrefs(context);
                         String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
                                 + mUserManager.getSerialNumberForUser(mUser);
                         Set<String> shortcutSet = new HashSet<String>(
@@ -3077,8 +3076,7 @@ public class LauncherModel extends BroadcastReceiver
                     // will ensure that the shortcut when the app is installed again.
                     if (ADD_MANAGED_PROFILE_SHORTCUTS
                             && !UserHandleCompat.myUserHandle().equals(mUser)) {
-                        SharedPreferences prefs = context.getSharedPreferences(
-                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+                        SharedPreferences prefs = SettingsProvider.getPrefs(context);
                         String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
                                 + mUserManager.getSerialNumberForUser(mUser);
                         HashSet<String> shortcutSet = new HashSet<String>(

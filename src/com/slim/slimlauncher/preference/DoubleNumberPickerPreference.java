@@ -93,9 +93,7 @@ public class DoubleNumberPickerPreference extends DialogPreference {
             min2 = getSharedPreferences().getInt(mMinExternalKey2, mMin2);
         }
 
-        LayoutInflater inflater =
-                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.double_number_picker_dialog, null);
+        View view = View.inflate(getContext(), R.layout.double_number_picker_dialog, null);
 
         mNumberPicker1 = (NumberPicker) view.findViewById(R.id.number_picker_1);
         mNumberPicker2 = (NumberPicker) view.findViewById(R.id.number_picker_2);

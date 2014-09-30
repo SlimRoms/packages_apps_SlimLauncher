@@ -43,7 +43,6 @@ import java.util.ArrayList;
 
 public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
-    private static final String SHARED_PREFERENCES_KEY = "com.slim.slimlauncher.prefs";
 
     private static final boolean DEBUG = false;
 

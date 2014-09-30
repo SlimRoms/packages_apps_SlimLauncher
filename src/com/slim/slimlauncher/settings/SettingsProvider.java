@@ -20,10 +20,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.slim.slimlauncher.LauncherAppState;
+
 public class SettingsProvider implements SettingsKeys {
 
+    public static final String SETTINGS_KEY = "org.slim.slimlauncher_preferences";
+
     public static SharedPreferences get(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+        return context.getSharedPreferences(SETTINGS_KEY, Context.MODE_PRIVATE);
+    }
+
+    public static SharedPreferences getPrefs(Context context) {
+        return context.getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
+                Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences.Editor put(Context context) {
@@ -94,6 +103,14 @@ public class SettingsProvider implements SettingsKeys {
 
     public static void putInt(Context context, String key, int value) {
         put(context).putInt(key, value);
+    }
+
+    public static void remove(Context context, String key) {
+        put(context).remove(key).commit();
+    }
+
+    public static void clear(Context context) {
+        put(context).clear().commit();
     }
 
     public static boolean shouldFinish(String key) {
