@@ -10,12 +10,16 @@
     <string name="default_string">Default</string>
     <string name="reset_string">Reset</string>
     <string name="set_string">Set</string>
+<<<<<<< HEAD
     <string name="off_string">Off</string>
     <string name="error_message_title">Error</string>
 
     <string name="icon_size_title">Icon size</string>
 
     <string name="edit_target_label">Edit</string>
+=======
+    <string name="delete_string">Delete</string>
+>>>>>>> 77826f5... Add backup & restore
 
     <!-- Text for default screen button -->
     <string name="default_screen_button_text">Default Screen</string>
@@ -144,5 +148,23 @@
     <string name="dialog_hotword_title">Customize hotword</string>
     <string name="dialog_hotword_text">Sentence</string>
     <string name="dialog_hotword_select_action">Select an action</string>
+
+    <!-- Backup / Restore settings -->
+    <string name="backup_restore_title">Backup / Restore</string>
+    <string name="backup_title">Backup</string>
+    <string name="backup_summary">Backup SlimLauncher settings to SD card</string>
+    <string name="backup_completed">Settings backup successful!</string>
+    <string name="backup_failed">Settings backup failed!</string>
+    <string name="backup_delete_completed">Successfully deleted backup.</string>
+    <string name="backup_delete_failed">Failed to delete backup.</string>
+    <string name="name_backup_title">Name of backup:</string>
+    <string name="restore_title">Restore</string>
+    <string name="restore_summary">Restore SlimLauncher settings from SD card</string>
+    <string name="restore_completed">Settings restore successful!</string>
+    <string name="restore_failed">Settings restore failed!</string>
+    <string name="manage_backup_title">Manage backup</string>
+    <string name="restore_warning">Restoring will replace your current configuration with the one from the backup.</string>
+    <string name="kill_dialog_title">Closing launcher</string>
+    <string name="warn_kill_launcher">Closing launcher for restored settings to take effect</string>
 
 </resources>
