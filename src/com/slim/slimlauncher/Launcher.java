@@ -578,6 +578,14 @@ public class Launcher extends Activity
         }
     }
 
+    protected void updateStatusBarVisibility() {
+        View decorView = getWindow().getDecorView();
+
+        if (SettingsProvider.getBoolean(this, SettingsProvider.KEY_SHOW_STATUS_BAR, false)) {
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
+    }
+
     /** To be overridden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
         if (mLauncherCallbacks != null) {
@@ -1108,6 +1116,7 @@ public class Launcher extends Activity
         if (LauncherAppState.getSettingsChanged()) {
             updateDynamicGrid();
         }
+        updateStatusBarVisibility();
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {

@@ -15,6 +15,8 @@
 
     <string name="icon_size_title">Icon size</string>
 
+    <string name="edit_target_label">Edit</string>
+
     <!-- Text for default screen button -->
     <string name="default_screen_button_text">Default Screen</string>
 
@@ -63,6 +65,7 @@
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>
     <string name="show_search_bar_title">Show search bar</string>
+    <string name="hide_status_bar_title">Hide status bar</string>
 
     <!-- Hide icon labels -->
     <string name="hide_icon_labels_title">Hide icon labels</string>
@@ -79,6 +82,7 @@
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>
+
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
 

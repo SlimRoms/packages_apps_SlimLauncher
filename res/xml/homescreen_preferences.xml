@@ -33,4 +33,9 @@
         launcher:min="70"
         launcher:defaultValue="100" />
 
+    <SwitchPreference
+        android:key="hide_status_bar"
+        android:title="@string/hide_status_bar_title"
+        android:defaultValue="false" />
+
 </PreferenceScreen>
