@@ -92,8 +92,16 @@
     <string name="smart_folder_summary_one">Swipe - launch first app \nTouch - open folder</string>
     <string name="smart_folder_summart_two">Swipe - open folder \nTouch - launch first app</string>
 
-    <!-- Gestures -->
+    <!-- Gestures & Buttons -->
+    <string name="gestures_buttons_title">Gestures &amp; Buttons</string>
     <string name="gestures_title">Gestures</string>
+    <string name="buttons_title">Buttons</string>
+    <string name="home_button_title">Home button</string>
+    <string name="home_button_default_title">Only on default home screen</string>
+    <string name="home_button_default_summary">Press Home button once for default screen, then again for action</string>
+    <string name="back_button_title">Back button</string>
+    <string name="menu_button_title">Menu button</string>
+    <string name="gestures_summary">Assign actions to homescreen gestures</string>
     <string name="gesture_default">nothing</string>
     <string name="gestures_left_up_gesture_title">Swipe up left</string>
     <string name="gestures_middle_up_gesture_title">Swipe up middle</string>

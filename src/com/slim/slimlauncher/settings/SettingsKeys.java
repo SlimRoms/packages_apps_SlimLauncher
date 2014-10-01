@@ -50,6 +50,12 @@ public interface SettingsKeys {
 
     public static final String KEY_HIDDEN_APPS = "hidden_apps";
 
+    // button actions
+    public static final String KEY_HOME_BUTTON_DEFAULT_SCREEN = "home_button_default_screen";
+    public static final String KEY_HOME_BUTTON_ACTION = "home_button_action";
+    public static final String KEY_MENU_BUTTON_ACTION = "menu_button_action";
+    public static final String KEY_BACK_BUTTON_ACTION = "back_button_action";
+
     // Gestures
     public static final String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";
     public static final String MIDDLE_UP_GESTURE_ACTION = "middle_up_gesture_action";
