@@ -87,7 +87,7 @@ public class GestureHelper {
         } else if (gestureAction.equals(ACTION_OPEN_APP_DRAWER)) {
             launcher.showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
         } else if (gestureAction.equals(ACTION_OVERVIEW_MODE)) {
-            workspace.enterOverviewMode();
+            workspace.enterOverviewMode(true);
         } else if (gestureAction.equals(ACTION_LAUNCHER_SETTINGS)) {
             Intent preferences = new Intent().setClass(launcher, SettingsActivity.class);
             preferences.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP

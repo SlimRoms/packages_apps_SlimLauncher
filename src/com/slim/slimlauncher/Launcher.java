@@ -1442,17 +1442,6 @@ public class Launcher extends Activity
     }
 
     /**
-     * Sets the all apps button. This method is called from {@link Hotseat}.
-     */
-    public void setAllAppsButton(View allAppsButton) {
-        mAllAppsButton = allAppsButton;
-    }
-
-    public View getAllAppsButton() {
-        return mAllAppsButton;
-    }
-
-    /**
      * Creates a view representing a shortcut.
      *
      * @param info The data structure describing the shortcut.
@@ -1932,6 +1921,30 @@ public class Launcher extends Activity
 
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
+        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)  &&
+                Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+            if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
+                if (isAllAppsVisible()) {
+                    showWorkspace(true);
+                } else if (mState == State.WORKSPACE) {
+                    showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+                }
+            } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.exitOverviewMode(true);
+                } else {
+                    mWorkspace.enterOverviewMode(true);
+                }
+            } else if (value.equals(ShortcutHelper.SHORTCUT_SETTINGS)) {
+                onClickSettingsButton(null);
+            } else if (value.equals(ShortcutHelper.SHORTCUT_DEFAULT_PAGE)) {
+                mWorkspace.moveToDefaultScreen(true);
+            }
+            mOnResumeState = State.NONE;
+            return;
+        }
+
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             // also will cancel mWaitingForResult.
@@ -1948,7 +1961,7 @@ public class Launcher extends Activity
             Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+            if (mHasFocus && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                     openFolder == null && shouldMoveToDefaultScreenOnHomeIntent()) {
                 mWorkspace.moveToDefaultScreen(true);
             }
@@ -2799,6 +2812,7 @@ public class Launcher extends Activity
     protected void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
         Intent i = new Intent(this, SettingsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
@@ -3120,7 +3134,7 @@ public class Launcher extends Activity
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-                if (mWorkspace.enterOverviewMode()) {
+                if (mWorkspace.enterOverviewMode(true)) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -3153,7 +3167,7 @@ public class Launcher extends Activity
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
                 } else {
-                    mWorkspace.enterOverviewMode();
+                    mWorkspace.enterOverviewMode(true);
                 }
             } else {
                 final boolean isAllAppsButton = inHotseat && isAllAppsButtonRank(
@@ -3322,10 +3336,7 @@ public class Launcher extends Activity
             mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
         }
 
-        // If for some reason our views aren't initialized, don't animate
-        boolean initialized = getAllAppsButton() != null;
-
-        if (animated && initialized) {
+        if (animated) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             final AppsCustomizePagedView content = (AppsCustomizePagedView)
                     toView.findViewById(R.id.apps_customize_pane_content);
@@ -3355,17 +3366,13 @@ public class Launcher extends Activity
             revealView.setTranslationY(0);
             revealView.setTranslationX(0);
 
-            // Get the y delta between the center of the page and the center of the all apps button
-            int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
-                    getAllAppsButton(), null);
-
             float alpha = 0;
             float xDrift = 0;
             float yDrift = 0;
             if (material) {
                 alpha = isWidgetTray ? 0.3f : 1f;
-                yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
-                xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
+                yDrift = height / 2;
+                xDrift = 0;
             } else {
                 yDrift = 2 * height / 3;
                 xDrift = 0;
@@ -3416,27 +3423,11 @@ public class Launcher extends Activity
             mStateAnimation.play(indicatorsAlpha);
 
             if (material) {
-                final View allApps = getAllAppsButton();
-                int allAppsButtonSize = LauncherAppState.getInstance().
-                        getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
-                float startRadius = isWidgetTray ? 0 : allAppsButtonSize / 2;
+                float startRadius = 0;
                 Animator reveal = ViewAnimationUtils.createCircularReveal(revealView, width / 2,
                                 height / 2, startRadius, revealRadius);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-
-                reveal.addListener(new AnimatorListenerAdapter() {
-                    public void onAnimationStart(Animator animation) {
-                        if (!isWidgetTray) {
-                            allApps.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    public void onAnimationEnd(Animator animation) {
-                        if (!isWidgetTray) {
-                            allApps.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
                 mStateAnimation.play(reveal);
             }
 
@@ -3558,10 +3549,7 @@ public class Launcher extends Activity
                     toState, animated, layerViews);
         }
 
-        // If for some reason our views aren't initialized, don't animate
-        boolean initialized = getAllAppsButton() != null;
-
-        if (animated && initialized) {
+        if (animated) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
@@ -3604,16 +3592,13 @@ public class Launcher extends Activity
                 revealView.setVisibility(View.VISIBLE);
                 content.setPageBackgroundsVisible(false);
 
-                final View allAppsButton = getAllAppsButton();
                 revealView.setTranslationY(0);
-                int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
-                        allAppsButton, null);
 
                 float xDrift = 0;
                 float yDrift = 0;
                 if (material) {
-                    yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
-                    xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
+                    yDrift = height / 2;
+                    xDrift = 0;
                 } else {
                     yDrift = 5 * height / 4;
                     xDrift = 0;
@@ -3681,12 +3666,7 @@ public class Launcher extends Activity
                 width = revealView.getMeasuredWidth();
 
                 if (material) {
-                    if (!isWidgetTray) {
-                        allAppsButton.setVisibility(View.INVISIBLE);
-                    }
-                    int allAppsButtonSize = LauncherAppState.getInstance().
-                            getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
-                    float finalRadius = isWidgetTray ? 0 : allAppsButtonSize / 2;
+                    float finalRadius = 0;
                     Animator reveal =
                             LauncherAnimUtils.createCircularReveal(revealView, width / 2,
                                     height / 2, revealRadius, finalRadius);
@@ -3697,9 +3677,6 @@ public class Launcher extends Activity
                     reveal.addListener(new AnimatorListenerAdapter() {
                         public void onAnimationEnd(Animator animation) {
                             revealView.setVisibility(View.INVISIBLE);
-                            if (!isWidgetTray) {
-                                allAppsButton.setVisibility(View.VISIBLE);
-                            }
                         }
                     });
 

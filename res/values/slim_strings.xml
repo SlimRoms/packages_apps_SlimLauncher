@@ -30,6 +30,13 @@
     <string name="grid_size_rows_title">Rows</string>
     <string name="grid_size_columns_title">Columns</string>
 
+    <!-- SlimLauncher actions -->
+    <string name="shortcut_picker_title">SlimLauncher shortcuts</string>
+    <string name="shortcut_action_launcher_apps">All apps</string>
+    <string name="shortcut_action_launcher_overview">Overview mode</string>
+    <string name="shortcut_action_launcher_settings">Launcher settings</string>
+    <string name="shortcut_action_launcher_homescreen">Default homescreen</string>
+
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on color below to apply</string>

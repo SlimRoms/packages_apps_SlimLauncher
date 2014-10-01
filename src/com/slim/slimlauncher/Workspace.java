@@ -1782,7 +1782,7 @@ public class Workspace extends SmoothPagedView
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                enterOverviewMode();
+                enterOverviewMode(true);
             }
         };
         return listener;
@@ -2241,11 +2241,11 @@ public class Workspace extends SmoothPagedView
         return mState == State.OVERVIEW;
     }
 
-    public boolean enterOverviewMode() {
+    public boolean enterOverviewMode(boolean animated) {
         if (mTouchState != TOUCH_STATE_REST) {
             return false;
         }
-        enableOverviewMode(true, -1, true);
+        enableOverviewMode(true, -1, animated);
         return true;
     }
 

@@ -113,7 +113,7 @@ s -->
     <string name="title_select_application">Choose app</string>
 
     <!-- All applications label -->
-    <string name="all_apps_button_label">Apps</string>
+    <string name="all_apps_button_label">All Apps</string>
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
