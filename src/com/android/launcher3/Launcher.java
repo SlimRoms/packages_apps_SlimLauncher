@@ -1531,17 +1531,6 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Sets the all apps button. This method is called from {@link Hotseat}.
-     */
-    public void setAllAppsButton(View allAppsButton) {
-        mAllAppsButton = allAppsButton;
-    }
-
-    public View getAllAppsButton() {
-        return mAllAppsButton;
-    }
-
     public View getWidgetsButton() {
         return mWidgetsButton;
     }
@@ -1956,6 +1945,35 @@ public class Launcher extends Activity
         }
         super.onNewIntent(intent);
 
+        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)  &&
+                Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+            switch (value) {
+                case ShortcutHelper.SHORTCUT_ALL_APPS :
+                    if (isAllAppsVisible()) {
+                        showWorkspace(true);
+                    } else if (mState == State.WORKSPACE) {
+                        onClickAllAppsButton();
+                    }
+                    break;
+                case ShortcutHelper.SHORTCUT_OVERVIEW :
+                    if (mWorkspace.isInOverviewMode()) {
+                        showWorkspace(true);
+                    } else {
+                        showOverviewMode(true);
+                    }
+                    break;
+                case ShortcutHelper.SHORTCUT_SETTINGS :
+                    onClickSettingsButton(null);
+                    break;
+                case ShortcutHelper.SHORTCUT_DEFAULT_PAGE :
+                    mWorkspace.moveToDefaultScreen(true);
+                    break;
+            }
+            mOnResumeState = State.NONE;
+            return;
+        }
+
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             // also will cancel mWaitingForResult.
@@ -1973,9 +1991,9 @@ public class Launcher extends Activity
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
 
-            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
-                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+            boolean moveToDefaultScreen = mLauncherCallbacks == null ||
+                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent();
+            if (mHasFocus && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                     openFolder == null && moveToDefaultScreen) {
                 mWorkspace.moveToDefaultScreen(true);
             }
@@ -2193,7 +2211,7 @@ public class Launcher extends Activity
     private void startGlobalSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
-            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
         if (globalSearchActivity == null) {
             Log.w(TAG, "No global search activity found.");
@@ -2558,13 +2576,15 @@ public class Launcher extends Activity
 
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
+            Intent i = ((ShortcutInfo) tag).getIntent();
+            if (i.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+                setAllAppsButton(v);
+            }
             onClickAppShortcut(v);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if (v == mAllAppsButton) {
-            onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -2572,6 +2592,14 @@ public class Launcher extends Activity
                 onClickPendingWidget((PendingAppWidgetHostView) v);
             }
         }
+    }
+
+    public void setAllAppsButton(View allAppsButton) {
+        mAllAppsButton = allAppsButton;
+    }
+
+    public View getAllAppsButton() {
+        return mAllAppsButton;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -2668,19 +2696,11 @@ public class Launcher extends Activity
      *
      * @param v The view that was clicked.
      */
-    protected void onClickAllAppsButton(View v) {
+    protected void onClickAllAppsButton() {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
-        }
-    }
-
-    protected void onLongClickAllAppsButton(View v) {
-        if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
-        if (!isAppsViewVisible()) {
-            showAppsView(true /* animated */, false /* resetListToTop */,
-                    true /* updatePredictedApps */, true /* focusSearchBar */);
         }
     }
 
@@ -3258,11 +3278,6 @@ public class Launcher extends Activity
         if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
-
-        if (v == mAllAppsButton) {
-            onLongClickAllAppsButton(v);
-            return true;
-        }
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
