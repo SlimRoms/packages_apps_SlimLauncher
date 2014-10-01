@@ -2,6 +2,40 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/buttons_title" />
+
+    <CheckBoxPreference
+        android:key="home_button_default_screen"
+        android:title="@string/home_button_default_title"
+        android:summary="@string/home_button_default_summary"
+        android:defaultValue="true" />
+
+    <ListPreference
+        android:key="home_button_action"
+        android:title="@string/home_button_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="default_homescreen" />
+
+    <ListPreference
+        android:key="back_button_action"
+        android:title="@string/back_button_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="nothing" />
+
+    <ListPreference
+        android:key="menu_button_action"
+        android:title="@string/menu_button_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="show_previews" />
+
+    <PreferenceCategory android:title="@string/gestures_title" />
+
     <ListPreference
         android:key="left_up_gesture_action"
         android:title="@string/gestures_left_up_gesture_title"

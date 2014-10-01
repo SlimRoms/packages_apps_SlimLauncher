@@ -53,6 +53,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -143,7 +144,7 @@ public class Workspace extends SmoothPagedView
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
 
-    private long mDefaultScreenId;
+    public long mDefaultScreenId;
 
     private long mLastMultitouch = 0;
     private boolean mMultitouchGestureDetected = false;
@@ -397,7 +398,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 GestureHelper.performGestureAction(
-                        mLauncher, mDoubleTapGestureAction, "double_tap");
+                        mLauncher, mDoubleTapGestureAction, "double_tap_gesture");
                 return true;
             }
 
@@ -410,38 +411,32 @@ public class Workspace extends SmoothPagedView
                             start.getRawX(), start.getRawY())) {
                         case UP_LEFT:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mLeftUpGestureAction, "left_up");
+                                    mLauncher, mLeftUpGestureAction, "left_up_gesture");
                             break;
                         case UP_MIDDLE:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mMiddleUpGestureAction, "middle_up");
+                                    mLauncher, mMiddleUpGestureAction, "middle_up_gesture");
                             break;
                         case UP_RIGHT:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mRightUpGestureAction, "right_up");
+                                    mLauncher, mRightUpGestureAction, "right_up_gesture");
                             break;
                         case DOWN_LEFT:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mLeftDownGestureAction, "left_down");
+                                    mLauncher, mLeftDownGestureAction, "left_down_gesture");
                             break;
                         case DOWN_MIDDLE:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mMiddleDownGestureAction, "middle_down");
+                                    mLauncher, mMiddleDownGestureAction, "middle_down_gesture");
                             break;
                         case DOWN_RIGHT:
                             GestureHelper.performGestureAction(
-                                    mLauncher, mRightDownGestureAction, "right_down");
+                                    mLauncher, mRightDownGestureAction, "right_down_gesture");
                             break;
                     }
                 }
                 mMultitouchGestureDetected = false;
                 return true;
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                Log.d(TAG, "onDoubleTapEvent : action=" + e.getAction());
-                return false;
             }
         });
 
@@ -5338,13 +5333,13 @@ public class Workspace extends SmoothPagedView
         long delta = System.currentTimeMillis() - mLastMultitouch;
         if (pinch < 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
                 delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
-            GestureHelper.performGestureAction(mLauncher, mPinchGestureAction, "pinch");
+            GestureHelper.performGestureAction(mLauncher, mPinchGestureAction, "pinch_gesture");
             mLastMultitouch = System.currentTimeMillis();
             mMultitouchGestureDetected = true;
             return true;
         } else if (pinch > 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
                 delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
-            GestureHelper.performGestureAction(mLauncher, mSpreadGestureAction, "spread");
+            GestureHelper.performGestureAction(mLauncher, mSpreadGestureAction, "spread_gesture");
             mLastMultitouch = System.currentTimeMillis();
             mMultitouchGestureDetected = true;
             return true;

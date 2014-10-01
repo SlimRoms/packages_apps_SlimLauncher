@@ -97,7 +97,7 @@ public class GestureHelper {
             getLastApp(launcher);
         } else if (gestureAction.equals(ACTION_CUSTOM)) {
             String uri = SettingsProvider.getString(launcher,
-                    gesture + "_gesture_action_custom", "");
+                    gesture + "_action_custom", "");
             if (!uri.equals("")) {
                 try {
                     Intent intent = Intent.parseUri(uri, 0);
