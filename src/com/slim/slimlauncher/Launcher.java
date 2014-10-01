@@ -992,6 +992,7 @@ public class Launcher extends Activity
 
     protected void startSettings() {
        Intent i = new Intent(this, SettingsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
        startActivity(i);
        if (mWorkspace.isInOverviewMode()) {
            mWorkspace.exitOverviewMode(false);
@@ -1697,6 +1698,22 @@ public class Launcher extends Activity
         }
         super.onNewIntent(intent);
 
+        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+            mOnResumeState = State.NONE;
+            String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+            if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
+                Log.d("TEST", intent.toUri(0));
+                showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+            } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
+                mWorkspace.enterOverviewMode(true);
+            } else if (value.equals(ShortcutHelper.SHORTCUT_SETTINGS)) {
+                startSettings();
+            } else if (value.equals(ShortcutHelper.SHORTCUT_DEFAULT_PAGE)) {
+                mWorkspace.moveToDefaultScreen(true);
+            }
+            return;
+        }
+
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             // also will cancel mWaitingForResult.
@@ -1940,7 +1957,7 @@ public class Launcher extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (!mWorkspace.isInOverviewMode() && !isAllAppsVisible()) {
-            mWorkspace.enterOverviewMode();
+            mWorkspace.enterOverviewMode(true);
         }
         return false;
     }
@@ -2656,7 +2673,7 @@ public class Launcher extends Activity
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-                if (mWorkspace.enterOverviewMode()) {
+                if (mWorkspace.enterOverviewMode(true)) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2690,7 +2707,7 @@ public class Launcher extends Activity
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
                 } else {
-                    mWorkspace.enterOverviewMode();
+                    mWorkspace.enterOverviewMode(true);
                 }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
@@ -4431,7 +4448,7 @@ public class Launcher extends Activity
         if (v == null) {
             cb = new Runnable() {
                 public void run() {
-                    mWorkspace.enterOverviewMode();
+                    mWorkspace.enterOverviewMode(true);
                 }
             };
         }

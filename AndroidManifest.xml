@@ -120,6 +120,19 @@
         <activity android:name="com.slim.slimlauncher.settings.SettingsActivity"
             android:theme="@style/SettingsTheme" />
 
+        <!-- Launcher shortcuts -->
+        <activity android:name=".CreateShortcut"
+            android:label="@string/shortcut_picker_title"
+            android:icon="@mipmap/ic_launcher_home"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- Debugging tools -->
         <activity
             android:name="com.slim.slimlauncher.MemoryDumpActivity"

@@ -118,6 +118,14 @@
         launcher:screen="1"
         launcher:x="1"
         launcher:y="0" />
+    <shortcut
+        launcher:uri="#Intent;launchFlags=0x10400000;component=com.slim.slimlauncher/.Launcher;sourceBounds=276%201155%20540%201455;B.slim_launcher_shortcut=true;S.shortcut_value=**open_app_drawer**;end"
+        launcher:icon="@drawable/ic_allapps"
+        launcher:title="@string/all_apps_button_label"
+        launcher:container="-101"
+        launcher:screen="2"
+        launcher:x="2"
+        launcher:y="0" />
     <favorite
         launcher:packageName="com.android.chrome"
         launcher:className="com.google.android.apps.chrome.Main"

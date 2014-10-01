@@ -18,6 +18,8 @@
     <string name="scroll_wallpaper_title">Scroll wallpaper</string>
     <string name="scroll_wallpaper_summary">Pan wallpaper while scrolling homescreens</string>
 
+    <string name="shortcut_picker_title">SlimLauncher shortcuts</string>
+
     <!-- Homescreen -->
     <string name="homescreen_title">Homescreen</string>
     <string name="general_title">General</string>

@@ -1599,7 +1599,7 @@ public class Workspace extends SmoothPagedView
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                enterOverviewMode();
+                enterOverviewMode(true);
             }
         };
         return listener;
@@ -2021,11 +2021,11 @@ public class Workspace extends SmoothPagedView
         return mState == State.OVERVIEW;
     }
 
-    public boolean enterOverviewMode() {
+    public boolean enterOverviewMode(boolean animated) {
         if (mTouchState != TOUCH_STATE_REST) {
             return false;
         }
-        enableOverviewMode(true, -1, true);
+        enableOverviewMode(true, -1, animated);
         return true;
     }
 
@@ -4696,7 +4696,7 @@ public class Workspace extends SmoothPagedView
         } else if (gestureAction.equals("open_app_drawer")) {
             mLauncher.showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
         } else if (gestureAction.equals("show_previews")) {
-            enterOverviewMode();
+            enterOverviewMode(true);
         } else if (gestureAction.equals("show_settings")) {
             Intent preferences = new Intent().setClass(mLauncher, SettingsActivity.class);
             preferences.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP

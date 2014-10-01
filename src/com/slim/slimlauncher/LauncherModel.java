@@ -898,57 +898,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Checks whether there is an all apps shortcut in the database
-     */
-    static boolean hasAllAppsShortcut() {
-        for (ItemInfo info : sBgWorkspaceItems) {
-            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks whether there is more than 1 all apps shortcut in the database
-     */
-    static boolean hasMultipleAllAppsShortcuts() {
-        boolean foundOne = false;
-        for (ItemInfo info : sBgWorkspaceItems) {
-            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
-                if (!foundOne) {
-                    foundOne = true;
-                } else {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Add an all apps shortcut to the database if there aren't any already
-     */
-    private ItemInfo addAllAppsShortcutIfNecessary() {
-        if (hasAllAppsShortcut()) return null;
-
-        DeviceProfile grid = mApp.getDynamicGrid().getDeviceProfile();
-        int allAppsIndex = grid.hotseatAllAppsRank;
-
-        ShortcutInfo allAppsShortcut = new ShortcutInfo();
-        allAppsShortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS;
-        allAppsShortcut.title = mApp.getContext().getResources()
-                .getString(R.string.all_apps_button_label);
-        allAppsShortcut.container = ItemInfo.NO_ID;
-        allAppsShortcut.spanX = 1;
-        allAppsShortcut.spanY = 1;
-        LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
-                LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
-
-        return allAppsShortcut;
-    }
-
-    /**
      * Creates a new unique child id, for a given cell span across all layouts.
      */
     static int getCellLayoutChildId(
@@ -1966,19 +1915,6 @@ public class LauncherModel extends BroadcastReceiver {
                 if (mStopped) {
                     clearSBgDataStructures();
                     return false;
-                }
-
-                // Add an all apps button to the database if there isn't one already
-                ItemInfo allAppsButton = addAllAppsShortcutIfNecessary();
-                if (allAppsButton != null) {
-                    // Check if there was an icon occupying the default position and remove
-                    if (occupied.containsKey(allAppsButton.container)) {
-                        if (occupied.get(allAppsButton.container)
-                                [(int) allAppsButton.screenId][0] != null) {
-                            itemsToRemove.add(occupied.get(allAppsButton.container)
-                                    [(int) allAppsButton.screenId][0].id);
-                        }
-                    }
                 }
 
                 if (itemsToRemove.size() > 0) {

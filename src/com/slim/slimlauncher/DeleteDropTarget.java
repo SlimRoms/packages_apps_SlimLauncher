@@ -148,8 +148,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 return true;
             }
 
-            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS &&
-                    LauncherModel.hasMultipleAllAppsShortcuts()) {
+            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
                 return true;
             }
 
