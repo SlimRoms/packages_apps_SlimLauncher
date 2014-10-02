@@ -5,9 +5,6 @@ import android.os.Bundle;
 import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.preference.DoubleNumberPickerPreference;
 
-/**
- * Created by gmillz on 9/23/14.
- */
 public class DrawerFragment extends SettingsPreferenceFragment {
 
     private DoubleNumberPickerPreference mDrawerGrid;
@@ -32,7 +29,7 @@ public class DrawerFragment extends SettingsPreferenceFragment {
                     SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
                 SettingsProvider.putCellCountY(getActivity(),
                         SettingsProvider.KEY_DRAWER_GRID, mProfile.allAppsNumRows);
-                mDrawerGrid.setDefault2(mProfile.allAppsNumRows);
+                mDrawerGrid.setDefault1(mProfile.allAppsNumRows);
             }
         }
     }
