@@ -279,7 +279,7 @@ public class Launcher extends Activity
     private boolean mVisible = false;
     private boolean mHasFocus = false;
     private boolean mAttached = false;
-    private static final boolean DISABLE_CLINGS = false;
+    private static final boolean DISABLE_CLINGS = true;
     private static final boolean DISABLE_CUSTOM_CLINGS = true;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
