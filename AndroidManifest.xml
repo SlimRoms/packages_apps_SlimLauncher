@@ -19,7 +19,11 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.slim.slimlauncher">
+    package="com.slim.slimlauncher"
+    android:versionName="@string/slim_application_version"
+    android:versionCode="1000">
+
+    <original-package android:name="com.android.launcher3" />
 
     <permission
         android:name="com.slim.slimlauncher.permission.PRELOAD_WORKSPACE"
@@ -61,6 +65,7 @@
         android:icon="@mipmap/ic_launcher_home"
         android:hardwareAccelerated="true"
         android:largeHeap="@bool/config_largeHeap"
+        android:requiredForAllUsers="true"
         android:supportsRtl="true">
         <activity
             android:name="com.slim.slimlauncher.Launcher"

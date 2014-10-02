@@ -2,6 +2,7 @@
 <resources>
 
     <string name="slim_application_name">SlimLauncher</string>
+    <string name="slim_application_version" translatable="false">1.0</string>
 
     <string name="google_title">Google</string>
 
@@ -50,7 +51,7 @@
     <string name="gestures_down_gesture_title">Swipe down</string>
     <string name="gestures_pinch_gesture_title">Pinch</string>
     <string name="gestures_spread_gesture_title">Spread</string>
-    <string name="gestures_double_tap_gesture_title">Double tap</string>ing>
+    <string name="gestures_double_tap_gesture_title">Double tap</string>
 
     <string name="profile_applist_title">Apps</string>
     <string name="profile_choose_app">Choose app</string>
