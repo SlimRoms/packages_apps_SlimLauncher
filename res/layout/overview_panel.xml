@@ -43,50 +43,47 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/overview_bg_color"
-        android:paddingBottom="@dimen/overview_panel_bottom_padding"
+        android:layout_gravity="center_horizontal|bottom"
         android:paddingTop="@dimen/overview_panel_top_padding"
-        android:layout_gravity="bottom">
+        android:paddingBottom="@dimen/overview_panel_bottom_padding"
+        android:paddingLeft="@dimen/overview_panel_side_padding"
+        android:paddingRight="@dimen/overview_panel_side_padding">
 
         <TextView
             android:id="@+id/wallpaper_button"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/overview_panel_button_width"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/wallpaper_button_text"
             android:drawablePadding="4dp"
-            android:paddingLeft="60dp"
             android:drawableTop="@drawable/wallpaper_button"
             android:gravity="center_horizontal"
             android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
-            android:layout_weight="1"
-            android:textSize="12sp" />
-
+            android:textSize="12sp"/>
         <TextView
             android:id="@+id/widget_button"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/overview_panel_button_width"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/widget_button_text"
             android:drawablePadding="4dp"
             android:gravity="center_horizontal"
             android:drawableTop="@drawable/widget_button"
             android:fontFamily="sans-serif-condensed"
-            android:layout_weight="1"
             android:textAllCaps="true"
             android:textSize="12sp"/>
-
         <TextView
             android:id="@+id/settings_button"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/overview_panel_button_width"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/settings_button_text"
-            android:paddingRight="60dp"
             android:drawablePadding="4dp"
             android:gravity="center_horizontal"
             android:drawableTop="@drawable/setting_button"
             android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
+            android:textSize="12sp"/>
     </LinearLayout>
 </FrameLayout>
