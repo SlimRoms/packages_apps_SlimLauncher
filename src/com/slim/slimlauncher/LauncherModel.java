@@ -1527,25 +1527,26 @@ public class LauncherModel extends BroadcastReceiver {
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             final int countX = (int) grid.numColumns;
             final int countY = (int) grid.numRows;
+
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
-                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                if (occupied.containsKey((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                    if (occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0] != null) {
                         Log.e(TAG, "Error loading shortcut into hotseat " + item
                                 + " into position (" + item.screenId + ":" + item.cellX + ","
                                 + item.cellY + ") occupied by "
-                                + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                                + occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                                 [(int) item.screenId][0]);
-                        if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                                [(int) item.screenId][0].itemType ==
-                                LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
-                            deleteOnItemOverlap.set(true);
-                        }
                         return false;
+                    } else {
+                        ItemInfo[][] hotseatItems = occupied.get(
+                                (long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                        hotseatItems[(int) item.screenId][0] = item;
+                        return true;
                     }
                 } else {
-                    final ItemInfo[][] items = new ItemInfo[(int) grid.numHotseatIcons][1];
+                    ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
                     items[(int) item.screenId][0] = item;
                     occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
                     return true;
@@ -1554,20 +1555,13 @@ public class LauncherModel extends BroadcastReceiver {
                 // Skip further checking if it is not the hotseat or workspace container
                 return true;
             }
+
             if (!occupied.containsKey(item.screenId)) {
                 ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
                 occupied.put(item.screenId, items);
             }
-            final ItemInfo[][] screens = occupied.get(item.screenId);
-            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                    item.cellX < 0 || item.cellY < 0 ||
-                    item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
-                Log.e(TAG, "Error loading shortcut " + item
-                        + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                        + item.cellX + "," + item.cellY
-                        + ") out of screen bounds ( " + countX + "x" + countY + ")");
-                return false;
-            }
+
+            ItemInfo[][] screens = occupied.get(item.screenId);
             // Check if any workspace icons overlap with each other
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
@@ -1586,6 +1580,7 @@ public class LauncherModel extends BroadcastReceiver {
                     screens[x][y] = item;
                 }
             }
+
             return true;
         }
 
@@ -1678,7 +1673,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Intent intent = null;
 
                     while (!mStopped && c.moveToNext()) {
-                        AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(false);
+                        AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(true);
                         try {
                             int itemType = c.getInt(itemTypeIndex);
 
@@ -1760,7 +1755,6 @@ public class LauncherModel extends BroadcastReceiver {
                                         }
                                     }
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
                                     if (!checkItemPlacement(occupied, info, deleteOnItemOverlap)) {
                                         if (deleteOnItemOverlap.get()) {
                                             itemsToRemove.add(id);
@@ -1812,7 +1806,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                 }
                                 // check & update map of what's occupied
-                                deleteOnItemOverlap.set(false);
                                 if (!checkItemPlacement(occupied, folderInfo,
                                         deleteOnItemOverlap)) {
                                     if (deleteOnItemOverlap.get()) {
@@ -1879,7 +1872,6 @@ public class LauncherModel extends BroadcastReceiver {
                                         }
                                     }
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
                                     if (!checkItemPlacement(occupied, appWidgetInfo,
                                             deleteOnItemOverlap)) {
                                         if (deleteOnItemOverlap.get()) {
