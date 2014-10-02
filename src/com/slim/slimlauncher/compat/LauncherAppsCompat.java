@@ -19,8 +19,10 @@ package com.slim.slimlauncher.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.slim.slimlauncher.Utilities;
@@ -73,4 +75,13 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
+
+    public boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
+        try {
+            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
+            return info != null && info.enabled;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
 }

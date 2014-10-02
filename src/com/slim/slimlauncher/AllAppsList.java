@@ -116,7 +116,7 @@ class AllAppsList {
     /**
      * Remove the apps for the given apk identified by packageName.
      */
-    public void removePackage(String packageName, UserHandleCompat user) {
+    public void removePackage(String packageName, UserHandleCompat user, boolean clearCache) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
@@ -126,7 +126,9 @@ class AllAppsList {
                 data.remove(i);
             }
         }
-        mIconCache.remove(packageName, user);
+        if (clearCache) {
+            mIconCache.remove(packageName, user);
+        }
     }
 
     /**
