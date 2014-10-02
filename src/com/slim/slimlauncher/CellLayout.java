@@ -610,7 +610,7 @@ public class CellLayout extends ViewGroup {
         boolean hideDockLabels = SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
         boolean hideHomescreenLabels = SettingsProvider.getBoolean(mLauncher,
-                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, true);
+                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
         if (child instanceof BubbleTextView) {
             if (mIsHotseat) {
                 BubbleTextView bubbleChild = (BubbleTextView) child;
