@@ -33,4 +33,10 @@
         launcher:min="70"
         launcher:defaultValue="100"/>
 
+    <CheckBoxPreference
+        android:key="auto_rotate"
+        android:title="@string/auto_rotate_title"
+        android:defaultValue="false"
+        android:enabled="@bool/allow_rotation"/>
+
 </PreferenceScreen>
