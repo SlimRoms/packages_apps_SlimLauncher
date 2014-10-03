@@ -2039,6 +2039,10 @@ public class Launcher extends Activity
      */
     void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
             int[] cell, int[] span, int[] loc) {
+
+        // Workaround for broken widget resize mode
+        mWorkspace.snapToPageImmediately(mWorkspace.getPageIndexForScreenId(screenId) - 1);
+
         resetAddInfo();
         mPendingAddInfo.container = info.container = container;
         mPendingAddInfo.screenId = info.screenId = screenId;
