@@ -1699,18 +1699,25 @@ public class Launcher extends Activity
         super.onNewIntent(intent);
 
         if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
-            mOnResumeState = State.NONE;
             String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
             if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
-                Log.d("TEST", intent.toUri(0));
-                showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+                if (isAllAppsVisible()) {
+                    showWorkspace(true);
+                } else if (mState == State.WORKSPACE) {
+                    showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+                }
             } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
-                mWorkspace.enterOverviewMode(true);
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.exitOverviewMode(true);
+                } else {
+                    mWorkspace.enterOverviewMode(true);
+                }
             } else if (value.equals(ShortcutHelper.SHORTCUT_SETTINGS)) {
                 startSettings();
             } else if (value.equals(ShortcutHelper.SHORTCUT_DEFAULT_PAGE)) {
                 mWorkspace.moveToDefaultScreen(true);
             }
+            mOnResumeState = State.NONE;
             return;
         }
 
@@ -1730,7 +1737,7 @@ public class Launcher extends Activity
             Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+            if (mHasFocus && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                     openFolder == null) {
                 mWorkspace.moveToDefaultScreen(true);
             }
