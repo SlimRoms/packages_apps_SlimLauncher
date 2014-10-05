@@ -1,18 +1,15 @@
 package com.slim.slimlauncher.settings;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
-/**
- * Created by gmillz on 9/7/14.
- */
-public class SettingsActivity extends Activity {
+import com.slim.slimlauncher.R;
+
+import java.util.List;
+
+public class SettingsActivity extends PreferenceActivity {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new SettingsFragment()).commit();
+    public void onBuildHeaders(List<Header> target) {
+        loadHeadersFromResource(R.xml.preferences, target);
     }
 }

@@ -846,11 +846,15 @@ public class Launcher extends Activity
         }
         super.onResume();
 
+        if (!mPaused) {
+            return;
+        }
+
         // Restore the previous launcher state
-        if (mOnResumeState == State.WORKSPACE) {
-            showWorkspace(false);
-        } else if (mOnResumeState == State.APPS_CUSTOMIZE) {
+        if (mOnResumeState == State.APPS_CUSTOMIZE) {
             showAllApps(false, AppsCustomizePagedView.ContentType.Applications, false);
+        } else if (mOnResumeState == State.WORKSPACE) {
+            showWorkspace(false);
         }
         mOnResumeState = State.NONE;
 
@@ -1700,11 +1704,12 @@ public class Launcher extends Activity
 
         if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
             String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+            mOnResumeState = State.NONE;
             if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
-                if (isAllAppsVisible()) {
-                    showWorkspace(true);
-                } else if (mState == State.WORKSPACE) {
+                if (!isAllAppsVisible()) {
                     showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+                } else {
+                    showWorkspace(true);
                 }
             } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
                 if (mWorkspace.isInOverviewMode()) {
@@ -1717,7 +1722,6 @@ public class Launcher extends Activity
             } else if (value.equals(ShortcutHelper.SHORTCUT_DEFAULT_PAGE)) {
                 mWorkspace.moveToDefaultScreen(true);
             }
-            mOnResumeState = State.NONE;
             return;
         }
 
@@ -2278,6 +2282,30 @@ public class Launcher extends Activity
                     } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
                         toggleShowWeightWatcher();
                         return;
+                    } else if (shortcutClass.equals(Launcher.class.getName())) {
+                        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+                            String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+                            mOnResumeState = State.NONE;
+                            if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
+                                if (!isAllAppsVisible()) {
+                                    showAllApps(true,
+                                            AppsCustomizePagedView.ContentType.Applications, false);
+                                } else {
+                                    showWorkspace(true);
+                                }
+                            } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
+                                if (mWorkspace.isInOverviewMode()) {
+                                    mWorkspace.exitOverviewMode(true);
+                                } else {
+                                    mWorkspace.enterOverviewMode(true);
+                                }
+                            } else if (value.equals(ShortcutHelper.SHORTCUT_SETTINGS)) {
+                                startSettings();
+                            } else if (value.equals(ShortcutHelper.SHORTCUT_DEFAULT_PAGE)) {
+                                mWorkspace.moveToDefaultScreen(true);
+                            }
+                        }
+                        return;
                     }
                 }
 
@@ -2771,6 +2799,10 @@ public class Launcher extends Activity
 
     public boolean isAllAppsVisible() {
         return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
+    }
+
+    public boolean isWorkspaceVisible() {
+        return (mState == State.WORKSPACE) || (mOnResumeState == State.WORKSPACE);
     }
 
     /**

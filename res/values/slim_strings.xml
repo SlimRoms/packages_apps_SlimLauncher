@@ -47,7 +47,6 @@
 
     <!-- Gestures -->
     <string name="gestures_title">Gestures</string>
-    <string name="gestures_summary">Assign actions to homescreen gestures</string>
     <string name="gesture_default">nothing</string>
     <string name="gestures_up_gesture_title">Swipe up</string>
     <string name="gestures_down_gesture_title">Swipe down</string>

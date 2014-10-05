@@ -6,6 +6,8 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -24,15 +26,15 @@ public class SeekBarDialogPreference extends DialogPreference implements SeekBar
         TypedArray prefType = context.obtainStyledAttributes(attrs,
                 R.styleable.Preference, 0, 0);
         TypedArray seekBarType = context.obtainStyledAttributes(attrs,
-                R.styleable.SeekBarDialogPreference, 0, 0);
+                R.styleable.SeekBarPreference, 0, 0);
 
         mMax = prefType.getInt(R.styleable.Preference_max, 100);
         mMin = prefType.getInt(R.styleable.Preference_min, 0);
 
         mDefault = prefType.getInt(R.styleable.Preference_defaultValue, mMin);
 
-        mPrefix = seekBarType.getString(R.styleable.SeekBarDialogPreference_prefix);
-        mSuffix = seekBarType.getString(R.styleable.SeekBarDialogPreference_suffix);
+        mPrefix = seekBarType.getString(R.styleable.SeekBarPreference_prefix);
+        mSuffix = seekBarType.getString(R.styleable.SeekBarPreference_suffix);
         if (mPrefix == null) {
             mPrefix = "";
         }
@@ -42,6 +44,34 @@ public class SeekBarDialogPreference extends DialogPreference implements SeekBar
 
         prefType.recycle();
         seekBarType.recycle();
+    }
+
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        LayoutInflater inflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.preference, null);
+
+        TextView name = (TextView) view.findViewById(R.id.title);
+        if (name != null && getTitle() != null) {
+            name.setText(getTitle());
+        }
+
+        TextView summary = (TextView) view.findViewById(R.id.summary);
+        if (summary != null && getSummary() != null) {
+            summary.setText(getSummary());
+        } else if (summary != null) {
+            summary.setVisibility(View.GONE);
+        }
+
+        ImageView image = (ImageView) view.findViewById(R.id.icon);
+        if (image.getDrawable() == null) {
+            image.setVisibility(View.GONE);
+        } else if (getIcon() != null) {
+            image.setImageDrawable(getIcon());
+        }
+
+        return view;
     }
 
     @Override

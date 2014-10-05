@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <com.slim.slimlauncher.preference.SeekBarDialogPreference
+        android:key="icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100"/>
+
+    <CheckBoxPreference
+        android:key="auto_rotate"
+        android:title="@string/auto_rotate_title"
+        android:defaultValue="false"
+        android:enabled="@bool/allow_rotation"/>
+
+</PreferenceScreen>

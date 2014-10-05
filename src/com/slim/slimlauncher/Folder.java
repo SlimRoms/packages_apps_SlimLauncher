@@ -31,9 +31,7 @@ import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,8 +41,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -52,7 +48,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.slim.slimlauncher.FolderInfo.FolderListener;
-import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
@@ -1144,11 +1139,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     // to correspond to the animation of the icon back into the folder. This is
     public void hideItem(ShortcutInfo info) {
         View v = getViewForInfo(info);
-        v.setVisibility(INVISIBLE);
+        if ( v!= null) {
+            v.setVisibility(INVISIBLE);
+        }
     }
     public void showItem(ShortcutInfo info) {
         View v = getViewForInfo(info);
-        v.setVisibility(VISIBLE);
+        if (v != null) {
+            v.setVisibility(VISIBLE);
+        }
     }
 
     public void onAdd(ShortcutInfo item) {

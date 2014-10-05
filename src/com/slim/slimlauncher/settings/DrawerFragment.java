@@ -11,7 +11,7 @@ public class DrawerFragment extends SettingsPreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, getString(R.string.drawer_title));
+        super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.drawer_preferences);
 

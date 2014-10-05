@@ -43,6 +43,7 @@ public class CreateShortcut extends Activity {
                                 CreateShortcut.this, dialogValues[i]);
 
                         Intent intent = new Intent();
+
                         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
                         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, dialogEntries[i]);
                         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);

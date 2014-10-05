@@ -9,7 +9,7 @@ public class DockFragment extends SettingsPreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, getString(R.string.dock_title));
+        super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.dock_preferences);
 

@@ -22,7 +22,9 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -66,6 +68,34 @@ public class DoubleNumberPickerPreference extends DialogPreference {
     }
 
     @Override
+    protected View onCreateView(ViewGroup parent) {
+        LayoutInflater inflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.preference, null);
+
+        TextView name = (TextView) view.findViewById(R.id.title);
+        if (name != null && getTitle() != null) {
+            name.setText(getTitle());
+        }
+
+        TextView summary = (TextView) view.findViewById(R.id.summary);
+        if (summary != null && getSummary() != null) {
+            summary.setText(getSummary());
+        } else if (summary != null) {
+            summary.setVisibility(View.GONE);
+        }
+
+        ImageView image = (ImageView) view.findViewById(R.id.icon);
+        if (image.getDrawable() == null) {
+            image.setVisibility(View.GONE);
+        } else if (getIcon() != null) {
+            image.setImageDrawable(getIcon());
+        }
+
+        return view;
+    }
+
+    @Override
     protected View onCreateDialogView() {
         int max1 = mMax1;
         int min1 = mMin1;
@@ -102,10 +132,12 @@ public class DoubleNumberPickerPreference extends DialogPreference {
         mNumberPicker1.setMinValue(min1);
         mNumberPicker1.setValue(getPersistedValue(1));
         mNumberPicker1.setWrapSelectorWheel(false);
+        mNumberPicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mNumberPicker2.setMaxValue(max2);
         mNumberPicker2.setMinValue(min2);
         mNumberPicker2.setValue(getPersistedValue(2));
         mNumberPicker2.setWrapSelectorWheel(false);
+        mNumberPicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         // Titles
         TextView pickerTitle1 = (TextView) view.findViewById(R.id.picker_title_1);
@@ -114,18 +146,6 @@ public class DoubleNumberPickerPreference extends DialogPreference {
         if (pickerTitle1 != null && pickerTitle2 != null) {
             pickerTitle1.setText(mPickerTitle1);
             pickerTitle2.setText(mPickerTitle2);
-        }
-
-        // No keyboard popup
-        EditText textInput1 = (EditText) mNumberPicker1.findViewById(R.id.numberpicker_input);
-        EditText textInput2 = (EditText) mNumberPicker2.findViewById(R.id.numberpicker_input);
-        if (textInput1 != null && textInput2 != null) {
-            textInput1.setCursorVisible(false);
-            textInput1.setFocusable(false);
-            textInput1.setFocusableInTouchMode(false);
-            textInput2.setCursorVisible(false);
-            textInput2.setFocusable(false);
-            textInput2.setFocusableInTouchMode(false);
         }
 
         return view;

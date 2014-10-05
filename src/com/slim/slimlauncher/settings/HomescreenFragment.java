@@ -12,7 +12,7 @@ public class HomescreenFragment extends SettingsPreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, getString(R.string.homescreen_title));
+        super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.homescreen_preferences);
 

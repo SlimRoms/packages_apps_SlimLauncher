@@ -1,42 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
+    <header
+        android:fragment="com.slim.slimlauncher.settings.HomescreenFragment"
         android:key="key_homescreen"
         android:title="@string/homescreen_title" />
 
-    <Preference
+    <header
+        android:fragment="com.slim.slimlauncher.settings.DockFragment"
         android:key="key_dock"
         android:title="@string/dock_title" />
 
-    <Preference
+    <header
+        android:fragment="com.slim.slimlauncher.settings.DrawerFragment"
         android:key="key_drawer"
         android:title="@string/drawer_title" />
 
-    <Preference
+    <header
+        android:fragment="com.slim.slimlauncher.settings.FolderFragment"
         android:key="key_folder"
         android:title="@string/folder_title" />
 
-    <PreferenceScreen
+    <header
+        android:fragment="com.slim.slimlauncher.settings.GestureFragment"
         android:key="gestures"
-        android:title="@string/gestures_title"
-        android:summary="@string/gestures_summary" />
+        android:title="@string/gestures_title" />
 
-    <PreferenceCategory android:title="@string/general_title" />
+    <header
+        android:fragment="com.slim.slimlauncher.settings.GeneralFragment"
+        android:key="key_general"
+        android:title="@string/general_title" />
 
-    <com.slim.slimlauncher.preference.SeekBarDialogPreference
-        android:key="icon_size"
-        android:title="@string/icon_size_title"
-        launcher:max="130"
-        launcher:min="70"
-        launcher:defaultValue="100"/>
-
-    <CheckBoxPreference
-        android:key="auto_rotate"
-        android:title="@string/auto_rotate_title"
-        android:defaultValue="false"
-        android:enabled="@bool/allow_rotation"/>
-
-</PreferenceScreen>
+</preference-headers>

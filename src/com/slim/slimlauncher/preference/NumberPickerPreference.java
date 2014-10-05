@@ -2,13 +2,18 @@ package com.slim.slimlauncher.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.slim.slimlauncher.R;
 
@@ -39,6 +44,33 @@ public class NumberPickerPreference extends DialogPreference {
         numberPickerType.recycle();
     }
 
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        LayoutInflater inflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.preference, null);
+
+        TextView name = (TextView) view.findViewById(R.id.title);
+        if (name != null && getTitle() != null) {
+            name.setText(getTitle());
+        }
+
+        TextView summary = (TextView) view.findViewById(R.id.summary);
+        if (summary != null && getSummary() != null) {
+            summary.setText(getSummary());
+        } else if (summary != null) {
+            summary.setVisibility(View.GONE);
+        }
+
+        ImageView image = (ImageView) view.findViewById(R.id.icon);
+        if (image.getDrawable() == null) {
+            image.setVisibility(View.GONE);
+        } else if (getIcon() != null) {
+            image.setImageDrawable(getIcon());
+        }
+
+        return view;
+    }
 
     protected void onAttachedToActivity() {
         // External values
@@ -88,14 +120,8 @@ public class NumberPickerPreference extends DialogPreference {
         mNumberPicker.setMinValue(min);
         mNumberPicker.setValue(getPersistedInt(mDefault));
         mNumberPicker.setWrapSelectorWheel(false);
+        mNumberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        // No keyboard popup
-        EditText textInput = (EditText) mNumberPicker.findViewById(R.id.numberpicker_input);
-        if (textInput != null) {
-            textInput.setCursorVisible(false);
-            textInput.setFocusable(false);
-            textInput.setFocusableInTouchMode(false);
-        }
         return view;
     }
 

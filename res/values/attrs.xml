@@ -178,7 +178,7 @@
         <attr name="pickerTitle2" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="SeekBarDialogPreference">
+    <declare-styleable name="SeekBarPreference">
         <attr name="prefix" format="string" />
         <attr name="suffix" format="string" />
     </declare-styleable>

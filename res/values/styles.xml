@@ -169,13 +169,78 @@
 
     <style name="NumberPickerInputText">
         <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:textColorHighlight">@android:color/primary_text_light</item>
-        <item name="android:textColorHint">@android:color/primary_text_light</item>
-        <item name="android:textColorLink">@android:color/primary_text_light</item>
+        <item name="android:textColorHighlightInverse">@android:color/transparent</item>
+        <item name="android:textColorHighlight">@android:color/transparent</item>
+        <item name="android:textColorHint">@android:color/transparent</item>
+        <item name="android:textColorLink">@android:color/transparent</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="SettingsTheme" parent="android:Theme.Holo.Light" />
+    <style name="SettingsTheme" parent="android:Theme.Holo">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/settings_bg_color</item>
+        <item name="android:colorBackground">@color/settings_bg_color</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:actionBarStyle">@style/SettingsActionBar</item>
+        <item name="android:dialogPreferenceStyle">@style/SettingsDialogPreferenceTheme</item>
+        <item name="android:dialogTheme">@style/SettingsDialogTheme</item>
+        <item name="android:alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="android:alertDialogStyle">@style/AlertDialogStyle</item>
+
+        <item name="android:listDividerAlertDialog">@android:color/white</item>
+    </style>
+
+    <style name="AlertDialogStyle">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:fullDark">@color/settings_bg_color</item>
+        <item name="android:topDark">@color/settings_dialog_top_color</item>
+        <item name="android:centerDark">@color/settings_bg_color</item>
+        <item name="android:bottomDark">@color/settings_dialog_top_color</item>
+        <item name="android:fullBright">@color/settings_bg_color</item>
+        <item name="android:topBright">@color/settings_bg_color</item>
+        <item name="android:centerBright">@color/settings_bg_color</item>
+        <item name="android:bottomBright">@color/settings_dialog_top_color</item>
+        <item name="android:bottomMedium">@color/settings_dialog_top_color</item>
+        <item name="android:centerMedium">@color/settings_bg_color</item>
+    </style>
+
+    <style name="AlertDialogTheme">
+        <item name="android:windowBackground">@color/settings_header</item>
+        <item name="android:windowTitleStyle">@style/SettingsDialogTitle</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="SettingsDialogTitle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:background">@color/settings_dialog_top_color</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.DialogWindowTitle</item>
+    </style>
+
+    <style name="SettingsActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/settings_header</item>
+        <item name="android:titleTextStyle">@style/SettingsActionBarTextStyle</item>
+    </style>
+
+    <style name="SettingsActionBarTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="SettingsDialogPreferenceTheme">
+        <item name="android:positiveButtonText">@android:string/ok</item>
+        <item name="android:negativeButtonText">@android:string/cancel</item>
+        <item name="android:windowBackground">@color/settings_bg_color</item>
+        <item name="android:background">@color/settings_bg_color</item>
+    </style>
+
+    <style name="SettingsDialogTheme" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:colorBackground">@color/settings_bg_color</item>
+        <item name="android:background">@color/settings_bg_color</item>
+        <item name="android:windowBackground">@color/settings_bg_color</item>
+    </style>
 
 </resources>

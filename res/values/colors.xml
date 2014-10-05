@@ -25,6 +25,10 @@
 
     <color name="overview_bg_color">#FF485459</color>
 
+    <color name="settings_bg_color">#FF485459</color>
+    <color name="settings_dialog_top_color">#FF242A2C</color>
+    <color name="settings_header">#5000</color>
+
     <color name="bubble_dark_background">#20000000</color>
 
     <color name="appwidget_error_color">#FCCC</color>

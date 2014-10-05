@@ -27,7 +27,7 @@ public class GestureFragment extends SettingsPreferenceFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, getString(R.string.gestures_title));
+        super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.gesture_fragment);
 
