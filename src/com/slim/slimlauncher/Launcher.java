@@ -4190,8 +4190,7 @@ public class Launcher extends Activity
 
     public boolean isRotationEnabled() {
         boolean enableRotation = sForceEnableRotation ||
-                (getResources().getBoolean(R.bool.allow_rotation) &&
-                SettingsProvider.getBoolean(this, SettingsProvider.KEY_AUTO_ROTATE, false));
+                getResources().getBoolean(R.bool.allow_rotation);
         return enableRotation;
     }
     public void lockScreenOrientation() {
@@ -4211,8 +4210,6 @@ public class Launcher extends Activity
                     }
                 }, mRestoreScreenOrientationDelay);
             }
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
     }
 

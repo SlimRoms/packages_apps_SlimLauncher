@@ -43,8 +43,6 @@
 
     <string name="icon_size_title">Icon size</string>
 
-    <string name="auto_rotate_title">Auto-rotate screen</string>
-
     <!-- Gestures -->
     <string name="gestures_title">Gestures</string>
     <string name="gesture_default">nothing</string>
