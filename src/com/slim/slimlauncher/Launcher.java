@@ -1702,7 +1702,8 @@ public class Launcher extends Activity
         }
         super.onNewIntent(intent);
 
-        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)  &&
+                Intent.ACTION_VIEW.equals(intent.getAction())) {
             String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
             mOnResumeState = State.NONE;
             if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
