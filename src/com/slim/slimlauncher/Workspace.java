@@ -1373,7 +1373,6 @@ public class Workspace extends SmoothPagedView
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
-                mLauncher.resetQSBScroll();
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
