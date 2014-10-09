@@ -692,7 +692,7 @@ public class Launcher extends Activity
     private static void readConfiguration(Context context, LocaleConfiguration configuration) {
         DataInputStream in = null;
         try {
-            in = new DataInputStream(context.openFileInput(PREFERENCES));
+            in = new DataInputStream(context.openFileInput(LauncherFiles.LAUNCHER_PREFERENCES));
             configuration.locale = in.readUTF();
             configuration.mcc = in.readInt();
             configuration.mnc = in.readInt();
@@ -714,7 +714,8 @@ public class Launcher extends Activity
     private static void writeConfiguration(Context context, LocaleConfiguration configuration) {
         DataOutputStream out = null;
         try {
-            out = new DataOutputStream(context.openFileOutput(PREFERENCES, MODE_PRIVATE));
+            out = new DataOutputStream(context.openFileOutput(
+                    LauncherFiles.LAUNCHER_PREFERENCES, MODE_PRIVATE));
             out.writeUTF(configuration.locale);
             out.writeInt(configuration.mcc);
             out.writeInt(configuration.mnc);
@@ -723,7 +724,7 @@ public class Launcher extends Activity
             // Ignore
         } catch (IOException e) {
             //noinspection ResultOfMethodCallIgnored
-            context.getFileStreamPath(PREFERENCES).delete();
+            context.getFileStreamPath(LauncherFiles.LAUNCHER_PREFERENCES).delete();
         } finally {
             if (out != null) {
                 try {

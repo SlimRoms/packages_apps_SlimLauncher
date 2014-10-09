@@ -207,7 +207,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     }
 
     public static String getSharedPreferencesKey() {
-        return SHARED_PREFERENCES_KEY;
+        return LauncherFiles.SHARED_PREFERENCES_KEY;
     }
 
     DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
