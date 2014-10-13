@@ -49,3 +49,5 @@
 -keep class com.slim.slimlauncher.MemoryDumpActivity {
   *;
 }
+
+-keep class com.slim.slimlauncher.settings.**

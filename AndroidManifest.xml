@@ -23,7 +23,12 @@
     android:versionName="@string/slim_application_version"
     android:versionCode="1000">
 
-    <original-package android:name="com.android.launcher3" />
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <permission
         android:name="com.slim.slimlauncher.permission.PRELOAD_WORKSPACE"
