@@ -361,11 +361,7 @@ public class LauncherProvider extends ContentProvider {
     private static int getDefaultWorkspaceResourceId() {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        if (LauncherAppState.isDisableAllApps()) {
-            return grid.defaultNoAllAppsLayoutId;
-        } else {
-            return grid.defaultLayoutId;
-        }
+        return grid.defaultLayoutId;
     }
 
     private static interface ContentValuesCallback {
@@ -400,6 +396,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_PARTNER_FOLDER = "partner-folder";
         private static final String TAG_EXTRA = "extra";
         private static final String TAG_INCLUDE = "include";
+        private static final String TAG_FOLDER_ITEMS = "folderitems";
 
         // Style attrs -- "Favorite"
         private static final String ATTR_CLASS_NAME = "className";
@@ -416,6 +413,7 @@ public class LauncherProvider extends ContentProvider {
 
         // Style attrs -- "Include"
         private static final String ATTR_WORKSPACE = "workspace";
+        private static final String ATTR_FOLDER_ITEMS = "folderItems";
 
         // Style attrs -- "Extra"
         private static final String ATTR_KEY = "key";
@@ -1589,7 +1587,10 @@ public class LauncherProvider extends ContentProvider {
                         folderItems.add(id);
                     }
                 } else if (TAG_INCLUDE.equals(tag) && folderId >= 0) {
-                    addToFolder(db, res, parser, folderItems, folderId);
+                    final int resId = getAttributeResourceValue(parser, ATTR_FOLDER_ITEMS, 0);
+                    XmlResourceParser itemsParser = res.getXml(resId);
+                    beginDocument(itemsParser, TAG_FOLDER_ITEMS);
+                    addToFolder(db, res, itemsParser, folderItems, folderId);
                 } else {
                     throw new RuntimeException("Folders can contain only shortcuts");
                 }

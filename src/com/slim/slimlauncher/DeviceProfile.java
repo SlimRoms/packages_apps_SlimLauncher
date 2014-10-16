@@ -76,7 +76,6 @@ public class DeviceProfile {
     private float hotseatIconSize;
 
     int defaultLayoutId;
-    int defaultNoAllAppsLayoutId;
 
     boolean isLandscape;
     boolean isTablet;
@@ -147,7 +146,7 @@ public class DeviceProfile {
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
     DeviceProfile(String n, float w, float h, float r, float c,
-                  float is, float its, float hs, float his, int dlId, int dnalId) {
+                  float is, float its, float hs, float his, int dlId) {
         // Ensure that we have an odd number of hotseat items (since we need to place all apps)
         if (!LauncherAppState.isDisableAllApps() && hs % 2 == 0) {
             throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
@@ -163,7 +162,6 @@ public class DeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
-        defaultNoAllAppsLayoutId = dnalId;
     }
 
     DeviceProfile() {
@@ -225,9 +223,6 @@ public class DeviceProfile {
 
         // Snap to the closest default layout id
         defaultLayoutId = closestProfile.defaultLayoutId;
-
-        // Snap to the closest default no all-apps layout id
-        defaultNoAllAppsLayoutId = closestProfile.defaultNoAllAppsLayoutId;
 
         // Interpolate the icon size
         points.clear();
