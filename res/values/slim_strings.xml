@@ -53,6 +53,13 @@
     <string name="gestures_spread_gesture_title">Spread</string>
     <string name="gestures_double_tap_gesture_title">Double tap</string>
 
+    <string name="gesture_target_nothing">Nothing</string>
+    <string name="gesture_target_homescreen">Go to default homescreen</string>
+    <string name="gesture_target_drawer">Open app drawer</string>
+    <string name="gesture_target_previews">Show previews</string>
+    <string name="gesture_target_settings">Open launcher settings</string>
+    <string name="gesture_target_custom">Custom</string>
+
     <string name="profile_applist_title">Apps</string>
     <string name="profile_choose_app">Choose app</string>
     <string name="profiles_add">Add</string>

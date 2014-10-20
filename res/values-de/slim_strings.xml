@@ -44,6 +44,13 @@
     <string name="gestures_spread_gesture_title">Auseinanderziehen</string>
     <string name="gestures_double_tap_gesture_title">Zweifaches Tippen</string>
 
+    <string name="gesture_target_nothing">Nichts</string>
+    <string name="gesture_target_homescreen">Zum Standardhomescreen gehen</string>
+    <string name="gesture_target_drawer">App-Drawer öffnen</string>
+    <string name="gesture_target_previews">Vorschauen anzeigen</string>
+    <string name="gesture_target_settings">Launcher Einstellungen öffnen</string>
+    <string name="gesture_target_custom">Benutzerdefiniert</string>
+
     <string name="profile_choose_app">App auswählen</string>
     <string name="profiles_add">Hinzufügen</string>
     <string name="picker_activities">Aktionen</string>
