@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="default_string">Standard</string>
+    <string name="reset_string">Zurücksetzen</string>
+    <string name="set_string">Einstellen</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Standardseite</string>
+
+    <string name="launcher_settings_title">Launcher Einstellungen</string>
+    <string name="error_message_title">Fehler</string>
+
+    <string name="scroll_wallpaper_title">Hintergrund blättern</string>
+    <string name="scroll_wallpaper_summary">Hintergrund beim Scrollen auf dem Homescreen mitbewegen</string>
+
+    <string name="shortcut_picker_title">SlimLauncher Verknüpfungen</string>
+
+    <!-- Homescreen -->
+    <string name="general_title">Allgemein</string>
+
+    <string name="hide_icon_labels_title">Symbolbezeichnung ausblenden</string>
+    <string name="hide_icon_labels_drawer_summary">Beschriftung unter App-Symbolen im Drawer ausblenden</string>
+    <string name="hide_icon_labels_homescreen_summary">Beschriftung unter App-Symbolen auf dem Homescreen ausblenden</string>
+    <string name="hide_icon_labels_dock_summary">Beschriftung unter App-Symbolen in der Dockleiste ausblenden</string>
+
+    <string name="dock_icons_title">Dock-Symbole</string>
+    <string name="dock_icons_summary">Anzahl der Symbole im Dock</string>
+
+    <string name="show_search_bar_title">Suchleiste anzeigen</string>
+    <string name="grid_size_title">Rastergröße</string>
+    <string name="grid_size_summary">Anzahl der Zeilen/Spalten auswählen</string>
+    <string name="homescreen_workspace_rows_title">Zeilen</string>
+    <string name="homescreen_workspace_columns_title">Spalten</string>
+
+    <string name="icon_size_title">Symbol-Größe</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gesten</string>
+    <string name="gesture_default">Nichts</string>
+    <string name="gestures_up_gesture_title">Nach oben wischen</string>
+    <string name="gestures_down_gesture_title">Nach unten wischen</string>
+    <string name="gestures_pinch_gesture_title">Kneifen</string>
+    <string name="gestures_spread_gesture_title">Auseinanderziehen</string>
+    <string name="gestures_double_tap_gesture_title">Zweifaches Tippen</string>
+
+    <string name="profile_choose_app">App auswählen</string>
+    <string name="profiles_add">Hinzufügen</string>
+    <string name="picker_activities">Aktionen</string>
+    <string name="select_custom_app_title">Benutzerdefinierte App wählen</string>
+    <string name="select_custom_activity_title">Eine benutzerdefinierte Aktion wählen</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Farbwähler</string>
+    <string name="press_color_to_apply">Drücken Sie auf eine Farbe zum Anwenden</string>
+    <string name="set">Festlegen</string>
+
+    <!-- Folder -->
+    <string name="folder_title">Ordner</string>
+    <string name="folder_background_color_title">Hintergrundfarbe</string>
+    <string name="hide_folder_name_title">Ordnernamen ausblenden</string>
+    <string name="hide_folder_name_summary">Ordnernamen bei geöffnetem Ordner ausblenden</string>
+
+</resources>
