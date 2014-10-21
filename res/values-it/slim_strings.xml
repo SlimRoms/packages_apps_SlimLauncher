@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 SlimRoms
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources>
+    <string name="default_string">Predefinito</string>
+    <string name="reset_string">Resetta</string>
+    <string name="set_string">Imposta</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Schermata predefinita</string>
+
+    <string name="launcher_settings_title">Impostazioni Launcher</string>
+    <string name="error_message_title">Errore</string>
+
+    <string name="scroll_wallpaper_title">Scorrimento sfondo</string>
+    <string name="scroll_wallpaper_summary">Lo sfondo scorre con le schermate della home</string>
+
+    <string name="shortcut_picker_title">Collegamenti SlimLauncher</string>
+
+    <string name="shortcut_action_launcher_apps">Tutte le apps</string>
+    <string name="shortcut_action_launcher_overview">Modalità revisione</string>
+    <string name="shortcut_action_launcher_settings">Impostazioni Launcher</string>
+    <string name="shortcut_action_launcher_homescreen">Schermata home predefinita</string>
+
+    <!-- Homescreen -->
+    <string name="homescreen_title">Schermata Home</string>
+    <string name="general_title">Generale</string>
+    <string name="dock_title">Dock</string>
+    <string name="drawer_title">Drawer</string>
+
+    <string name="hide_icon_labels_title">Nascondi etichette icona</string>
+    <string name="hide_icon_labels_drawer_summary">Le etichette delle icone nel drawer non saranno visibili</string>
+    <string name="hide_icon_labels_homescreen_summary">Nascondi etichette schermate home</string>
+    <string name="hide_icon_labels_dock_summary">Nascondi etichette dock</string>
+
+    <string name="dock_icons_title">Icone Dock</string>
+    <string name="dock_icons_summary">Numero di icone nella dock</string>
+
+    <string name="show_search_bar_title">Mostra barra di ricerca</string>
+    <string name="grid_size_title">Dimensione griglia</string>
+    <string name="grid_size_summary">Numero di righe e colonne</string>
+    <string name="homescreen_workspace_rows_title">Righe</string>
+    <string name="homescreen_workspace_columns_title">Colonne</string>
+
+    <string name="icon_size_title">Dimensione icone</string>
+
+    <!-- Icon Pack -->
+    <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
+    <string name="default_iconpack_title">Icone predefinite</string>
+    <string name="icon_packs_title">Pacchetti icone</string>
+    <string name="no_iconpacks_summary">Nessun pacchetto icone installato</string>
+    <string name="pref_icon_pack_title">Pacchetto icone</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gesti</string>
+    <string name="gesture_default">Niente</string>
+    <string name="gestures_up_gesture_title">Trascina su</string>
+    <string name="gestures_down_gesture_title">Trascina giù</string>
+    <string name="gestures_pinch_gesture_title">Pinch</string>
+    <string name="gestures_spread_gesture_title">Allarga</string>
+    <string name="gestures_double_tap_gesture_title">Doppio tocco</string>
+
+    <string name="gesture_target_nothing">Niente</string>
+    <string name="gesture_target_homescreen">Vai alla schermata home predefinita</string>
+    <string name="gesture_target_drawer">Apri drawer applicazioni</string>
+    <string name="gesture_target_previews">Mostra anteprime</string>
+    <string name="gesture_target_settings">Apri impostazioni launcher</string>
+    <string name="gesture_target_custom">Personalizzato</string>
+
+    <string name="profile_applist_title">Applicazioni</string>
+    <string name="profile_choose_app">Scegli applicazione</string>
+    <string name="profiles_add">Aggiungi</string>
+    <string name="picker_activities">Attività</string>
+    <string name="select_custom_app_title">Seleziona app personalizzata</string>
+    <string name="select_custom_activity_title">Seleziona attività personalizzata</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Campiona colore</string>
+    <string name="press_color_to_apply">Premi sul colore qui sotto per applicare</string>
+    <string name="set">Imposta</string>
+
+    <!-- Folders -->
+    <string name="folder_title">Cartelle</string>
+    <string name="folder_background_color_title">Colore sfondo</string>
+    <string name="hide_folder_name_title">Nascondi nome cartella</string>
+    <string name="hide_folder_name_summary">Non mostrare il nome della cartella quando è aperta</string>
+</resources>

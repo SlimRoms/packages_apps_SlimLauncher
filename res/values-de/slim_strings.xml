@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<!-- Copyright (C) 2014 SlimRoms
 
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources>
     <string name="default_string">Standard</string>
     <string name="reset_string">Zurücksetzen</string>
     <string name="set_string">Einstellen</string>
@@ -15,6 +29,11 @@
     <string name="scroll_wallpaper_summary">Hintergrund beim Scrollen auf dem Homescreen mitbewegen</string>
 
     <string name="shortcut_picker_title">SlimLauncher Verknüpfungen</string>
+
+    <string name="shortcut_action_launcher_apps">Alle Apps</string>
+    <string name="shortcut_action_launcher_overview">Übersichtsmodus</string>
+    <string name="shortcut_action_launcher_settings">Launcher Einstellungen</string>
+    <string name="shortcut_action_launcher_homescreen">Standard-Homescreen</string>
 
     <!-- Homescreen -->
     <string name="general_title">Allgemein</string>
@@ -34,6 +53,13 @@
     <string name="homescreen_workspace_columns_title">Spalten</string>
 
     <string name="icon_size_title">Symbol-Größe</string>
+
+    <!-- Icon Pack -->
+    <string name="dialog_pick_iconpack_title">Symbolpaket auswählen</string>
+    <string name="default_iconpack_title">Standardsymbole</string>
+    <string name="icon_packs_title">Symbolpakete</string>
+    <string name="no_iconpacks_summary">Keine Symbolpakete installiert</string>
+    <string name="pref_icon_pack_title">Symbolpaket</string>
 
     <!-- Gestures -->
     <string name="gestures_title">Gesten</string>
@@ -62,10 +88,15 @@
     <string name="press_color_to_apply">Drücken Sie auf eine Farbe zum Anwenden</string>
     <string name="set">Festlegen</string>
 
-    <!-- Folder -->
+    <!-- Folders -->
     <string name="folder_title">Ordner</string>
     <string name="folder_background_color_title">Hintergrundfarbe</string>
     <string name="hide_folder_name_title">Ordnernamen ausblenden</string>
     <string name="hide_folder_name_summary">Ordnernamen bei geöffnetem Ordner ausblenden</string>
 
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Versteckte Apps</string>
+    <string name="hidden_apps_summary">Apps im Drawer ausblenden</string>
+    <string name="hidden_apps_shortcuts_title">Verknüpfungen entfernen</string>
+    <string name="hidden_apps_widgets_title">Widgets entfernen</string>
 </resources>

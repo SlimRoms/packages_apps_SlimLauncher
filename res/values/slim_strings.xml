@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 SlimRoms
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
 <resources>
 
     <string name="slim_application_name">SlimLauncher</string>
@@ -88,11 +102,11 @@
     <string name="hex_hint">#ff000000</string>
     <string name="set">Set</string>
 
-    <!-- Folder -->
-    <string name="folder_title">Folder</string>
+    <!-- Folders -->
+    <string name="folder_title">Folders</string>
     <string name="folder_background_color_title">Background Color</string>
     <string name="hide_folder_name_title">Hide folder name</string>
-    <string name="hide_folder_name_summary">Do not show folder name when folder is open</string>
+    <string name="hide_folder_name_summary">When a folder is open do not show its name</string>
 
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Hidden apps</string>

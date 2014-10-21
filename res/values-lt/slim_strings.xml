@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 SlimRoms
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources>
+    <string name="default_string">Numatytasis</string>
+    <string name="reset_string">Nustat. iš naujo</string>
+    <string name="set_string">Nustatyti</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Numatytasis ekranas</string>
+
+    <string name="launcher_settings_title">Launcher nustatymai</string>
+    <string name="error_message_title">Klaida</string>
+
+    <string name="scroll_wallpaper_title">Ekrano fono slinkimas</string>
+    <string name="scroll_wallpaper_summary">Slinkti ekrano foną</string>
+
+    <string name="shortcut_picker_title">SlimLauncher nuorodos</string>
+
+    <!-- Homescreen -->
+    <string name="homescreen_title">Darbalaukis</string>
+    <string name="general_title">Bendrieji</string>
+    <string name="dock_title">Programų juosta</string>
+    <string name="drawer_title">Programų puslapis</string>
+
+    <string name="hide_icon_labels_title">Slėpti piktogramų pavadinimus</string>
+    <string name="hide_icon_labels_drawer_summary">Slėpti piktogramų pav. programų puslapyje</string>
+    <string name="hide_icon_labels_homescreen_summary">Slėpti piktogramų pav. numat. ekrane</string>
+    <string name="hide_icon_labels_dock_summary">Slėpti programų pav. programų juostoje</string>
+
+    <string name="dock_icons_title">Programų juostos piktogramos</string>
+    <string name="dock_icons_summary">Programų juostos piktogramų skaičius</string>
+
+    <string name="show_search_bar_title">Rodyti paieškos juostą</string>
+    <string name="grid_size_title">Tinklo dydis</string>
+    <string name="grid_size_summary">Pasirinkti stulp./eil. skaičių</string>
+    <string name="homescreen_workspace_rows_title">Eilutės</string>
+    <string name="homescreen_workspace_columns_title">Stulpeliai</string>
+
+    <string name="icon_size_title">Piktogramos dydis</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gestai</string>
+    <string name="gesture_default">Nieko</string>
+    <string name="gestures_up_gesture_title">Slinkti aukštyn</string>
+    <string name="gestures_down_gesture_title">Slinkti žemyn</string>
+    <string name="gestures_pinch_gesture_title">Sugbybti</string>
+    <string name="gestures_spread_gesture_title">Išskleisti</string>
+    <string name="gestures_double_tap_gesture_title">Dvigubas bakstelėjimas</string>
+
+    <string name="gesture_target_nothing">Nieko</string>
+    <string name="gesture_target_homescreen">Eiti į numat. puslapį</string>
+    <string name="gesture_target_drawer">Atidaryti programų langą</string>
+    <string name="gesture_target_previews">Rodyti peržiūras</string>
+    <string name="gesture_target_settings">Atidaryti "SlimLauncher" nustatymus</string>
+    <string name="gesture_target_custom">Pasirinktinis</string>
+
+    <string name="profile_applist_title">Programos</string>
+    <string name="profile_choose_app">Pasirinkti programą</string>
+    <string name="profiles_add">Pridėti</string>
+    <string name="picker_activities">Veiksmai</string>
+    <string name="select_custom_app_title">Select custom app</string>
+    <string name="select_custom_activity_title">Select custom activity</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Spalvų parinkiklis</string>
+    <string name="press_color_to_apply">Press color to apply</string>
+    <string name="set">Set</string>
+
+    <!-- Folder -->
+    <string name="folder_title">Aplankas</string>
+    <string name="folder_background_color_title">Fono spalva</string>
+    <string name="hide_folder_name_title">Slėpti aplanko pavadinimą</string>
+    <string name="hide_folder_name_summary">Nerodyti aplanko pavadinimo kai jis atidarytas</string>
+</resources>

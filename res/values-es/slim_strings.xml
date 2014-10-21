@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 SlimRoms
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources>
+    <string name="default_string">Defecto</string>
+    <string name="reset_string">Reiniciar</string>
+    <string name="set_string">Establecer</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Pantalla por defecto</string>
+
+    <string name="launcher_settings_title">Ajustes del Lanzador</string>
+    <string name="error_message_title">Error</string>
+
+    <string name="scroll_wallpaper_title">Deslizar el fondo de pantalla</string>
+    <string name="scroll_wallpaper_summary">Desplazar la imagen de fondo de la pantalla al cambiar de escritorio</string>
+
+    <string name="shortcut_picker_title">Accesos directos</string>
+
+    <string name="shortcut_action_launcher_apps">Todas las aplicaciones</string>
+    <string name="shortcut_action_launcher_overview">Vista general</string>
+    <string name="shortcut_action_launcher_settings">Ajustes del lanzador</string>
+    <string name="shortcut_action_launcher_homescreen">Escritorio defecto</string>
+
+    <!-- Homescreen -->
+    <string name="homescreen_title">Escritorio</string>
+    <string name="general_title">General</string>
+    <string name="dock_title">Barra de aplicaciones</string>
+    <string name="drawer_title">Cajón de aplicaciones</string>
+
+    <string name="hide_icon_labels_title">Ocultar etiquetas de iconos</string>
+    <string name="hide_icon_labels_drawer_summary">Ocultar etiquetas en el cajón de aplicaciones</string>
+    <string name="hide_icon_labels_homescreen_summary">Ocultar etiquetas en l escritorio</string>
+    <string name="hide_icon_labels_dock_summary">Ocultar etiquetas en la barra de aplicaciones</string>
+
+    <string name="dock_icons_title">Iconos en la barra de aplicaciones</string>
+    <string name="dock_icons_summary">Número de iconos en la barra de aplicaciones</string>
+
+    <string name="show_search_bar_title">Mostrar la barra de búsqueda</string>
+    <string name="grid_size_title">Tamaño de la rejilla</string>
+    <string name="grid_size_summary">Determinar el número de filas y columnas</string>
+    <string name="homescreen_workspace_rows_title">Filas</string>
+    <string name="homescreen_workspace_columns_title">Columnas</string>
+
+    <string name="icon_size_title">Tamaño de los iconos</string>
+
+    <!-- Icon Pack  -->
+    <string name="dialog_pick_iconpack_title">Paquete de iconos</string>
+    <string name="default_iconpack_title">Iconos por defecto</string>
+    <string name="icon_packs_title">Paquete de iconos</string>
+    <string name="no_iconpacks_summary">Ningún paquete de iconos instalado</string>
+    <string name="pref_icon_pack_title">Paquete de iconos</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gestos</string>
+    <string name="gesture_default">ninguno</string>
+    <string name="gestures_up_gesture_title">Desplazar arriba</string>
+    <string name="gestures_down_gesture_title">Desplazar abajo</string>
+    <string name="gestures_pinch_gesture_title">Pellizcar</string>
+    <string name="gestures_spread_gesture_title">Extender</string>
+    <string name="gestures_double_tap_gesture_title">Doble toque</string>
+    <string name="gesture_target_nothing">Nada</string>
+
+    <string name="gesture_target_homescreen">Escritorio por defecto</string>
+    <string name="gesture_target_drawer">Cajón de aplicaciones</string>
+    <string name="gesture_target_previews">Mostrar previsualización</string>
+    <string name="gesture_target_settings">Ajustes del lanzador</string>
+    <string name="gesture_target_custom">Personalizado</string>
+
+    <string name="profile_applist_title">Aplicaciones</string>
+    <string name="profile_choose_app">Elegir aplicación</string>
+    <string name="profiles_add">Añadir</string>
+    <string name="picker_activities">Actividades</string>
+    <string name="select_custom_app_title">Aplicación personalizada</string>
+    <string name="select_custom_activity_title">Actividad personalizada</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Selección de color</string>
+    <string name="press_color_to_apply">Pulsa abajo para aplicar el color</string>
+    <string name="set">Aplicar</string>
+
+    <!-- Folders -->
+    <string name="folder_title">Carpeta</string>
+    <string name="folder_background_color_title">Color de fondo</string>
+    <string name="hide_folder_name_title">Ocultar el nombre</string>
+    <string name="hide_folder_name_summary">No mostrar el nombre de la carpeta cuando está abierta.</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Aplicaciones ocultas</string>
+    <string name="hidden_apps_summary">Ocultar iconos en el cajón de aplicaciones</string>
+    <string name="hidden_apps_shortcuts_title">Ocultar aplicaciones</string>
+    <string name="hidden_apps_widgets_title">Ocultar widgets</string>
+</resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright (C) 2014 SlimRoms
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <string name="default_string">Domyślnie</string>
+    <string name="reset_string">Przywróć</string>
+    <string name="set_string">Ustaw</string>
+
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Pulpit domyślny</string>
+
+    <string name="launcher_settings_title">Ustawienia Launchera</string>
+    <string name="error_message_title">Błąd</string>
+
+    <string name="scroll_wallpaper_title">Przewijanie tapety</string>
+    <string name="scroll_wallpaper_summary">Przewijaj tapetę podczas przesuwania pulpitów</string>
+
+    <string name="shortcut_picker_title">Skróty SlimLauncher</string>
+
+    <string name="shortcut_action_launcher_apps">Wszystkie aplikacje</string>
+    <string name="shortcut_action_launcher_overview">Podgląd pulpitów</string>
+    <string name="shortcut_action_launcher_settings">Ustawienia Launchera</string>
+    <string name="shortcut_action_launcher_homescreen">Pulpit domyślny</string>
+
+    <!-- Homescreen -->
+    <string name="homescreen_title">Pulpit domowy</string>
+    <string name="general_title">Ogólne</string>
+    <string name="dock_title">Dok</string>
+    <string name="drawer_title">Szuflada aplikacji</string>
+
+    <string name="hide_icon_labels_title">Ukryj etykiety ikon</string>
+    <string name="hide_icon_labels_drawer_summary">Ukryj etykiety ikon w szufladzie aplikacji</string>
+    <string name="hide_icon_labels_homescreen_summary">Ukryj etykiety ikon na pulpicie</string>
+    <string name="hide_icon_labels_dock_summary">Ukryj etykiety ikon w doku</string>
+
+    <string name="dock_icons_title">Ikony w doku</string>
+    <string name="dock_icons_summary">Ilość ikon w doku</string>
+
+    <string name="show_search_bar_title">Pokaż pasek wyszukiwania</string>
+    <string name="grid_size_title">Rozmiar siatki</string>
+    <string name="grid_size_summary">Wybierz liczbę rzędów/kolumn</string>
+    <string name="homescreen_workspace_rows_title">Rzędy</string>
+    <string name="homescreen_workspace_columns_title">Kolumny</string>
+
+    <string name="icon_size_title">Rozmiar ikon</string>
+
+    <!-- Icon Pack -->
+    <string name="dialog_pick_iconpack_title">Wybierz zestaw ikon</string>
+    <string name="default_iconpack_title">Ikony domyślne</string>
+    <string name="icon_packs_title">Zestawy ikon</string>
+    <string name="no_iconpacks_summary">Nie zainstalowano zestawów ikon</string>
+    <string name="pref_icon_pack_title">Zestaw ikon</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gesty</string>
+    <string name="gesture_default">nic</string>
+    <string name="gestures_up_gesture_title">Przesunięcie w górę</string>
+    <string name="gestures_down_gesture_title">Przesunięcie w dół</string>
+    <string name="gestures_pinch_gesture_title">Uszczypnięcie</string>
+    <string name="gestures_spread_gesture_title">Rozszerzenie</string>
+    <string name="gestures_double_tap_gesture_title">Dwukrotne dotknięcie</string>
+
+    <string name="gesture_target_nothing">Nic</string>
+    <string name="gesture_target_homescreen">Przejdź do pulpitu domyślnego</string>
+    <string name="gesture_target_drawer">Otwórz szufladę aplikacji</string>
+    <string name="gesture_target_previews">Pokaż podgląd</string>
+    <string name="gesture_target_settings">Otwórz ustawienia launchera</string>
+    <string name="gesture_target_custom">Własny</string>
+
+    <string name="profile_applist_title">Aplikacje</string>
+    <string name="profile_choose_app">Wybierz aplikację</string>
+    <string name="profiles_add">Dodaj</string>
+    <string name="picker_activities">Aktywności</string>
+    <string name="select_custom_app_title">Wybierz własną aplikację</string>
+    <string name="select_custom_activity_title">Wybierz własną aktywność</string>
+
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Wybór koloru</string>
+    <string name="press_color_to_apply">Dotknij koloru aby go zastosować</string>
+    <string name="set">Ustaw</string>
+
+    <!-- Folders -->
+    <string name="folder_title">Folder</string>
+    <string name="folder_background_color_title">Kolor tła</string>
+    <string name="hide_folder_name_title">Ukryj nazwę folderu</string>
+    <string name="hide_folder_name_summary">Nie pokazuj nazwy folderu gdy jest otwarty</string>
+</resources>
