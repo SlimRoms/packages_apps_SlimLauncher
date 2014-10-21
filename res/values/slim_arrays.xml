@@ -21,10 +21,10 @@
     </string-array>
 
     <string-array name="shortcut_action_launcher_entries">
-        <item>All apps</item>
-        <item>Overview mode</item>
-        <item>Launcher settings</item>
-        <item>Default homescreen</item>
+        <item>@string/shortcut_action_launcher_apps</item>
+        <item>@string/shortcut_action_launcher_overview</item>
+        <item>@string/shortcut_action_launcher_settings</item>
+        <item>@string/shortcut_action_launcher_homescreen</item>
     </string-array>
 
     <string-array name="shortcut_action_launcher_values" translatable="false">

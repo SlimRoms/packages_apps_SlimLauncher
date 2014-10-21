@@ -22,6 +22,11 @@
 
     <string name="shortcut_picker_title">SlimLauncher shortcuts</string>
 
+    <string name="shortcut_action_launcher_apps">All apps</string>
+    <string name="shortcut_action_launcher_overview">Overview mode</string>
+    <string name="shortcut_action_launcher_settings">Launcher settings</string>
+    <string name="shortcut_action_launcher_homescreen">Default homescreen</string>
+
     <!-- Homescreen -->
     <string name="homescreen_title">Homescreen</string>
     <string name="general_title">General</string>
