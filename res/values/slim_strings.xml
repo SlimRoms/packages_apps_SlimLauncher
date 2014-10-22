@@ -7,74 +7,74 @@
 
     <string name="google_title">Google</string>
 
-    <string name="default_string">Default</string>
+    <string name="default_string">Varsayılan</string>
     <string name="reset_string">Reset</string>
-    <string name="set_string">Set</string>
+    <string name="set_string">Ayarla</string>
 
     <!-- Text for default screen button -->
-    <string name="default_screen_button_text">Default Screen</string>
+    <string name="default_screen_button_text">Varsayılan Ekran</string>
 
-    <string name="launcher_settings_title">Launcher settings</string>
-    <string name="error_message_title">Error</string>
+    <string name="launcher_settings_title">Başlatıcı Ayarları</string>
+    <string name="error_message_title">Hata</string>
 
-    <string name="scroll_wallpaper_title">Scroll wallpaper</string>
-    <string name="scroll_wallpaper_summary">Pan wallpaper while scrolling homescreens</string>
+    <string name="scroll_wallpaper_title">duvar kağıdı Kaydırma</string>
+    <string name="scroll_wallpaper_summary">Ekran kaydırma sırasında duvar kağıdını sabitle</string>
 
-    <string name="shortcut_picker_title">SlimLauncher shortcuts</string>
+    <string name="shortcut_picker_title">SlimLauncher Kısayolları</string>
 
-    <string name="shortcut_action_launcher_apps">All apps</string>
-    <string name="shortcut_action_launcher_overview">Overview mode</string>
-    <string name="shortcut_action_launcher_settings">Launcher settings</string>
-    <string name="shortcut_action_launcher_homescreen">Default homescreen</string>
+    <string name="shortcut_action_launcher_apps">Tüm Uygulamalar</string>
+    <string name="shortcut_action_launcher_overview">Genel Bakış Modu</string>
+    <string name="shortcut_action_launcher_settings">Başlatıcı Ayarları</string>
+    <string name="shortcut_action_launcher_homescreen">Varsayılan Masaüstü</string>
 
     <!-- Homescreen -->
-    <string name="homescreen_title">Homescreen</string>
-    <string name="general_title">General</string>
-    <string name="dock_title">Dock</string>
-    <string name="drawer_title">Drawer</string>
+    <string name="homescreen_title">Masaüstü</string>
+    <string name="general_title">Genel</string>
+    <string name="dock_title">Alt Panel</string>
+    <string name="drawer_title">Uygulama Menüsü</string>
 
-    <string name="hide_icon_labels_title">Hide icon labels</string>
-    <string name="hide_icon_labels_drawer_summary">Hide icon labels in drawer</string>
-    <string name="hide_icon_labels_homescreen_summary">Hide icon labels on homescreen</string>
-    <string name="hide_icon_labels_dock_summary">Hide icon labels in dock</string>
+    <string name="hide_icon_labels_title">Simge Etiketlerini Gizle</string>
+    <string name="hide_icon_labels_drawer_summary">Uygulama Menüsü Simge Etiketlerini Gizle</string>
+    <string name="hide_icon_labels_homescreen_summary">Simge Etiketlerini Ana Ekranda Gizle</string>
+    <string name="hide_icon_labels_dock_summary">Simge Etiketlerini Alt Panalde Gizle</string>
 
-    <string name="dock_icons_title">Dock icons</string>
-    <string name="dock_icons_summary">Number of icons in the dock</string>
+    <string name="dock_icons_title">Alt Panel Simge Sayısı</string>
+    <string name="dock_icons_summary">Alt Panelin Bir Sayfasındakı Simge Sayısı</string>
 
-    <string name="show_search_bar_title">Show search bar</string>
-    <string name="grid_size_title">Grid size</string>
-    <string name="grid_size_summary">Choose the number of rows/columns</string>
-    <string name="homescreen_workspace_rows_title">Rows</string>
-    <string name="homescreen_workspace_columns_title">Columns</string>
+    <string name="show_search_bar_title">Arama çubuğnu Göster</string>
+    <string name="grid_size_title">Klavuz Boyutu</string>
+    <string name="grid_size_summary">Sütun/satır sayılarını seç</string>
+    <string name="homescreen_workspace_rows_title">Sütunlar</string>
+    <string name="homescreen_workspace_columns_title">Satırlar</string>
 
-    <string name="icon_size_title">Icon size</string>
+    <string name="icon_size_title">Simge Boyutu</string>
 
     <!-- Gestures -->
-    <string name="gestures_title">Gestures</string>
-    <string name="gesture_default">nothing</string>
-    <string name="gestures_up_gesture_title">Swipe up</string>
-    <string name="gestures_down_gesture_title">Swipe down</string>
-    <string name="gestures_pinch_gesture_title">Pinch</string>
-    <string name="gestures_spread_gesture_title">Spread</string>
-    <string name="gestures_double_tap_gesture_title">Double tap</string>
+    <string name="gestures_title">Hareketler</string>
+    <string name="gesture_default">Hiçbir şey</string>
+    <string name="gestures_up_gesture_title">Yukarı Kaydır</string>
+    <string name="gestures_down_gesture_title">Aşağı Kaydır</string>
+    <string name="gestures_pinch_gesture_title">Sıkıştır</string>
+    <string name="gestures_spread_gesture_title">Geniştlet</string>
+    <string name="gestures_double_tap_gesture_title">Çift Tıklama</string>
 
-    <string name="gesture_target_nothing">Nothing</string>
-    <string name="gesture_target_homescreen">Go to default homescreen</string>
-    <string name="gesture_target_drawer">Open app drawer</string>
-    <string name="gesture_target_previews">Show previews</string>
-    <string name="gesture_target_settings">Open launcher settings</string>
-    <string name="gesture_target_custom">Custom</string>
+    <string name="gesture_target_nothing">Hiçbir şey</string>
+    <string name="gesture_target_homescreen">Varsayılan Ekrana Git</string>
+    <string name="gesture_target_drawer">Uygulama Menüsünü Aç</string>
+    <string name="gesture_target_previews">Önizlemeyi Göster</string>
+    <string name="gesture_target_settings">Başlatıcı Ayarlarını Aç</string>
+    <string name="gesture_target_custom">Genel</string>
 
-    <string name="profile_applist_title">Apps</string>
-    <string name="profile_choose_app">Choose app</string>
-    <string name="profiles_add">Add</string>
-    <string name="picker_activities">Activities</string>
-    <string name="select_custom_app_title">Select custom app</string>
-    <string name="select_custom_activity_title">Select custom activity</string>
+    <string name="profile_applist_title">Uygulamalar</string>
+    <string name="profile_choose_app">Uygulama Seç</string>
+    <string name="profiles_add">Ekle</string>
+    <string name="picker_activities">Aktiviteler</string>
+    <string name="select_custom_app_title">Genel Uygulama Seç</string>
+    <string name="select_custom_activity_title">Genel Uygulama Aktivitesi Seç</string>
 
     <!-- Color Picker -->
-    <string name="dialog_color_picker">Color Picker</string>
-    <string name="press_color_to_apply">Press on color below to apply</string>
+    <string name="dialog_color_picker">Renk Seçici</string>
+    <string name="press_color_to_apply">Uygulamak için alttaki rengi seç</string>
     <string name="arrow_right" translatable="false">→</string>
     <string name="arrow_down" translatable="false">↓</string>
     <string name="hex">Hex:</string>
@@ -82,9 +82,9 @@
     <string name="set">Set</string>
 
     <!-- Folder -->
-    <string name="folder_title">Folder</string>
-    <string name="folder_background_color_title">Background Color</string>
-    <string name="hide_folder_name_title">Hide folder name</string>
-    <string name="hide_folder_name_summary">Do not show folder name when folder is open</string>
+    <string name="folder_title">Klasör</string>
+    <string name="folder_background_color_title">Arkaplan Rengi</string>
+    <string name="hide_folder_name_title">Klasör ismini Gizle</string>
+    <string name="hide_folder_name_summary">Klasör Açıkken Klasör Ismini Gösterme</string>
 
 </resources>
