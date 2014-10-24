@@ -177,4 +177,8 @@
         <attr name="suffix" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="InsettableFrameLayout_Layout">
+        <attr name="layout_ignoreInsets" format="boolean" />
+    </declare-styleable>
+
 </resources>
