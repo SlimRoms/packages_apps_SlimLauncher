@@ -28,6 +28,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.slim.slimlauncher.R;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 /*
  * Ths bar will manage the transition between the QSB search bar and the delete drop

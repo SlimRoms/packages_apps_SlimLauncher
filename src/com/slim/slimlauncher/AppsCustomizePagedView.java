@@ -358,6 +358,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mNumAppsPages = (int) Math.ceil((float) mApps.size() / (mCellCountX * mCellCountY));
     }
 
+    public void updateGridSize() {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        mCellCountX = (int) grid.allAppsNumCols;
+        mCellCountY = (int) grid.allAppsNumRows;
+        updatePageCounts();
+    }
+
     protected void onDataReady(int width, int height) {
         if (mWidgetPreviewLoader == null) {
             mWidgetPreviewLoader = new WidgetPreviewLoader(mLauncher);
@@ -365,13 +373,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Now that the data is ready, we can calculate the content width, the number of cells to
         // use for each page
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mWidgetSpacingLayout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                 mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
-        mCellCountX = (int) grid.allAppsNumCols;
-        mCellCountY = (int) grid.allAppsNumRows;
-        updatePageCounts();
+        updateGridSize();
 
         // Force a measure to update recalculate the gaps
         mContentWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();

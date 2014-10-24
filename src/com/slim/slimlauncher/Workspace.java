@@ -333,15 +333,10 @@ public class Workspace extends SmoothPagedView
         // With workspace, data is available straight from the get-go
         setDataIsReady();
 
-        mScrollWallpaper = SettingsProvider.getBoolean(context,
-                SettingsProvider.KEY_SCROLL_WALLPAPER, true);
-        mHideIconLabels = SettingsProvider.getBoolean(context,
-                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
-
-        mShowSearchBar = SettingsProvider.getBoolean(context,
-                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
-
         mLauncher = (Launcher) context;
+
+        reloadSettings();
+
         final Resources res = getResources();
         mWorkspaceFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
         mFadeInAdjacentScreens = false;
@@ -361,19 +356,6 @@ public class Workspace extends SmoothPagedView
 
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
-
-        String gesture_def = context.getString(R.string.gesture_default);
-        mUpGestureAction = SettingsProvider.getString(context,
-                SettingsProvider.UP_GESTURE_ACTION, gesture_def);
-        mDownGestureAction = SettingsProvider.getString(context,
-                SettingsProvider.DOWN_GESTURE_ACTION, gesture_def);
-
-        mPinchGestureAction = SettingsProvider.getString(context,
-                SettingsProvider.PINCH_GESTURE_ACTION, gesture_def);
-        mSpreadGestureAction = SettingsProvider.getString(context,
-                SettingsProvider.SPREAD_GESTURE_ACTION, gesture_def);
-        mDoubleTapGestureAction = SettingsProvider.getString(context,
-                SettingsProvider.DOUBLE_TAP_GESTURE_ACTION, gesture_def);
 
         mGestureDetector = new GestureDetector(context,
                 new GestureDetector.SimpleOnGestureListener() {
@@ -410,6 +392,30 @@ public class Workspace extends SmoothPagedView
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
         setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+    }
+
+    public void reloadSettings() {
+
+        mScrollWallpaper = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_SCROLL_WALLPAPER, true);
+        mHideIconLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
+
+        mShowSearchBar = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
+
+        String gesture_def = mLauncher.getString(R.string.gesture_default);
+        mUpGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.UP_GESTURE_ACTION, gesture_def);
+        mDownGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.DOWN_GESTURE_ACTION, gesture_def);
+
+        mPinchGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.PINCH_GESTURE_ACTION, gesture_def);
+        mSpreadGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.SPREAD_GESTURE_ACTION, gesture_def);
+        mDoubleTapGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.DOUBLE_TAP_GESTURE_ACTION, gesture_def);
     }
 
     @Override
