@@ -227,6 +227,10 @@ public class Launcher extends Activity
 
     private boolean mIsSafeModeEnabled;
 
+    LauncherOverlayCallbacks mLauncherOverlayCallbacks = new LauncherOverlayCallbacksImpl();
+    LauncherOverlay mLauncherOverlay;
+    InsettableFrameLayout mLauncherOverlayContainer;
+
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
@@ -489,6 +493,13 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
+            if (mLauncherCallbacks.hasLauncherOverlay()) {
+                ViewStub stub = (ViewStub) findViewById(R.id.launcher_overlay_stub);
+                mLauncherOverlayContainer = (InsettableFrameLayout) stub.inflate();
+                mLauncherOverlay = mLauncherCallbacks.setLauncherOverlayView(
+                        mLauncherOverlayContainer, mLauncherOverlayCallbacks);
+                mWorkspace.setLauncherOverlay(mLauncherOverlay);
+            }
         }
     }
 
