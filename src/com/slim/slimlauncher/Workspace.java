@@ -325,6 +325,13 @@ public class Workspace extends SmoothPagedView
     private boolean mShowSearchBar;
     private boolean mHideHomescreenLabels;
 
+    // State related to Launcher Overlay
+    LauncherOverlay mLauncherOverlay;
+    boolean mScrollInteractionBegan;
+    boolean mStartedSendingScrollEvents;
+    boolean mShouldSendPageSettled;
+    int mLastOverlaySroll = 0;
+
     private final Runnable mBindPages = new Runnable() {
         @Override
         public void run() {
@@ -1354,6 +1361,65 @@ public class Workspace extends SmoothPagedView
         if (mStripScreensOnPageStopMoving) {
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
+        }
+        if (mShouldSendPageSettled) {
+            mLauncherOverlay.onScrollSettled();
+            mShouldSendPageSettled = false;
+        }
+    }
+
+    protected void onScrollInteractionBegin() {
+        super.onScrollInteractionEnd();
+        mScrollInteractionBegan = true;
+    }
+
+    protected void onScrollInteractionEnd() {
+        super.onScrollInteractionEnd();
+        mScrollInteractionBegan = false;
+        if (mStartedSendingScrollEvents) {
+            mStartedSendingScrollEvents = false;
+            mLauncherOverlay.onScrollInteractionEnd();
+        }
+    }
+
+    public void setLauncherOverlay(LauncherOverlay overlay) {
+        mLauncherOverlay = overlay;
+    }
+
+    @Override
+    protected void overScroll(float amount) {
+        boolean isRtl = isLayoutRtl();
+        boolean shouldOverScroll = (amount <= 0 && (!hasCustomContent() || isRtl)) ||
+                (amount >= 0 && (!hasCustomContent() || !isRtl));
+
+        boolean shouldScrollOverlay = mLauncherOverlay != null &&
+                ((amount <= 0 && !isRtl) || (amount >= 0 && isRtl));
+
+        boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlaySroll != 0 &&
+                ((amount >= 0 && !isRtl) || (amount <= 0 && isRtl));
+
+        if (shouldScrollOverlay) {
+            if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
+                mStartedSendingScrollEvents = true;
+                mLauncherOverlay.onScrollInteractionBegin();
+                mShouldSendPageSettled = true;
+            }
+            int screenSize = getViewportWidth();
+            float f = (amount / screenSize);
+
+            int progress = (int) Math.abs((f * 100));
+
+            mLastOverlaySroll = progress;
+            mLauncherOverlay.onScrollChange(progress, isRtl);
+        } else if (shouldOverScroll) {
+            dampedOverScroll(amount);
+            mOverScrollEffect = acceleratedOverFactor(amount);
+        } else {
+            mOverScrollEffect = 0;
+        }
+
+        if (shouldZeroOverlay) {
+            mLauncherOverlay.onScrollChange(0, isRtl);
         }
     }
 
