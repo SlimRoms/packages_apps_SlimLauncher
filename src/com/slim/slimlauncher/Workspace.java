@@ -4886,16 +4886,18 @@ public class Workspace extends SmoothPagedView
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
         // lets get enough tasks to find something to switch to
         // Note, we'll only get as many as the system currently has - up to 5
-        while (looper < tasks.size()) {
-            packageName = tasks.get(looper).topActivity.getPackageName();
+        for (int i = tasks.size() - 1; i > 0; i--) {
+
+            packageName = tasks.get(i).topActivity.getPackageName();
+            Log.d("TEST", "packageName=" + packageName);
             if (!packageName.equals(defaultHomePackage)
-                    && !packageName.equals("com.android.systemui")) {
+                    && !packageName.equals("com.android.systemui")
+                    && !packageName.equals(mLauncher.getPackageName())) {
                 intentPackage = packageName;
             }
-            looper++;
         }
         if (intentPackage != null) {
-            Intent intent1 = mLauncher.getPackageManager().getLaunchIntentForPackage(packageName);
+            Intent intent1 = mLauncher.getPackageManager().getLaunchIntentForPackage(intentPackage);
             mLauncher.startActivity(intent1);
         } else {
             Toast.makeText(mLauncher, mLauncher.getString(R.string.no_last_app), Toast.LENGTH_SHORT)
