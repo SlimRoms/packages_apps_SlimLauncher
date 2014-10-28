@@ -12,6 +12,11 @@
         android:title="@string/folder_icon_text_color_title"
         android:defaultValue="@color/folder_items_text_color" />
 
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="folder_preview_color"
+        android:title="@string/folder_preview_color_title"
+        android:defaultValue="0x71ffffff" />
+
     <CheckBoxPreference
         android:key="hide_folder_name"
         android:title="@string/hide_folder_name_title"

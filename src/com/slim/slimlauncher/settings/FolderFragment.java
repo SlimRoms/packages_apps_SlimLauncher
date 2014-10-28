@@ -12,6 +12,7 @@ public class FolderFragment extends SettingsPreferenceFragment
 
     private ColorPickerPreference mFolderBackground;
     private ColorPickerPreference mFolderIconTextColor;
+    private ColorPickerPreference mFolderPreviewColor;
 
 
     @Override
@@ -55,6 +56,21 @@ public class FolderFragment extends SettingsPreferenceFragment
             mFolderIconTextColor.setSummary(hexColor);
         }
         mFolderIconTextColor.setNewPreviewColor(intColor);
+
+        mFolderPreviewColor = (ColorPickerPreference)
+                findPreference(SettingsProvider.FOLDER_PREVIEW_COLOR);
+        mFolderPreviewColor.setAlphaSliderEnabled(true);
+        mFolderPreviewColor.setOnPreferenceChangeListener(this);
+        mFolderPreviewColor.setDefaultColor(0x71ffffff);
+        intColor = SettingsProvider.getInt(mContext,
+                SettingsProvider.FOLDER_PREVIEW_COLOR, -2);
+        if (intColor == -2) {
+            intColor = 0xffffffff;
+            mFolderPreviewColor.setSummary(getString(R.string.default_string));
+        } else {
+            hexColor = String.format("#%08x", (intColor));
+            mFolderPreviewColor.setSummary(hexColor);
+        }
     }
 
     @Override
@@ -66,6 +82,13 @@ public class FolderFragment extends SettingsPreferenceFragment
             int intHex = ColorPickerPreference.convertToColorInt(hex);
             SettingsProvider.putInt(getActivity(),
                     SettingsProvider.FOLDER_BACKGROUND_COLOR, intHex);
+        } else if (preference == mFolderIconTextColor) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf((String.valueOf(newValue))));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            SettingsProvider.putInt(getActivity(),
+                    SettingsProvider.FOLDER_ICON_TEXT_COLOR, intHex);
         }
         return true;
     }

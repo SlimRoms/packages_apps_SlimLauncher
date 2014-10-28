@@ -29,9 +29,13 @@ import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -142,11 +146,20 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     "is dependent on this");
         }
 
-        FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
+        final FolderIcon icon = (FolderIcon)
+                LayoutInflater.from(launcher).inflate(resId, group, false);
         icon.setClipToPadding(false);
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
+        final int previewColor = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
+        ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        drawable.setIntrinsicHeight(profile.iconSizePx);
+        drawable.setIntrinsicWidth(profile.iconSizePx);
+        drawable.getPaint().setColor(previewColor);
+        icon.mPreviewBackground.setImageDrawable(drawable);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         // Offset the preview background to center this view accordingly
