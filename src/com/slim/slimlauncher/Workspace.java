@@ -4870,8 +4870,6 @@ public class Workspace extends SmoothPagedView
     }
 
     private void getLastApp() {
-        int lastAppId = 0;
-        int looper = 1;
         String packageName = null;
         String intentPackage = null;
         final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -4887,9 +4885,7 @@ public class Workspace extends SmoothPagedView
         // lets get enough tasks to find something to switch to
         // Note, we'll only get as many as the system currently has - up to 5
         for (int i = tasks.size() - 1; i > 0; i--) {
-
             packageName = tasks.get(i).topActivity.getPackageName();
-            Log.d("TEST", "packageName=" + packageName);
             if (!packageName.equals(defaultHomePackage)
                     && !packageName.equals("com.android.systemui")
                     && !packageName.equals(mLauncher.getPackageName())) {
