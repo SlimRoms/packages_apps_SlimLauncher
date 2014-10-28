@@ -43,6 +43,7 @@
     <string name="hide_icon_labels_homescreen_summary">Beschriftung unter App-Symbolen auf dem Homescreen ausblenden</string>
     <string name="hide_icon_labels_dock_summary">Beschriftung unter App-Symbolen in der Dockleiste ausblenden</string>
 
+    <string name="hide_dock_title">Dock deaktivieren</string>
     <string name="dock_icons_title">Dock-Symbole</string>
     <string name="dock_icons_summary">Anzahl der Symbole im Dock</string>
 
@@ -51,6 +52,8 @@
     <string name="grid_size_summary">Anzahl der Zeilen/Spalten auswählen</string>
     <string name="homescreen_workspace_rows_title">Zeilen</string>
     <string name="homescreen_workspace_columns_title">Spalten</string>
+
+    <string name="hide_scroll_indicator_title">Scroll-Indikator nicht anzeigen</string>
 
     <string name="icon_size_title">Symbol-Größe</string>
 
@@ -64,16 +67,22 @@
     <!-- Gestures -->
     <string name="gestures_title">Gesten</string>
     <string name="gesture_default">Nichts</string>
-    <string name="gestures_up_gesture_title">Nach oben wischen</string>
-    <string name="gestures_down_gesture_title">Nach unten wischen</string>
+    <string name="gestures_left_up_gesture_title">Links nach oben wischen</string>
+    <string name="gestures_middle_up_gesture_title">Mittig nach oben wischen</string>
+    <string name="gestures_right_up_gesture_title">Rechts nach oben wischen</string>
+    <string name="gestures_left_down_gesture_title">Links nach unten wischen</string>
+    <string name="gestures_middle_down_gesture_title">Mittig nach unten wischen</string>
+    <string name="gestures_right_down_gesture_title">Rechts nach unten wischen</string>
     <string name="gestures_pinch_gesture_title">Kneifen</string>
     <string name="gestures_spread_gesture_title">Auseinanderziehen</string>
     <string name="gestures_double_tap_gesture_title">Zweifaches Tippen</string>
+    <string name="no_last_app">Zuletzt geöffnete App nicht gefunden.</string>
 
     <string name="gesture_target_nothing">Nichts</string>
     <string name="gesture_target_homescreen">Zum Standardhomescreen gehen</string>
     <string name="gesture_target_drawer">App-Drawer öffnen</string>
     <string name="gesture_target_previews">Vorschauen anzeigen</string>
+    <string name="gesture_target_last_app">Zuletzt geöffnete App</string>
     <string name="gesture_target_settings">Launcher Einstellungen öffnen</string>
     <string name="gesture_target_custom">Benutzerdefiniert</string>
 
