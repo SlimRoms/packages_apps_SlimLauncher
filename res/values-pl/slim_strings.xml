@@ -47,6 +47,7 @@
     <string name="hide_icon_labels_homescreen_summary">Ukryj etykiety ikon na pulpicie</string>
     <string name="hide_icon_labels_dock_summary">Ukryj etykiety ikon w doku</string>
 
+    <string name="hide_dock_title">Ukryj Dok</string>
     <string name="dock_icons_title">Ikony w doku</string>
     <string name="dock_icons_summary">Ilość ikon w doku</string>
 
@@ -55,6 +56,8 @@
     <string name="grid_size_summary">Wybierz liczbę rzędów/kolumn</string>
     <string name="homescreen_workspace_rows_title">Rzędy</string>
     <string name="homescreen_workspace_columns_title">Kolumny</string>
+
+    <string name="hide_scroll_indicator_title">Ukryj wskaźnik przewijania</string>
 
     <string name="icon_size_title">Rozmiar ikon</string>
 
@@ -68,16 +71,22 @@
     <!-- Gestures -->
     <string name="gestures_title">Gesty</string>
     <string name="gesture_default">nic</string>
-    <string name="gestures_up_gesture_title">Przesunięcie w górę</string>
-    <string name="gestures_down_gesture_title">Przesunięcie w dół</string>
+    <string name="gestures_left_up_gesture_title">Przesunięcie w górę po lewej</string>
+    <string name="gestures_middle_up_gesture_title">Przesunięcie w górę pośrodku</string>
+    <string name="gestures_right_up_gesture_title">Przesunięcie w górę po prawej</string>
+    <string name="gestures_left_down_gesture_title">Przesunięcie w dół po lewej</string>
+    <string name="gestures_middle_down_gesture_title">Przesunięcie w dół pośrodku</string>
+    <string name="gestures_right_down_gesture_title">Przesunięcie w dół po prawej</string>
     <string name="gestures_pinch_gesture_title">Uszczypnięcie</string>
     <string name="gestures_spread_gesture_title">Rozszerzenie</string>
     <string name="gestures_double_tap_gesture_title">Dwukrotne dotknięcie</string>
+    <string name="no_last_app">Nie znaleziono ostatniej aplikacji.</string>
 
     <string name="gesture_target_nothing">Nic</string>
     <string name="gesture_target_homescreen">Przejdź do pulpitu domyślnego</string>
     <string name="gesture_target_drawer">Otwórz szufladę aplikacji</string>
     <string name="gesture_target_previews">Pokaż podgląd</string>
+    <string name="gesture_target_last_app">Ostatnia aplikacja</string>
     <string name="gesture_target_settings">Otwórz ustawienia launchera</string>
     <string name="gesture_target_custom">Własny</string>
 
@@ -98,4 +107,10 @@
     <string name="folder_background_color_title">Kolor tła</string>
     <string name="hide_folder_name_title">Ukryj nazwę folderu</string>
     <string name="hide_folder_name_summary">Nie pokazuj nazwy folderu gdy jest otwarty</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Ukryte aplikacje</string>
+    <string name="hidden_apps_summary">Ukryj aplikacje w szufladzie aplikacji</string>
+    <string name="hidden_apps_shortcuts_title">Usuń skróty</string>
+    <string name="hidden_apps_widgets_title">Usuń widżety</string>
 </resources>
