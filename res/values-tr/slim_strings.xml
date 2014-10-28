@@ -46,6 +46,7 @@
     <string name="hide_icon_labels_homescreen_summary">Simge Etiketlerini Ana Ekranda Gizle</string>
     <string name="hide_icon_labels_dock_summary">Simge Etiketlerini Alt Panalde Gizle</string>
 
+    <string name="hide_dock_title">Alt Paneli Gizle</string>
     <string name="dock_icons_title">Alt Panel Simge Sayısı</string>
     <string name="dock_icons_summary">Alt Panelin Bir Sayfasındakı Simge Sayısı</string>
 
@@ -54,6 +55,8 @@
     <string name="grid_size_summary">Sütun/satır sayılarını seç</string>
     <string name="homescreen_workspace_rows_title">Sütunlar</string>
     <string name="homescreen_workspace_columns_title">Satırlar</string>
+
+    <string name="hide_scroll_indicator_title">Kaydırma Göstergesini Gizle</string>
 
     <string name="icon_size_title">Simge Boyutu</string>
 
@@ -67,16 +70,22 @@
     <!-- Gestures -->
     <string name="gestures_title">Hareketler</string>
     <string name="gesture_default">Hiçbir şey</string>
-    <string name="gestures_up_gesture_title">Yukarı Kaydır</string>
-    <string name="gestures_down_gesture_title">Aşağı Kaydır</string>
+    <string name="gestures_left_up_gesture_title">Sol Yukarı Savur</string>
+    <string name="gestures_middle_up_gesture_title">Ortaya Doğru Savur</string>
+    <string name="gestures_right_up_gesture_title">Sağ Yukarı Savur</string>
+    <string name="gestures_left_down_gesture_title">Sol Aşağı Savur</string>
+    <string name="gestures_middle_down_gesture_title">Ortadan Aşağı Savur</string>
+    <string name="gestures_right_down_gesture_title">Sağ aşağı savur</string>
     <string name="gestures_pinch_gesture_title">Sıkıştır</string>
     <string name="gestures_spread_gesture_title">Geniştlet</string>
     <string name="gestures_double_tap_gesture_title">Çift Tıklama</string>
+    <string name="no_last_app">Enson Uygulama Bulunamadı.</string>
 
     <string name="gesture_target_nothing">Hiçbir şey</string>
     <string name="gesture_target_homescreen">Varsayılan Ekrana Git</string>
     <string name="gesture_target_drawer">Uygulama Menüsünü Aç</string>
     <string name="gesture_target_previews">Önizlemeyi Göster</string>
+    <string name="gesture_target_last_app">Enson Uygulama</string>
     <string name="gesture_target_settings">Başlatıcı Ayarlarını Aç</string>
     <string name="gesture_target_custom">Genel</string>
 
@@ -97,4 +106,10 @@
     <string name="folder_background_color_title">Arkaplan Rengi</string>
     <string name="hide_folder_name_title">Klasör ismini Gizle</string>
     <string name="hide_folder_name_summary">Klasör Açıkken Klasör Ismini Gösterme</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Gizlenmiş Uygulamalar</string>
+    <string name="hidden_apps_summary">Uygulama Menüsündeki Uygulamaları Gizle</string>
+    <string name="hidden_apps_shortcuts_title">Kısayolları Kaldır</string>
+    <string name="hidden_apps_widgets_title">Widgetları Kaldır</string>
 </resources>
