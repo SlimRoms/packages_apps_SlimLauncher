@@ -2817,7 +2817,7 @@ public class Launcher extends Activity
         }
     }
 
-    Workspace getWorkspace() {
+    public Workspace getWorkspace() {
         return mWorkspace;
     }
 
@@ -3239,7 +3239,7 @@ public class Launcher extends Activity
     public void onWorkspaceShown(boolean animated) {
     }
 
-    void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
+    public void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
                      boolean resetPageToZero) {
         if (mState != State.WORKSPACE) return;
 

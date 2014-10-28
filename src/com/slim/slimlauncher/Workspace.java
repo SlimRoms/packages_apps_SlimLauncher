@@ -70,6 +70,7 @@ import com.slim.slimlauncher.Launcher.CustomContentCallbacks;
 import com.slim.slimlauncher.LauncherSettings.Favorites;
 import com.slim.slimlauncher.settings.SettingsActivity;
 import com.slim.slimlauncher.settings.SettingsProvider;
+import com.slim.slimlauncher.util.GestureHelper;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class Workspace extends SmoothPagedView
     private static final int FLING_THRESHOLD_VELOCITY = 500;
 
     private static final int MIN_MULTITOUCH_EVENT_INTERVAL = 500;
-    private static final int MIN_UP_DOWN_GESTURE_DISTANCE = 200;
+    public static final int MIN_UP_DOWN_GESTURE_DISTANCE = 200;
 
     private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
@@ -153,7 +154,7 @@ public class Workspace extends SmoothPagedView
     private String mSpreadGestureAction;
     private String mDoubleTapGestureAction;
 
-    private GestureDetector mGestureDetector;
+    public GestureDetector mGestureDetector;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
     private static boolean sAccessibilityEnabled;
@@ -316,17 +317,6 @@ public class Workspace extends SmoothPagedView
         }
     };
 
-    public enum Gestures {
-        DOWN_LEFT,
-        DOWN_MIDDLE,
-        DOWN_RIGHT,
-        UP_LEFT,
-        UP_MIDDLE,
-        UP_RIGHT,
-        DOUBLE_TAP,
-        NONE
-    }
-
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -377,20 +367,12 @@ public class Workspace extends SmoothPagedView
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
 
-        wm = (WindowManager) mLauncher.getSystemService(Context.WINDOW_SERVICE);
-        display = wm.getDefaultDisplay();
-        size = new Point();
-        display.getSize(size);
-        width = size.x;
-        height = size.y;
-
-        sector = width / 3;
-
         mGestureDetector = new GestureDetector(context,
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                performGestureAction(mDoubleTapGestureAction, "double_tap");
+                GestureHelper.performGestureAction(
+                        mLauncher, mDoubleTapGestureAction, "double_tap");
                 return true;
             }
 
@@ -399,32 +381,33 @@ public class Workspace extends SmoothPagedView
                                     float xVelocity, float yVelocity) {
                 if (!mIsDragOccuring && mTouchState !=
                         TOUCH_STATE_SCROLLING && !mMultitouchGestureDetected) {
-                    switch(identifyGesture(finish.getRawX(), finish.getRawY(),
+                    switch(GestureHelper.identifyGesture(finish.getRawX(), finish.getRawY(),
                             start.getRawX(), start.getRawY())) {
                         case UP_LEFT:
-                            performGestureAction(mLeftUpGestureAction, "left_up");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mLeftUpGestureAction, "left_up");
                             break;
                         case UP_MIDDLE:
-                            performGestureAction(mMiddleUpGestureAction, "middle_up");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mMiddleUpGestureAction, "middle_up");
                             break;
                         case UP_RIGHT:
-                            performGestureAction(mRightUpGestureAction, "right_up");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mRightUpGestureAction, "right_up");
                             break;
                         case DOWN_LEFT:
-                            performGestureAction(mLeftDownGestureAction, "left_down");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mLeftDownGestureAction, "left_down");
                             break;
                         case DOWN_MIDDLE:
-                            performGestureAction(mMiddleDownGestureAction, "middle_down");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mMiddleDownGestureAction, "middle_down");
                             break;
                         case DOWN_RIGHT:
-                            performGestureAction(mRightDownGestureAction, "right_down");
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mRightDownGestureAction, "right_down");
                             break;
                     }
-                    /*if (finish.getRawY() - start.getRawY() >= MIN_UP_DOWN_GESTURE_DISTANCE) {
-                        performGestureAction(mDownGestureAction, "down");
-                    } else if (start.getRawY() - finish.getRawY() >= MIN_UP_DOWN_GESTURE_DISTANCE) {
-                        performGestureAction(mUpGestureAction, "up");
-                    }*/
                 }
                 mMultitouchGestureDetected = false;
                 return true;
@@ -442,58 +425,6 @@ public class Workspace extends SmoothPagedView
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
         setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-    }
-
-    static WindowManager wm;
-    static Display display;
-    static Point size;
-    static int width;
-    static int height;
-    static int sector;
-    static boolean isLandscape;
-
-    public Gestures identifyGesture(float upX, float upY, float downX, float downY) {
-
-        if (isSwipeDOWN(upY, downY)) {
-
-            if (isSwipeLEFT(downX)) {
-                return Gestures.DOWN_LEFT;
-            } else if (isSwipeRIGHT(downX)) {
-                return Gestures.DOWN_RIGHT;
-            } else if (isSwipeMIDDLE(downX)) {
-                return Gestures.DOWN_MIDDLE;
-            }
-        } else if (isSwipeUP(upY, downY)) {
-            if (isSwipeLEFT(downX)) {
-                return Gestures.UP_LEFT;
-            } else if (isSwipeRIGHT(downX)) {
-                return Gestures.UP_RIGHT;
-            } else if (isSwipeMIDDLE(downX)) {
-                return Gestures.UP_MIDDLE;
-            }
-        }
-
-        return Gestures.NONE;
-    }
-
-    static boolean isSwipeDOWN(float upY, float downY) {
-        return (upY - downY) > MIN_UP_DOWN_GESTURE_DISTANCE;
-    }
-
-    static boolean isSwipeUP(float upY, float downY) {
-        return ((upY - downY) < -MIN_UP_DOWN_GESTURE_DISTANCE);
-    }
-
-    static boolean isSwipeLEFT(float downX) {
-        return downX < sector;
-    }
-
-    static boolean isSwipeMIDDLE(float downX) {
-        return downX > sector && downX < (sector * 2);
-    }
-
-    static boolean isSwipeRIGHT(float downX) {
-        return downX > (sector * 2);
     }
 
     public void reloadSettings() {
@@ -4737,6 +4668,10 @@ public class Workspace extends SmoothPagedView
          }
     }
 
+    public long getDefaultPage() {
+        return mDefaultScreenId;
+    }
+
     @Override
     protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
         long screenId = getScreenIdForPageIndex(pageIndex);
@@ -4797,13 +4732,13 @@ public class Workspace extends SmoothPagedView
         long delta = System.currentTimeMillis() - mLastMultitouch;
         if (pinch < 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
                 delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
-            performGestureAction(mPinchGestureAction, "pinch");
+            GestureHelper.performGestureAction(mLauncher, mPinchGestureAction, "pinch");
             mLastMultitouch = System.currentTimeMillis();
             mMultitouchGestureDetected = true;
             return true;
         } else if (pinch > 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
                 delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
-            performGestureAction(mSpreadGestureAction, "spread");
+            GestureHelper.performGestureAction(mLauncher, mSpreadGestureAction, "spread");
             mLastMultitouch = System.currentTimeMillis();
             mMultitouchGestureDetected = true;
             return true;
@@ -4814,67 +4749,5 @@ public class Workspace extends SmoothPagedView
     @Override
     public void selectObject(Object obj, PointInfo touchPoint) {
         //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    private void performGestureAction(String gestureAction, String gesture) {
-        Log.d(TAG, "gestureAction=" + gestureAction + " : gesture=" + gesture);
-        if (gestureAction.equals("default_homescreen")) {
-            setCurrentPage(getPageIndexForScreenId(mDefaultScreenId));
-        } else if (gestureAction.equals("open_app_drawer")) {
-            mLauncher.showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
-        } else if (gestureAction.equals("show_previews")) {
-            enterOverviewMode(true);
-        } else if (gestureAction.equals("show_settings")) {
-            Intent preferences = new Intent().setClass(mLauncher, SettingsActivity.class);
-            preferences.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            mLauncher.startActivity(preferences);
-        } else if (gestureAction.equals("last_app")) {
-            getLastApp();
-        } else if (gestureAction.equals("custom")) {
-            String uri = SettingsProvider.getString(getContext(),
-                    gesture + "_gesture_action_custom", "");
-            if (uri != "") {
-                try {
-                    Intent intent = Intent.parseUri(uri, 0);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mLauncher.startActivity(intent);
-                } catch (URISyntaxException e) {
-                    Log.e(TAG, "Unable to start gesture action " + gestureAction, e);
-                }
-            }
-        }
-    }
-
-    private void getLastApp() {
-        String packageName = null;
-        String intentPackage = null;
-        final Intent intent = new Intent(Intent.ACTION_MAIN);
-        final ActivityManager am = (ActivityManager)
-                mLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
-        String defaultHomePackage = "com.android.launcher";
-        intent.addCategory(Intent.CATEGORY_HOME);
-        final ResolveInfo res = mLauncher.getPackageManager().resolveActivity(intent, 0);
-        if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
-            defaultHomePackage = res.activityInfo.packageName;
-        }
-        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
-        // lets get enough tasks to find something to switch to
-        // Note, we'll only get as many as the system currently has - up to 5
-        for (int i = tasks.size() - 1; i > 0; i--) {
-            packageName = tasks.get(i).topActivity.getPackageName();
-            if (!packageName.equals(defaultHomePackage)
-                    && !packageName.equals("com.android.systemui")
-                    && !packageName.equals(mLauncher.getPackageName())) {
-                intentPackage = packageName;
-            }
-        }
-        if (intentPackage != null) {
-            Intent intent1 = mLauncher.getPackageManager().getLaunchIntentForPackage(intentPackage);
-            mLauncher.startActivity(intent1);
-        } else {
-            Toast.makeText(mLauncher, mLauncher.getString(R.string.no_last_app), Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 }
