@@ -37,5 +37,6 @@ public interface SettingsKeys {
 
     // Folder
     public static final String FOLDER_BACKGROUND_COLOR = "folder_background_color";
+    public static final String FOLDER_ICON_TEXT_COLOR = "folder_icon_text_color";
     public static final String HIDE_FOLDER_NAME = "hide_folder_name";
 }

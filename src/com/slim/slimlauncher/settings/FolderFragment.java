@@ -11,6 +11,7 @@ public class FolderFragment extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener {
 
     private ColorPickerPreference mFolderBackground;
+    private ColorPickerPreference mFolderIconTextColor;
 
 
     @Override
@@ -37,6 +38,23 @@ public class FolderFragment extends SettingsPreferenceFragment
             mFolderBackground.setSummary(hexColor);
         }
         mFolderBackground.setNewPreviewColor(intColor);
+
+        mFolderIconTextColor = (ColorPickerPreference)
+                findPreference(SettingsProvider.FOLDER_ICON_TEXT_COLOR);
+        mFolderIconTextColor.setAlphaSliderEnabled(true);
+        mFolderIconTextColor.setOnPreferenceChangeListener(this);
+        mFolderIconTextColor.setDefaultColor(
+                getResources().getColor(R.color.folder_items_text_color));
+        intColor = SettingsProvider.getInt(getActivity(),
+                SettingsProvider.FOLDER_ICON_TEXT_COLOR, -2);
+        if (intColor == -2) {
+            intColor = getResources().getColor(R.color.folder_items_text_color);
+            mFolderIconTextColor.setSummary(getString(R.string.default_string));
+        } else {
+            hexColor = String.format("#%08x", (intColor));
+            mFolderIconTextColor.setSummary(hexColor);
+        }
+        mFolderIconTextColor.setNewPreviewColor(intColor);
     }
 
     @Override

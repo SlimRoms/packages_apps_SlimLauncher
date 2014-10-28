@@ -114,6 +114,7 @@
     <!-- Folders -->
     <string name="folder_title">Folders</string>
     <string name="folder_background_color_title">Background Color</string>
+    <string name="folder_icon_text_color_title">Icon text color</string>
     <string name="hide_folder_name_title">Hide folder name</string>
     <string name="hide_folder_name_summary">When a folder is open do not show its name</string>
 

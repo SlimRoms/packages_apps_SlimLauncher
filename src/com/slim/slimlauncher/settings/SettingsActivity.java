@@ -20,7 +20,7 @@ public class SettingsActivity extends PreferenceActivity implements
     @Override
     public void onPause() {
         super.onPause();
-        SettingsProvider.get(this).registerOnSharedPreferenceChangeListener(this);
+        SettingsProvider.get(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

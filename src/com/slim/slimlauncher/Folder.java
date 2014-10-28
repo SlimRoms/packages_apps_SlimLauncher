@@ -540,7 +540,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 Utilities.createIconDrawable(item.getIcon(mIconCache)), null, null);
         textView.setText(item.title);
         textView.setTag(item);
-        textView.setTextColor(getResources().getColor(R.color.folder_items_text_color));
+        int color = SettingsProvider.getInt(getContext(), SettingsProvider.FOLDER_ICON_TEXT_COLOR,
+                getResources().getColor(R.color.folder_items_text_color));
+        textView.setTextColor(color);
         textView.setShadowsEnabled(false);
 
         textView.setOnClickListener(this);
