@@ -24,6 +24,7 @@
     <string name="default_string">Default</string>
     <string name="reset_string">Reset</string>
     <string name="set_string">Set</string>
+    <string name="off_string">Off</string>
 
     <!-- Text for default screen button -->
     <string name="default_screen_button_text">Default Screen</string>
@@ -113,6 +114,9 @@
 
     <!-- Folders -->
     <string name="folder_title">Folders</string>
+    <string name="smart_folder_title">Smart folder</string>
+    <string name="smart_folder_summary_one">Swipe - launch first app \nTouch - open folder</string>
+    <string name="smart_folder_summart_two">Swipe - open folder \nTouch - launch first app</string>
     <string name="folder_background_color_title">Background Color</string>
     <string name="folder_icon_text_color_title">Icon text color</string>
     <string name="hide_folder_name_title">Hide folder name</string>

@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import android.graphics.drawable.shapes.RectShape;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -670,18 +672,36 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                 title));
     }
 
+    float downY, downX;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
 
-        switch (event.getAction()) {
+        if (mLauncher.getWorkspace().isPageMoving()) {
+            return result;
+        }
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                downY = event.getRawY();
+                downX = event.getRawX();
                 mLongPressHelper.postCheckForLongPress();
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                int value = Integer.parseInt(SettingsProvider.getString(getContext(),
+                        SettingsProvider.KEY_SMART_FOLDER, "0"));
+                if (mLongPressHelper.hasPerformedLongPress()) {
+                    return result;
+                }
+                if (value != 0) {
+                    if (downY - event.getRawY() >= 10.0) {
+                        mLauncher.handleFolderClick(this, true);
+                    }
+                }
                 mLongPressHelper.cancelLongPress();
                 break;
         }

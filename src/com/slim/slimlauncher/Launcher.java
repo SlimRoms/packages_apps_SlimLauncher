@@ -2348,7 +2348,7 @@ public class Launcher extends Activity
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 FolderIcon fi = (FolderIcon) v;
-                handleFolderClick(fi);
+                handleFolderClick(fi, false);
             }
         } else if (v == mAllAppsButton) {
             if (isAllAppsVisible()) {
@@ -2531,9 +2531,18 @@ public class Launcher extends Activity
         return success;
     }
 
-    private void handleFolderClick(FolderIcon folderIcon) {
+    void handleFolderClick(FolderIcon folderIcon, boolean swipe) {
         final FolderInfo info = folderIcon.getFolderInfo();
         Folder openFolder = mWorkspace.getFolderForTag(info);
+
+        int smartFolderMode = Integer.parseInt(SettingsProvider.getString(this,
+                SettingsProvider.KEY_SMART_FOLDER, "0"));
+
+        if ((smartFolderMode == 1 && swipe) || (smartFolderMode == 2 && !swipe)) {
+            startActivity(((ShortcutInfo) folderIcon.getFolder()
+                    .getItemsInReadingOrder().get(0).getTag()).getIntent());
+            return;
+        }
 
         // If the folder info reports that the associated folder is open, then verify that
         // it is actually opened. There have been a few instances where this gets out of sync.

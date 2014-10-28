@@ -36,4 +36,16 @@
         <item>**default_homescreen**</item>
     </string-array>
 
+    <string-array name="smart_folder_entries">
+        <item>@string/off_string</item>
+        <item>@string/smart_folder_summary_one</item>
+        <item>@string/smart_folder_summart_two</item>
+    </string-array>
+
+    <string-array name="smart_folder_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>
