@@ -41,6 +41,7 @@
     <string name="hide_icon_labels_homescreen_summary">Απόκρυψη ετικέτας εικονιδίου στην αρχική οθόνη</string>
     <string name="hide_icon_labels_dock_summary">Απόκρυψη ετικέτας εικονιδίου στην μπάρα εφαρμογών</string>
 
+    <string name="hide_dock_title">Απόκρυψη μπάρας εφαρμογών</string>
     <string name="dock_icons_title">Εικονίδια μπάρας εφαρμογών</string>
     <string name="dock_icons_summary">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
 
@@ -49,6 +50,8 @@
     <string name="grid_size_summary">Επιλέξτε τον αριθμό των γραμμών/στηλών</string>
     <string name="homescreen_workspace_rows_title">Σειρές</string>
     <string name="homescreen_workspace_columns_title">Στήλες</string>
+
+    <string name="hide_scroll_indicator_title">Απόκρυψη δείκτη κύλισης</string>
 
     <string name="icon_size_title">Μέγεθος εικονιδίου</string>
 
@@ -62,16 +65,22 @@
     <!-- Gestures -->
     <string name="gestures_title">Χειρονομίες</string>
     <string name="gesture_default">Τίποτα</string>
-    <string name="gestures_up_gesture_title">Γλίστρημα πρός τα πάνω</string>
-    <string name="gestures_down_gesture_title">Γλίστρημα πρός τα κάτω</string>
+    <string name="gestures_left_up_gesture_title">Γλίστρημα από τα αριστερά &amp; πάνω</string>
+    <string name="gestures_middle_up_gesture_title">Γλίστρημα από τη μέση &amp; πάνω</string>
+    <string name="gestures_right_up_gesture_title">Γλίστρημα από τα δεξιά &amp; πάνω</string>
+    <string name="gestures_left_down_gesture_title">Γλίστρημα από τα αριστερά &amp; κάτω</string>
+    <string name="gestures_middle_down_gesture_title">Γλίστρημα από τη μέση &amp; κάτω</string>
+    <string name="gestures_right_down_gesture_title">Γλίστρημα από τα δεξιά &amp; κάτω</string>
     <string name="gestures_pinch_gesture_title">Τσίμπημα</string>
     <string name="gestures_spread_gesture_title">Άπλωμα</string>
     <string name="gestures_double_tap_gesture_title">Διπλό χτύπημα</string>
+    <string name="no_last_app">Τελευταία εφαρμογή δεν βρέθηκε</string>
 
     <string name="gesture_target_nothing">Τίποτα</string>
     <string name="gesture_target_homescreen">Πήγαινε στην προεπιλεγμένη αρχική οθόνη</string>
     <string name="gesture_target_drawer">Άνοιγμα συρταριού εφαρμογών</string>
     <string name="gesture_target_previews">Εμφάνιση προεπισκοπήσεων</string>
+    <string name="gesture_target_last_app">Τελευταία εφαρμογή</string>
     <string name="gesture_target_settings">Άνοιγμα ρυθμίσεων του Launcher</string>
     <string name="gesture_target_custom">Προσαρμοσμένη</string>
 
@@ -92,4 +101,10 @@
     <string name="folder_background_color_title">Χρώμα φόντου</string>
     <string name="hide_folder_name_title">Απόκρυψη ονόματος φακέλου</string>
     <string name="hide_folder_name_summary">Να μην εμφανίζεται το όνομα του φακέλου όταν ο φάκελος είναι ανοιχτός</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Απόκρυψη εφαρμογών</string>
+    <string name="hidden_apps_summary">Απόκρυψη εφαρμογών στο Συρτάρι εφαρμογών</string>
+    <string name="hidden_apps_shortcuts_title">Αφαίρεση συντομεύσεων</string>
+    <string name="hidden_apps_widgets_title">Αφαίρεση γραφικών στοιχείων</string>
 </resources>
