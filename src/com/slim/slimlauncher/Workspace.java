@@ -25,6 +25,8 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -32,6 +34,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -60,6 +63,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.slim.slimlauncher.FolderIcon.FolderRingAnimator;
 import com.slim.slimlauncher.Launcher.CustomContentCallbacks;
@@ -72,6 +76,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import org.metalev.multitouch.controller.MultiTouchController;
 import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
@@ -4847,6 +4852,8 @@ public class Workspace extends SmoothPagedView
             preferences.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             mLauncher.startActivity(preferences);
+        } else if (gestureAction.equals("last_app")) {
+            getLastApp();
         } else if (gestureAction.equals("custom")) {
             String uri = SettingsProvider.getString(getContext(),
                     gesture + "_gesture_action_custom", "");
@@ -4859,6 +4866,40 @@ public class Workspace extends SmoothPagedView
                     Log.e(TAG, "Unable to start gesture action " + gestureAction, e);
                 }
             }
+        }
+    }
+
+    private void getLastApp() {
+        int lastAppId = 0;
+        int looper = 1;
+        String packageName = null;
+        String intentPackage = null;
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        final ActivityManager am = (ActivityManager)
+                mLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
+        String defaultHomePackage = "com.android.launcher";
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = mLauncher.getPackageManager().resolveActivity(intent, 0);
+        if (res.activityInfo != null && !res.activityInfo.packageName.equals("android")) {
+            defaultHomePackage = res.activityInfo.packageName;
+        }
+        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(5);
+        // lets get enough tasks to find something to switch to
+        // Note, we'll only get as many as the system currently has - up to 5
+        while (looper < tasks.size()) {
+            packageName = tasks.get(looper).topActivity.getPackageName();
+            if (!packageName.equals(defaultHomePackage)
+                    && !packageName.equals("com.android.systemui")) {
+                intentPackage = packageName;
+            }
+            looper++;
+        }
+        if (intentPackage != null) {
+            Intent intent1 = mLauncher.getPackageManager().getLaunchIntentForPackage(packageName);
+            mLauncher.startActivity(intent1);
+        } else {
+            Toast.makeText(mLauncher, mLauncher.getString(R.string.no_last_app), Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 }
