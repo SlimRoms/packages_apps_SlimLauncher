@@ -74,8 +74,12 @@
     <!-- Gestures -->
     <string name="gestures_title">Gestures</string>
     <string name="gesture_default">nothing</string>
-    <string name="gestures_up_gesture_title">Swipe up</string>
-    <string name="gestures_down_gesture_title">Swipe down</string>
+    <string name="gestures_left_up_gesture_title">Swipe up left</string>
+    <string name="gestures_middle_up_gesture_title">Swipe up middle</string>
+    <string name="gestures_right_up_gesture_title">Swipe up right</string>
+    <string name="gestures_left_down_gesture_title">Swipe down left</string>
+    <string name="gestures_middle_down_gesture_title">Swipe down middle</string>
+    <string name="gestures_right_down_gesture_title">Swipe down right</string>
     <string name="gestures_pinch_gesture_title">Pinch</string>
     <string name="gestures_spread_gesture_title">Spread</string>
     <string name="gestures_double_tap_gesture_title">Double tap</string>

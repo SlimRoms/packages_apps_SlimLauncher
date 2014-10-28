@@ -3,15 +3,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:key="up_gesture_action"
-        android:title="@string/gestures_up_gesture_title"
+        android:key="left_up_gesture_action"
+        android:title="@string/gestures_left_up_gesture_title"
         android:summary=""
         android:entries="@array/gesture_target_names"
         android:entryValues="@array/gesture_target_values"
         android:defaultValue="nothing" />
     <ListPreference
-        android:key="down_gesture_action"
-        android:title="@string/gestures_down_gesture_title"
+        android:key="middle_up_gesture_action"
+        android:title="@string/gestures_middle_up_gesture_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="nothing" />
+    <ListPreference
+        android:key="right_up_gesture_action"
+        android:title="@string/gestures_right_up_gesture_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="nothing" />
+    <ListPreference
+        android:key="left_down_gesture_action"
+        android:title="@string/gestures_left_down_gesture_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="nothing" />
+    <ListPreference
+        android:key="middle_down_gesture_action"
+        android:title="@string/gestures_middle_down_gesture_title"
+        android:summary=""
+        android:entries="@array/gesture_target_names"
+        android:entryValues="@array/gesture_target_values"
+        android:defaultValue="nothing" />
+    <ListPreference
+        android:key="right_down_gesture_action"
+        android:title="@string/gestures_right_down_gesture_title"
         android:summary=""
         android:entries="@array/gesture_target_names"
         android:entryValues="@array/gesture_target_values"

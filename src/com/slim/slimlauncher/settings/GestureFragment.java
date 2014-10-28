@@ -11,13 +11,19 @@ import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.util.AppHelper;
 import com.slim.slimlauncher.util.ShortcutPickHelper;
 
+import java.util.Set;
+
 public class GestureFragment extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener {
 
     ShortcutPickHelper mPicker;
 
-    ListPreference mGestureUp;
-    ListPreference mGestureDown;
+    ListPreference mGestureLeftUp;
+    ListPreference mGestureMiddleUp;
+    ListPreference mGestureRightUp;
+    ListPreference mGestureLeftDown;
+    ListPreference mGestureMiddleDown;
+    ListPreference mGestureRightDown;
     ListPreference mGesturePinch;
     ListPreference mGestureSpread;
     ListPreference mGestureDoubleTap;
@@ -31,15 +37,27 @@ public class GestureFragment extends SettingsPreferenceFragment
 
         addPreferencesFromResource(R.xml.gesture_fragment);
 
-        mGestureUp = (ListPreference) findPreference(SettingsProvider.UP_GESTURE_ACTION);
-        mGestureDown = (ListPreference) findPreference(SettingsProvider.DOWN_GESTURE_ACTION);
+        mGestureLeftUp = (ListPreference) findPreference(SettingsProvider.LEFT_UP_GESTURE_ACTION);
+        mGestureMiddleUp = (ListPreference)
+                findPreference(SettingsProvider.MIDDLE_UP_GESTURE_ACTION);
+        mGestureRightUp = (ListPreference) findPreference(SettingsProvider.RIGHT_UP_GESTURE_ACTION);
+        mGestureLeftDown = (ListPreference)
+                findPreference(SettingsProvider.LEFT_DOWN_GESTURE_ACTION);
+        mGestureMiddleDown = (ListPreference)
+                findPreference(SettingsProvider.MIDDLE_DOWN_GESTURE_ACTION);
+        mGestureRightDown = (ListPreference)
+                findPreference(SettingsProvider.RIGHT_DOWN_GESTURE_ACTION);
         mGesturePinch = (ListPreference) findPreference(SettingsProvider.PINCH_GESTURE_ACTION);
         mGestureSpread = (ListPreference) findPreference(SettingsProvider.SPREAD_GESTURE_ACTION);
         mGestureDoubleTap = (ListPreference)
                 findPreference(SettingsProvider.DOUBLE_TAP_GESTURE_ACTION);
 
-        mGestureUp.setOnPreferenceChangeListener(this);
-        mGestureDown.setOnPreferenceChangeListener(this);
+        mGestureLeftUp.setOnPreferenceChangeListener(this);
+        mGestureMiddleUp.setOnPreferenceChangeListener(this);
+        mGestureRightUp.setOnPreferenceChangeListener(this);
+        mGestureLeftDown.setOnPreferenceChangeListener(this);
+        mGestureMiddleDown.setOnPreferenceChangeListener(this);
+        mGestureRightDown.setOnPreferenceChangeListener(this);
         mGesturePinch.setOnPreferenceChangeListener(this);
         mGestureSpread.setOnPreferenceChangeListener(this);
         mGestureDoubleTap.setOnPreferenceChangeListener(this);
@@ -65,8 +83,12 @@ public class GestureFragment extends SettingsPreferenceFragment
     }
 
     private void updatePrefs() {
-        updateSummary(mGestureUp, mGestureUp.getValue());
-        updateSummary(mGestureDown, mGestureDown.getValue());
+        updateSummary(mGestureLeftUp, mGestureLeftUp.getValue());
+        updateSummary(mGestureMiddleUp, mGestureMiddleUp.getValue());
+        updateSummary(mGestureRightUp, mGestureRightUp.getValue());
+        updateSummary(mGestureLeftDown, mGestureLeftDown.getValue());
+        updateSummary(mGestureMiddleDown, mGestureMiddleDown.getValue());
+        updateSummary(mGestureRightDown, mGestureRightDown.getValue());
         updateSummary(mGesturePinch, mGesturePinch.getValue());
         updateSummary(mGestureSpread, mGestureSpread.getValue());
         updateSummary(mGestureDoubleTap, mGestureDoubleTap.getValue());
@@ -90,7 +112,9 @@ public class GestureFragment extends SettingsPreferenceFragment
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mGestureUp || preference == mGestureDown ||
+        if (preference == mGestureLeftUp || preference == mGestureMiddleUp ||
+                preference == mGestureRightUp || preference == mGestureLeftDown||
+                preference == mGestureMiddleDown || preference == mGestureRightDown ||
                 preference == mGesturePinch || preference == mGestureSpread ||
                 preference == mGestureDoubleTap) {
             if (newValue.equals("custom")) {
