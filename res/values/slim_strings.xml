@@ -62,6 +62,8 @@
     <string name="homescreen_workspace_rows_title">Rows</string>
     <string name="homescreen_workspace_columns_title">Columns</string>
 
+    <string name="hide_scroll_indicator_title">Hide scroll indicator</string>
+
     <string name="icon_size_title">Icon size</string>
 
     <!-- Icon Pack  -->

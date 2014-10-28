@@ -515,13 +515,17 @@ public class DeviceProfile {
         }
         hotseat.setLayoutParams(lp);
 
+        boolean hideHomescreenIndicator = SettingsProvider.getBoolean(launcher,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_INDICATOR, false);
+
         // Layout the page indicators
         pageIndicator = launcher.findViewById(R.id.page_indicator);
         if (pageIndicator != null) {
-            if (hasVerticalBarLayout) {
+            if (hasVerticalBarLayout || hideHomescreenIndicator) {
                 // Hide the page indicators when we have vertical search/hotseat
                 pageIndicator.setVisibility(View.GONE);
             } else {
+                pageIndicator.setVisibility(View.VISIBLE);
                 // Put the page indicators above the hotseat
                 lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
@@ -535,6 +539,13 @@ public class DeviceProfile {
 
     public void updatePageIndicator(Context context) {
         if (pageIndicator != null) {
+            boolean hideHomescreenIndicator = SettingsProvider.getBoolean(context,
+                    SettingsProvider.KEY_HOMESCREEN_HIDE_INDICATOR, false);
+            if (hideHomescreenIndicator) {
+                pageIndicator.setVisibility(View.GONE);
+            } else {
+                pageIndicator.setVisibility(View.VISIBLE);
+            }
             FrameLayout.LayoutParams lp =
                     (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
             lp.bottomMargin = getNavigationBarHeight(context) + hotseatBarHeightPx;

@@ -32,4 +32,9 @@
         android:summary="@string/hide_icon_labels_homescreen_summary"
         android:defaultValue="false" />
 
+    <CheckBoxPreference
+        android:key="hide_homescreen_page_indicator"
+        android:title="@string/hide_scroll_indicator_title"
+        android:defaultValue="false" />
+
 </PreferenceScreen>
