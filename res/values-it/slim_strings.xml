@@ -46,6 +46,7 @@
     <string name="hide_icon_labels_homescreen_summary">Nascondi etichette schermate home</string>
     <string name="hide_icon_labels_dock_summary">Nascondi etichette dock</string>
 
+    <string name="hide_dock_title">Nascondi dock</string>
     <string name="dock_icons_title">Icone Dock</string>
     <string name="dock_icons_summary">Numero di icone nella dock</string>
 
@@ -54,6 +55,8 @@
     <string name="grid_size_summary">Numero di righe e colonne</string>
     <string name="homescreen_workspace_rows_title">Righe</string>
     <string name="homescreen_workspace_columns_title">Colonne</string>
+
+    <string name="hide_scroll_indicator_title">Nascondi indicatore di scorrimento</string>
 
     <string name="icon_size_title">Dimensione icone</string>
 
@@ -67,16 +70,22 @@
     <!-- Gestures -->
     <string name="gestures_title">Gesti</string>
     <string name="gesture_default">Niente</string>
-    <string name="gestures_up_gesture_title">Trascina su</string>
-    <string name="gestures_down_gesture_title">Trascina giù</string>
+    <string name="gestures_left_up_gesture_title">Trascina su a sinistra</string>
+    <string name="gestures_middle_up_gesture_title">Trascina su al centro</string>
+    <string name="gestures_right_up_gesture_title">Trascina su a destra</string>
+    <string name="gestures_left_down_gesture_title">Trascina giù a sinistra</string>
+    <string name="gestures_middle_down_gesture_title">Trascina giù al centro</string>
+    <string name="gestures_right_down_gesture_title">Trascina giù a destra</string>
     <string name="gestures_pinch_gesture_title">Pinch</string>
     <string name="gestures_spread_gesture_title">Allarga</string>
     <string name="gestures_double_tap_gesture_title">Doppio tocco</string>
+    <string name="no_last_app">Ultima applicazione non trovata</string>
 
     <string name="gesture_target_nothing">Niente</string>
     <string name="gesture_target_homescreen">Vai alla schermata home predefinita</string>
     <string name="gesture_target_drawer">Apri drawer applicazioni</string>
     <string name="gesture_target_previews">Mostra anteprime</string>
+    <string name="gesture_target_last_app">Ultima applicazione</string>
     <string name="gesture_target_settings">Apri impostazioni launcher</string>
     <string name="gesture_target_custom">Personalizzato</string>
 
@@ -97,4 +106,10 @@
     <string name="folder_background_color_title">Colore sfondo</string>
     <string name="hide_folder_name_title">Nascondi nome cartella</string>
     <string name="hide_folder_name_summary">Non mostrare il nome della cartella quando è aperta</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Applicazioni nascoste</string>
+    <string name="hidden_apps_summary">Nascondi applicazioni nel drawer</string>
+    <string name="hidden_apps_shortcuts_title">Rimuovi collegamenti</string>
+    <string name="hidden_apps_widgets_title">Rimuovi widget</string>
 </resources>
