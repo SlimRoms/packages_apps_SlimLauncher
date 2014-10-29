@@ -45,6 +45,7 @@
     <string name="hide_icon_labels_homescreen_summary">Ocultar etiquetas en l escritorio</string>
     <string name="hide_icon_labels_dock_summary">Ocultar etiquetas en la barra de aplicaciones</string>
 
+    <string name="hide_dock_title">Ocultar la barra de aplicaciones</string>
     <string name="dock_icons_title">Iconos en la barra de aplicaciones</string>
     <string name="dock_icons_summary">Número de iconos en la barra de aplicaciones</string>
 
@@ -53,6 +54,8 @@
     <string name="grid_size_summary">Determinar el número de filas y columnas</string>
     <string name="homescreen_workspace_rows_title">Filas</string>
     <string name="homescreen_workspace_columns_title">Columnas</string>
+
+    <string name="hide_scroll_indicator_title">Ocultar el indicador de pantalla</string>
 
     <string name="icon_size_title">Tamaño de los iconos</string>
 
@@ -66,17 +69,23 @@
     <!-- Gestures -->
     <string name="gestures_title">Gestos</string>
     <string name="gesture_default">ninguno</string>
-    <string name="gestures_up_gesture_title">Desplazar arriba</string>
-    <string name="gestures_down_gesture_title">Desplazar abajo</string>
+    <string name="gestures_left_up_gesture_title">Deslizar arriba en la izquierda</string>
+    <string name="gestures_middle_up_gesture_title">Deslizar arriba en el centro</string>
+    <string name="gestures_right_up_gesture_title">Deslizar arriba en la derecha</string>
+    <string name="gestures_left_down_gesture_title">Deslizar abajo en la izquierda</string>
+    <string name="gestures_middle_down_gesture_title">Deslizar abajo en el centro</string>
+    <string name="gestures_right_down_gesture_title">Deslizar abajo en la derecha</string>
     <string name="gestures_pinch_gesture_title">Pellizcar</string>
     <string name="gestures_spread_gesture_title">Extender</string>
     <string name="gestures_double_tap_gesture_title">Doble toque</string>
-    <string name="gesture_target_nothing">Nada</string>
+    <string name="no_last_app">No hay última aplicación</string>
 
+    <string name="gesture_target_nothing">Nada</string>
     <string name="gesture_target_homescreen">Escritorio por defecto</string>
     <string name="gesture_target_drawer">Cajón de aplicaciones</string>
     <string name="gesture_target_previews">Mostrar previsualización</string>
     <string name="gesture_target_settings">Ajustes del lanzador</string>
+    <string name="gesture_target_last_app">Ultima aplicación</string>
     <string name="gesture_target_custom">Personalizado</string>
 
     <string name="profile_applist_title">Aplicaciones</string>
@@ -92,10 +101,10 @@
     <string name="set">Aplicar</string>
 
     <!-- Folders -->
-    <string name="folder_title">Carpeta</string>
+    <string name="folder_title">Carpetas</string>
     <string name="folder_background_color_title">Color de fondo</string>
     <string name="hide_folder_name_title">Ocultar el nombre</string>
-    <string name="hide_folder_name_summary">No mostrar el nombre de la carpeta cuando está abierta.</string>
+    <string name="hide_folder_name_summary">No mostrar el nombre de las carpetas cuando están abiertas</string>
 
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Aplicaciones ocultas</string>
