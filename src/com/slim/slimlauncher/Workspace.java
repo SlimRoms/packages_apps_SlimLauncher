@@ -2331,6 +2331,9 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        boolean hidePageIndicator = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_INDICATOR, false);
+
         final View searchBar = mLauncher.getQsbBar();
         final View overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
@@ -2374,7 +2377,7 @@ public class Workspace extends SmoothPagedView
                 }
             }
             ObjectAnimator pageIndicatorAlpha = null;
-            if (getPageIndicator() != null) {
+            if (getPageIndicator() != null && !hidePageIndicator) {
                 pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
                         finalHotseatAndPageIndicatorAlpha);
             }
@@ -2398,21 +2401,21 @@ public class Workspace extends SmoothPagedView
                 overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
             }
 
-            if (getPageIndicator() != null) {
+            if (getPageIndicator() != null && !hidePageIndicator) {
                 pageIndicatorAlpha.addListener(new AlphaUpdateListener(getPageIndicator()));
             }
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
             if (mShowSearchBar) anim.play(searchBarAlpha);
-            anim.play(pageIndicatorAlpha);
+            if (!hidePageIndicator) anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel);
             hotseat.setAlpha(finalHotseatAndPageIndicatorAlpha);
             AlphaUpdateListener.updateVisibility(hotseat);
-            if (getPageIndicator() != null) {
+            if (getPageIndicator() != null && !hidePageIndicator) {
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
