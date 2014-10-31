@@ -133,10 +133,6 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
         mPagedView.reset();
     }
 
-    void trimMemory() {
-        mPagedView.trimMemory();
-    }
-
     public void onWindowVisible() {
         if (getVisibility() == VISIBLE) {
             mContent.setVisibility(VISIBLE);
