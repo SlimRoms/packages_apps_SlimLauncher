@@ -27,7 +27,8 @@ public class ShortcutHelper {
             return drawableToBitmap(
                     context.getResources().getDrawable(R.drawable.ic_home_all_apps_holo_dark));
         } else if (value.equals(SHORTCUT_SETTINGS)) {
-            return drawableToBitmap(context.getResources().getDrawable(R.drawable.ic_setting));
+            return drawableToBitmap(
+                    context.getResources().getDrawable(R.mipmap.ic_launcher_settings));
         } else if (value.equals(SHORTCUT_DEFAULT_PAGE)) {
             return drawableToBitmap(
                     context.getResources().getDrawable(R.drawable.ic_default_screen));
