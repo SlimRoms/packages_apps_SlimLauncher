@@ -17,7 +17,7 @@
 
     <string name="slim_application_name">SlimLauncher</string>
     <string name="slim_application_version" translatable="false">1.0</string>
-    <string name="slim_application_copyright">Copyright \u00A9 SlimRoms 2014</string>
+    <string name="slim_application_copyright" translatable="false">Copyright \u00A9 SlimRoms 2014</string>
 
     <string name="google_title">Google</string>
 
@@ -108,7 +108,7 @@
     <string name="arrow_right" translatable="false">→</string>
     <string name="arrow_down" translatable="false">↓</string>
     <string name="hex">Hex:</string>
-    <string name="hex_hint">#ff000000</string>
+    <string name="hex_hint" translatable="false">#ff000000</string>
     <string name="set">Set</string>
 
     <!-- Folders -->
