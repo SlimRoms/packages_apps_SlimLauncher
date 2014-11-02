@@ -50,6 +50,8 @@ public class LauncherAppState {
 
     private DynamicGrid mDynamicGrid;
 
+    private static boolean sSettingsChanged = false;
+
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
@@ -59,6 +61,18 @@ public class LauncherAppState {
 
     public static LauncherAppState getInstanceNoCreate() {
         return INSTANCE;
+    }
+
+    public static void setSettingsChanged() {
+        sSettingsChanged = true;
+    }
+
+    public static boolean getSettingsChanged() {
+        if (sSettingsChanged) {
+            sSettingsChanged = false;
+            return true;
+        }
+        return false;
     }
 
     public Context getContext() {
@@ -116,9 +130,6 @@ public class LauncherAppState {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
-
-        PreferenceManager.getDefaultSharedPreferences(sContext)
-                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
     }
     
     public void recreateWidgetPreviewDb() {
@@ -136,9 +147,6 @@ public class LauncherAppState {
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
-
-        PreferenceManager.getDefaultSharedPreferences(sContext)
-                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
     }
 
     /**
@@ -151,16 +159,6 @@ public class LauncherAppState {
             // workspace on the next load
             mModel.resetLoadedState(false, true);
             mModel.startLoaderFromBackground();
-        }
-    };
-
-    private final SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferencesObserver = new SharedPreferences.OnSharedPreferenceChangeListener() {
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                              String key) {
-                Log.i(TAG, "Preference " + key + " changed - updating DynamicGrid.");
-                mDynamicGrid.getDeviceProfile().updateFromPreferences(sContext);
         }
     };
 

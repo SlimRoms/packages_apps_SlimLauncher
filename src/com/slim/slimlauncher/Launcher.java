@@ -419,9 +419,6 @@ public class Launcher extends Activity
 
         setupViews();
 
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
-
         registerContentObservers();
 
         lockAllApps();
@@ -880,6 +877,10 @@ public class Launcher extends Activity
             Log.v(TAG, "Launcher.onResume()");
         }
         super.onResume();
+
+        if (LauncherAppState.getSettingsChanged()) {
+            updateDynamicGrid();
+        }
 
         if (!mPaused) {
             return;
@@ -1858,25 +1859,9 @@ public class Launcher extends Activity
         }
     }
 
-    private final SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferencesObserver =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(
-                        SharedPreferences prefs, String key) {
-                    if (!isFinishing()) {
-                        if (SettingsProvider.shouldFinish(key)) {
-                            updateDynamicGrid();
-                        }
-                    }
-                }
-            };
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(mSharedPreferencesObserver);
 
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);
