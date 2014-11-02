@@ -3,6 +3,7 @@ package com.slim.slimlauncher.settings;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.view.MenuItem;
 
 import com.slim.slimlauncher.DeviceProfile;
 import com.slim.slimlauncher.DynamicGrid;
@@ -26,5 +27,15 @@ public class SettingsPreferenceFragment extends PreferenceFragment {
         }
 
         mContext = getActivity();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

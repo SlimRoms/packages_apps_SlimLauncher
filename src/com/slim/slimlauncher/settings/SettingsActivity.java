@@ -2,6 +2,7 @@ package com.slim.slimlauncher.settings;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 import com.slim.slimlauncher.LauncherAppState;
 import com.slim.slimlauncher.R;
@@ -15,6 +16,8 @@ public class SettingsActivity extends PreferenceActivity implements
     public void onResume() {
         super.onResume();
         SettingsProvider.get(this).registerOnSharedPreferenceChangeListener(this);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -36,6 +39,16 @@ public class SettingsActivity extends PreferenceActivity implements
                         + getString(R.string.slim_application_version);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
