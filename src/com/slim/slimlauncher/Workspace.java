@@ -1431,13 +1431,11 @@ public class Workspace extends SmoothPagedView
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onShow(false);
                 mCustomContentShowTime = System.currentTimeMillis();
-                mLauncher.updateVoiceButtonProxyVisible(false);
             }
         } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
-                mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
     }
@@ -2352,16 +2350,6 @@ public class Workspace extends SmoothPagedView
         return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
     }
 
-    boolean shouldVoiceButtonProxyBeVisible() {
-        if (isOnOrMovingToCustomContent()) {
-            return false;
-        }
-        if (mState != State.NORMAL) {
-            return false;
-        }
-        return true;
-    }
-
     public void updateInteractionForState() {
         if (mState != State.NORMAL) {
             mLauncher.onInteractionBegin();
@@ -2630,7 +2618,6 @@ public class Workspace extends SmoothPagedView
             setScaleY(mNewScale);
             setTranslationY(finalWorkspaceTranslationY);
         }
-        mLauncher.updateVoiceButtonProxyVisible(false);
 
         if (stateIsNormal) {
             animateBackgroundGradient(0f, animated);
