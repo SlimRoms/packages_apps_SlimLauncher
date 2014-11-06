@@ -17,7 +17,7 @@
 <!-- Full screen view projects under the status bar and contains the background -->
 <com.slim.slimlauncher.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.slim.slimlauncher"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
 
     android:id="@+id/launcher"
     android:layout_width="match_parent"
@@ -65,16 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
-
-        <com.slim.slimlauncher.DrawableStateProxyView
-            android:id="@+id/voice_button_proxy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="top|end"
-            android:clickable="true"
-            android:onClick="onClickVoiceButton"
-            android:importantForAccessibility="no"
-            launcher:sourceViewId="@+id/voice_button" />
 
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"

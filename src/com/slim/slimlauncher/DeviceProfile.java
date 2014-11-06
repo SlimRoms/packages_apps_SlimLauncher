@@ -130,9 +130,7 @@ public class DeviceProfile {
     public int allAppsNumRows;
     public int allAppsNumCols;
     int searchBarSpaceWidthPx;
-    int searchBarSpaceMaxWidthPx;
     int searchBarSpaceHeightPx;
-    int searchBarHeightPx;
     int pageIndicatorHeightPx;
     int allAppsButtonVisualSize;
 
@@ -266,9 +264,9 @@ public class DeviceProfile {
         // Search Bar
         showSearchBar = SettingsProvider.getBoolean(context,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
-        searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx
-                + (showSearchBar ? searchBarHeightPx  : 3 * edgeMarginPx);
+        //searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
+        //searchBarSpaceHeightPx = 2 * edgeMarginPx
+          //      + (showSearchBar ? searchBarHeightPx  : 3 * edgeMarginPx);
     }
 
     /**
@@ -397,10 +395,10 @@ public class DeviceProfile {
 
     private void updateIconSize(Resources resources) {
         // Search Bar
-        searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
-        searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
-        searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = searchBarHeightPx + getSearchBarTopOffset();
+        searchBarSpaceWidthPx = Math.min(widthPx,
+                resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width));
+        searchBarSpaceHeightPx = getSearchBarTopOffset()
+                + resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
 
         // Calculate the actual text height
         Paint textPaint = new Paint();
@@ -423,10 +421,6 @@ public class DeviceProfile {
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
 
         // All Apps
-        Rect padding = getWorkspacePadding(isLandscape ?
-                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
-        int pageIndicatorOffset =
-                resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx + iconDrawablePaddingPx + iconTextSizePx;
         int maxLongEdgeCellCount =
@@ -827,8 +821,8 @@ public class DeviceProfile {
     public void layout(Launcher launcher) {
         showSearchBar = SettingsProvider.getBoolean(launcher,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx
-                + (showSearchBar ? searchBarHeightPx : 3 * edgeMarginPx);
+        //searchBarSpaceHeightPx = 2 * edgeMarginPx
+          //      + (showSearchBar ? searchBarHeightPx : 3 * edgeMarginPx);
         FrameLayout.LayoutParams lp;
         Resources res = launcher.getResources();
         boolean hasVerticalBarLayout = isVerticalBarLayout();
@@ -845,9 +839,6 @@ public class DeviceProfile {
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
             lp.height = LayoutParams.WRAP_CONTENT;
-            searchBar.setPadding(
-                    0, 2 * edgeMarginPx, 0,
-                    2 * edgeMarginPx);
 
             LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
             targets.setOrientation(LinearLayout.VERTICAL);
@@ -856,41 +847,8 @@ public class DeviceProfile {
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
             lp.width = searchBarSpaceWidthPx;
             lp.height = searchBarSpaceHeightPx;
-            searchBar.setPadding(
-                    2 * edgeMarginPx,
-                    getSearchBarTopOffset(),
-                    2 * edgeMarginPx, 0);
         }
         searchBar.setLayoutParams(lp);
-
-        // Layout the drop target icons
-        if (hasVerticalBarLayout) {
-            dropTargetBar.setOrientation(LinearLayout.VERTICAL);
-        } else {
-            dropTargetBar.setOrientation(LinearLayout.HORIZONTAL);
-        }
-
-        // Layout the search bar
-        View qsbBar = launcher.getQsbBar();
-        qsbBar.setVisibility(showSearchBar ? View.VISIBLE : View.GONE);
-        LayoutParams vglp = qsbBar.getLayoutParams();
-        vglp.width = LayoutParams.MATCH_PARENT;
-        vglp.height = LayoutParams.MATCH_PARENT;
-        qsbBar.setLayoutParams(vglp);
-
-        // Layout the voice proxy
-        View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
-        if (voiceButtonProxy != null) {
-            if (hasVerticalBarLayout) {
-                // TODO: MOVE THIS INTO SEARCH BAR MEASURE
-            } else {
-                lp = (FrameLayout.LayoutParams) voiceButtonProxy.getLayoutParams();
-                lp.gravity = Gravity.TOP | Gravity.END;
-                lp.width = (widthPx - searchBarSpaceWidthPx) / 2 +
-                        2 * iconSizePx;
-                lp.height = searchBarSpaceHeightPx;
-            }
-        }
 
         // Layout the workspace
         PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
