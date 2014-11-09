@@ -20,6 +20,7 @@
   <string name="default_string">Προεπιλογή</string>
   <string name="reset_string">Επαναφορά</string>
   <string name="set_string">Ορισμός</string>
+  <string name="off_string">Ανενεργό</string>
   <string name="default_screen_button_text">Προεπιλεγμένη οθόνη</string>
   <string name="launcher_settings_title">Ρυθμίσεις Launcher</string>
   <string name="error_message_title">Σφάλμα</string>
@@ -29,6 +30,7 @@
   <string name="shortcut_action_launcher_apps">Όλες οι εφαρμογές</string>
   <string name="shortcut_action_launcher_overview">Λειτουργία επισκόπησης</string>
   <string name="shortcut_action_launcher_settings">Ρυθμίσεις Launcher</string>
+  <string name="shortcut_action_launcher_homescreen">Προεπιλεγμένη αρχική οθόνη</string>
   <string name="homescreen_title">Αρχική οθόνη</string>
   <string name="general_title">Γενικά</string>
   <string name="dock_title">Μπάρα εφαρμογών</string>
@@ -82,7 +84,10 @@
   <string name="hex">Hex:</string>
   <string name="set">Ορισμός</string>
   <string name="folder_title">Φάκελος</string>
+  <string name="smart_folder_title">Έξυπνος φάκελος</string>
   <string name="folder_background_color_title">Χρώμα φόντου</string>
+  <string name="folder_icon_text_color_title">Χρώμα κειμένου εικονιδίου</string>
+  <string name="folder_preview_color_title">Προεπισκόπηση χρώματος</string>
   <string name="hide_folder_name_title">Απόκρυψη ονόματος φακέλου</string>
   <string name="hide_folder_name_summary">Να μην εμφανίζεται το όνομα του φακέλου όταν ο φάκελος είναι ανοιχτός</string>
   <string name="hidden_apps_title">Απόκρυψη εφαρμογών</string>

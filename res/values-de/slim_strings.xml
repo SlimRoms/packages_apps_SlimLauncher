@@ -24,8 +24,8 @@
   <string name="launcher_settings_title">Launcher Einstellungen</string>
   <string name="error_message_title">Fehler</string>
   <string name="scroll_wallpaper_title">Hintergrund blättern</string>
-  <string name="scroll_wallpaper_summary">Hintergrund beim Scrollen auf dem Homescreen mitbewegen</string>
-  <string name="shortcut_picker_title">SlimLauncher Verknüpfungen</string>
+  <string name="scroll_wallpaper_summary">Hintergrund beim Blättern der Startbildschirme mitbewegen</string>
+  <string name="shortcut_picker_title">SlimLauncher-Verknüpfungen</string>
   <string name="shortcut_action_launcher_apps">Alle Apps</string>
   <string name="shortcut_action_launcher_overview">Übersichtsmodus</string>
   <string name="shortcut_action_launcher_settings">Launcher Einstellungen</string>

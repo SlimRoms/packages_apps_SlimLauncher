@@ -15,9 +15,12 @@
      limitations under the License.
 -->
 <resources>
+  <string name="slim_application_name">SlimLauncher</string>
+  <string name="google_title">Google</string>
   <string name="default_string">Domyślnie</string>
   <string name="reset_string">Przywróć</string>
   <string name="set_string">Ustaw</string>
+  <string name="off_string">Wył</string>
   <string name="default_screen_button_text">Pulpit domyślny</string>
   <string name="launcher_settings_title">Ustawienia Launchera</string>
   <string name="error_message_title">Błąd</string>
@@ -78,9 +81,15 @@
   <string name="select_custom_activity_title">Wybierz własną aktywność</string>
   <string name="dialog_color_picker">Wybór koloru</string>
   <string name="press_color_to_apply">Dotknij koloru aby go zastosować</string>
+  <string name="hex">Hex:</string>
   <string name="set">Ustaw</string>
   <string name="folder_title">Folder</string>
+  <string name="smart_folder_title">Folder Smart</string>
+  <string name="smart_folder_summary_one">Przesuń - uruchom pierwszą aplikację \nDotknij - otwórz folder</string>
+  <string name="smart_folder_summart_two">Przesuń - otwórz folder \nDotknij - uruchom pierwszą aplikację</string>
   <string name="folder_background_color_title">Kolor tła</string>
+  <string name="folder_icon_text_color_title">Kolor tekstu ikon</string>
+  <string name="folder_preview_color_title">Kolor podglądu</string>
   <string name="hide_folder_name_title">Ukryj nazwę folderu</string>
   <string name="hide_folder_name_summary">Nie pokazuj nazwy folderu gdy jest otwarty</string>
   <string name="hidden_apps_title">Ukryte aplikacje</string>

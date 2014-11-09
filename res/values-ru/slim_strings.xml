@@ -20,6 +20,7 @@
   <string name="default_string">По умолчанию</string>
   <string name="reset_string">Сброс</string>
   <string name="set_string">ОК</string>
+  <string name="off_string">Выкл</string>
   <string name="default_screen_button_text">Главный экран по умолчанию</string>
   <string name="launcher_settings_title">Настройки лаунчера</string>
   <string name="error_message_title">Ошибка</string>
@@ -83,7 +84,12 @@
   <string name="hex">Hex:</string>
   <string name="set">ОК</string>
   <string name="folder_title">Папка</string>
+  <string name="smart_folder_title">\"Умная\" папка</string>
+  <string name="smart_folder_summary_one">Свайп - запустить первое приложение\nКасание - открыть папку</string>
+  <string name="smart_folder_summart_two">Свайп - открыть папку\nКасание - запустить первое приложение</string>
   <string name="folder_background_color_title">Цвет фона</string>
+  <string name="folder_icon_text_color_title">Цвет подписи значка</string>
+  <string name="folder_preview_color_title">Цвет предпросмотра</string>
   <string name="hide_folder_name_title">Скрывать имя папки</string>
   <string name="hide_folder_name_summary">Не показывать имя папки, пока она открыта</string>
   <string name="hidden_apps_title">Скрытые приложения</string>
