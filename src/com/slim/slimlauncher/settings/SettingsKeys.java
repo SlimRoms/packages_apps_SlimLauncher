@@ -23,4 +23,7 @@ public interface SettingsKeys {
     // Homescreen
     public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
 
+    // General
+    public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
+
 }

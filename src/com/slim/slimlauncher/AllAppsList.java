@@ -18,10 +18,6 @@ package com.slim.slimlauncher;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 
 import com.slim.slimlauncher.compat.LauncherActivityInfoCompat;
 import com.slim.slimlauncher.compat.LauncherAppsCompat;
@@ -58,6 +54,15 @@ class AllAppsList {
     public AllAppsList(IconCache iconCache, AppFilter appFilter) {
         mIconCache = iconCache;
         mAppFilter = appFilter;
+    }
+
+    public ComponentName getComponentNameForPackageName(String packageName) {
+        for (AppInfo info : data) {
+            if (info.componentName.getPackageName().equals(packageName)) {
+                return info.componentName;
+            }
+        }
+        return null;
     }
 
     /**
@@ -229,6 +234,38 @@ class AllAppsList {
                 return info;
             }
         }
+        return null;
+    }
+
+    public AppInfo unreadNumbersChanged(Context context, ComponentName component,
+            int unreadNum) {
+
+        if (component == null) { return null; }
+
+        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+        List<LauncherActivityInfoCompat> matches =
+                launcherApps.getActivityList(component.getPackageName(), myUserHandle);
+
+        for (LauncherActivityInfoCompat launcherActivityInfoCompat : matches) {
+            if (component.getPackageName().equals(
+                    launcherActivityInfoCompat.getComponentName().getPackageName())) {
+
+                AppInfo appInfo = findApplicationInfoLocked(
+                        component.getPackageName(), myUserHandle,
+                        component.getClassName());
+
+                if (appInfo == null) {
+                    return null;
+                } else {
+                    appInfo.unreadNum = unreadNum;
+                    mIconCache.remove(appInfo.componentName, myUserHandle);
+                    mIconCache.getTitleAndIcon(appInfo, launcherActivityInfoCompat, null);
+                    return appInfo;
+                }
+            }
+        }
+
         return null;
     }
 }

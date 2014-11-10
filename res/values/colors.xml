@@ -38,4 +38,6 @@
     <color name="outline_color">#FFFFFFFF</color>
     <color name="widget_text_panel">#FF374248</color>
 
+    <color name="infomation_count_circle_color">#F44336</color>
+
 </resources>

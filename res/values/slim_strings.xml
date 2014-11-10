@@ -19,6 +19,12 @@
     <string name="hex_hint" translatable="false">#ff000000</string>
     <string name="set">Set</string>
 
+    <!-- General Settings -->
+    <string name="general_title">General</string>
+    <string name="notification_badges_title">Notification badges</string>
+    <string name="notification_badges_summary">Display notification counts on app icon</string>
+    <string name="notification_badge_warning_message">In the next screen please enable SlimLauncher as a Notification Listener to enable notification badges.</string>
+
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>
     <string name="show_search_bar_title">Show search bar</string>
