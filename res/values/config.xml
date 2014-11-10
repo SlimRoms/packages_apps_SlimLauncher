@@ -92,4 +92,6 @@
     <item type="id" name="action_move_screen_backwards" />
     <item type="id" name="action_move_screen_forwards" />
     <item type="id" name="action_resize" />
+
+    <bool name="config_launcher_show_unread_number">true</bool>
 </resources>

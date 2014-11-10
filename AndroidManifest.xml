@@ -229,6 +229,13 @@
             </intent-filter>
         </receiver>
 
+        <service android:name="com.android.launcher3.NotificationListener"
+                 android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"

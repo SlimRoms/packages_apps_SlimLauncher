@@ -65,6 +65,15 @@ class AllAppsList {
         mAppFilter = appFilter;
     }
 
+    public ComponentName getComponentNameForPackageName(String packageName) {
+        for (AppInfo info : data) {
+            if (info.componentName.getPackageName().equals(packageName)) {
+                return info.componentName;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
@@ -236,6 +245,38 @@ class AllAppsList {
                 return info;
             }
         }
+        return null;
+    }
+
+    public AppInfo unreadNumbersChanged(Context context, ComponentName component,
+            int unreadNum) {
+
+        if (component == null) { return null; }
+
+        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+        List<LauncherActivityInfoCompat> matches =
+                launcherApps.getActivityList(component.getPackageName(), myUserHandle);
+
+        for (LauncherActivityInfoCompat launcherActivityInfoCompat : matches) {
+            if (component.getPackageName().equals(
+                    launcherActivityInfoCompat.getComponentName().getPackageName())) {
+
+                AppInfo appInfo = findApplicationInfoLocked(
+                        component.getPackageName(), myUserHandle,
+                        component.getClassName());
+
+                if (appInfo == null) {
+                    return null;
+                } else {
+                    appInfo.unreadNum = unreadNum;
+                    mIconCache.remove(appInfo.componentName, myUserHandle);
+                    mIconCache.getTitleAndIcon(appInfo, launcherActivityInfoCompat, false);
+                    return appInfo;
+                }
+            }
+        }
+
         return null;
     }
 }

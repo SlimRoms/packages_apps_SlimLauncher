@@ -11,4 +11,9 @@
         android:key="icon_pack"
         android:title="@string/pref_icon_pack_title" />
 
+    <SwitchPreference
+        android:key="notification_badges"
+        android:title="@string/notification_badges_title"
+        android:summary="@string/notification_badges_summary" />
+
 </PreferenceScreen>

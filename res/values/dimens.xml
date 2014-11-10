@@ -80,6 +80,12 @@
 
     <dimen name="apps_customize_page_indicator_offset">16dp</dimen>
 
+    <dimen name="infomation_count_height">14dp</dimen>
+    <dimen name="infomation_count_min_width">14dp</dimen>
+    <dimen name="infomation_count_textsize">11dp</dimen>
+    <dimen name="infomation_count_padding">4dp</dimen>
+    <dimen name="infomation_count_circle_radius">7dp</dimen>
+
     <!-- When dragging items on the workspace, the number of dps by which the position of
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>

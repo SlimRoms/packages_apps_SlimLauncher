@@ -54,6 +54,11 @@ public class AppInfo extends ItemInfo {
      * Indicates whether we're using a low res icon
      */
     boolean usingLowResIcon;
+
+    int count;
+
+    int unreadNum = 0;
+
     int flags = 0;
 
     private ArrayList<ShortcutInfo.ShortcutListener> mListeners = new ArrayList<>();

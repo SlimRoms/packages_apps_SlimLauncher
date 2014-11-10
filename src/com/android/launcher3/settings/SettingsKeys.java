@@ -22,6 +22,8 @@ public interface SettingsKeys {
     String ALLOW_ROTATION = "allow_rotation";
     String KEY_ICON_PACK = "icon_pack";
 
+    String KEY_NOTIFICATION_BADGES = "notification_badges";
+
     // Homescreen
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     String KEY_HOMESCREEN_GRID = "homescreen_grid";

@@ -140,6 +140,9 @@ public class LauncherModel extends BroadcastReceiver
     // sBgWidgetProviders is the set of widget providers including custom internal widgets
     public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
 
+    public static final String ACTION_UNREAD_CHANGED =
+            "com.slim.slimlauncher.action.UNREAD_CHANGED";
+
     @Thunk
     final boolean mAppsCanBeOnRemoveableStorage;
     @Thunk
@@ -1490,6 +1493,19 @@ public class LauncherModel extends BroadcastReceiver
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
                 || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             forceReload();
+        } else if (ACTION_UNREAD_CHANGED.equals(action)) {
+            String packageName = intent.getStringExtra("packageName");
+            ComponentName componentName =
+                    mBgAllAppsList.getComponentNameForPackageName(packageName);
+            int unreadNum = intent.getIntExtra("count", 0);
+
+            if (componentName == null) return;
+
+            synchronized (unreadChangedMap) {
+                unreadChangedMap.put(componentName, new UnreadInfo(componentName, unreadNum));
+            }
+            sWorker.removeCallbacks(mUnreadUpdateTask);
+            sWorker.post(mUnreadUpdateTask);
         }
     }
 
@@ -3801,4 +3817,55 @@ public class LauncherModel extends BroadcastReceiver
             });
         }
     }
+
+    private HashMap<ComponentName, UnreadInfo> unreadChangedMap = new HashMap<>();
+
+    private class UnreadInfo {
+        ComponentName componentName;
+        int unreadNum;
+
+        public UnreadInfo(ComponentName componentName, int unreadNum) {
+            this.componentName = componentName;
+            this.unreadNum = unreadNum;
+        }
+    }
+
+    private class UnreadNumberChangeTask implements Runnable {
+        public void run() {
+            ArrayList<UnreadInfo> unreadInfos = new ArrayList<LauncherModel.UnreadInfo>();
+            synchronized (unreadChangedMap) {
+                unreadInfos.addAll(unreadChangedMap.values());
+                unreadChangedMap.clear();
+            }
+
+            Context context = mApp.getContext();
+            final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+            if (callbacks == null) {
+                Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
+                return;
+            }
+
+            final ArrayList<AppInfo> unreadChangeFinal = new ArrayList<AppInfo>();
+            for (UnreadInfo uInfo : unreadInfos) {
+                AppInfo info = mBgAllAppsList.unreadNumbersChanged(context,
+                        uInfo.componentName, uInfo.unreadNum);
+                if (info != null) {
+                    unreadChangeFinal.add(info);
+                }
+            }
+
+            if (unreadChangeFinal.isEmpty()) return;
+
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                    if (callbacks == cb && cb != null) {
+                        callbacks.bindAppsUpdated(unreadChangeFinal);
+                    }
+                }
+            });
+        }
+    }
+
+    private UnreadNumberChangeTask mUnreadUpdateTask = new UnreadNumberChangeTask();
 }

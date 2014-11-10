@@ -25,6 +25,7 @@ import android.util.Log;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
@@ -76,6 +77,7 @@ public class LauncherAppState {
         // For handling managed profiles
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
+        filter.addAction(LauncherModel.ACTION_UNREAD_CHANGED);
 
         sContext.registerReceiver(mModel, filter);
     }

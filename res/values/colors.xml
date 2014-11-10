@@ -54,4 +54,6 @@
 
     <color name="folder_items_text_color">#FF333333</color>
 
+    <color name="infomation_count_circle_color">#F44336</color>
+
 </resources>

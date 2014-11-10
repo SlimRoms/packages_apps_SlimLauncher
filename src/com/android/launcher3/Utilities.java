@@ -44,6 +44,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -60,6 +61,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.palette.Palette;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -155,8 +157,67 @@ public final class Utilities {
         return LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize;
     }
 
+    public static Bitmap createIconBitmap(Drawable icon, Context context, int count) {
+        Bitmap b = createIconBitmap(icon, context);
+        return createIconBitmap(b, context, count);
+    }
+
+    public static Bitmap createIconBitmap(Drawable icon, Context context,
+                                          IconPackHelper iconPackHelper, int count) {
+        Bitmap b = createIconBitmap(icon, context);
+        return createIconBitmap(b, context, iconPackHelper, count);
+    }
+
+    public static Bitmap createIconBitmap(Bitmap icon, Context context, int count) {
+        return createIconBitmap(icon, context, null, count);
+    }
+
     public static Bitmap createIconBitmap(Bitmap icon, Context context) {
-        return createIconBitmap(icon, context, null);
+        return createIconBitmap(icon, context, null, -1);
+    }
+
+    public static Bitmap createIconBitmap(Bitmap icon, Context context,
+                                          IconPackHelper iconPackHelper, int count) {
+        Bitmap b = createIconBitmap(icon, context, iconPackHelper);
+
+        if (!SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_NOTIFICATION_BADGES, false) || count <= 0) {
+            return b;
+        }
+
+        int textureWidth = b.getWidth();
+               final Resources resources = context.getResources();
+               final Canvas canvas = sCanvas;
+               canvas.setBitmap(b);
+
+                       float textsize = resources.getDimension(R.dimen.infomation_count_textsize);
+               Paint countPaint = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
+               countPaint.setColor(Color.WHITE);
+               countPaint.setTextSize(textsize);
+
+                       String text = String.valueOf(count);
+               if (count >= 1000) {
+                       text = "999+";
+                   }
+
+                       float count_hight = resources.getDimension(R.dimen.infomation_count_height);
+               float padding = resources.getDimension(R.dimen.infomation_count_padding);
+               float radius = resources.getDimension(R.dimen.infomation_count_circle_radius);
+               int  textwidth = (int) (countPaint.measureText(text) + 1);
+               float width =textwidth + padding * 2;
+               width = Math.max(width, resources.getDimensionPixelSize(R.dimen.infomation_count_min_width));
+
+                       RectF rect = new RectF(textureWidth - width -1, 1, textureWidth - 1, count_hight + 1);
+               Paint paint = new Paint();
+               paint.setAntiAlias(true);
+               paint.setColor(resources.getColor(R.color.infomation_count_circle_color));
+               canvas.drawRoundRect(rect , radius, radius, paint);
+
+                       float x = textureWidth - (width + textwidth ) / 2 - 1;
+               float y = textsize;
+               canvas.drawText(text, x, y, countPaint);
+
+                       return b;
     }
 
     /**

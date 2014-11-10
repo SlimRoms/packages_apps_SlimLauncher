@@ -528,7 +528,7 @@ public class IconCache {
                                              LauncherActivityInfoCompat info, boolean useLowResIcon) {
         UserHandleCompat user = info == null ? application.user : info.getUser();
         CacheEntry entry = cacheLocked(application.componentName, info, user,
-                false, useLowResIcon);
+                false, useLowResIcon, application.unreadNum);
         application.title = Utilities.trim(entry.title);
         application.iconBitmap = getNonNullIcon(entry, user);
         application.contentDescription = entry.contentDescription;
@@ -540,7 +540,7 @@ public class IconCache {
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
         CacheEntry entry = cacheLocked(application.componentName, null, application.user,
-                false, application.usingLowResIcon);
+                false, application.usingLowResIcon, application.unreadNum);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.title = Utilities.trim(entry.title);
             application.iconBitmap = entry.icon;
@@ -561,7 +561,8 @@ public class IconCache {
         }
 
         LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
-        CacheEntry entry = cacheLocked(component, launcherActInfo, user, true, false /* useLowRes */);
+        CacheEntry entry = cacheLocked(component,
+                launcherActInfo, user, true, false /* useLowRes */, -1);
         return entry.icon;
     }
 
@@ -591,7 +592,7 @@ public class IconCache {
     public synchronized void getTitleAndIcon(
             ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
-        CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
+        CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon, -1);
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
         if (TextUtils.isEmpty(shortcutInfo.title)) {
             shortcutInfo.setTitle(Utilities.trim(entry.title));
@@ -666,10 +667,11 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-                                   UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
+                                   UserHandleCompat user, boolean usePackageIcon,
+                                   boolean useLowResIcon, int unreadNum) {
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
-        if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
+        if (entry == null || (entry.isLowResIcon && !useLowResIcon) || unreadNum >= 0) {
             entry = new CacheEntry();
             mCache.put(cacheKey, entry);
 
@@ -679,9 +681,10 @@ public class IconCache {
                     Drawable icon = getIconForInfo(info);
                     if (mIconPackHelper.isIconPackLoaded() &&
                             (mIconPackHelper.getResourceIdForActivityIcon(info) == 0)) {
-                        entry.icon = Utilities.createIconBitmap(icon, mContext, mIconPackHelper);
+                        entry.icon = Utilities.createIconBitmap(
+                                icon, mContext, mIconPackHelper, unreadNum);
                     } else {
-                        entry.icon = Utilities.createIconBitmap(icon, mContext);
+                        entry.icon = Utilities.createIconBitmap(icon, mContext, unreadNum);
                     }
                 } else {
                     if (usePackageIcon) {
