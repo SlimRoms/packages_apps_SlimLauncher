@@ -15,9 +15,12 @@
      limitations under the License.
 -->
 <resources>
+  <string name="slim_application_name">SlimLauncher</string>
+  <string name="google_title">Google</string>
   <string name="default_string">Predefinito</string>
   <string name="reset_string">Resetta</string>
   <string name="set_string">Imposta</string>
+  <string name="off_string">Off</string>
   <string name="default_screen_button_text">Schermata predefinita</string>
   <string name="launcher_settings_title">Impostazioni Launcher</string>
   <string name="error_message_title">Errore</string>
@@ -78,9 +81,15 @@
   <string name="select_custom_activity_title">Seleziona attività personalizzata</string>
   <string name="dialog_color_picker">Campiona colore</string>
   <string name="press_color_to_apply">Premi sul colore qui sotto per applicare</string>
+  <string name="hex">Hex:</string>
   <string name="set">Imposta</string>
   <string name="folder_title">Cartelle</string>
+  <string name="smart_folder_title">Cartelle intelligenti</string>
+  <string name="smart_folder_summary_one">Swipe - lancia la prima app \nTocco - apri la cartella</string>
+  <string name="smart_folder_summart_two">Swipe - apri la cartella \nTocco - lancia la prima app</string>
   <string name="folder_background_color_title">Colore sfondo</string>
+  <string name="folder_icon_text_color_title">Colore testo icona</string>
+  <string name="folder_preview_color_title">Colore anteprima</string>
   <string name="hide_folder_name_title">Nascondi nome cartella</string>
   <string name="hide_folder_name_summary">Non mostrare il nome della cartella quando è aperta</string>
   <string name="hidden_apps_title">Applicazioni nascoste</string>

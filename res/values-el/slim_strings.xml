@@ -85,6 +85,8 @@
   <string name="set">Ορισμός</string>
   <string name="folder_title">Φάκελος</string>
   <string name="smart_folder_title">Έξυπνος φάκελος</string>
+  <string name="smart_folder_summary_one">Γλίστρημα - ξεκίνημα της πρώτης εφαρμογής \nΑγγίγμα - άνοιγμα φακέλου</string>
+  <string name="smart_folder_summart_two">Γλίστρημα - άνοιγμα φακέλου \nΑγγίγμα - ξεκίνημα της πρώτης εφαρμογής</string>
   <string name="folder_background_color_title">Χρώμα φόντου</string>
   <string name="folder_icon_text_color_title">Χρώμα κειμένου εικονιδίου</string>
   <string name="folder_preview_color_title">Προεπισκόπηση χρώματος</string>

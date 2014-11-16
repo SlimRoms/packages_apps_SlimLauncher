@@ -24,12 +24,12 @@
   <string name="launcher_settings_title">Launcher Einstellungen</string>
   <string name="error_message_title">Fehler</string>
   <string name="scroll_wallpaper_title">Hintergrund blättern</string>
-  <string name="scroll_wallpaper_summary">Hintergrund beim Blättern der Startbildschirme mitbewegen</string>
+  <string name="scroll_wallpaper_summary">Hintergrund beim Blättern durch die Startseiten mitbewegen</string>
   <string name="shortcut_picker_title">SlimLauncher-Verknüpfungen</string>
   <string name="shortcut_action_launcher_apps">Alle Apps</string>
   <string name="shortcut_action_launcher_overview">Übersichtsmodus</string>
   <string name="shortcut_action_launcher_settings">Launcher Einstellungen</string>
-  <string name="shortcut_action_launcher_homescreen">Standard-Homescreen</string>
+  <string name="shortcut_action_launcher_homescreen">Standard-Startseite</string>
   <string name="homescreen_title">Startbildschirm</string>
   <string name="general_title">Allgemein</string>
   <string name="dock_title">Dock</string>
@@ -66,7 +66,7 @@
   <string name="gestures_double_tap_gesture_title">Zweifaches Tippen</string>
   <string name="no_last_app">Zuletzt geöffnete App nicht gefunden.</string>
   <string name="gesture_target_nothing">Nichts</string>
-  <string name="gesture_target_homescreen">Zur Hauptseite gehen</string>
+  <string name="gesture_target_homescreen">Zur Standard-Startseite gehen</string>
   <string name="gesture_target_drawer">App-Drawer öffnen</string>
   <string name="gesture_target_previews">Vorschauen anzeigen</string>
   <string name="gesture_target_settings">Launcher Einstellungen öffnen</string>

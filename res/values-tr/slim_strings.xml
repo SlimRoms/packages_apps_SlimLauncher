@@ -15,9 +15,12 @@
      limitations under the License.
 -->
 <resources>
+  <string name="slim_application_name">SlimLauncher</string>
+  <string name="google_title">Google</string>
   <string name="default_string">Varsayılan</string>
   <string name="reset_string">Reset</string>
   <string name="set_string">Ayarla</string>
+  <string name="off_string">Kapat</string>
   <string name="default_screen_button_text">Varsayılan Ekran</string>
   <string name="launcher_settings_title">Başlatıcı Ayarları</string>
   <string name="error_message_title">Hata</string>
@@ -60,7 +63,7 @@
   <string name="gestures_middle_down_gesture_title">Ortadan Aşağı Savur</string>
   <string name="gestures_right_down_gesture_title">Sağ aşağı savur</string>
   <string name="gestures_pinch_gesture_title">Sıkıştır</string>
-  <string name="gestures_spread_gesture_title">Geniştlet</string>
+  <string name="gestures_spread_gesture_title">Genişlet</string>
   <string name="gestures_double_tap_gesture_title">Çift Tıklama</string>
   <string name="no_last_app">Enson Uygulama Bulunamadı.</string>
   <string name="gesture_target_nothing">Hiçbir şey</string>
@@ -78,9 +81,15 @@
   <string name="select_custom_activity_title">Genel Uygulama Aktivitesi Seç</string>
   <string name="dialog_color_picker">Renk Seçici</string>
   <string name="press_color_to_apply">Uygulamak için alttaki rengi seç</string>
-  <string name="set">Set</string>
+  <string name="hex">Hex:</string>
+  <string name="set">Ayarla</string>
   <string name="folder_title">Klasör</string>
+  <string name="smart_folder_title">Akıllı Klasör</string>
+  <string name="smart_folder_summary_one">Kaydır- ilk uygulamayı aç \nDokun - Klasör Aç</string>
+  <string name="smart_folder_summart_two">Kaydır - Klasör Aç \nDokun - ilk uygulmayı aç</string>
   <string name="folder_background_color_title">Arkaplan Rengi</string>
+  <string name="folder_icon_text_color_title">Simge metin rengi</string>
+  <string name="folder_preview_color_title">Önizleme rengi</string>
   <string name="hide_folder_name_title">Klasör ismini Gizle</string>
   <string name="hide_folder_name_summary">Klasör Açıkken Klasör Ismini Gösterme</string>
   <string name="hidden_apps_title">Gizlenmiş Uygulamalar</string>
