@@ -20,6 +20,7 @@
   <string name="default_string">Standard</string>
   <string name="reset_string">Zurücksetzen</string>
   <string name="set_string">Einstellen</string>
+  <string name="off_string">Aus</string>
   <string name="default_screen_button_text">Standardseite</string>
   <string name="launcher_settings_title">Launcher Einstellungen</string>
   <string name="error_message_title">Fehler</string>
@@ -78,12 +79,16 @@
   <string name="picker_activities">Aktionen</string>
   <string name="select_custom_app_title">Benutzerdefinierte App wählen</string>
   <string name="select_custom_activity_title">Eine benutzerdefinierte Aktion wählen</string>
-  <string name="dialog_color_picker">Farbwähler</string>
-  <string name="press_color_to_apply">Drücken Sie auf eine Farbe zum Anwenden</string>
+  <string name="dialog_color_picker">Farbauswahl</string>
+  <string name="press_color_to_apply">Auf Farbe rechts unten drücken, um sie anzuwenden</string>
   <string name="hex">Hex:</string>
   <string name="set">Festlegen</string>
   <string name="folder_title">Ordner</string>
+  <string name="smart_folder_title">Clevere Ordner</string>
+  <string name="smart_folder_summary_one">Wischen - erste App starten\nTippen - Ordner öffnen</string>
+  <string name="smart_folder_summart_two">Wischen - Ordner öffnen\nTippen - erste App starten</string>
   <string name="folder_background_color_title">Hintergrundfarbe</string>
+  <string name="folder_icon_text_color_title">Symboltextfarbe</string>
   <string name="hide_folder_name_title">Ordnernamen ausblenden</string>
   <string name="hide_folder_name_summary">Ordnernamen bei geöffnetem Ordner ausblenden</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
