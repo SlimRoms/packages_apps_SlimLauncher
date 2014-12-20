@@ -20,6 +20,7 @@
   <string name="default_string">Défaut</string>
   <string name="reset_string">Réinitialiser</string>
   <string name="set_string">Définir</string>
+  <string name="off_string">Désactivé</string>
   <string name="default_screen_button_text">Écran par défaut</string>
   <string name="launcher_settings_title">Paramètres du Lanceur</string>
   <string name="error_message_title">Erreur</string>
@@ -83,7 +84,12 @@
   <string name="hex">Hex:</string>
   <string name="set">Définir</string>
   <string name="folder_title">Dossier</string>
+  <string name="smart_folder_title">Dossier intelligent</string>
+  <string name="smart_folder_summary_one">Glisser - ouvrir la première appli.\n Toucher - ouvrir le dossier</string>
+  <string name="smart_folder_summart_two">Glisser - Ouvrir le dossier \nToucher - Ouvrir la première appli.</string>
   <string name="folder_background_color_title">Couleur de fond</string>
+  <string name="folder_icon_text_color_title">Couleur du texte de l\'icône</string>
+  <string name="folder_preview_color_title">Aperçu de la couleur</string>
   <string name="hide_folder_name_title">Masquer le nom du dossier</string>
   <string name="hide_folder_name_summary">Ne pas afficher le nom du dossier quand celui-ci est ouvert</string>
   <string name="hidden_apps_title">Applications cachées</string>
