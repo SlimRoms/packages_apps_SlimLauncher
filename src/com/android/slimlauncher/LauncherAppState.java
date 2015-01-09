@@ -63,6 +63,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     private DynamicGrid mDynamicGrid;
 
+    private static boolean sSettingsChanged = false;
+
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
@@ -72,6 +74,18 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public static LauncherAppState getInstanceNoCreate() {
         return INSTANCE;
+    }
+
+    public static void setSettingsChanged() {
+        sSettingsChanged = true;
+    }
+
+    public static boolean getSettingsChanged() {
+        if (sSettingsChanged) {
+            sSettingsChanged = false;
+            return true;
+        }
+        return false;
     }
 
     public Context getContext() {
@@ -193,6 +207,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return LauncherFiles.SHARED_PREFERENCES_KEY;
     }
 
+<<<<<<< HEAD:src/com/android/slimlauncher/LauncherAppState.java
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     DeviceProfile initDynamicGrid(Context context) {
         mDynamicGrid = createDynamicGrid(context, mDynamicGrid);
@@ -223,6 +238,16 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
                     realSize.x, realSize.y,
                     dm.widthPixels, dm.heightPixels);
         }
+=======
+    DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
+                                  int width, int height,
+                                  int availableWidth, int availableHeight) {
+        mDynamicGrid = new DynamicGrid(context,
+                context.getResources(),
+                minWidth, minHeight, width, height,
+                availableWidth, availableHeight);
+        mDynamicGrid.getDeviceProfile().addCallback(this);
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/LauncherAppState.java
 
         // Update the icon size
         DeviceProfile grid = dynamicGrid.getDeviceProfile();

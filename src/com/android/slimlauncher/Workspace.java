@@ -72,6 +72,7 @@ import com.slim.slimlauncher.LauncherSettings.Favorites;
 import com.slim.slimlauncher.compat.PackageInstallerCompat;
 import com.slim.slimlauncher.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.slim.slimlauncher.compat.UserHandleCompat;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,6 +195,7 @@ public class Workspace extends SmoothPagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
+    private int mOverviewModePageOffset;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -291,12 +293,16 @@ public class Workspace extends SmoothPagedView
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
 
+<<<<<<< HEAD:src/com/android/slimlauncher/Workspace.java
     // State related to Launcher Overlay
     LauncherOverlay mLauncherOverlay;
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
     boolean mShouldSendPageSettled;
     int mLastOverlaySroll = 0;
+=======
+    private boolean mShowSearchBar;
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/Workspace.java
 
     private final Runnable mBindPages = new Runnable() {
         @Override
@@ -333,6 +339,9 @@ public class Workspace extends SmoothPagedView
         setDataIsReady();
 
         mLauncher = (Launcher) context;
+
+        reloadSettings();
+
         final Resources res = getResources();
         mWorkspaceFadeInAdjacentScreens = LauncherAppState.getInstance().getDynamicGrid().
                 getDeviceProfile().shouldFadeAdjacentWorkspaceScreens();
@@ -2405,6 +2414,13 @@ public class Workspace extends SmoothPagedView
                 .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
 
+<<<<<<< HEAD:src/com/android/slimlauncher/Workspace.java
+=======
+            Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
+                .alpha(finalSearchBarAlpha).withLayer();
+            if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/Workspace.java
             Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
                 .alpha(finalOverviewPanelAlpha).withLayer();
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
@@ -2431,6 +2447,7 @@ public class Workspace extends SmoothPagedView
             overviewPanelAlpha.setDuration(duration);
             pageIndicatorAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
+<<<<<<< HEAD:src/com/android/slimlauncher/Workspace.java
 
             if (searchBar != null) {
                 Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
@@ -2446,6 +2463,13 @@ public class Workspace extends SmoothPagedView
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
+=======
+            if (mShowSearchBar) searchBarAlpha.setDuration(duration);
+
+            anim.play(overviewPanelAlpha);
+            anim.play(hotseatAlpha);
+            if (mShowSearchBar) anim.play(searchBarAlpha);
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/Workspace.java
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -2463,7 +2487,11 @@ public class Workspace extends SmoothPagedView
                 pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(pageIndicator);
             }
+<<<<<<< HEAD:src/com/android/slimlauncher/Workspace.java
             if (searchBar != null) {
+=======
+            if (mShowSearchBar) {
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/Workspace.java
                 searchBar.setAlpha(finalSearchBarAlpha);
                 AlphaUpdateListener.updateVisibility(searchBar);
             }
@@ -5123,5 +5151,10 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
+    }
+
+    public void reloadSettings() {
+        mShowSearchBar = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
     }
 }

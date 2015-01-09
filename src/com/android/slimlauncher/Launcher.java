@@ -106,6 +106,8 @@ import com.slim.slimlauncher.compat.PackageInstallerCompat;
 import com.slim.slimlauncher.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 import com.slim.slimlauncher.compat.UserManagerCompat;
+import com.slim.slimlauncher.settings.SettingsActivity;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -248,6 +250,8 @@ public class Launcher extends Activity
     private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
+
+    DeviceProfile mProfile;
 
     private Workspace mWorkspace;
     private View mLauncherView;
@@ -398,20 +402,12 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        LauncherAppState.setApplicationContext(getApplicationContext());
-        LauncherAppState app = LauncherAppState.getInstance();
-        LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
-
-        // Lazy-initialize the dynamic grid
-        DeviceProfile grid = app.initDynamicGrid(this);
+        initializeDynamicGrid();
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
-        mModel = app.setLauncher(this);
-        mIconCache = app.getIconCache();
-        mIconCache.flushInvalidIcons(grid);
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
@@ -436,7 +432,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        grid.layout(this);
+        mProfile.layout(this);
 
         registerContentObservers();
 
@@ -502,6 +498,55 @@ public class Launcher extends Activity
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
         return true;
+    }
+
+    private void initializeDynamicGrid() {
+        LauncherAppState.setApplicationContext(getApplicationContext());
+        LauncherAppState app = LauncherAppState.getInstance();
+        LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
+        // Determine the dynamic grid properties
+        Point smallestSize = new Point();
+        Point largestSize = new Point();
+        Point realSize = new Point();
+        Display display = getWindowManager().getDefaultDisplay();
+        display.getCurrentSizeRange(smallestSize, largestSize);
+        display.getRealSize(realSize);
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+
+        // Lazy-initialize the dynamic grid
+        mProfile = app.initDynamicGrid(this,
+                Math.min(smallestSize.x, smallestSize.y),
+                Math.min(largestSize.x, largestSize.y),
+                realSize.x, realSize.y,
+                dm.widthPixels, dm.heightPixels);
+
+        mModel = app.setLauncher(this);
+        mIconCache = app.getIconCache();
+        mIconCache.flushInvalidIcons(mProfile);
+    }
+
+    public void updateDynamicGrid() {
+        mSearchDropTargetBar.setupQSB(this);
+
+        boolean showSearchBar = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
+
+        if (showSearchBar) {
+            mSearchDropTargetBar.showSearchBar(false);
+        } else {
+            mSearchDropTargetBar.hideSearchBar(false);
+        }
+
+        initializeDynamicGrid();
+
+        mProfile.layout(this);
+        mWorkspace.reloadSettings();
+
+        mAppsCustomizeContent.updateGridSize();
+        mHotseat.updateHotseat();
+
+        mModel.startLoader(true, mWorkspace.getCurrentPage());
     }
 
     @Override
@@ -983,6 +1028,10 @@ public class Launcher extends Activity
 
         super.onResume();
 
+        if (LauncherAppState.getSettingsChanged()) {
+            updateDynamicGrid();
+        }
+
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -1185,10 +1234,7 @@ public class Launcher extends Activity
     }
 
     protected boolean hasSettings() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasSettings();
-        }
-        return false;
+        return true;
     }
 
 
@@ -2818,8 +2864,10 @@ public class Launcher extends Activity
      */
     protected void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickSettingsButton(v);
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+        if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.exitOverviewMode(false);
         }
     }
 

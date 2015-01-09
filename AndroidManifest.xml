@@ -154,6 +154,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.slim.slimlauncher.settings.SettingsActivity"
+            android:icon="@mipmap/ic_launcher_settings"
+            android:label="@string/slim_application_name" />
+
         <!-- Debugging tools -->
         <activity
             android:name="com.slim.slimlauncher.MemoryDumpActivity"

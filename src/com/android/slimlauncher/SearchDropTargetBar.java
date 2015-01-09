@@ -68,6 +68,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
+<<<<<<< HEAD:src/com/android/slimlauncher/SearchDropTargetBar.java
     }
 
     public void setQsbSearchBar(View qsb) {
@@ -80,11 +81,27 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
                 mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
             }
             setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
+=======
+
+        setupQSB(launcher);
+    }
+
+    public void setupQSB(Launcher launcher) {
+        mQSBSearchBar = launcher.getQsbBar();
+        if (mEnableDropDownDropTargets) {
+            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
+                    -mBarHeight);
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/SearchDropTargetBar.java
         } else {
             // Create a no-op animation of the search bar is null
             mQSBSearchBarAnim = ValueAnimator.ofFloat(0, 0);
             mQSBSearchBarAnim.setDuration(sTransitionInDuration);
         }
+<<<<<<< HEAD:src/com/android/slimlauncher/SearchDropTargetBar.java
+=======
+
+        setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
+>>>>>>> adee731... Initial SlimLauncher bringup:src/com/slim/slimlauncher/SearchDropTargetBar.java
     }
 
     private void prepareStartAnimation(View v) {
