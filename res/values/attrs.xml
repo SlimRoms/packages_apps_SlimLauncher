@@ -143,4 +143,31 @@
         <attr name="ringOutset" format="dimension" />
         <attr name="indicatorSize" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="NumberPickerPreference">
+        <attr name="maxExternal" format="string" />
+        <attr name="minExternal" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="DoubleNumberPickerPreference">
+        <attr name="defaultValue1" format="integer" />
+        <attr name="defaultValue2" format="integer" />
+        <attr name="max1" format="integer" />
+        <attr name="min1" format="integer" />
+        <attr name="max2" format="integer" />
+        <attr name="min2" format="integer" />
+        <attr name="maxExternal1" format="string" />
+        <attr name="minExternal1" format="string" />
+        <attr name="maxExternal2" format="string" />
+        <attr name="minExternal2" format="string" />
+        <attr name="pickerTitle1" format="string" />
+        <attr name="pickerTitle2" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="Preference">
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer" />
+        <attr name="defaultValue" format="string|boolean|integer|reference|float" />
+    </declare-styleable>
+
 </resources>

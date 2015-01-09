@@ -69,6 +69,11 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
+
+        setupQSB(launcher);
+    }
+
+    public void setupQSB(Launcher launcher) {
         mQSBSearchBar = launcher.getQsbBar();
         if (mEnableDropDownDropTargets) {
             mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
@@ -76,6 +81,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         } else {
             mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
         }
+
         setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
     }
 

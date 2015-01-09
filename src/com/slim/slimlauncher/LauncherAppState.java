@@ -57,6 +57,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     private DynamicGrid mDynamicGrid;
 
+    private static boolean sSettingsChanged = false;
+
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
@@ -66,6 +68,18 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public static LauncherAppState getInstanceNoCreate() {
         return INSTANCE;
+    }
+
+    public static void setSettingsChanged() {
+        sSettingsChanged = true;
+    }
+
+    public static boolean getSettingsChanged() {
+        if (sSettingsChanged) {
+            sSettingsChanged = false;
+            return true;
+        }
+        return false;
     }
 
     public Context getContext() {
@@ -192,13 +206,11 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
                                   int width, int height,
                                   int availableWidth, int availableHeight) {
-        if (mDynamicGrid == null) {
-            mDynamicGrid = new DynamicGrid(context,
-                    context.getResources(),
-                    minWidth, minHeight, width, height,
-                    availableWidth, availableHeight);
-            mDynamicGrid.getDeviceProfile().addCallback(this);
-        }
+        mDynamicGrid = new DynamicGrid(context,
+                context.getResources(),
+                minWidth, minHeight, width, height,
+                availableWidth, availableHeight);
+        mDynamicGrid.getDeviceProfile().addCallback(this);
 
         // Update the icon size
         DeviceProfile grid = mDynamicGrid.getDeviceProfile();

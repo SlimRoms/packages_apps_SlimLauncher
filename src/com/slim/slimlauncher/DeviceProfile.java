@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 class DeviceProfileQuery {
     DeviceProfile profile;
@@ -128,10 +129,14 @@ public class DeviceProfile {
     int pageIndicatorHeightPx;
     int allAppsButtonVisualSize;
 
+    boolean showSearchBar;
+
     float dragViewScale;
 
     int allAppsShortEdgeCount = -1;
     int allAppsLongEdgeCount = -1;
+
+    View pageIndicator;
 
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
@@ -366,6 +371,8 @@ public class DeviceProfile {
         for (DeviceProfileCallbacks cb : mCallbacks) {
             cb.onAvailableSizeChanged(this);
         }
+
+        updateFromPreferences(context);
     }
 
     private void updateIconSize(float scale, int drawablePadding, Resources resources,
@@ -447,6 +454,17 @@ public class DeviceProfile {
         availableHeightPx = ahPx;
 
         updateAvailableDimensions(context);
+    }
+
+    public void updateFromPreferences(Context context) {
+        showSearchBar = SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
+
+        if (showSearchBar) {
+            searchBarSpaceHeightPx = searchBarHeightPx + 2 * edgeMarginPx;
+        } else {
+            searchBarSpaceHeightPx = 2 * edgeMarginPx;
+        }
     }
 
     private float dist(PointF p0, PointF p1) {
@@ -720,6 +738,7 @@ public class DeviceProfile {
 
         // Layout the search bar space
         View searchBar = launcher.getSearchBar();
+        searchBar.setVisibility(showSearchBar ? View.VISIBLE : View.GONE);
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
             // Vertical search bar space
@@ -797,7 +816,7 @@ public class DeviceProfile {
         hotseat.setLayoutParams(lp);
 
         // Layout the page indicators
-        View pageIndicator = launcher.findViewById(R.id.page_indicator);
+        pageIndicator = launcher.findViewById(R.id.page_indicator);
         if (pageIndicator != null) {
             if (hasVerticalBarLayout) {
                 // Hide the page indicators when we have vertical search/hotseat
@@ -808,7 +827,7 @@ public class DeviceProfile {
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
                 lp.width = LayoutParams.WRAP_CONTENT;
                 lp.height = LayoutParams.WRAP_CONTENT;
-                lp.bottomMargin = hotseatBarHeightPx;
+                lp.bottomMargin = Math.max(hotseatBarHeightPx, lp.bottomMargin);
                 pageIndicator.setLayoutParams(lp);
             }
         }

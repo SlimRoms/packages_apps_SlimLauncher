@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.slim.slimlauncher.settings.HomescreenFragment"
+        android:id="@+id/pref_homescreen"
+        android:title="@string/homescreen_title" />
+
+    <!--<header
+        android:fragment="com.slim.slimlauncher.settings.DockFragment"
+        android:id="@+id/pref_dock"
+        android:title="@string/dock_title" />
+
+    <header
+        android:fragment="com.slim.slimlauncher.settings.DrawerFragment"
+        android:id="@+id/pref_drawer"
+        android:title="@string/drawer_title" />
+
+    <header
+        android:fragment="com.slim.slimlauncher.settings.FolderFragment"
+        android:id="@+id/pref_folder"
+        android:title="@string/folder_title" />
+
+    <header
+        android:fragment="com.slim.slimlauncher.settings.GestureFragment"
+        android:id="@+id/pref_gestures"
+        android:title="@string/gestures_title" />
+
+    <header
+        android:fragment="com.slim.slimlauncher.settings.GeneralFragment"
+        android:id="@+id/pref_general"
+        android:title="@string/general_title" />
+
+    <header
+        android:id="@+id/slim_application_version"
+        android:summary="@string/slim_application_copyright" />-->
+
+</preference-headers>
