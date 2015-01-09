@@ -104,6 +104,8 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.settings.SettingsActivity;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
@@ -244,6 +246,7 @@ public class Launcher extends Activity
     private LayoutInflater mInflater;
 
     @Thunk Workspace mWorkspace;
+
     private View mLauncherView;
     private View mPageIndicators;
     @Thunk DragLayer mDragLayer;
@@ -435,21 +438,12 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        LauncherAppState.setApplicationContext(getApplicationContext());
-        LauncherAppState app = LauncherAppState.getInstance();
+        initializeDynamicGrid();
 
-        // Load configuration-specific DeviceProfile
-        mDeviceProfile = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE ?
-                        app.getInvariantDeviceProfile().landscapeProfile
-                            : app.getInvariantDeviceProfile().portraitProfile;
-
+        // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
-        mModel = app.setLauncher(this);
-        mIconCache = app.getIconCache();
-
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, this);
@@ -476,6 +470,7 @@ public class Launcher extends Activity
         setupViews();
         mDeviceProfile.layout(this);
 
+        //registerContentObservers();
         lockAllApps();
 
         mSavedState = savedInstanceState;
@@ -532,6 +527,46 @@ public class Launcher extends Activity
             showFirstRunActivity();
             showFirstRunClings();
         }
+    }
+
+    private void initializeDynamicGrid() {
+        LauncherAppState.setApplicationContext(getApplicationContext());
+        LauncherAppState app = LauncherAppState.getInstance();
+
+        // Load configuration-specific DeviceProfile
+        mDeviceProfile = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ?
+                app.getInvariantDeviceProfile().landscapeProfile
+                : app.getInvariantDeviceProfile().portraitProfile;
+
+        mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
+                Context.MODE_PRIVATE);
+        mIsSafeModeEnabled = getPackageManager().isSafeMode();
+        mModel = app.setLauncher(this);
+        mIconCache = app.getIconCache();
+    }
+
+    public void updateDynamicGrid() {
+        //mSearchDropTargetBar.setupQSB(this);
+
+        boolean showSearchBar = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
+
+        if (showSearchBar) {
+            mSearchDropTargetBar.showSearchBar(false);
+        } else {
+            mSearchDropTargetBar.hideSearchBar(false);
+        }
+
+        initializeDynamicGrid();
+
+        mDeviceProfile.layout(this);
+        mWorkspace.reloadSettings();
+
+        //mAppsCustomizeContent.updateGridSize();
+        //mHotseat.updateHotseat();
+
+        //mModel.startLoader(true, mWorkspace.getCurrentPage());
     }
 
     @Override
@@ -981,6 +1016,10 @@ public class Launcher extends Activity
         }
 
         super.onResume();
+
+        //if (LauncherAppState.getSettingsChanged()) {
+          //  updateDynamicGrid();
+        //}
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
@@ -1717,6 +1756,7 @@ public class Launcher extends Activity
                 // apps is nice and speedy.
                 observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
                     private boolean mStarted = false;
+
                     public void onDraw() {
                         if (mStarted) return;
                         mStarted = true;
@@ -1728,14 +1768,14 @@ public class Launcher extends Activity
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
                         final ViewTreeObserver.OnDrawListener listener = this;
                         mWorkspace.post(new Runnable() {
-                                public void run() {
-                                    if (mWorkspace != null &&
-                                            mWorkspace.getViewTreeObserver() != null) {
-                                        mWorkspace.getViewTreeObserver().
-                                                removeOnDrawListener(listener);
-                                    }
+                            public void run() {
+                                if (mWorkspace != null &&
+                                        mWorkspace.getViewTreeObserver() != null) {
+                                    mWorkspace.getViewTreeObserver().
+                                            removeOnDrawListener(listener);
                                 }
-                            });
+                            }
+                        });
                         return;
                     }
                 });

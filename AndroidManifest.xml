@@ -66,10 +66,9 @@
 
     <application
         android:allowBackup="@bool/enable_backup"
-        android:backupAgent="com.android.launcher3.LauncherBackupAgentHelper"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
-        android:label="@string/application_name"
+        android:label="@string/slim_application_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
@@ -153,12 +152,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.android.launcher3.SettingsActivity"
+        <activity android:name="com.android.launcher3.settings.SettingsActivity"
+            android:icon="@mipmap/ic_launcher_settings"
             android:label="@string/settings_button_text"
-            android:autoRemoveFromRecents="true"
-            android:process=":settings_process">
-        </activity>
+            android:autoRemoveFromRecents="true"/>
 
         <!-- Debugging tools -->
         <activity

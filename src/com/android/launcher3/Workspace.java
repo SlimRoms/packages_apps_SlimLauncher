@@ -68,6 +68,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
@@ -174,6 +175,7 @@ public class Workspace extends PagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
+    private int mOverviewModePageOffset;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -266,6 +268,8 @@ public class Workspace extends PagedView
 
     private AccessibilityDelegate mPagesAccessibilityDelegate;
 
+    private boolean mShowSearchBar;
+
     private final Runnable mBindPages = new Runnable() {
         @Override
         public void run() {
@@ -297,6 +301,9 @@ public class Workspace extends PagedView
 
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
+
+        reloadSettings();
+
         final Resources res = getResources();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
@@ -4484,5 +4491,10 @@ public class Workspace extends PagedView
                 }
             }
         }
+    }
+
+    public void reloadSettings() {
+        mShowSearchBar = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
     }
 }
