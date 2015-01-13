@@ -16,12 +16,12 @@
         android:id="@+id/pref_drawer"
         android:title="@string/drawer_title" />
 
-    <!--<header
+    <header
         android:fragment="com.slim.slimlauncher.settings.FolderFragment"
         android:id="@+id/pref_folder"
         android:title="@string/folder_title" />
 
-    <header
+    <!--<header
         android:fragment="com.slim.slimlauncher.settings.GestureFragment"
         android:id="@+id/pref_gestures"
         android:title="@string/gestures_title" />-->

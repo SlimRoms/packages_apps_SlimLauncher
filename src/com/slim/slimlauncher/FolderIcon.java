@@ -24,9 +24,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -43,6 +51,7 @@ import android.widget.TextView;
 
 import com.slim.slimlauncher.DropTarget.DragObject;
 import com.slim.slimlauncher.FolderInfo.FolderListener;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 
@@ -163,6 +172,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         lp.width = grid.folderIconSizePx;
         lp.height = grid.folderIconSizePx;
 
+        final int previewColor = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
+        ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        drawable.setIntrinsicHeight(profile.iconSizePx);
+        drawable.setIntrinsicWidth(profile.iconSizePx);
+        drawable.getPaint().setColor(previewColor);
+        icon.mPreviewBackground.setImageDrawable(drawable);
+
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
@@ -171,6 +189,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
+        int color = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_BACKGROUND_COLOR, 0xffffffff);
+        ShapeDrawable sd = new ShapeDrawable(new RectShape());
+        sd.getPaint().setColor(color);
+        sd.getPaint().setStyle(Paint.Style.FILL_AND_STROKE);
+        sd.getPaint().setPathEffect(new CornerPathEffect(15));
+        folder.setBackground(sd);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;
