@@ -15,16 +15,44 @@
 -->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center_horizontal|bottom"
     android:orientation="horizontal">
 
+    <LinearLayout
+        android:id="@+id/default_home_screen_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="@dimen/app_icon_size"
+        android:background="@color/overview_bg_color">
+
+        <ImageView
+            android:id="@+id/default_screen_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/app_icon_size"
+            android:layout_weight="1"
+            android:src="@drawable/default_screen_button"
+            android:scaleType="fitCenter"
+            android:gravity="top"
+            android:contentDescription="@string/default_screen_button_text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/overview_bg_color"
+        android:layout_gravity="bottom"
+        android:paddingTop="@dimen/overview_panel_top_padding"
+        android:paddingBottom="@dimen/overview_panel_bottom_padding">
     <TextView
         android:id="@+id/wallpaper_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
+        android:layout_weight="1"
         android:text="@string/wallpaper_button_text"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/wallpaper_button"
@@ -36,7 +64,7 @@
         android:id="@+id/widget_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_weight="1"
         android:text="@string/widget_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
@@ -48,7 +76,7 @@
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|top"
+        android:layout_weight="1"
         android:text="@string/settings_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
@@ -56,4 +84,5 @@
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp" />
+    </LinearLayout>
 </FrameLayout>

@@ -42,4 +42,6 @@
 
     <color name="folder_items_text_color">#FF333333</color>
 
+    <color name="overview_bg_color">#FF485459</color>
+
 </resources>

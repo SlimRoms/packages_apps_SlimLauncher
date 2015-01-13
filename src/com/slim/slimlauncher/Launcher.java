@@ -549,6 +549,12 @@ public class Launcher extends Activity
         return false;
     }
 
+    public void updateOverviewPanel() {
+        View defaultScreenPanel = mOverviewPanel.findViewById(R.id.default_home_screen_panel);
+
+        defaultScreenPanel.setVisibility(mWorkspace.getPageCount() > 1 ? View.VISIBLE : View.GONE);
+    }
+
     /**
      * To be overridden by subclasses to populate the custom content container and call
      * {@link #addToCustomContentPage}. This will only be invoked if
@@ -1379,6 +1385,15 @@ public class Launcher extends Activity
             lp.gravity = Gravity.END | Gravity.TOP;
             widgetButton.requestLayout();
         }
+
+        View defaultScreenButton = findViewById(R.id.default_screen_button);
+        defaultScreenButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                onClickDefaultScreenButton(arg0);
+            }
+        });
+        defaultScreenButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         mOverviewPanel.setAlpha(0f);
 
@@ -2770,6 +2785,11 @@ public class Launcher extends Activity
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
         }
+    }
+
+    protected void onClickDefaultScreenButton(View v) {
+        if (LOGD) Log.d(TAG, "onClickDefaultScreenButton");
+        mWorkspace.onClickDefaultScreenButton();
     }
 
     public void onTouchDownAllAppsButton(View v) {

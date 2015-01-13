@@ -727,7 +727,7 @@ public class DeviceProfile {
         Rect workspacePadding = getWorkspacePadding();
         Rect overviewBar = getOverviewModeButtonBarRect();
         int pageSpace = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
-        return (overviewModeScaleFactor * (pageSpace - overviewBar.height())) / pageSpace;
+        return overviewModeScaleFactor;
     }
 
     // The rect returned will be extended to below the system ui that covers the workspace
@@ -946,9 +946,9 @@ public class DeviceProfile {
             Rect r = getOverviewModeButtonBarRect();
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.width = Math.min(availableWidthPx,
+            lp.width = Math.max(availableWidthPx,
                     calculateOverviewModeWidth(getVisibleChildCount(overviewMode)));
-            lp.height = r.height();
+            //lp.height = r.height();
             overviewMode.setLayoutParams(lp);
         }
     }

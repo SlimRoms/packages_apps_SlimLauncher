@@ -1655,10 +1655,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return OVERSCROLL_DAMP_FACTOR * f;
     }
 
-    protected void enableFreeScroll() {
-        setEnableFreeScroll(true);
-    }
-
     protected void disableFreeScroll() {
         setEnableFreeScroll(false);
     }
@@ -2557,7 +2553,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPostReorderingPreZoomInRunnable = new Runnable() {
                 public void run() {
                     onCompleteRunnable.run();
-                    enableFreeScroll();
                 };
             };
 
