@@ -21,10 +21,10 @@
         android:id="@+id/pref_folder"
         android:title="@string/folder_title" />
 
-    <!--<header
-        android:fragment="com.slim.slimlauncher.settings.GestureFragment"
+    <header
+        android:fragment="com.android.launcher3.settings.GestureFragment"
         android:id="@+id/pref_gestures"
-        android:title="@string/gestures_title" />-->
+        android:title="@string/gestures_title" />
 
     <header
         android:fragment="com.android.launcher3.settings.GeneralFragment"

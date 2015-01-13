@@ -9,6 +9,15 @@
     <string name="reset_string">Reset</string>
     <string name="set_string">Set</string>
     <string name="off_string">Off</string>
+    <string name="error_message_title">Error</string>
+
+    <!-- App picker -->
+    <string name="profile_applist_title">Apps</string>
+    <string name="profile_choose_app">Choose app</string>
+    <string name="profiles_add">Add</string>
+    <string name="picker_activities">Activities</string>
+    <string name="select_custom_app_title">Select custom app</string>
+    <string name="select_custom_activity_title">Select custom activity</string>
 
     <!-- Grid Size -->
     <string name="grid_size_title">Grid size</string>
@@ -54,5 +63,27 @@
     <string name="folder_preview_color_title">Preview color</string>
     <string name="hide_folder_name_title">Hide folder name</string>
     <string name="hide_folder_name_summary">When a folder is open do not show its name</string>
+
+    <!-- Gestures -->
+    <string name="gestures_title">Gestures</string>
+    <string name="gesture_default">nothing</string>
+    <string name="gestures_left_up_gesture_title">Swipe up left</string>
+    <string name="gestures_middle_up_gesture_title">Swipe up middle</string>
+    <string name="gestures_right_up_gesture_title">Swipe up right</string>
+    <string name="gestures_left_down_gesture_title">Swipe down left</string>
+    <string name="gestures_middle_down_gesture_title">Swipe down middle</string>
+    <string name="gestures_right_down_gesture_title">Swipe down right</string>
+    <string name="gestures_pinch_gesture_title">Pinch</string>
+    <string name="gestures_spread_gesture_title">Spread</string>
+    <string name="gestures_double_tap_gesture_title">Double tap</string>
+    <string name="no_last_app">Last app not found.</string>
+
+    <string name="gesture_target_nothing">Nothing</string>
+    <string name="gesture_target_homescreen">Go to default homescreen</string>
+    <string name="gesture_target_drawer">Open app drawer</string>
+    <string name="gesture_target_previews">Show previews</string>
+    <string name="gesture_target_settings">Open launcher settings</string>
+    <string name="gesture_target_last_app">Last app</string>
+    <string name="gesture_target_custom">Custom</string>
 
 </resources>

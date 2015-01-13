@@ -51,6 +51,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.Accessi
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.settings.SettingsProvider;
+import com.android.launcher3.util.GestureHelper;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
@@ -80,6 +82,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.metalev.multitouch.controller.MultiTouchController;
+import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
+import org.metalev.multitouch.controller.MultiTouchController.PointInfo;
+import org.metalev.multitouch.controller.MultiTouchController.PositionAndScale;
+
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
  * Each page contains a number of icons, folders or widgets the user can
@@ -88,7 +95,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, UninstallSource, AccessibilityDragSource, Stats.LaunchSourceProvider {
+        Insettable, UninstallSource, AccessibilityDragSource, Stats.LaunchSourceProvider,
+        MultiTouchObjectCanvas<Object> {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
@@ -97,6 +105,12 @@ public class Workspace extends PagedView
     protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
 
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
+
+    private static final int MIN_MULTITOUCH_EVENT_INTERVAL = 500;
+    public static final int MIN_UP_DOWN_GESTURE_DISTANCE = 200;
+
+    private static final double ZOOM_SENSITIVITY = 1.6;
+    private static final double ZOOM_LOG_BASE_INV = 1.0 / Math.log(2.0 / ZOOM_SENSITIVITY);
 
     static final boolean MAP_NO_RECURSE = false;
     static final boolean MAP_RECURSE = true;
@@ -111,6 +125,24 @@ public class Workspace extends PagedView
 
     private int mOriginalDefaultPage;
     private int mDefaultPage;
+
+    private long mLastMultitouch = 0;
+    private boolean mMultitouchGestureDetected = false;
+
+    private MultiTouchController<Object> mMultiTouchController;
+
+    // gestures
+    private String mLeftUpGestureAction;
+    private String mMiddleUpGestureAction;
+    private String mRightUpGestureAction;
+    private String mLeftDownGestureAction;
+    private String mMiddleDownGestureAction;
+    private String mRightDownGestureAction;
+    private String mPinchGestureAction;
+    private String mSpreadGestureAction;
+    private String mDoubleTapGestureAction;
+
+    public GestureDetector mGestureDetector;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
 
@@ -321,6 +353,59 @@ public class Workspace extends PagedView
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
 
+        mGestureDetector = new GestureDetector(context,
+                new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                GestureHelper.performGestureAction(
+                        mLauncher, mDoubleTapGestureAction, "double_tap");
+                return true;
+            }
+
+            @Override
+            public boolean onFling (MotionEvent start, MotionEvent finish,
+                                    float xVelocity, float yVelocity) {
+                if (!mIsDragOccuring && mTouchState !=
+                        TOUCH_STATE_SCROLLING && !mMultitouchGestureDetected) {
+                    switch(GestureHelper.identifyGesture(finish.getRawX(), finish.getRawY(),
+                            start.getRawX(), start.getRawY())) {
+                        case UP_LEFT:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mLeftUpGestureAction, "left_up");
+                            break;
+                        case UP_MIDDLE:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mMiddleUpGestureAction, "middle_up");
+                            break;
+                        case UP_RIGHT:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mRightUpGestureAction, "right_up");
+                            break;
+                        case DOWN_LEFT:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mLeftDownGestureAction, "left_down");
+                            break;
+                        case DOWN_MIDDLE:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mMiddleDownGestureAction, "middle_down");
+                            break;
+                        case DOWN_RIGHT:
+                            GestureHelper.performGestureAction(
+                                    mLauncher, mRightDownGestureAction, "right_down");
+                            break;
+                    }
+                }
+                mMultitouchGestureDetected = false;
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                Log.d(TAG, "onDoubleTapEvent : action=" + e.getAction());
+                return false;
+            }
+        });
+
         initWorkspace();
 
         // Disable multitouch across the workspace/all apps/customize tray
@@ -429,6 +514,8 @@ public class Workspace extends PagedView
         setClipChildren(false);
         setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
+
+        mMultiTouchController = new MultiTouchController<Object>(this, false);
 
         setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
@@ -1057,6 +1144,9 @@ public class Workspace extends PagedView
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!mIsDragOccuring && mMultiTouchController.onTouchEvent(ev))
+            return false;
+
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
             mXDown = ev.getX();
@@ -1071,7 +1161,9 @@ public class Workspace extends PagedView
                     onWallpaperTap(ev);
                 }
             }
+            break;
         }
+        mGestureDetector.onTouchEvent(ev);
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -4504,5 +4596,64 @@ public class Workspace extends PagedView
     public void reloadSettings() {
         mShowSearchBar = SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
+
+        String gesture_def = mLauncher.getString(R.string.gesture_default);
+        mLeftUpGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.LEFT_UP_GESTURE_ACTION, gesture_def);
+        mMiddleUpGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.MIDDLE_UP_GESTURE_ACTION, gesture_def);
+        mRightUpGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.RIGHT_UP_GESTURE_ACTION, gesture_def);
+        mLeftDownGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.LEFT_DOWN_GESTURE_ACTION, gesture_def);
+        mMiddleDownGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.MIDDLE_DOWN_GESTURE_ACTION, gesture_def);
+        mRightDownGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.RIGHT_DOWN_GESTURE_ACTION, gesture_def);
+
+        mPinchGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.PINCH_GESTURE_ACTION, gesture_def);
+        mSpreadGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.SPREAD_GESTURE_ACTION, gesture_def);
+        mDoubleTapGestureAction = SettingsProvider.getString(mLauncher,
+                SettingsProvider.DOUBLE_TAP_GESTURE_ACTION, gesture_def);
+    }
+
+    @Override
+    public Object getDraggableObjectAtPoint(PointInfo touchPoint) {
+        return this;
+    }
+
+    @Override
+    public void getPositionAndScale(Object obj,
+                                    PositionAndScale objPosAndScaleOut) {
+        objPosAndScaleOut.set(0.0f, 0.0f, true, 1.0f, false, 0.0f, 0.0f, false, 0.0f);
+
+    }
+
+    @Override
+    public boolean setPositionAndScale(Object obj,
+                                       PositionAndScale newObjPosAndScale, PointInfo touchPoint) {
+        double pinch = Math.round(Math.log(newObjPosAndScale.getScale()) * ZOOM_LOG_BASE_INV);
+        long delta = System.currentTimeMillis() - mLastMultitouch;
+        if (pinch < 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
+                delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
+            GestureHelper.performGestureAction(mLauncher, mPinchGestureAction, "pinch");
+            mLastMultitouch = System.currentTimeMillis();
+            mMultitouchGestureDetected = true;
+            return true;
+        } else if (pinch > 0 && mLauncher.mState == Launcher.State.WORKSPACE &&
+                delta >= MIN_MULTITOUCH_EVENT_INTERVAL) {
+            GestureHelper.performGestureAction(mLauncher, mSpreadGestureAction, "spread");
+            mLastMultitouch = System.currentTimeMillis();
+            mMultitouchGestureDetected = true;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void selectObject(Object obj, PointInfo touchPoint) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

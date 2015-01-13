@@ -17,9 +17,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.android.launcher3.BubbleTextView;
@@ -27,7 +25,6 @@ import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 
 /**
  * A container for RecyclerView to allow for the click shadow view to be shown behind an icon that
@@ -49,7 +46,7 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     public AllAppsRecyclerViewContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        Launcher launcher = (Launcher) context;
+        final Launcher launcher = (Launcher) context;
         DeviceProfile grid = launcher.getDeviceProfile();
 
         mTouchFeedbackView = new ClickShadowView(context);

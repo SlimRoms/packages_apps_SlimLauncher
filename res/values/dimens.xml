@@ -132,4 +132,7 @@
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
 
+    <dimen name="shortcut_picker_left_padding">70dip</dimen>
+>>>>>>> 19b1d88... Add all gestures back
+
 </resources>
