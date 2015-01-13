@@ -22,8 +22,15 @@ public interface SettingsKeys {
 
     // Homescreen
     public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
+    public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
 
     // General
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
+
+    // Drawer
+    public static final String KEY_DRAWER_GRID = "drawer_grid";
+
+    // Dock
+    public static final String KEY_DOCK_ICONS = "dock_icon_count";
 
 }

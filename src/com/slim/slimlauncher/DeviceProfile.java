@@ -67,9 +67,9 @@ public class DeviceProfile {
     String name;
     float minWidthDps;
     float minHeightDps;
-    float numRows;
-    float numColumns;
-    float numHotseatIcons;
+    public float numRows;
+    public float numColumns;
+    public float numHotseatIcons;
     float iconSize;
     private float iconTextSize;
     private int iconDrawablePaddingOriginalPx;
@@ -120,8 +120,8 @@ public class DeviceProfile {
     int hotseatIconSizePx;
     int hotseatBarHeightPx;
     int hotseatAllAppsRank;
-    int allAppsNumRows;
-    int allAppsNumCols;
+    public int allAppsNumRows;
+    public int allAppsNumCols;
     int searchBarSpaceWidthPx;
     int searchBarSpaceMaxWidthPx;
     int searchBarSpaceHeightPx;
@@ -464,6 +464,56 @@ public class DeviceProfile {
             searchBarSpaceHeightPx = searchBarHeightPx + 2 * edgeMarginPx;
         } else {
             searchBarSpaceHeightPx = 2 * edgeMarginPx;
+        }
+
+        int prefNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+        if (prefNumRows > 0) {
+            numRows = prefNumRows;
+        }
+
+        int prefNumColumns = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+        if (prefNumColumns > 0) {
+            numColumns = prefNumColumns;
+        }
+
+        int prefNumHotseatIcons = SettingsProvider.getInt(
+                context, SettingsProvider.KEY_DOCK_ICONS, 5);
+        if (prefNumHotseatIcons > 0) {
+            numHotseatIcons = prefNumHotseatIcons;
+            hotseatAllAppsRank = (int) (numHotseatIcons / 2);
+        }
+
+        int prefAllAppNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumRows > 0) {
+            allAppsNumRows = prefAllAppNumRows;
+        } else {
+            if (isLandscape) {
+                int pageIndicatorOffset =
+                        context.getResources().getDimensionPixelSize(
+                                R.dimen.apps_customize_page_indicator_offset);
+                allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                        (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+            } else {
+                allAppsNumRows = (int) numRows + 1;
+            }
+            SettingsProvider.putCellCountY(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumRows);
+        }
+
+        int prefAllAppNumCols = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumCols > 0) {
+            allAppsNumCols = prefAllAppNumCols;
+        } else {
+            Rect padding = getWorkspacePadding(isLandscape ?
+                    CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+            allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
+                    (iconSizePx + 2 * edgeMarginPx);
+            SettingsProvider.putCellCountX(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
         }
     }
 

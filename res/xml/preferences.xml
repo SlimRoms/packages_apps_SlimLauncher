@@ -6,7 +6,7 @@
         android:id="@+id/pref_homescreen"
         android:title="@string/homescreen_title" />
 
-    <!--<header
+    <header
         android:fragment="com.slim.slimlauncher.settings.DockFragment"
         android:id="@+id/pref_dock"
         android:title="@string/dock_title" />
@@ -16,7 +16,7 @@
         android:id="@+id/pref_drawer"
         android:title="@string/drawer_title" />
 
-    <header
+    <!--<header
         android:fragment="com.slim.slimlauncher.settings.FolderFragment"
         android:id="@+id/pref_folder"
         android:title="@string/folder_title" />
