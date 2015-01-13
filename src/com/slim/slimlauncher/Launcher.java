@@ -227,8 +227,8 @@ public class Launcher extends Activity
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
     /** The different states that Launcher can be in. */
-    private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
-    private State mState = State.WORKSPACE;
+    public enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
+    public State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
 
     private boolean mIsSafeModeEnabled;
@@ -3802,7 +3802,7 @@ public class Launcher extends Activity
     public void onWorkspaceShown(boolean animated) {
     }
 
-    void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
+    public void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
                      boolean resetPageToZero) {
         if (mState != State.WORKSPACE) return;
 

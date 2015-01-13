@@ -37,9 +37,11 @@ import android.os.Bundle;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -49,6 +51,7 @@ import android.widget.Toast;
 
 import com.slim.slimlauncher.DropTarget.DragObject;
 import com.slim.slimlauncher.compat.AppWidgetManagerCompat;
+import com.slim.slimlauncher.util.GestureHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,6 +173,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ArrayList<AppInfo> mApps;
     private ArrayList<Object> mWidgets;
 
+    private GestureDetector mGestureDetector;
+
     // Caching
     private IconCache mIconCache;
 
@@ -236,6 +241,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
         setSinglePageInViewport();
+
+        mGestureDetector = new GestureDetector(context,
+                new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onFling(MotionEvent start, MotionEvent finish,
+                            float xVelocity, float yVelocity) {
+                        if (GestureHelper.isSwipeUP(finish.getRawY(), start.getRawY())) {
+                            if (GestureHelper.doesSwipeUpContainShowAllApps(mLauncher)) {
+                                mLauncher.showWorkspace(true);
+                            }
+                        } else if (GestureHelper.isSwipeDOWN(finish.getRawY(), start.getRawY())) {
+                            if (GestureHelper.doesSwipeDownContainShowAllApps(mLauncher)) {
+                                mLauncher.showWorkspace(true);
+                            }
+                        }
+                        return true;
+                    }
+                }
+        );
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mGestureDetector.onTouchEvent(ev);
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override

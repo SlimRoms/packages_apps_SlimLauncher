@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Gestures -->
+    <string-array name="gesture_target_names">
+        <item>@string/gesture_target_nothing</item>
+        <item>@string/gesture_target_homescreen</item>
+        <item>@string/gesture_target_drawer</item>
+        <item>@string/gesture_target_previews</item>
+        <item>@string/gesture_target_settings</item>
+        <item>@string/gesture_target_last_app</item>
+        <item>@string/gesture_target_custom</item>
+    </string-array>
+
+    <string-array name="gesture_target_values" translatable="false" >
+        <item>nothing</item>
+        <item>default_homescreen</item>
+        <item>open_app_drawer</item>
+        <item>show_previews</item>
+        <item>show_settings</item>
+        <item>last_app</item>
+        <item>custom</item>
+    </string-array>
+
+</resources>

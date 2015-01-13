@@ -553,7 +553,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * Sets the current page.
      */
-    void setCurrentPage(int currentPage) {
+    public void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) {
             abortScrollerAnimation(true);
         }
