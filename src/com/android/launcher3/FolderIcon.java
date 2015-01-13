@@ -24,9 +24,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -43,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -167,6 +176,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         lp.width = grid.folderIconSizePx;
         lp.height = grid.folderIconSizePx;
 
+        final int previewColor = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
+        Drawable drawable = icon.mPreviewBackground.getDrawable().mutate();
+        drawable.setColorFilter(previewColor, PorterDuff.Mode.MULTIPLY);
+        icon.mPreviewBackground.setImageDrawable(drawable);
+
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
@@ -175,6 +190,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
+        int color = SettingsProvider.getInt(launcher,
+                SettingsProvider.FOLDER_BACKGROUND_COLOR, 0xffffffff);
+        Drawable d = folder.getBackground().mutate();
+        d.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        folder.setBackground(d);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;

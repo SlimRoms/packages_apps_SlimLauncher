@@ -214,6 +214,15 @@ public class IconCache {
     }
 
     /**
+     * Empty out the cache
+     */
+    public void flush() {
+        synchronized (mCache) {
+            mCache.clear();
+        }
+    }
+
+    /**
      * Updates the entries related to the given package in memory and persistent DB.
      */
     public synchronized void updateIconsForPkg(String packageName, UserHandleCompat user) {

@@ -581,7 +581,9 @@ public class Launcher extends Activity
             mUpdateOrientationRunnable.run();
         }
 
-        //mModel.startLoader(true, mWorkspace.getCurrentPage());
+        mIconCache.flush();
+        mModel.forceReload();
+        mModel.startLoader(mWorkspace.getCurrentPage());
     }
 
     private LauncherCallbacks mLauncherCallbacks;

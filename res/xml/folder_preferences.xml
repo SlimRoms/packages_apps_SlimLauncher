@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="folder_background_color"
+        android:title="@string/folder_background_color_title"
+        android:defaultValue="0xffffffff" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="folder_icon_text_color"
+        android:title="@string/folder_icon_text_color_title"
+        android:defaultValue="@color/folder_items_text_color" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="folder_preview_color"
+        android:title="@string/folder_preview_color_title"
+        android:defaultValue="0x71ffffff" />
+
+    <CheckBoxPreference
+        android:key="hide_folder_name"
+        android:title="@string/hide_folder_name_title"
+        android:summary="@string/hide_folder_name_summary"
+        android:defaultValue="false" />
+
+</PreferenceScreen>

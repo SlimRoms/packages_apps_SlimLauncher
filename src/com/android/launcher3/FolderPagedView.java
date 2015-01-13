@@ -30,6 +30,7 @@ import android.view.animation.OvershootInterpolator;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -215,6 +216,10 @@ public class FolderPagedView extends PagedView {
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorView);
         textView.setOnKeyListener(mKeyListener);
+
+        int color = SettingsProvider.getInt(getContext(), SettingsProvider.FOLDER_ICON_TEXT_COLOR,
+                getResources().getColor(R.color.folder_items_text_color));
+        textView.setTextColor(color);
 
         textView.setLayoutParams(new CellLayout.LayoutParams(
                 item.cellX, item.cellY, item.spanX, item.spanY));

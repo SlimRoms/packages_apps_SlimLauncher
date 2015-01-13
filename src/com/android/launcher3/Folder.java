@@ -57,6 +57,7 @@ import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
@@ -214,6 +215,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+
+        boolean hideFolderName = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.HIDE_FOLDER_NAME, false);
+        if (hideFolderName) {
+            mFolderName.setVisibility(View.GONE);
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
