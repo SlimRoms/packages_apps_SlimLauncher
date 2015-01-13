@@ -24,6 +24,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class InvariantDeviceProfile {
     /**
      * Number of icons inside the hotseat area.
      */
-    float numHotseatIcons;
+    public float numHotseatIcons;
     float hotseatIconSize;
     int defaultLayoutId;
 
@@ -167,6 +168,29 @@ public class InvariantDeviceProfile {
                 largeSide, smallSide, true /* isLandscape */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 smallSide, largeSide, false /* isLandscape */);
+
+        updateFromPreferences(context);
+    }
+
+    public void updateFromPreferences(Context context) {
+        int prefNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+        if (prefNumRows > 0) {
+            numRows = prefNumRows;
+        }
+
+        int prefNumColumns = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+        if (prefNumColumns > 0) {
+            numColumns = prefNumColumns;
+        }
+
+        int prefNumHotseatIcons = SettingsProvider.getInt(
+                context, SettingsProvider.KEY_DOCK_ICONS, 5);
+        if (prefNumHotseatIcons > 0) {
+            numHotseatIcons = prefNumHotseatIcons;
+            hotseatAllAppsRank = (int) (numHotseatIcons / 2);
+        }
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles() {

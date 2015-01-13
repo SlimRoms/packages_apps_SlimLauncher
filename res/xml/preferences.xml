@@ -6,17 +6,17 @@
         android:id="@+id/pref_homescreen"
         android:title="@string/homescreen_title" />
 
-    <!--<header
-        android:fragment="com.slim.slimlauncher.settings.DockFragment"
+    <header
+        android:fragment="com.android.launcher3.settings.DockFragment"
         android:id="@+id/pref_dock"
         android:title="@string/dock_title" />
 
     <header
-        android:fragment="com.slim.slimlauncher.settings.DrawerFragment"
+        android:fragment="com.android.launcher3.settings.DrawerFragment"
         android:id="@+id/pref_drawer"
         android:title="@string/drawer_title" />
 
-    <header
+    <!--<header
         android:fragment="com.slim.slimlauncher.settings.FolderFragment"
         android:id="@+id/pref_folder"
         android:title="@string/folder_title" />

@@ -18,9 +18,16 @@ package com.android.launcher3.settings;
 
 public interface SettingsKeys {
 
-    public static final String DEFAULT_HOMESCREEN = "default_homescreen";
+    String DEFAULT_HOMESCREEN = "default_homescreen";
 
     // Homescreen
-    public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
+    String KEY_SHOW_SEARCH_BAR = "show_search_bar";
+    String KEY_HOMESCREEN_GRID = "homescreen_grid";
+
+    // Drawer
+    String KEY_DRAWER_GRID = "drawer_grid";
+
+    // Dock
+    String KEY_DOCK_ICONS = "dock_icon_count";
 
 }

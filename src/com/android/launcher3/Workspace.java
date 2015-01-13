@@ -4030,6 +4030,12 @@ public class Workspace extends PagedView
         return layouts;
     }
 
+    public void updateLayout() {
+        for (int i = 0; i < getChildCount(); i++) {
+            ((CellLayout) getChildAt(i)).updateGridSize();
+        }
+    }
+
     /**
      * We should only use this to search for specific children.  Do not use this method to modify
      * ShortcutsAndWidgetsContainer directly. Includes ShortcutAndWidgetContainers from

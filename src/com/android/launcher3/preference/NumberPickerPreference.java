@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.slim.slimlauncher.preference;
+package com.android.launcher3.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;

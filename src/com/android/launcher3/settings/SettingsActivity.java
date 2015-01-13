@@ -33,7 +33,9 @@ public class SettingsActivity extends PreferenceActivity implements
         super.onResume();
         SettingsProvider.get(this).registerOnSharedPreferenceChangeListener(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -74,6 +76,6 @@ public class SettingsActivity extends PreferenceActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        //LauncherAppState.setSettingsChanged();
+        LauncherAppState.setSettingsChanged(true);
     }
 }

@@ -374,6 +374,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         requestLayout();
     }
 
+    public void updateGridSize() {
+        InvariantDeviceProfile inv = mLauncher.getDeviceProfile().inv;
+        setGridSize(inv.numColumns, inv.numRows);
+    }
+
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
     public void setInvertIfRtl(boolean invert) {
         mShortcutsAndWidgets.setInvertIfRtl(invert);

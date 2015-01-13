@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -92,6 +93,11 @@ public class Hotseat extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        updateHotseat();
+    }
+
+    public void updateHotseat() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         mAllAppsButtonRank = grid.inv.hotseatAllAppsRank;

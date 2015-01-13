@@ -557,7 +557,7 @@ public class Launcher extends Activity
     }
 
     public void updateDynamicGrid() {
-        //mSearchDropTargetBar.setupQSB(this);
+        mDeviceProfile.inv.updateFromPreferences(this);
 
         boolean showSearchBar = SettingsProvider.getBoolean(this,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
@@ -568,13 +568,11 @@ public class Launcher extends Activity
             mSearchDropTargetBar.hideSearchBar(false);
         }
 
-        initializeDynamicGrid();
-
         mDeviceProfile.layout(this);
         mWorkspace.reloadSettings();
+        mWorkspace.updateLayout();
 
-        //mAppsCustomizeContent.updateGridSize();
-        //mHotseat.updateHotseat();
+        mHotseat.updateHotseat();
 
         //mModel.startLoader(true, mWorkspace.getCurrentPage());
     }
@@ -1049,9 +1047,10 @@ public class Launcher extends Activity
 
         super.onResume();
 
-        //if (LauncherAppState.getSettingsChanged()) {
-          //  updateDynamicGrid();
-        //}
+        if (LauncherAppState.getSettingsChanged()) {
+            LauncherAppState.setSettingsChanged(false);
+            updateDynamicGrid();
+        }
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {

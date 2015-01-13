@@ -10,6 +10,12 @@
     <string name="set_string">Set</string>
     <string name="off_string">Off</string>
 
+    <!-- Grid Size -->
+    <string name="grid_size_title">Grid size</string>
+    <string name="grid_size_summary">Choose the number of rows/columns</string>
+    <string name="grid_size_rows_title">Rows</string>
+    <string name="grid_size_columns_title">Columns</string>
+
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on color below to apply</string>
@@ -22,5 +28,13 @@
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>
     <string name="show_search_bar_title">Show search bar</string>
+
+    <!-- Drawer Settings -->
+    <string name="drawer_title">Drawer</string>
+
+    <!-- Dock Settings -->
+    <string name="dock_title">Dock</string>
+    <string name="dock_icons_title">Dock icons</string>
+    <string name="dock_icons_summary">Number of icons in the dock</string>
 
 </resources>
