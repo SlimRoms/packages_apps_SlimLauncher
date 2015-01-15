@@ -62,9 +62,18 @@
 
     <!-- General Settings -->
     <string name="general_title">General</string>
+
+    <!-- Notification Badge Settings -->
     <string name="notification_badges_title">Notification badges</string>
     <string name="notification_badges_summary">Display notification counts on app icon</string>
     <string name="notification_badge_warning_message">In the next screen please enable SlimLauncher as a Notification Listener to enable notification badges.</string>
+    <string name="notification_badge_location_title">Notification badge location</string>
+    <string name="notification_badge_color_title">Notification badge color</string>
+    <string name="notification_badge_text_color_title">Notification badge text color</string>
+    <string name="notification_badge_text_size_title">Notification badge text size</string>
+    <string name="notification_badge_corner_radius_title">Notification badge corner radius</string>
+    <string name="notification_badge_excluded_apps_title">Excluded applications</string>
+    <string name="notification_badge_excluded_apps_summary">Excluded applications will not have notification badges.</string>
 
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>

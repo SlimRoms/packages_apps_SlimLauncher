@@ -687,6 +687,11 @@ public class Launcher extends Activity
         mAppsCustomizeContent.invalidateOnDataChange();
         mHotseat.updateHotseat();
 
+        NotificationListener nl = NotificationListener.getInstance();
+        if (nl != null) {
+            nl.updateCurrentNotifications();
+        }
+
         mModel.startLoader(true, mWorkspace.getCurrentPage());
 
         mAppDrawerAdapter.reset();

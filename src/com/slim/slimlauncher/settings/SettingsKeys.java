@@ -31,8 +31,16 @@ public interface SettingsKeys {
 
     public static final String KEY_SHOW_STATUS_BAR = "hide_status_bar";
 
-    // General
+    // Notification Badges
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
+    public static final String KEY_NOTIFICATION_BADGE_LOCATION = "notification_badge_location";
+    public static final String KEY_NOTIFICATION_BADGE_COLOR = "notification_badge_color";
+    public static final String KEY_NOTIFICATION_BADGE_TEXT_COLOR = "notification_badge_text_color";
+    public static final String KEY_NOTIFICATION_BADGE_TEXT_SIZE = "notification_badge_text_size";
+    public static final String KEY_NOTIFICATION_BADGE_CORNER_RADIUS =
+            "notification_badge_corner_radius";
+    public static final String KEY_NOTIFICATION_BADGE_EXCLUDED_APPS =
+            "notification_badge_excluded_apps";
 
     // Drawer
     public static final String KEY_DRAWER_STYLE = "drawer_style";

@@ -4,9 +4,10 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:title="@string/homescreen_title">
 
-    <SwitchPreference
+    <PreferenceScreen
         android:key="notification_badges"
         android:title="@string/notification_badges_title"
+        android:fragment="com.slim.slimlauncher.settings.NotificationBadge"
         android:summary="@string/notification_badges_summary" />
 
 </PreferenceScreen>

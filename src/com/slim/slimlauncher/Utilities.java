@@ -90,13 +90,20 @@ public final class Utilities {
        }
 
        int textureWidth = b.getWidth();
+       int textureHeight = b.getHeight();
        final Resources resources = context.getResources();
        final Canvas canvas = sCanvas;
        canvas.setBitmap(b);
 
-       float textsize = resources.getDimension(R.dimen.infomation_count_textsize);
+        
+       float textsize = SettingsProvider.getFloat(context,
+               SettingsProvider.KEY_NOTIFICATION_BADGE_TEXT_SIZE,
+               resources.getDimension(R.dimen.infomation_count_textsize));
+       Log.d("TEST", "textSize=" + textsize);
        Paint countPaint = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
-       countPaint.setColor(Color.WHITE);
+       int color = SettingsProvider.getInt(context,
+               SettingsProvider.KEY_NOTIFICATION_BADGE_TEXT_COLOR, Color.WHITE);
+       countPaint.setColor(color);
        countPaint.setTextSize(textsize);
 
        String text = String.valueOf(count);
@@ -104,22 +111,56 @@ public final class Utilities {
            text = "999+";
        }
 
-       float count_hight = resources.getDimension(R.dimen.infomation_count_height);
        float padding = resources.getDimension(R.dimen.infomation_count_padding);
-       float radius = resources.getDimension(R.dimen.infomation_count_circle_radius);
+       float count_height = textsize + padding;
+       float radius = SettingsProvider.getFloat(context,
+               SettingsProvider.KEY_NOTIFICATION_BADGE_CORNER_RADIUS,
+               resources.getDimension(R.dimen.infomation_count_circle_radius));
+       Log.d("TEST", "radius=" + radius);
        int  textwidth = (int) (countPaint.measureText(text) + 1);
-       float width =textwidth + padding * 2;
+       float width = textwidth + padding * 2;
        width = Math.max(width, resources.getDimensionPixelSize(R.dimen.infomation_count_min_width));
 
-       RectF rect = new RectF(textureWidth - width -1, 1, textureWidth - 1, count_hight + 1);
+       int location = Integer.parseInt(SettingsProvider.getString(context,
+               SettingsProvider.KEY_NOTIFICATION_BADGE_LOCATION, "1"));
+
+       RectF rect = null;
+       float textX = 1.0f;
+       float textY = 1.0f;
+
+       switch (location) {
+           case 0:
+               rect = new RectF(1, 1, width + 1, count_height + 1);
+               textX = textwidth / 2;
+               textY = textsize;
+               break;
+           case 1:
+               rect = new RectF(textureWidth - width - 1, 1, textureWidth - 1, count_height + 1);
+               textX = textureWidth - (width + textwidth) / 2 - 1;
+               textY = textsize;
+               break;
+           case 2:
+               rect = new RectF(1, textureHeight - (count_height + 1),
+                       width - 1, textureHeight + 1);
+               textX = textwidth / 2;
+               textY = textureHeight - padding;
+               break;
+           case 3:
+               rect = new RectF(textureWidth - width - 1, textureHeight - (count_height + 1),
+                       textureWidth - 1, textureHeight + 1);
+               textX = textureWidth - (width + textwidth) / 2 - 1;
+               textY = textureHeight - padding;
+               break;
+       }      
+
        Paint paint = new Paint();
        paint.setAntiAlias(true);
-       paint.setColor(resources.getColor(R.color.infomation_count_circle_color));
+       color = SettingsProvider.getInt(context, SettingsProvider.KEY_NOTIFICATION_BADGE_COLOR,
+               resources.getColor(R.color.infomation_count_circle_color));
+       paint.setColor(color);
        canvas.drawRoundRect(rect , radius, radius, paint);
 
-       float x = textureWidth - (width + textwidth ) / 2 - 1;
-       float y = textsize;
-       canvas.drawText(text, x, y, countPaint);
+       canvas.drawText(text, textX, textY, countPaint);
 
        return b;
     }

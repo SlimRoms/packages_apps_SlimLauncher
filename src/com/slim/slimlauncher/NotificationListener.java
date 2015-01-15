@@ -24,10 +24,16 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.slim.slimlauncher.settings.SettingsProvider;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class NotificationListener extends NotificationListenerService {
     private static final String TAG = "NotificationListener";
@@ -38,11 +44,20 @@ public class NotificationListener extends NotificationListenerService {
         mMappings.put("com.android.phone", "com.android.dialer");
     }
 
+    private static NotificationListener INSTANCE;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        INSTANCE = this;
+
         mStatusObserver = new ListenerStatusObserver();
         mStatusObserver.observe();
+    }
+
+    public static NotificationListener getInstance() {
+        return INSTANCE;
     }
 
     @Override
@@ -55,10 +70,13 @@ public class NotificationListener extends NotificationListenerService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (isEnabled(getApplicationContext()))
             updateCurrentNotifications();
+        Log.d("TEST", "onStartCommand");
+
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateCurrentNotifications() {
+    void updateCurrentNotifications() {
+        if (!isEnabled(getApplicationContext())) return;
         StatusBarNotification[] notifications = null;
         try {
             notifications = getActiveNotifications();
@@ -90,6 +108,8 @@ public class NotificationListener extends NotificationListenerService {
     private void broadcastNotificationUpdate(String packageName, int id, int count) {
         if (mMappings.containsKey(packageName))
             packageName = mMappings.get(packageName);
+        HashSet<String> excludedApps = SettingsProvider.getNotificationBadgeExcludedApps(getApplicationContext());
+        if (excludedApps.contains(packageName)) return;
         Intent intent = new Intent(LauncherModel.ACTION_UNREAD_CHANGED);
         intent.putExtra("packageName", packageName);
         intent.putExtra("count", count);

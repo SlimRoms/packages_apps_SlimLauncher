@@ -19,6 +19,13 @@ package com.slim.slimlauncher.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import java.util.Set;
 
@@ -64,6 +71,14 @@ public class SettingsProvider implements SettingsKeys {
         put(context).putString(key, value + "|" + values[1]);
     }
 
+    public static HashSet<String> getNotificationBadgeExcludedApps(Context context) {
+        String excludedApps = getString(context, KEY_NOTIFICATION_BADGE_EXCLUDED_APPS, "");
+        if (TextUtils.isEmpty(excludedApps))
+            return new HashSet<String>();
+        String[] appsToExclude = excludedApps.split("\\|");
+        return new HashSet<String>(Arrays.asList(appsToExclude));
+    }
+
     public static String getString(Context context, String key, String defValue) {
         return get(context).getString(key, defValue);
     }
@@ -107,7 +122,7 @@ public class SettingsProvider implements SettingsKeys {
     }
 
     public static void putInt(Context context, String key, int value) {
-        put(context).putInt(key, value);
+        put(context).putInt(key, value).commit();
     }
 
     public static void remove(Context context, String key) {
@@ -120,5 +135,13 @@ public class SettingsProvider implements SettingsKeys {
 
     public static boolean shouldFinish(String key) {
         return !key.equals(DEFAULT_HOMESCREEN);
+    }
+
+    public static float getFloat(Context context, String key, float defValue) {
+        return get(context).getFloat(key, defValue);
+    }
+
+    public static void putFloat(Context context, String key, float value) {
+        put(context).putFloat(key, value).commit();
     }
 }

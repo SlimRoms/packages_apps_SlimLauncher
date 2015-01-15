@@ -37,12 +37,12 @@ public class GeneralFragment extends SettingsPreferenceFragment implements
 
         addPreferencesFromResource(R.xml.general_preferences);
 
-        mNotificationBadges = (SwitchPreference)
+        /*mNotificationBadges = (SwitchPreference)
                 findPreference(SettingsProvider.KEY_NOTIFICATION_BADGES);
         if (!NotificationListener.isEnabled(mContext)) {
             mNotificationBadges.setChecked(false);
         }
-        mNotificationBadges.setOnPreferenceChangeListener(this);
+        mNotificationBadges.setOnPreferenceChangeListener(this);*/
     }
 
     @Override

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:title="@string/notification_badges_title">
+
+    <ListPreference
+        android:key="notification_badge_location"
+        android:title="@string/notification_badge_location_title"
+        android:summary="%s"
+        android:entries="@array/notification_badge_location_entries"
+        android:entryValues="@array/notification_badge_location_values"
+        android:defaultValue="1" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="notification_badge_color"
+        android:title="@string/notification_badge_color_title"
+        android:defaultValue="@color/infomation_count_circle_color" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="notification_badge_text_color"
+        android:title="@string/notification_badge_text_color_title"
+        android:defaultValue="@android:color/white" />
+
+    <com.slim.slimlauncher.preference.SlimSeekBarPreference
+        android:key="notification_badge_text_size"
+        android:title="@string/notification_badge_text_size_title"
+        android:defaultValue="@dimen/infomation_count_textsize" />
+
+    <com.slim.slimlauncher.preference.SlimSeekBarPreference
+        android:key="notification_badge_corner_radius"
+        android:title="@string/notification_badge_corner_radius_title"
+        android:defaultValue="@dimen/infomation_count_circle_radius" />
+
+    <com.slim.slimlauncher.preference.AppMultiSelectListPreference
+        android:key="notification_badge_excluded_apps"
+        android:title="@string/notification_badge_excluded_apps_title"
+        android:summary="@string/notification_badge_excluded_apps_summary"
+        android:persistent="false" />
+
+</PreferenceScreen>
