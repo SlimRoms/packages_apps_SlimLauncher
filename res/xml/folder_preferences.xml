@@ -17,7 +17,7 @@
         android:title="@string/folder_preview_color_title"
         android:defaultValue="0x71ffffff" />
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:key="hide_folder_name"
         android:title="@string/hide_folder_name_title"
         android:summary="@string/hide_folder_name_summary"
