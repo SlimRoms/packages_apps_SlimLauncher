@@ -183,6 +183,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         drawable.setIntrinsicHeight(profile.iconSizePx);
         drawable.setIntrinsicWidth(profile.iconSizePx);
         drawable.getPaint().setColor(previewColor);
+        icon.mPreviewBackground.setScaleType(ImageView.ScaleType.CENTER);
         icon.mPreviewBackground.setImageDrawable(drawable);
 
         icon.setTag(folderInfo);
