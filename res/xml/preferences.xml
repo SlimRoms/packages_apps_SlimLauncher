@@ -31,8 +31,8 @@
         android:id="@+id/pref_general"
         android:title="@string/general_title" />
 
-    <!--<header
+    <header
         android:id="@+id/slim_application_version"
-        android:summary="@string/slim_application_copyright" />-->
+        android:summary="@string/slim_application_copyright" />
 
 </preference-headers>

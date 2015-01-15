@@ -281,6 +281,8 @@ public class Launcher extends Activity
 
     private View mAllAppsButton;
 
+    private boolean mHideHomescreenIconLabels;
+
     private SearchDropTargetBar mSearchDropTargetBar;
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
@@ -1473,6 +1475,7 @@ public class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache, true);
+        favorite.setTextVisibility(!mHideHomescreenIconLabels);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
@@ -2391,6 +2394,9 @@ public class Launcher extends Activity
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
+        if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            newFolder.setTextVisible(!mHideHomescreenIconLabels);
+        }
         mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
         // Force measure the new folder icon
@@ -2509,7 +2515,7 @@ public class Launcher extends Activity
             onClickAppShortcut(v);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
-                onClickFolderIcon(v);
+                onClickFolderIcon(v, false);
             }
         } else if (v == mAllAppsButton) {
             onClickAllAppsButton(v);
@@ -2714,7 +2720,7 @@ public class Launcher extends Activity
      *
      * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
      */
-    protected void onClickFolderIcon(View v) {
+    protected void onClickFolderIcon(View v, boolean swipe) {
         if (LOGD) Log.d(TAG, "onClickFolder");
         if (!(v instanceof FolderIcon)){
             throw new IllegalArgumentException("Input must be a FolderIcon");
@@ -2723,6 +2729,15 @@ public class Launcher extends Activity
         FolderIcon folderIcon = (FolderIcon) v;
         final FolderInfo info = folderIcon.getFolderInfo();
         Folder openFolder = mWorkspace.getFolderForTag(info);
+
+        int smartFolderMode = Integer.parseInt(SettingsProvider.getString(this,
+                SettingsProvider.KEY_SMART_FOLDER, "0"));
+
+        if ((smartFolderMode == 1 && swipe) || (smartFolderMode == 2 && !swipe)) {
+            startActivity(((ShortcutInfo) folderIcon.getFolder()
+                    .getItemsInReadingOrder().get(0).getTag()).getIntent());
+            return;
+        }
 
         // If the folder info reports that the associated folder is open, then verify that
         // it is actually opened. There have been a few instances where this gets out of sync.
@@ -4443,6 +4458,7 @@ public class Launcher extends Activity
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
+                    newFolder.setTextVisible(!mHideHomescreenIconLabels);
                     workspace.addInScreenFromBind(newFolder, item.container, item.screenId, item.cellX,
                             item.cellY, 1, 1);
                     break;

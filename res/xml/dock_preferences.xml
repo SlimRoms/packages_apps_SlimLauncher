@@ -11,4 +11,10 @@
         launcher:min="1"
         launcher:max="7" />
 
+    <SwitchPreference
+        android:key="dock_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_dock_summary"
+        android:defaultValue="true" />
+
 </PreferenceScreen>

@@ -23,21 +23,25 @@ public interface SettingsKeys {
     // Homescreen
     public static final String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
+    public static final String KEY_HOMESCREEN_HIDE_LABELS = "homescreen_hide_icon_labels";
 
     // General
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
 
     // Drawer
     public static final String KEY_DRAWER_GRID = "drawer_grid";
+    public static final String KEY_DRAWER_HIDE_LABELS = "drawer_hide_icon_labels";
 
     // Dock
     public static final String KEY_DOCK_ICONS = "dock_icon_count";
+    public static final String KEY_DOCK_HIDE_LABELS = "dock_hide_icon_labels";
 
     // Folder
     public static final String FOLDER_BACKGROUND_COLOR = "folder_background_color";
     public static final String FOLDER_ICON_TEXT_COLOR = "folder_icon_text_color";
     public static final String FOLDER_PREVIEW_COLOR = "folder_preview_color";
     public static final String HIDE_FOLDER_NAME = "hide_folder_name";
+    public static final String KEY_SMART_FOLDER = "smart_folder";
 
     // Gestures
     public static final String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";

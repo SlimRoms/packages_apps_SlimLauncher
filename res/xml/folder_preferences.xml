@@ -23,4 +23,10 @@
         android:summary="@string/hide_folder_name_summary"
         android:defaultValue="false" />
 
+    <ListPreference
+        android:key="smart_folder"
+        android:title="@string/smart_folder_title"
+        android:entries="@array/smart_folder_entries"
+        android:entryValues="@array/smart_folder_values" />
+
 </PreferenceScreen>

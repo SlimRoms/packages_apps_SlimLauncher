@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.slim.slimlauncher.DropTarget.DragObject;
 import com.slim.slimlauncher.compat.AppWidgetManagerCompat;
+import com.slim.slimlauncher.settings.SettingsProvider;
 import com.slim.slimlauncher.util.GestureHelper;
 
 import java.util.ArrayList;
@@ -989,11 +990,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.removeAllViewsOnPage();
         ArrayList<Object> items = new ArrayList<Object>();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
+        boolean hideIconLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_DRAWER_HIDE_LABELS, false);
         for (int i = startIndex; i < endIndex; ++i) {
             AppInfo info = mApps.get(i);
             BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
             icon.applyFromApplicationInfo(info);
+            icon.setTextVisibility(!hideIconLabels);
             icon.setOnClickListener(mLauncher);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);

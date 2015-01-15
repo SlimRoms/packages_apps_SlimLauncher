@@ -14,4 +14,10 @@
         launcher:pickerTitle1="@string/grid_size_rows_title"
         launcher:pickerTitle2="@string/grid_size_columns_title" />
 
+    <SwitchPreference
+        android:key="drawer_hide_icon_labels"
+        android:title="@string/hide_icon_labels_title"
+        android:summary="@string/hide_icon_labels_drawer_summary"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

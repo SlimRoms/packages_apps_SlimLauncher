@@ -838,6 +838,8 @@ public class DeviceProfile {
         workspace.setPageSpacing(getWorkspacePageSpacing(orientation));
 
         // Layout the hotseat
+        boolean hideDockLabels = SettingsProvider.getBoolean(launcher,
+                SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
         View hotseat = launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         if (hasVerticalBarLayout) {
@@ -859,7 +861,7 @@ public class DeviceProfile {
             // to ensure that we have space for the folders
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hotseatBarHeightPx;
+            lp.height = hotseatBarHeightPx + (hideDockLabels ? 0 : 3 * edgeMarginPx);
             hotseat.findViewById(R.id.layout).setPadding(2 * edgeMarginPx, 0,
                     2 * edgeMarginPx, 0);
         }

@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -123,6 +124,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
     private ItemInfo mDragInfo;
+
+    private float downY;
+    private float downX;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -744,12 +748,28 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
 
-        switch (event.getAction()) {
+        if (mLauncher.getWorkspace().isPageMoving()) {
+            return result;
+        }
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                downY = event.getRawY();
+                downX = event.getRawX();
                 mLongPressHelper.postCheckForLongPress();
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                int value = Integer.parseInt(SettingsProvider.getString(getContext(),
+                        SettingsProvider.KEY_SMART_FOLDER, "0"));
+                if (mLongPressHelper.hasPerformedLongPress()) {
+                    return result;
+                }
+                if (value != 0) {
+                    if (downY - event.getRawY() >= 10.0) {
+                        mLauncher.onClickFolderIcon(this, true);
+                    }
+                }
                 mLongPressHelper.cancelLongPress();
                 break;
             case MotionEvent.ACTION_MOVE:
