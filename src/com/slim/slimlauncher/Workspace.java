@@ -2259,7 +2259,7 @@ public class Workspace extends SmoothPagedView
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
         State finalState = Workspace.State.OVERVIEW;
-        int systemBarsColor = getResources().getColor(R.color.overview_status_nav_bar_color);
+        int systemBarsColor = getResources().getColor(R.color.overview_status_bar_color);
         if (!enable) {
             finalState = Workspace.State.NORMAL;
             systemBarsColor = Color.TRANSPARENT;
