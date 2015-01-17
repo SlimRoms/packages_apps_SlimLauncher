@@ -1929,6 +1929,8 @@ public class Launcher extends Activity
         }
         super.onNewIntent(intent);
 
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             // also will cancel mWaitingForResult.

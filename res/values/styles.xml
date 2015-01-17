@@ -136,4 +136,16 @@
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="Settings.Theme" parent="android:Theme.Material.Settings">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+
+        <item name="android:actionBarStyle">@style/Theme.ActionBar</item>
+    </style>
+
+    <style name="Theme.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
+    </style>
+
 </resources>

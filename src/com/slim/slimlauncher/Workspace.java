@@ -39,6 +39,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -2258,9 +2259,13 @@ public class Workspace extends SmoothPagedView
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
         State finalState = Workspace.State.OVERVIEW;
+        int systemBarsColor = getResources().getColor(R.color.overview_status_nav_bar_color);
         if (!enable) {
             finalState = Workspace.State.NORMAL;
+            systemBarsColor = Color.TRANSPARENT;
         }
+
+        mLauncher.getWindow().setStatusBarColor(systemBarsColor);
 
          mDefaultScreenId = SettingsProvider.getLong(mLauncher,
                 SettingsProvider.DEFAULT_HOMESCREEN, getScreenIdForPageIndex(

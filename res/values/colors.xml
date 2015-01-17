@@ -42,6 +42,11 @@
 
     <color name="folder_items_text_color">#FF333333</color>
 
-    <color name="overview_bg_color">#FF485459</color>
+    <color name="primary">#0288d1</color>
+    <color name="primary_dark">#0277bd</color>
+    <color name="accent">#0288d1</color>
+
+    <color name="overview_bg_color">#37474F</color>
+    <color name="overview_status_bar_color">#263238</color>
 
 </resources>
