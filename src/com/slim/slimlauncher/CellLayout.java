@@ -598,7 +598,7 @@ public class CellLayout extends ViewGroup {
 
         // Hotseat icons
         boolean hideDockLabels = SettingsProvider.getBoolean(mLauncher,
-                SettingsProvider.KEY_DOCK_HIDE_LABELS, false);
+                SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
         if (mIsHotseat && child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             bubbleChild.setTextVisibility(!hideDockLabels);
