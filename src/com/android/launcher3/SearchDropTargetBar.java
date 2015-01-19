@@ -255,4 +255,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDeleteDropTarget.enableAccessibleDrag(enable);
         mUninstallDropTarget.enableAccessibleDrag(enable);
     }
+
+    public View getDropTargetBar() {
+        return mDropTargetBar;
+    }
 }
