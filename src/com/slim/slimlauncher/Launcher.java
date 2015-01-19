@@ -215,12 +215,6 @@ public class Launcher extends Activity
     static final String ACTION_FIRST_LOAD_COMPLETE =
             "com.slim.slimlauncher.action.FIRST_LOAD_COMPLETE";
 
-    private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
-    private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
-            "com.android.launcher.toolbar_search_icon";
-    private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
-            "com.android.launcher.toolbar_voice_search_icon";
-
     public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
     public static final boolean SHOW_WEIGHT_WATCHER_DEFAULT = false;
 
@@ -1144,7 +1138,14 @@ public class Launcher extends Activity
 
     public void resetQSBScroll() {
         mSearchDropTargetBar.animate().translationY(0).start();
-        getQsbBar().animate().translationY(0).start();
+        if (isSearchBarEnabled()) {
+            getQsbBar().animate().translationY(0).start();
+        }
+    }
+
+    public boolean isSearchBarEnabled() {
+        return SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
     }
 
     public interface CustomContentCallbacks {
@@ -4042,16 +4043,6 @@ public class Launcher extends Activity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName activityName = searchManager.getGlobalSearchActivity();
         if (activityName != null) {
-            int coi = getCurrentOrientationIndexForGlobalIcons();
-            sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
-                    TOOLBAR_SEARCH_ICON_METADATA_NAME);
-            if (sGlobalSearchIcon[coi] == null) {
-                sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                        R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
-                        TOOLBAR_ICON_METADATA_NAME);
-            }
-
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             if (searchButton != null) searchButton.setVisibility(View.VISIBLE);
             invalidatePressedFocusedStates(searchButtonContainer, searchButton);
@@ -4098,15 +4089,6 @@ public class Launcher extends Activity
             activityName = intent.resolveActivity(getPackageManager());
         }
         if (searchVisible && activityName != null) {
-            int coi = getCurrentOrientationIndexForGlobalIcons();
-            sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
-                    TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME);
-            if (sVoiceSearchIcon[coi] == null) {
-                sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                        R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
-                        TOOLBAR_ICON_METADATA_NAME);
-            }
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             if (voiceButton != null) voiceButton.setVisibility(View.VISIBLE);
             updateVoiceButtonProxyVisible(false);
