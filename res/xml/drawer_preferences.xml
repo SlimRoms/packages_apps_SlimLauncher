@@ -20,4 +20,12 @@
         android:summary="@string/hide_icon_labels_drawer_summary"
         android:defaultValue="false" />
 
+    <ListPreference
+        android:key="drawer_sort_mode"
+        android:title="@string/drawer_sort_mode_title"
+        android:summary="%s"
+        android:entries="@array/sort_mode_entries"
+        android:entryValues="@array/sort_mode_values"
+        android:defaultValue="0" />
+
 </PreferenceScreen>

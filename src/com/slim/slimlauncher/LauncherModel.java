@@ -3730,14 +3730,39 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
     }
-    public static final Comparator<AppInfo> APP_INSTALL_TIME_COMPARATOR
-            = new Comparator<AppInfo>() {
-        public final int compare(AppInfo a, AppInfo b) {
+    public static final Comparator<AppInfo> getLaunchCountComparator(final Stats stats) {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            @Override
+            public int compare(AppInfo a, AppInfo b) {
+                int result = stats.launchCount(b.intent) - stats.launchCount(a.intent);
+                if (result == 0) {
+                    result = collator.compare(a.title.toString().trim(),
+                            b.title.toString().trim());
+                    if (result == 0) {
+                        result = a.componentName.compareTo(b.componentName);
+                    }
+                }
+                return result;
+            }
+        };
+    }
+    public static final Comparator<AppInfo> getAppInstallTimeComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+        @Override
+        public int compare(AppInfo a, AppInfo b) {
             if (a.firstInstallTime < b.firstInstallTime) return 1;
             if (a.firstInstallTime > b.firstInstallTime) return -1;
-            return 0;
-        }
-    };
+            int result = collator.compare(a.title.toString().trim(),
+                        b.title.toString().trim());
+                if (result == 0) {
+                    result = a.componentName.compareTo(b.componentName);
+                }
+                return result;
+            }
+        };
+    }
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
             return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);

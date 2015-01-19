@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Gestures -->
-    <string-array name="gesture_target_names">
+    <string-array name="gesture_target_names" translatable="false">
         <item>@string/gesture_target_nothing</item>
         <item>@string/gesture_target_homescreen</item>
         <item>@string/gesture_target_drawer</item>
@@ -23,13 +23,26 @@
     </string-array>
 
     <!-- Smart folders -->
-    <string-array name="smart_folder_entries">
+    <string-array name="smart_folder_entries" translatable="false">
         <item>@string/off_string</item>
         <item>@string/smart_folder_summary_one</item>
         <item>@string/smart_folder_summart_two</item>
     </string-array>
 
     <string-array name="smart_folder_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- Drawer Sort Mode -->
+    <string-array name="sort_mode_entries" transltable="false">
+        <item>@string/sort_mode_title</item>
+        <item>@string/sort_mode_launch_count</item>
+        <item>@string/sort_mode_install_time</item>
+    </string-array>
+
+    <string-array name="sort_mode_values" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
