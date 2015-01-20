@@ -2792,6 +2792,7 @@ public class Launcher extends Activity
      */
     protected void onClickAddWidgetButton(View view) {
         if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
     }
 
