@@ -604,9 +604,15 @@ public class CellLayout extends ViewGroup {
         // Hotseat icons
         boolean hideDockLabels = SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
-        if (mIsHotseat && child instanceof BubbleTextView) {
+        boolean hideHomescreenLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_HOMESCREEN_HIDE_LABELS, false);
+        if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(!hideDockLabels);
+            if (mIsHotseat) {
+                bubbleChild.setTextVisibility(!hideDockLabels);
+            } else {
+                bubbleChild.setTextVisibility(!hideHomescreenLabels);
+            }
         }
 
         child.setScaleX(getChildrenScale());
