@@ -11,6 +11,8 @@
     <string name="off_string">Off</string>
     <string name="error_message_title">Error</string>
 
+    <string name="icon_size_title">Icon size</string>
+
     <!-- App picker -->
     <string name="profile_applist_title">Apps</string>
     <string name="profile_choose_app">Choose app</string>

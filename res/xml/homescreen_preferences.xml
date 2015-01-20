@@ -20,4 +20,12 @@
         launcher:pickerTitle1="@string/grid_size_rows_title"
         launcher:pickerTitle2="@string/grid_size_columns_title" />
 
+
+    <com.android.launcher3.preference.SeekBarDialogPreference
+        android:key="homescreen_icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100" />
+
 </PreferenceScreen>

@@ -108,6 +108,7 @@ public class Hotseat extends FrameLayout
             mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
         }
         mContent.setIsHotseat(true);
+        mContent.updateHotseatScale(grid);
 
         resetLayout();
     }

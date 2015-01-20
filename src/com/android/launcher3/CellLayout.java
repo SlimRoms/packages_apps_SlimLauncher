@@ -207,7 +207,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
+
+        updateHotseatScale(grid);
 
         mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
         mBackground.setCallback(this);
@@ -350,6 +351,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public void buildHardwareLayer() {
         mShortcutsAndWidgets.buildLayer();
+    }
+
+    public void updateHotseatScale(DeviceProfile grid) {
+        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
     }
 
     public float getChildrenScale() {

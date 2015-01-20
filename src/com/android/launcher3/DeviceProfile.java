@@ -33,6 +33,8 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.settings.SettingsProvider;
+
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
@@ -66,9 +68,17 @@ public class DeviceProfile {
     private final int defaultPageSpacingPx;
     private float dragViewScale;
 
-    // Workspace icons
+    // Icons
+    public int originalIconSizePx;
     public int iconSizePx;
+    public int originalAllAppsIconSizePx;
+    public int allAppsIconSizePx;
+    public int originalHotseatIconSizePx;
+    public int hotseatIconSizePx;
+    public int originalIconTextSizePx;
     public int iconTextSizePx;
+    public int originalAllAppsIconTextSizePx;
+    public int allAppsIconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
 
@@ -84,15 +94,12 @@ public class DeviceProfile {
     // Hotseat
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
-    public int hotseatIconSizePx;
     private int hotseatBarHeightPx;
 
     // All apps
     public int allAppsNumCols;
     public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
-    public final int allAppsIconSizePx;
-    public final int allAppsIconTextSizePx;
 
     // QSB
     int searchBarSpaceMaxWidthPx;
@@ -144,10 +151,10 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
 
         // AllApps uses the original non-scaled icon text size
-        allAppsIconTextSizePx = Utilities.pxFromDp(inv.iconTextSize, dm);
+        originalAllAppsIconTextSizePx = Utilities.pxFromDp(inv.iconTextSize, dm);
 
         // AllApps uses the original non-scaled icon size
-        allAppsIconSizePx = Utilities.pxFromDp(inv.iconSize, dm);
+        originalAllAppsIconSizePx = Utilities.pxFromDp(inv.iconSize, dm);
 
         // Determine sizes.
         widthPx = width;
@@ -161,7 +168,8 @@ public class DeviceProfile {
         }
 
         // Calculate the remaining vars
-        updateAvailableDimensions(dm, res);
+        updateFromPreferences(context);
+        updateAvailableDimensions(context);
         computeAllAppsButtonSize(context);
     }
 
@@ -175,12 +183,18 @@ public class DeviceProfile {
         allAppsButtonVisualSize = (int) (hotseatIconSizePx * (1 - padding));
     }
 
-    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
+    private void updateAvailableDimensions(Context context) {
+
+        Resources res = context.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
         float scale = 1f;
         int drawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, drawablePadding, res, dm);
+        setOriginalIconSize(1f, drawablePadding, res, dm);
+        updateIconSizeFromPreferences(context);
+        updateIconSize(res);
         float usedHeight = (cellHeightPx * inv.numRows);
 
         // We only care about the top and bottom workspace padding, which is not affected by RTL.
@@ -189,19 +203,22 @@ public class DeviceProfile {
         if (usedHeight > maxHeight) {
             scale = maxHeight / usedHeight;
             drawablePadding = 0;
+            setOriginalIconSize(scale, drawablePadding, res, dm);
+            updateIconSizeFromPreferences(context);
+            updateIconSize(res);
         }
-        updateIconSize(scale, drawablePadding, res, dm);
     }
 
-    private void updateIconSize(float scale, int drawablePadding, Resources res,
-                                DisplayMetrics dm) {
-        iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+    private void setOriginalIconSize(float scale, int drawablePadding, Resources res,
+                                     DisplayMetrics dm) {
+        originalIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        originalIconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        originalHotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
         iconDrawablePaddingPx = drawablePadding;
-        hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
+    }
 
+    public void updateIconSize(Resources res) {
         // Search Bar
-
         searchBarSpaceMaxWidthPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
@@ -226,6 +243,50 @@ public class DeviceProfile {
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+    }
+
+    public void updateFromPreferences(Context context) {
+
+        // update Available Dimensions
+        updateAvailableDimensions(context);
+    }
+
+    public void updateIconSizeFromPreferences(Context context) {
+
+        int prefWorkspaceIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_HOMESCREEN_ICON_SIZE, 100);
+        if (prefWorkspaceIconSize > 0) {
+            iconSizePx = (int) ((double) prefWorkspaceIconSize / 100.0 * originalIconSizePx);
+            iconTextSizePx = (int) ((double)
+                    prefWorkspaceIconSize / 100.0 * originalIconTextSizePx);
+        } else {
+            iconSizePx = originalIconSizePx;
+            iconTextSizePx = originalIconTextSizePx;
+        }
+
+        // update folder icon size to reflect new size of icons
+        folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+
+        int prefHotseatIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_DOCK_ICON_SIZE, 100);
+        if (prefHotseatIconSize > 0) {
+            hotseatIconSizePx = (int) ((double)
+                    prefHotseatIconSize / 100.0 * originalHotseatIconSizePx);
+        } else {
+            hotseatIconSizePx = originalHotseatIconSizePx;
+        }
+
+        int prefDrawerIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_DRAWER_ICON_SIZE, 100);
+        if (prefDrawerIconSize > 0) {
+            allAppsIconSizePx = (int) ((double)
+                    prefDrawerIconSize / 100.0 * originalAllAppsIconSizePx);
+            allAppsIconTextSizePx = (int) ((double)
+                    prefDrawerIconSize / 100.0 * originalAllAppsIconTextSizePx);
+        } else {
+            allAppsIconSizePx = originalAllAppsIconSizePx;
+            allAppsIconTextSizePx = originalAllAppsIconTextSizePx;
+        }
     }
 
     /**

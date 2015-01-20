@@ -559,6 +559,7 @@ public class Launcher extends Activity
 
     public void updateDynamicGrid() {
         mDeviceProfile.inv.updateFromPreferences(this);
+        mDeviceProfile.updateFromPreferences(this);
 
         boolean showSearchBar = SettingsProvider.getBoolean(this,
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);

@@ -11,4 +11,11 @@
         launcher:min="1"
         launcher:max="7" />
 
+    <com.android.launcher3.preference.SeekBarDialogPreference
+        android:key="dock_icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100" />
+
 </PreferenceScreen>
