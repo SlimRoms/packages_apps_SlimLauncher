@@ -28,4 +28,11 @@
         android:entryValues="@array/sort_mode_values"
         android:defaultValue="0" />
 
+    <com.slim.slimlauncher.preference.SeekBarDialogPreference
+        android:key="drawer_icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100" />
+
 </PreferenceScreen>

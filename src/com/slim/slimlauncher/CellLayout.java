@@ -209,7 +209,8 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
+
+        updateHotseatScale(grid);
 
         mNormalBackground = res.getDrawable(R.drawable.screenpanel);
         mActiveGlowBackground = res.getDrawable(R.drawable.screenpanel_hover);
@@ -301,6 +302,10 @@ public class CellLayout extends ViewGroup {
 
     public void buildHardwareLayer() {
         mShortcutsAndWidgets.buildLayer();
+    }
+
+    public void updateHotseatScale(DeviceProfile grid) {
+        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
     }
 
     public float getChildrenScale() {

@@ -17,4 +17,11 @@
         android:summary="@string/hide_icon_labels_dock_summary"
         android:defaultValue="true" />
 
+    <com.slim.slimlauncher.preference.SeekBarDialogPreference
+        android:key="dock_icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100" />
+
 </PreferenceScreen>

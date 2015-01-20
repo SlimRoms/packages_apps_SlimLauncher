@@ -101,13 +101,20 @@ public class DeviceProfile {
     float overviewModeIconZoneRatio;
     float overviewModeScaleFactor;
 
+    int originalIconSizePx;
     int iconSizePx;
+    int originalAllAppsIconSizePx;
+    int allAppsIconSizePx;
+    int originalHotseatIconSizePx;
+    int hotseatIconSizePx;
+    int originalIconTextSizePx;
     int iconTextSizePx;
+    int originalAllAppsIconTextSizePx;
+    int allAppsIconTextSizePx;
+
     int iconDrawablePaddingPx;
     int cellWidthPx;
     int cellHeightPx;
-    int allAppsIconSizePx;
-    int allAppsIconTextSizePx;
     int allAppsCellWidthPx;
     int allAppsCellHeightPx;
     int allAppsCellPaddingPx;
@@ -117,7 +124,6 @@ public class DeviceProfile {
     int folderCellHeightPx;
     int hotseatCellWidthPx;
     int hotseatCellHeightPx;
-    int hotseatIconSizePx;
     int hotseatBarHeightPx;
     int hotseatAllAppsRank;
     public int allAppsNumRows;
@@ -231,7 +237,7 @@ public class DeviceProfile {
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
 
         // AllApps uses the original non-scaled icon size
-        allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
+        originalAllAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
 
         // Interpolate the icon text size
         points.clear();
@@ -242,7 +248,7 @@ public class DeviceProfile {
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         // AllApps uses the original non-scaled icon text size
-        allAppsIconTextSizePx = DynamicGrid.pxFromDp(iconTextSize, dm);
+        originalAllAppsIconTextSizePx = DynamicGrid.pxFromDp(iconTextSize, dm);
 
         // Interpolate the hotseat icon size
         points.clear();
@@ -384,10 +390,10 @@ public class DeviceProfile {
 
     private void updateIconSize(float scale, int drawablePadding, Resources resources,
                                 DisplayMetrics dm) {
-        iconSizePx = (int) (DynamicGrid.pxFromDp(iconSize, dm) * scale);
-        iconTextSizePx = (int) (DynamicGrid.pxFromSp(iconTextSize, dm) * scale);
+        originalIconSizePx = (int) (DynamicGrid.pxFromDp(iconSize, dm) * scale);
+        originalIconTextSizePx = (int) (DynamicGrid.pxFromSp(iconTextSize, dm) * scale);
         iconDrawablePaddingPx = drawablePadding;
-        hotseatIconSizePx = (int) (DynamicGrid.pxFromDp(hotseatIconSize, dm) * scale);
+        originalHotseatIconSizePx = (int) (DynamicGrid.pxFromDp(hotseatIconSize, dm) * scale);
 
         // Search Bar
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
@@ -464,6 +470,31 @@ public class DeviceProfile {
     }
 
     public void updateFromPreferences(Context context) {
+
+        int prefWorkspaceIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_HOMESCREEN_ICON_SIZE, 100);
+        if (prefWorkspaceIconSize > 0) {
+            iconSizePx = (int) ((double) prefWorkspaceIconSize / 100.0 * originalIconSizePx);
+            iconTextSizePx = (int) ((double)
+                    prefWorkspaceIconSize / 100.0 * originalIconTextSizePx);
+            folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+        }
+
+        int prefHotseatIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_DOCK_ICON_SIZE, 100);
+        if (prefHotseatIconSize > 0) {
+            hotseatIconSizePx = (int) ((double)
+                    prefHotseatIconSize / 100.0 * originalHotseatIconSizePx);
+        }
+
+        int prefDrawerIconSize = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_DRAWER_ICON_SIZE, 100);
+        if (prefDrawerIconSize > 0) {
+            allAppsIconSizePx = (int) ((double)
+                    prefDrawerIconSize / 100.0 * originalAllAppsIconSizePx);
+            allAppsIconTextSizePx = (int) ((double)
+                    prefDrawerIconSize / 100.0 * originalAllAppsIconTextSizePx);
+        }
 
         int prefNumRows = SettingsProvider.getCellCountY(
                 context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);

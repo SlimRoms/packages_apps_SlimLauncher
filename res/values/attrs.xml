@@ -170,4 +170,9 @@
         <attr name="defaultValue" format="string|boolean|integer|reference|float" />
     </declare-styleable>
 
+    <declare-styleable name="SeekBarPreference">
+        <attr name="prefix" format="string" />
+        <attr name="suffix" format="string" />
+    </declare-styleable>
+
 </resources>

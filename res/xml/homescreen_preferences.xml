@@ -26,4 +26,11 @@
         android:summary="@string/hide_icon_labels_homescreen_summary"
         android:defaultValue="false" />
 
+    <com.slim.slimlauncher.preference.SeekBarDialogPreference
+        android:key="homescreen_icon_size"
+        android:title="@string/icon_size_title"
+        launcher:max="130"
+        launcher:min="70"
+        launcher:defaultValue="100" />
+
 </PreferenceScreen>
