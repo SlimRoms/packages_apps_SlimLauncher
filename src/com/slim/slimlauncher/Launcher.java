@@ -278,6 +278,7 @@ public class Launcher extends Activity
     private View mAllAppsButton;
 
     private boolean mHideHomescreenIconLabels;
+    private boolean mLockWorkspace;
 
     private SearchDropTargetBar mSearchDropTargetBar;
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
@@ -520,6 +521,9 @@ public class Launcher extends Activity
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
         mIconCache.flushInvalidIcons(mProfile);
+
+        mLockWorkspace = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_LOCK_WORKSPACE, false);
     }
 
     public void updateDynamicGrid() {
@@ -3382,11 +3386,20 @@ public class Launcher extends Activity
                                 longClickCellInfo.cellY));
                 if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
+                    if (mLockWorkspace) {
+                        Toast.makeText(this,
+                                getString(R.string.workspace_locked), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                     mWorkspace.startDrag(longClickCellInfo);
                 }
             }
         }
         return true;
+    }
+
+    boolean getLockWorkspace() {
+        return mLockWorkspace;
     }
 
     boolean isHotseatLayout(View layout) {

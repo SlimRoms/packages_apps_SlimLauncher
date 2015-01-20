@@ -59,6 +59,9 @@
     <string name="notification_badges_title">Notification badges</string>
     <string name="notification_badges_summary">Display notification counts on app icon</string>
     <string name="notification_badge_warning_message">In the next screen please enable SlimLauncher as a Notification Listener to enable notification badges.</string>
+    <string name="lock_workspace_title">Lock homescreen</string>
+    <string name="lock_workspace_summary">Lock shortcuts and folders positions in the homescreen, dock and apps and widgets drawer.</string>
+    <string name="workspace_locked">Homescreen is locked, unlock in settings to rearrange.</string>
 
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>

@@ -9,4 +9,10 @@
         android:title="@string/notification_badges_title"
         android:summary="@string/notification_badges_summary" />
 
+    <SwitchPreference
+        android:key="lock_workspace"
+        android:title="@string/lock_workspace_title"
+        android:summary="@string/lock_workspace_summary"
+        android:defaultValue="false" />
+
 </PreferenceScreen>
