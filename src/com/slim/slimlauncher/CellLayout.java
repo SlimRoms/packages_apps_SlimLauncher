@@ -141,6 +141,7 @@ public class CellLayout extends ViewGroup {
     private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
+    private boolean mIsWorkspace = false;
     private boolean mIsHotseat = false;
     private float mHotseatScale = 1f;
 
@@ -597,11 +598,15 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.setIsHotseat(isHotseat);
     }
 
+    public void setIsWorkspace(boolean isWorkspace) {
+        mIsWorkspace = isWorkspace;
+    }
+
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells) {
         final LayoutParams lp = params;
 
-        // Hotseat icons
+        // icons
         boolean hideDockLabels = SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
         boolean hideHomescreenLabels = SettingsProvider.getBoolean(mLauncher,
@@ -610,7 +615,7 @@ public class CellLayout extends ViewGroup {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             if (mIsHotseat) {
                 bubbleChild.setTextVisibility(!hideDockLabels);
-            } else {
+            } else if (mIsWorkspace) {
                 bubbleChild.setTextVisibility(!hideHomescreenLabels);
             }
         }
