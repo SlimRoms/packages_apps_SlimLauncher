@@ -512,19 +512,19 @@ public class DeviceProfile {
         updateIconFromPreferences(context);
 
         int prefNumRows = SettingsProvider.getCellCountY(
-                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
         if (prefNumRows > 0) {
             numRows = prefNumRows;
         }
 
         int prefNumColumns = SettingsProvider.getCellCountX(
-                context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
+                context, SettingsProvider.KEY_HOMESCREEN_GRID, 0);
         if (prefNumColumns > 0) {
             numColumns = prefNumColumns;
         }
 
         int prefNumHotseatIcons = SettingsProvider.getInt(
-                context, SettingsProvider.KEY_DOCK_ICONS, 5);
+                context, SettingsProvider.KEY_DOCK_ICONS, 0);
         if (prefNumHotseatIcons > 0) {
             numHotseatIcons = prefNumHotseatIcons;
             hotseatAllAppsRank = (int) (numHotseatIcons / 2);
