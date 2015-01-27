@@ -369,7 +369,9 @@ public class DeviceProfile {
         // shrink the icon size.
         float scale = 1f;
         int drawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, drawablePadding, resources, dm);
+        setOriginalIconSize(scale, drawablePadding, dm);
+        updateIconFromPreferences(context);
+        updateIconSize(resources);
         float usedHeight = (cellHeightPx * numRows);
 
         Rect workspacePadding = getWorkspacePadding();
@@ -377,24 +379,26 @@ public class DeviceProfile {
         if (usedHeight > maxHeight) {
             scale = maxHeight / usedHeight;
             drawablePadding = 0;
+            setOriginalIconSize(scale, drawablePadding, dm);
+            updateIconFromPreferences(context);
+            updateIconSize(resources);
         }
-        updateIconSize(scale, drawablePadding, resources, dm);
 
         // Make the callbacks
         for (DeviceProfileCallbacks cb : mCallbacks) {
             cb.onAvailableSizeChanged(this);
         }
-
         updateFromPreferences(context);
     }
 
-    private void updateIconSize(float scale, int drawablePadding, Resources resources,
-                                DisplayMetrics dm) {
+    private void setOriginalIconSize(float scale, int drawablePadding, DisplayMetrics dm) {
         originalIconSizePx = (int) (DynamicGrid.pxFromDp(iconSize, dm) * scale);
         originalIconTextSizePx = (int) (DynamicGrid.pxFromSp(iconTextSize, dm) * scale);
-        iconDrawablePaddingPx = drawablePadding;
         originalHotseatIconSizePx = (int) (DynamicGrid.pxFromDp(hotseatIconSize, dm) * scale);
+        iconDrawablePaddingPx = drawablePadding;
+    }
 
+    private void updateIconSize(Resources resources) {
         // Search Bar
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
@@ -427,7 +431,7 @@ public class DeviceProfile {
         int pageIndicatorOffset =
                 resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
         allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + iconTextSizePx;
+        allAppsCellHeightPx = allAppsIconSizePx + iconDrawablePaddingPx + iconTextSizePx;
         int maxLongEdgeCellCount =
                 resources.getInteger(R.integer.config_dynamic_grid_max_long_edge_cell_count);
         int maxShortEdgeCellCount =
@@ -469,15 +473,16 @@ public class DeviceProfile {
         updateAvailableDimensions(context);
     }
 
-    public void updateFromPreferences(Context context) {
-
+    private void updateIconFromPreferences(Context context) {
         int prefWorkspaceIconSize = SettingsProvider.getInt(context,
                 SettingsProvider.KEY_HOMESCREEN_ICON_SIZE, 100);
         if (prefWorkspaceIconSize > 0) {
             iconSizePx = (int) ((double) prefWorkspaceIconSize / 100.0 * originalIconSizePx);
             iconTextSizePx = (int) ((double)
                     prefWorkspaceIconSize / 100.0 * originalIconTextSizePx);
-            folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+        } else {
+            iconSizePx = originalIconSizePx;
+            iconTextSizePx = originalIconTextSizePx;
         }
 
         int prefHotseatIconSize = SettingsProvider.getInt(context,
@@ -485,6 +490,8 @@ public class DeviceProfile {
         if (prefHotseatIconSize > 0) {
             hotseatIconSizePx = (int) ((double)
                     prefHotseatIconSize / 100.0 * originalHotseatIconSizePx);
+        } else {
+            hotseatIconSizePx = originalHotseatIconSizePx;
         }
 
         int prefDrawerIconSize = SettingsProvider.getInt(context,
@@ -494,7 +501,15 @@ public class DeviceProfile {
                     prefDrawerIconSize / 100.0 * originalAllAppsIconSizePx);
             allAppsIconTextSizePx = (int) ((double)
                     prefDrawerIconSize / 100.0 * originalAllAppsIconTextSizePx);
+        } else {
+            allAppsIconSizePx = originalAllAppsIconSizePx;
+            allAppsIconTextSizePx = originalAllAppsIconTextSizePx;
         }
+    }
+
+    public void updateFromPreferences(Context context) {
+
+        updateIconFromPreferences(context);
 
         int prefNumRows = SettingsProvider.getCellCountY(
                 context, SettingsProvider.KEY_HOMESCREEN_GRID, 4);
