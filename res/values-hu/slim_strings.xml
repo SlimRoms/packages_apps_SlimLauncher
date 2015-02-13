@@ -9,6 +9,7 @@
   <string name="set_string">Beállítás</string>
   <string name="off_string">Ki</string>
   <string name="error_message_title">Hiba</string>
+  <string name="icon_size_title">Ikon méret</string>
   <string name="default_screen_button_text">Alapértelmezett képernyő</string>
   <string name="profile_applist_title">Alkalmazások</string>
   <string name="profile_choose_app">Válasszon alkalmazást</string>
@@ -20,10 +21,19 @@
   <string name="grid_size_summary">Sorok/oszlopok számának kiválasztása</string>
   <string name="grid_size_rows_title">Sorok</string>
   <string name="grid_size_columns_title">Oszlopok</string>
+  <string name="shortcut_picker_title">Slim Launcher hivatkozások</string>
+  <string name="shortcut_action_launcher_apps">Minden alkalmazás</string>
+  <string name="shortcut_action_launcher_overview">Áttekintés mód</string>
+  <string name="shortcut_action_launcher_settings">Launcher beállítások</string>
+  <string name="shortcut_action_launcher_homescreen">Alapértelmezett kezdőképernyő</string>
   <string name="dialog_color_picker">Szín választó</string>
   <string name="press_color_to_apply">Nyomj egy színre az alkalmazásához</string>
   <string name="hex">Hex:</string>
   <string name="set">Beállítás</string>
+  <string name="drawer_sort_mode_title">Rendezési mód</string>
+  <string name="sort_mode_title">Cím</string>
+  <string name="sort_mode_launch_count">Indítások száma</string>
+  <string name="sort_mode_install_time">Telepítés ideje</string>
   <string name="general_title">Általános</string>
   <string name="notification_badges_title">Olvasatlan üzenetek száma</string>
   <string name="notification_badges_summary">olvasatlan értesítések mutatása az alkalmazás ikonon</string>
@@ -66,4 +76,8 @@
   <string name="gesture_target_settings">launcher beállítások megnyitása</string>
   <string name="gesture_target_last_app">Utolsó Alkalmazás</string>
   <string name="gesture_target_custom">Egyéni</string>
+  <string name="hidden_apps_title">Rejtett alkalmazások</string>
+  <string name="hidden_apps_summary">Alkalmazások elrejtése az alkalmazásképernyőről</string>
+  <string name="hidden_apps_shortcuts_title">hivatkozások eltávolítása</string>
+  <string name="hidden_apps_widgets_title">widgetek eltávolítása</string>
 </resources>
