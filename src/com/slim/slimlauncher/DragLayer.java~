@@ -122,7 +122,8 @@ public class DragLayer extends InsettableFrameLayout {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
-/*
+<<<<<<< HEAD:src/com/slim/slimlauncher/DragLayer.java
+=======
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         final int n = getChildCount();
@@ -175,8 +176,8 @@ public class DragLayer extends InsettableFrameLayout {
         super.addView(child, index, params);
         setInsets(child, mInsets, new Rect());
     }
-*/
 
+>>>>>>> f4784dd... Trebuchet: App Drawer - clean up open/close animations:src/com/android/launcher3/DragLayer.java
     public void showOverlayView(View overlayView) {
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mOverlayView = overlayView;

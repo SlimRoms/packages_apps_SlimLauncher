@@ -38,6 +38,7 @@
 
     <color name="infomation_count_circle_color">#F44336</color>
 
+<<<<<<< HEAD
     <color name="folder_items_text_color">#FF333333</color>
 
     <color name="primary">#0288d1</color>
@@ -47,8 +48,12 @@
     <color name="overview_bg_color">#37474F</color>
     <color name="overview_status_bar_color">#263238</color>
 
+=======
+    <color name="dynamic_grid_preview_background">#FFFFFFFF</color>
+    <color name="dynamic_grid_preview_foreground">#FF000000</color>
+
     <color name="app_drawer_background">#76000000</color>
 
     <color name="scrubber_background">#CC14191E</color>
-
+>>>>>>> f4784dd... Trebuchet: App Drawer - clean up open/close animations
 </resources>
