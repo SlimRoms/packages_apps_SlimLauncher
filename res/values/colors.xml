@@ -47,4 +47,8 @@
     <color name="overview_bg_color">#37474F</color>
     <color name="overview_status_bar_color">#263238</color>
 
+    <color name="app_drawer_background">#76000000</color>
+
+    <color name="scrubber_background">#CC14191E</color>
+
 </resources>

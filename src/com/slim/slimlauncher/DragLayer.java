@@ -122,6 +122,61 @@ public class DragLayer extends InsettableFrameLayout {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
+/*
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        final int n = getChildCount();
+        for (int i = 0; i < n; i++) {
+            final View child = getChildAt(i);
+            if (child.getId() == R.id.overview_panel) {
+                LinearLayout layout = (LinearLayout)
+                        child.findViewById(R.id.settings_container);
+                FrameLayout.LayoutParams lp =
+                        (FrameLayout.LayoutParams) layout.getLayoutParams();
+                lp.bottomMargin += insets.bottom - mInsets.bottom;
+                layout.setLayoutParams(lp);
+                continue;
+            } else if (child.getId() == R.id.app_drawer_container) {
+                setAppDrawerInsets(child, insets);
+
+                continue;
+            }
+            setInsets(child, insets, mInsets);
+            if (child.getId() == R.id.search_drop_target_bar) {
+                continue;
+            }
+        }
+        mInsets.set(insets);
+        return true; // I'll take it from here
+    }
+
+    private void setAppDrawerInsets(View child, Rect insets) {
+        // List view
+        View view = child.findViewById(R.id.app_drawer_recyclerview);
+        FrameLayout.LayoutParams lp =
+                (FrameLayout.LayoutParams) view.getLayoutParams();
+        lp.bottomMargin += insets.bottom - mInsets.bottom;
+        lp.topMargin += insets.top - mInsets.top;
+        view.setLayoutParams(lp);
+
+        // Scrubber
+        view = child.findViewById(R.id.app_drawer_scrubber_container);
+        LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) view.getLayoutParams();
+        llp.bottomMargin += insets.bottom - mInsets.bottom;
+        view.setLayoutParams(llp);
+    }
+
+    Rect getInsets() {
+        return mInsets;
+    }
+
+    @Override
+    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        setInsets(child, mInsets, new Rect());
+    }
+*/
+
     public void showOverlayView(View overlayView) {
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mOverlayView = overlayView;
