@@ -947,7 +947,7 @@ public class DragLayer extends InsettableFrameLayout {
     /**
      * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
      */
-    private boolean isLayoutRtl() {
+    public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
