@@ -559,6 +559,8 @@ public class Launcher extends Activity
         mHotseat.updateHotseat();
 
         mModel.startLoader(true, mWorkspace.getCurrentPage());
+
+        mAppDrawerAdapter.reset();
     }
 
     @Override

@@ -176,8 +176,11 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
 
     public void reset() {
         ArrayList<AppInfo> infos = getAllApps();
+<<<<<<< HEAD
+=======
 
         mLauncher.mAppDrawer.getLayoutManager().removeAllViews();
+>>>>>>> 861d111... App Drawer: take dynamic grid updates
         setApps(infos);
     }
 

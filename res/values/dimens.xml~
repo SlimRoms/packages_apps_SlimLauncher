@@ -110,23 +110,16 @@
     <dimen name="profile_badge_size">24dp</dimen>
     <dimen name="profile_badge_margin">4dp</dimen>
 
-<<<<<<< HEAD
     <dimen name="shortcut_picker_left_padding">70dip</dimen>
-=======
-    <!-- Settings Pane dimen -->
-    <dimen name="settings_pane_handle">48dp</dimen>
-
-    <!-- Dynamic Grid settings -->
-    <dimen name="dialog_padding">10dp</dimen>
-
-    <dimen name="grid_padding">15dp</dimen>
-    <dimen name="grid_custom_text">50dp</dimen>
 
     <dimen name="scrubber_bottom_padding">30dp</dimen>
     <dimen name="scrubber_height">48dp</dimen>
->>>>>>> 3698517... App drawer smooth scrolling
 
     <!-- Vertical app drawer padding -->
+<<<<<<< HEAD
     <dimen name="vertical_app_drawer_icon_padding">5px</dimen>
 
+=======
+    <dimen name="vertical_app_drawer_icon_padding">5dp</dimen>
+>>>>>>> 861d111... App Drawer: take dynamic grid updates
 </resources>
