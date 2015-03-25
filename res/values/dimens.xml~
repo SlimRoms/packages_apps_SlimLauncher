@@ -116,10 +116,10 @@
     <dimen name="scrubber_height">48dp</dimen>
 
     <!-- Vertical app drawer padding -->
-<<<<<<< HEAD
-    <dimen name="vertical_app_drawer_icon_padding">5px</dimen>
-
-=======
     <dimen name="vertical_app_drawer_icon_padding">5dp</dimen>
->>>>>>> 861d111... App Drawer: take dynamic grid updates
+
+<<<<<<< HEAD
+=======
+    <dimen name="app_drawer_scrubber_padding">20dp</dimen>
+>>>>>>> c8bed89... App drawer: add animations and letters to make things pretty
 </resources>

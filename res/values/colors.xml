@@ -48,6 +48,9 @@
     <color name="overview_status_bar_color">#263238</color>
 
     <color name="app_drawer_background">#76000000</color>
+    <color name="app_drawer_drag_background">#bf14191e</color>
+    <color name="app_scrubber_highlight_color">@android:color/white</color>
+    <color name="app_scrubber_gray_color">@android:color/darker_gray</color>
 
     <color name="scrubber_background">#CC14191E</color>
 
