@@ -118,6 +118,8 @@
     <!-- Vertical app drawer padding -->
     <dimen name="vertical_app_drawer_icon_padding">5dp</dimen>
 
+<<<<<<< HEAD
+=======
     <dimen name="app_drawer_scrubber_padding">20dp</dimen>
-
+>>>>>>> c8bed89... App drawer: add animations and letters to make things pretty
 </resources>

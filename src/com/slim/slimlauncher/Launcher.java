@@ -20,6 +20,7 @@ package com.slim.slimlauncher;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
@@ -56,6 +57,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -1601,6 +1603,17 @@ public class Launcher extends Activity
             }
             mAppDrawer.setHasFixedSize(true);
             mAppDrawer.setAdapter(mAppDrawerAdapter);
+            mAppDrawer.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    mAppDrawerAdapter.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    mAppDrawerAdapter.onScrolled(recyclerView, dx, dy);
+                }
+            });
             initializeScrubber();
         }
     }
@@ -3739,6 +3752,14 @@ public class Launcher extends Activity
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(Animator animation) {
+                    if (mAppsCustomizeContent.getContentType()
+                            == AppsCustomizePagedView.ContentType.Applications) {
+                        updateStatusBarColor(res.getColor(R.color.app_drawer_drag_background));
+                    }
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
@@ -3807,6 +3828,11 @@ public class Launcher extends Activity
             toView.setScaleY(1.0f);
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
+            if (mAppsCustomizeContent.getContentType()
+                    == AppsCustomizePagedView.ContentType.Applications) {
+                updateStatusBarColor(res.getColor(R.color.app_drawer_drag_background));
+                toView.setBackgroundColor(res.getColor(R.color.app_drawer_background));
+            }
 
             if (!springLoaded && !LauncherAppState.getInstance().isScreenLarge()) {
                 // Hide the search bar
@@ -3917,6 +3943,7 @@ public class Launcher extends Activity
                     content.setPageBackgroundsVisible(false);
                 } else {
                     fromView.setBackgroundColor(Color.TRANSPARENT);
+                    updateStatusBarColor(Color.TRANSPARENT);
                 }
 
                 revealView.setTranslationY(0);
@@ -4098,6 +4125,11 @@ public class Launcher extends Activity
             fromView.post(startAnimRunnable);
         } else {
             fromView.setVisibility(View.GONE);
+            if (mAppsCustomizeContent.getContentType()
+                    == AppsCustomizePagedView.ContentType.Applications) {
+                fromView.setBackgroundColor(Color.TRANSPARENT);
+                updateStatusBarColor(Color.TRANSPARENT, 0);
+            }
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionStart(fromView, animated, true);
             dispatchOnLauncherTransitionEnd(fromView, animated, true);
@@ -5545,6 +5577,19 @@ public class Launcher extends Activity
 
     void showSearch() {
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
+    }
+
+    private void updateStatusBarColor(int color) {
+        updateStatusBarColor(color, 300);
+    }
+
+    private void updateStatusBarColor(int color, int duration) {
+        final Window window = getWindow();
+        ObjectAnimator animator = ObjectAnimator.ofInt(window,
+                "statusBarColor", window.getStatusBarColor(), color);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setDuration(duration);
+        animator.start();
     }
 
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
