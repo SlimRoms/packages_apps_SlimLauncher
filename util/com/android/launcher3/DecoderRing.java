@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.slim.slimlauncher;
 
-import com.android.launcher3.backup.BackupProtos.CheckedMessage;
-import com.android.launcher3.backup.BackupProtos.Favorite;
-import com.android.launcher3.backup.BackupProtos.Key;
-import com.android.launcher3.backup.BackupProtos.Journal;
-import com.android.launcher3.backup.BackupProtos.Resource;
-import com.android.launcher3.backup.BackupProtos.Screen;
-import com.android.launcher3.backup.BackupProtos.Widget;
+import com.slim.slimlauncher.backup.BackupProtos.CheckedMessage;
+import com.slim.slimlauncher.backup.BackupProtos.Favorite;
+import com.slim.slimlauncher.backup.BackupProtos.Key;
+import com.slim.slimlauncher.backup.BackupProtos.Journal;
+import com.slim.slimlauncher.backup.BackupProtos.Resource;
+import com.slim.slimlauncher.backup.BackupProtos.Screen;
+import com.slim.slimlauncher.backup.BackupProtos.Widget;
 
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;

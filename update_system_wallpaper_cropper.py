@@ -40,8 +40,8 @@ com/android/photos/views/BlockingGLTextureView.java
 com/android/photos/views/TiledImageRenderer.java
 com/android/photos/views/TiledImageView.java
 com/android/gallery3d/common/BitmapUtils.java
-com/android/launcher3/CropView.java
-com/android/launcher3/WallpaperCropActivity.java
+com/slim.slimlauncher/CropView.java
+com/slim.slimlauncher/WallpaperCropActivity.java
 """
 
 if len(sys.argv) != 2:
@@ -51,7 +51,7 @@ framework_dir = sys.argv[1] + "/packages/WallpaperCropper"
 for file_path in files.split():
     file_path = src_dir + file_path
     dir = os.path.dirname(file_path)
-    dir = dir.replace("launcher3", "wallpapercropper")
+    dir = dir.replace("slimlauncher", "wallpapercropper")
     dir = dir.replace(src_dir, "src/")
     cmd = 'cp %s %s/%s' % (file_path, framework_dir, dir)
     print cmd

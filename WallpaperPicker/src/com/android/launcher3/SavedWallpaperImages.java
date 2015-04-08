@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.slim.slimlauncher;
 
 import android.app.Activity;
 import android.content.ContentValues;

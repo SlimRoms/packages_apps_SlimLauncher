@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.slim.slimlauncher.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="false"
@@ -34,7 +34,7 @@
 
             <!-- Delete target -->
 
-            <com.android.launcher3.DeleteDropTarget
+            <com.slim.slimlauncher.DeleteDropTarget
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/remove_target_selector"
@@ -47,7 +47,7 @@
 
             <!-- Info target -->
 
-            <com.android.launcher3.InfoDropTarget
+            <com.slim.slimlauncher.InfoDropTarget
                 android:id="@+id/info_target_text"
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/info_target_selector"
@@ -55,4 +55,4 @@
         </FrameLayout>
     </LinearLayout>
 
-</com.android.launcher3.SearchDropTargetBar>
+</com.slim.slimlauncher.SearchDropTargetBar>
