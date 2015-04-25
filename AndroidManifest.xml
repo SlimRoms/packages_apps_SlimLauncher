@@ -75,8 +75,8 @@
         android:allowBackup="@bool/enable_backup"
         android:backupAgent="com.slim.slimlauncher.LauncherBackupAgentHelper"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher_home"
-        android:label="@string/application_name"
+        android:icon="@mipmap/ic_launcher_slim"
+        android:label="@string/slim_application_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
@@ -119,7 +119,7 @@
             android:name="com.slim.slimlauncher.ToggleWeightWatcher"
             android:label="@string/toggle_weight_watcher"
             android:enabled="@bool/debug_memory_enabled"
-            android:icon="@mipmap/ic_launcher_home">
+            android:icon="@mipmap/ic_launcher_slim">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -161,7 +161,7 @@
             android:label="@string/debug_memory_activity"
             android:enabled="@bool/debug_memory_enabled"
             android:excludeFromRecents="true"
-            android:icon="@mipmap/ic_launcher_home"
+            android:icon="@mipmap/ic_launcher_slim"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
