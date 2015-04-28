@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.slim.slimlauncher;
 
 import android.appwidget.AppWidgetHost;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.launcher3.LauncherSettings.Favorites;
+import com.slim.slimlauncher.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

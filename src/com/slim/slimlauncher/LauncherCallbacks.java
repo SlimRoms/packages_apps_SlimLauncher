@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.slim.slimlauncher;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -88,7 +88,7 @@ public interface LauncherCallbacks {
 
     /**
      * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,
-     * com.android.launcher3.Launcher.LauncherOverlayCallbacks)}.
+     * com.slim.slimlauncher.Launcher.LauncherOverlayCallbacks)}.
      *
      * @return true if this launcher extension will provide an overlay
      */

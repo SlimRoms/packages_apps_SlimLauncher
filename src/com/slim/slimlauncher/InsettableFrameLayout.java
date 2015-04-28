@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.slim.slimlauncher;
 
 import android.content.Context;
 import android.content.res.TypedArray;
