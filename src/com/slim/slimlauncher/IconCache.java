@@ -231,7 +231,7 @@ public class IconCache {
     public synchronized void getTitleAndIcon(AppInfo application, LauncherActivityInfoCompat info,
             HashMap<Object, CharSequence> labelCache) {
         CacheEntry entry = cacheLocked(application.componentName, info, labelCache,
-                info.getUser(), false);
+                info.getUser(), false, application.unreadNum);
 
         application.title = entry.title;
         application.iconBitmap = entry.icon;
@@ -247,7 +247,7 @@ public class IconCache {
         }
 
         LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
-        CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, true);
+        CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, true, -1);
         return entry.icon;
     }
 
@@ -266,7 +266,7 @@ public class IconCache {
         } else {
             LauncherActivityInfoCompat launcherActInfo =
                     mLauncherApps.resolveActivity(intent, user);
-            CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon);
+            CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon, -1);
 
             shortcutInfo.setIcon(entry.icon);
             shortcutInfo.title = entry.title;
@@ -288,7 +288,7 @@ public class IconCache {
             return null;
         }
 
-        CacheEntry entry = cacheLocked(component, info, labelCache, info.getUser(), false);
+        CacheEntry entry = cacheLocked(component, info, labelCache, info.getUser(), false, -1);
         return entry.icon;
     }
 

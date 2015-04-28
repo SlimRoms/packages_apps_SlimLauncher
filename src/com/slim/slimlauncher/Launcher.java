@@ -86,6 +86,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -227,7 +228,6 @@ public class Launcher extends Activity
     LauncherOverlayCallbacks mLauncherOverlayCallbacks = new LauncherOverlayCallbacksImpl();
     LauncherOverlay mLauncherOverlay;
     InsettableFrameLayout mLauncherOverlayContainer;
-    ViewGroup mLauncherOverlayView;
 
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
@@ -492,17 +492,6 @@ public class Launcher extends Activity
         } else {
             showFirstRunActivity();
             showFirstRunClings();
-        }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-            if (mLauncherCallbacks.hasLauncherOverlay()) {
-                ViewStub stub = (ViewStub) findViewById(R.id.launcher_overlay_stub);
-                mLauncherOverlayView = (ViewGroup) stub.inflate();
-                mLauncherOverlay = mLauncherCallbacks.setLauncherOverlayView(mLauncherOverlayView,
-                        mLauncherOverlayCallbacks);
-                mWorkspace.setLauncherOverlay(mLauncherOverlay);
-            }
         }
     }
 
@@ -4903,12 +4892,12 @@ public class Launcher extends Activity
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
         PackageInstallerCompat.getInstance(this).onFinishBind();
-        mModel.recheckRestoredItems(this);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.finishBindingItems(upgradePath);
         }
     }
+
 
     private void sendLoadingCompleteBroadcastIfNecessary() {
         if (!mSharedPrefs.getBoolean(FIRST_LOAD_COMPLETE, false)) {
@@ -5026,24 +5015,6 @@ public class Launcher extends Activity
             return;
         }
         mWorkspace.widgetsRestored(widgets);
-    }
-
-    /**
-     * Packages were restored
-     */
-    public void bindAppsRestored(final ArrayList<AppInfo> apps) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppsRestored(apps);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
-        if (mWorkspace != null) {
-            mWorkspace.updateShortcutsAndWidgets(apps);
-        }
     }
 
     /**

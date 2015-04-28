@@ -207,7 +207,6 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
-        public void bindAppsRestored(ArrayList<AppInfo> apps);
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
                 ArrayList<ShortcutInfo> removed, UserHandleCompat user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
@@ -487,7 +486,7 @@ public class LauncherModel extends BroadcastReceiver
                         final Intent launchIntent = a.getIntent();
 
                         // Short-circuit this logic if the icon exists somewhere on the workspace
-                        if (shortcutExists(context, name, launchIntent)) {
+                        if (shortcutExists(context, name, launchIntent, a.user)) {
                             continue;
                         }
 
@@ -3018,64 +3017,6 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /**
-     * Workaround to re-check unrestored items, in-case they were installed but the Package-ADD
-     * runnable was missed by the launcher.
-     */
-    public void recheckRestoredItems(final Context context) {
-        Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-                HashSet<String> installedPackages = new HashSet<String>();
-                UserHandleCompat user = UserHandleCompat.myUserHandle();
-                synchronized(sBgLock) {
-                    for (ItemInfo info : sBgItemsIdMap.values()) {
-                        if (info instanceof ShortcutInfo) {
-                            ShortcutInfo si = (ShortcutInfo) info;
-                            if (si.isPromise() && si.getTargetComponent() != null
-                                    && launcherApps.isPackageEnabledForProfile(
-                                            si.getTargetComponent().getPackageName(), user)) {
-                                installedPackages.add(si.getTargetComponent().getPackageName());
-                            }
-                        } else if (info instanceof LauncherAppWidgetInfo) {
-                            LauncherAppWidgetInfo widget = (LauncherAppWidgetInfo) info;
-                            if (widget.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-                                    && launcherApps.isPackageEnabledForProfile(
-                                            widget.providerName.getPackageName(), user)) {
-                                installedPackages.add(widget.providerName.getPackageName());
-                            }
-                        }
-                    }
-                }
-
-                if (!installedPackages.isEmpty()) {
-                    final ArrayList<AppInfo> restoredApps = new ArrayList<AppInfo>();
-                    for (String pkg : installedPackages) {
-                        for (LauncherActivityInfoCompat info : launcherApps.getActivityList(pkg, user)) {
-                            restoredApps.add(new AppInfo(context, info, user, mIconCache, null));
-                        }
-                    }
-
-                    final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
-                    if (!restoredApps.isEmpty()) {
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                                if (callbacks == cb && cb != null) {
-                                    callbacks.bindAppsRestored(restoredApps);
-                                }
-                            }
-                        });
-                    }
-
-                }
-            }
-        };
-        sWorker.post(r);
-    }
-
     private class PackageUpdatedTask implements Runnable {
         int mOp;
         String[] mPackages;
@@ -3188,6 +3129,9 @@ public class LauncherModel extends BroadcastReceiver
                 Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
                 return;
             }
+
+            final HashMap<ComponentName, AppInfo> addedOrUpdatedApps =
+                    new HashMap<ComponentName, AppInfo>();
 
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db

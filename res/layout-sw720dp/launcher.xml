@@ -81,12 +81,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-<<<<<<< HEAD
 
     </com.slim.slimlauncher.DragLayer>
-=======
-    </com.android.launcher3.DragLayer>
->>>>>>> c2d6e89... First pass of the Launcher Overlay interface / impl
 
     <ViewStub
         android:id="@+id/launcher_overlay_stub"
@@ -95,8 +91,4 @@
         android:inflatedId="@+id/launcher_overlay"
         android:layout="@layout/launcher_overlay" />
 
-<<<<<<< HEAD
 </com.slim.slimlauncher.LauncherRootView>
-=======
-</FrameLayout>
->>>>>>> c2d6e89... First pass of the Launcher Overlay interface / impl

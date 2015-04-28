@@ -35,7 +35,7 @@
 
             <!-- Delete target -->
 
-            <com.android.launcher3.DeleteDropTarget
+            <com.slim.slimlauncher.DeleteDropTarget
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/remove_target_selector"
@@ -48,7 +48,7 @@
 
             <!-- Info target -->
 
-            <com.android.launcher3.InfoDropTarget
+            <com.slim.slimlauncher.InfoDropTarget
                 android:id="@+id/info_target_text"
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/info_target_selector"

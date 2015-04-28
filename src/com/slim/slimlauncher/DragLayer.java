@@ -38,7 +38,7 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+import com.slim.slimlauncher.InsettableFrameLayout.LayoutParams;
 
 import java.util.ArrayList;
 
