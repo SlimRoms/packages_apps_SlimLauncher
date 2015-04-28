@@ -1398,7 +1398,6 @@ public class Workspace extends SmoothPagedView
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlaySroll != 0 &&
                 ((amount >= 0 && !isRtl) || (amount <= 0 && isRtl));
-
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
                 mStartedSendingScrollEvents = true;
@@ -2588,11 +2587,9 @@ public class Workspace extends SmoothPagedView
             // For animation optimations, we may need to provide the Launcher transition
             // with a set of views on which to force build layers in certain scenarios.
             hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             if (layerViews != null) {
                 layerViews.add(hotseat);
-                layerViews.add(searchBar);
                 layerViews.add(overviewPanel);
             }
 
@@ -2609,11 +2606,21 @@ public class Workspace extends SmoothPagedView
             overviewPanelAlpha.setDuration(duration);
             pageIndicatorAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
-            if (mShowSearchBar) searchBarAlpha.setDuration(duration);
+
+            if (searchBar != null && mShowSearchBar) {
+                Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
+                    .alpha(finalSearchBarAlpha).withLayer();
+                searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+                searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                if (layerViews != null) {
+                    layerViews.add(searchBar);
+                }
+                searchBarAlpha.setDuration(duration);
+                anim.play(searchBarAlpha);
+            }
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
-            if (mShowSearchBar) anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
             anim.addListener(new AnimatorListenerAdapter() {

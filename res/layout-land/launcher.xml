@@ -71,4 +71,5 @@
         android:layout_height="match_parent"
         android:inflatedId="@+id/launcher_overlay"
         android:layout="@layout/launcher_overlay" />
+
 </com.slim.slimlauncher.LauncherRootView>
