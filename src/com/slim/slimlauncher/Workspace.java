@@ -2320,6 +2320,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mLauncher.getWindow().setStatusBarColor(systemBarsColor);
+        mLauncher.getWindow().setNavigationBarColor(systemBarsColor);
 
          mDefaultScreenId = SettingsProvider.getLong(mLauncher,
                 SettingsProvider.DEFAULT_HOMESCREEN, getScreenIdForPageIndex(

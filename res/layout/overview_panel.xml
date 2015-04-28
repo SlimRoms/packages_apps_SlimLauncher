@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="@dimen/app_icon_size"
+        android:paddingTop="@dimen/overview_panel_top_panel_padding"
         android:background="@color/overview_bg_color">
 
         <ImageView

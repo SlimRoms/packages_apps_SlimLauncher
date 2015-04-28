@@ -39,8 +39,9 @@
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
+    <dimen name="overview_panel_top_panel_padding">40dp</dimen>
     <dimen name="overview_panel_top_padding">20dp</dimen>
-    <dimen name="overview_panel_bottom_padding">50dp</dimen>
+    <dimen name="overview_panel_bottom_padding">15dp</dimen>
     <dimen name="overview_panel_side_padding">20dp</dimen>
     <dimen name="overview_panel_button_width">60dp</dimen>
     <dimen name="overview_mode_padding">175dp</dimen>
