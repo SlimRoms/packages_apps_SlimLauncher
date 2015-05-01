@@ -117,6 +117,7 @@
 
     <!-- Vertical app drawer padding -->
     <dimen name="vertical_app_drawer_icon_padding">5dp</dimen>
+    <dimen name="drawer_item_title_width">27dp</dimen>
 
     <dimen name="app_drawer_scrubber_padding">20dp</dimen>
 

@@ -83,7 +83,13 @@ public class SettingsProvider implements SettingsKeys {
     }
 
     public static int getInt(Context context, String key, int defValue) {
-        return get(context).getInt(key, defValue);
+        int i;
+        try {
+            i = get(context).getInt(key, defValue);
+        } catch (Exception e) {
+            i = Integer.parseInt(get(context).getString(key, Integer.toString(defValue)));
+        }
+        return i;
     }
 
     public static void putInt(Context context, String key, int value) {

@@ -21,8 +21,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
+
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +61,18 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     private LinkedHashMap<String, Integer> mSectionHeaders;
     private LinearLayout.LayoutParams mIconParams;
     private Rect mIconRect;
+
+    private int mDrawerType;
+
+    public static class DrawerType {
+        public static final int PAGED = 0;
+        public static final int VERTICAL = 1;
+        public static final int VERTICAL_FOLDER = 2;
+
+        public static int getDrawerType(Context context) {
+            return SettingsProvider.getInt(context, SettingsProvider.KEY_DRAWER_STYLE, 0);
+        }
+    }
 
     private ItemAnimatorSet mItemAnimatorSet;
 
@@ -203,7 +219,9 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             holder.mTextView.setScaleX(targetScale);
             holder.mTextView.setScaleY(targetScale);
 
-            holder.mFadingBackground.setAlpha(percentage);
+            if (mDrawerType == DrawerType.VERTICAL_FOLDER) {
+                holder.mFadingBackground.setAlpha(percentage);
+            }
 
             if (diffTime >= ANIMATION_DURATION) {
                 animation.cancel();
@@ -257,7 +275,14 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     private void initParams() {
         mDeviceProfile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
 
-        int width = mDeviceProfile.cellWidthPx + 2 * mDeviceProfile.edgeMarginPx;
+        mDrawerType = DrawerType.getDrawerType(mLauncher);
+
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = (size.x - (mDrawerType == DrawerType.VERTICAL_FOLDER ? mLauncher.getResources()
+                .getDimensionPixelSize(R.dimen.drawer_item_title_width) : 0))
+                / mDeviceProfile.allAppsNumCols;
         mIconParams = new
                 LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         mIconRect = new Rect(0, 0, mDeviceProfile.allAppsIconSizePx,
@@ -293,15 +318,20 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             isSpecial = true;
         }
 
-        // now iterate through
-        for (AppInfo info1 : tempInfo) {
-            char newChar = info1.title.toString().toUpperCase().charAt(0);
-            // if same character
-            if (newChar == startChar) {
-                // add it
-                appInfos.add(info1);
-            } else if (isSpecial && !Character.isLetter(newChar)) {
-                appInfos.add(info1);
+        if (mDrawerType == DrawerType.VERTICAL) {
+            appInfos.addAll(tempInfo);
+        } else {
+
+            // now iterate through
+            for (AppInfo info1 : tempInfo) {
+                char newChar = info1.title.toString().toUpperCase().charAt(0);
+                // if same character
+                if (newChar == startChar) {
+                    // add it
+                    appInfos.add(info1);
+                } else if (isSpecial && !Character.isLetter(newChar)) {
+                    appInfos.add(info1);
+                }
             }
         }
 
@@ -309,7 +339,9 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             int endIndex = (int) Math.min(i + mDeviceProfile.allAppsNumCols, appInfos.size());
             ArrayList<AppInfo> subList = new ArrayList<AppInfo>(appInfos.subList(i, endIndex));
             AppItemIndexedInfo indexInfo;
-            if (isSpecial) {
+            if (mDrawerType == DrawerType.VERTICAL) {
+                indexInfo = new AppItemIndexedInfo(' ', subList, i != 0);
+            } else if (isSpecial) {
                 indexInfo = new AppItemIndexedInfo('#', subList, i != 0);
             } else {
                 indexInfo = new AppItemIndexedInfo(startChar, subList, i != 0);
@@ -529,7 +561,8 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         AppItemIndexedInfo indexedInfo = mHeaderList.get(position);
-        holder.mTextView.setVisibility(indexedInfo.isChild ? View.INVISIBLE : View.VISIBLE);
+        holder.mTextView.setVisibility(mDrawerType == DrawerType.VERTICAL ? View.GONE :
+                (indexedInfo.isChild ? View.INVISIBLE : View.VISIBLE));
         if (!indexedInfo.isChild) {
             if (indexedInfo.mChar == NUMERIC_OR_SPECIAL_CHAR) {
                 holder.mTextView.setText(NUMERIC_OR_SPECIAL_HEADER);
