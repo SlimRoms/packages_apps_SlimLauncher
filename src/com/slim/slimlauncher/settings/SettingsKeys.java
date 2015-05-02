@@ -30,6 +30,7 @@ public interface SettingsKeys {
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
 
     // Drawer
+    public static final String KEY_DRAWER_STYLE = "drawer_style";
     public static final String KEY_DRAWER_GRID = "drawer_grid";
     public static final String KEY_DRAWER_HIDE_LABELS = "drawer_hide_icon_labels";
     public static final String KEY_DRAWER_SORT_MODE = "drawer_sort_mode";
