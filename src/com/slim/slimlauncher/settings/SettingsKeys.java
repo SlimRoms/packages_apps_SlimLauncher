@@ -47,6 +47,7 @@ public interface SettingsKeys {
     public static final String FOLDER_PREVIEW_COLOR = "folder_preview_color";
     public static final String HIDE_FOLDER_NAME = "hide_folder_name";
     public static final String KEY_SMART_FOLDER = "smart_folder";
+    public static final String KEY_SCROLLING_FOLDERS = "scrolling_folders";
 
     public static final String KEY_HIDDEN_APPS = "hidden_apps";
 

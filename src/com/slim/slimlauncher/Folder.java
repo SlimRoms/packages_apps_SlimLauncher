@@ -132,6 +132,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
 
+    private boolean mScrollingFolders;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -147,10 +149,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mInflater = LayoutInflater.from(context);
         mIconCache = app.getIconCache();
 
+        mScrollingFolders = SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_SCROLLING_FOLDERS, false);
+
         Resources res = getResources();
         mMaxCountX = (int) grid.numColumns;
         // Allow scrolling folders when DISABLE_ALL_APPS is true.
-        if (LauncherAppState.isDisableAllApps()) {
+        if (LauncherAppState.isDisableAllApps() || mScrollingFolders) {
             mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
         } else {
             mMaxCountY = (int) grid.numRows;
@@ -1114,7 +1119,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(getContentAreaHeight(),
                 MeasureSpec.EXACTLY);
 
-        if (LauncherAppState.isDisableAllApps()) {
+        if (LauncherAppState.isDisableAllApps() || mScrollingFolders) {
             // Don't cap the height of the content to allow scrolling.
             mContent.setFixedSize(getContentAreaWidth(), mContent.getDesiredHeight());
         } else {

@@ -18,6 +18,11 @@
         android:defaultValue="0x71ffffff" />
 
     <SwitchPreference
+        android:key="scrolling_folders"
+        android:title="@string/scrolling_folders_title"
+        android:defaultValue="false" />
+
+    <SwitchPreference
         android:key="hide_folder_name"
         android:title="@string/hide_folder_name_title"
         android:summary="@string/hide_folder_name_summary"

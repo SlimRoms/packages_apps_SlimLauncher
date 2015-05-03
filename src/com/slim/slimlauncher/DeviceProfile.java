@@ -68,7 +68,9 @@ public class DeviceProfile {
     float minWidthDps;
     float minHeightDps;
     public float numRows;
+    public float numRowsOriginal;
     public float numColumns;
+    public float numColumnsOriginal;
     public float numHotseatIcons;
     float iconSize;
     private float iconTextSize;
@@ -212,10 +214,10 @@ public class DeviceProfile {
         DeviceProfile closestProfile = findClosestDeviceProfile(minWidth, minHeight, points);
 
         // Snap to the closest row count
-        numRows = closestProfile.numRows;
+        numRows = numRowsOriginal = closestProfile.numRows;
 
         // Snap to the closest column count
-        numColumns = closestProfile.numColumns;
+        numColumns = numColumnsOriginal = closestProfile.numColumns;
 
         // Snap to the closest hotseat size
         numHotseatIcons = closestProfile.numHotseatIcons;
