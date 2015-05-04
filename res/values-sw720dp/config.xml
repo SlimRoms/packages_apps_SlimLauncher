@@ -15,4 +15,7 @@
 
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
+
+    <integer name="dock_max_icons">13</integer>
+
 </resources>

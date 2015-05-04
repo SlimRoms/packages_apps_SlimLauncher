@@ -8,4 +8,7 @@
     <!-- Camera distance for the overscroll effect. We use a higher value here because the 
          workspace screens run nearly flush to the edge of the screen-->
     <integer name="config_cameraDistance">14000</integer>
+
+    <integer name="dock_max_icons">11</integer>
+
 </resources>
