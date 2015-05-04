@@ -9,7 +9,7 @@
         android:title="@string/dock_icons_title"
         android:summary="@string/dock_icons_summary"
         launcher:min="1"
-        launcher:max="7" />
+        launcher:max="@integer/dock_max_icons" />
 
     <SwitchPreference
         android:key="dock_hide_icon_labels"
