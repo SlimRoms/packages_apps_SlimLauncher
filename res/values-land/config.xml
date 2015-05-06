@@ -18,4 +18,6 @@
 <!-- Workspace -->
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">false</bool>
+
+    <integer name="config_dynamic_grid_overview_scale_percentage">65</integer>
 </resources>
