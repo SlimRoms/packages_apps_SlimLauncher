@@ -75,4 +75,18 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="width_margin_entries" translatable="false">
+        <item>@string/none</item>
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+
+    <string-array name="width_margin_values" translatable="false">
+        <item>0</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+     </string-array>
+
 </resources>

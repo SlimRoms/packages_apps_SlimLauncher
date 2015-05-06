@@ -33,4 +33,12 @@
         launcher:min="70"
         launcher:defaultValue="100" />
 
+    <ListPreference
+        android:key="homescreen_width_margin"
+        android:title="@string/width_margin_title"
+        android:summary="%s"
+        android:entries="@array/width_margin_entries"
+        android:entryValues="@array/width_margin_values"
+        android:defaultValue="2" />
+
 </PreferenceScreen>

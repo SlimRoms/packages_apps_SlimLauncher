@@ -85,6 +85,8 @@ public class DeviceProfile {
     boolean isLayoutRtl;
     boolean transposeLayoutWithOrientation;
 
+    int hotseatWidthMarginPx;
+    int workspaceWidthMarginPx;
     int desiredWorkspaceLeftRightMarginPx;
     int edgeMarginPx;
     Rect defaultWidgetPadding;
@@ -187,7 +189,6 @@ public class DeviceProfile {
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-        desiredWorkspaceLeftRightMarginPx = 2 * edgeMarginPx;
         pageIndicatorHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
         defaultPageSpacingPx =
@@ -557,6 +558,14 @@ public class DeviceProfile {
             SettingsProvider.putCellCountX(context,
                     SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
         }
+
+        int widthMargin = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_HOMESCREEN_WIDTH_MARGIN, 1);
+        workspaceWidthMarginPx = widthMargin * edgeMarginPx;
+
+        widthMargin = SettingsProvider.getInt(context,
+                SettingsProvider.KEY_DOCK_WIDTH_MARGIN, 1);
+        hotseatWidthMarginPx = widthMargin * edgeMarginPx;
     }
 
     private float dist(PointF p0, PointF p1) {
@@ -668,9 +677,9 @@ public class DeviceProfile {
                         availableWidthPx - (edgeMarginPx + gap),
                         showSearchBar ? searchBarSpaceHeightPx : edgeMarginPx);
             } else {
-                bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
+                bounds.set((2 * edgeMarginPx) - defaultWidgetPadding.left,
                         getSearchBarTopOffset(),
-                        availableWidthPx - (desiredWorkspaceLeftRightMarginPx -
+                        availableWidthPx - ((2 * edgeMarginPx) -
                         defaultWidgetPadding.right),
                         showSearchBar ? searchBarSpaceHeightPx : edgeMarginPx);
             }
@@ -717,7 +726,7 @@ public class DeviceProfile {
                         hotseatBarHeightPx, edgeMarginPx);
             }
         } else {
-            if (isTablet()) {
+            /*if (isTablet()) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
                 float gapScale = 1f + (dragViewScale - 1f) / 2f;
@@ -735,13 +744,13 @@ public class DeviceProfile {
                         - (int) (2 * numRows * cellHeightPx));
                 padding.set(availableWidth / 2, paddingTop + availableHeight / 2,
                         availableWidth / 2, paddingBottom + availableHeight / 2);
-            } else {
+            } else {*/
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
+                padding.set(workspaceWidthMarginPx - defaultWidgetPadding.left,
                         searchBarBounds.bottom,
-                        desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
+                        workspaceWidthMarginPx - defaultWidgetPadding.right,
                         hotseatBarHeightPx + pageIndicatorHeightPx);
-            }
+            //}
         }
         return padding;
     }
@@ -912,14 +921,14 @@ public class DeviceProfile {
             lp.gravity = Gravity.END;
             lp.width = hotseatBarHeightPx;
             lp.height = LayoutParams.MATCH_PARENT;
-            hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
+            hotseat.findViewById(R.id.layout).setPadding(0, hotseatWidthMarginPx,
+                    0, hotseatWidthMarginPx);
         } else if (isTablet()) {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx;
-            hotseat.setPadding(edgeMarginPx + padding.left, 0,
-                    edgeMarginPx + padding.right,
+            hotseat.setPadding(hotseatWidthMarginPx, 0, hotseatWidthMarginPx,
                     2 * edgeMarginPx);
         } else {
             // For phones, layout the hotseat without any bottom margin
@@ -927,8 +936,8 @@ public class DeviceProfile {
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx + (hideDockLabels ? 0 : 3 * edgeMarginPx);
-            hotseat.findViewById(R.id.layout).setPadding(2 * edgeMarginPx, 0,
-                    2 * edgeMarginPx, 0);
+            hotseat.findViewById(R.id.layout).setPadding(hotseatWidthMarginPx, 0,
+                    hotseatWidthMarginPx, 0);
         }
         hotseat.setLayoutParams(lp);
 

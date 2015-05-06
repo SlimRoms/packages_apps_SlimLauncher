@@ -13,6 +13,13 @@
     <string name="off_string">Off</string>
     <string name="error_message_title">Error</string>
 
+    <string name="none">None</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+
+    <string name="width_margin_title">Width margin</string>
+
     <string name="icon_size_title">Icon size</string>
 
     <!-- Text for default screen button -->
