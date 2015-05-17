@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Emblemas na notificação</string>
   <string name="notification_badges_summary">Mostrar contagem de notificações no ícone do aplicativo</string>
   <string name="notification_badge_warning_message">Para ativar emblemas na notificação, na próxima tela ative o SlimLauncher como um Ouvinte de Notificação.</string>
+  <string name="lock_workspace_title">Bloquear tela</string>
+  <string name="lock_workspace_summary">Bloquear as posições dos atalhos e pastas na homescreen. Gavetas de dock, apps e widgets também.</string>
+  <string name="workspace_locked">A tela está bloqueada, desbloqueie nas configurações para reorganizar.</string>
   <string name="homescreen_title">Tela inicial</string>
   <string name="show_search_bar_title">Mostrar barra de pesquisa</string>
   <string name="hide_icon_labels_title">Ocultar rótulo dos ícones</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Ocultar rótulos dos ícones na tela inicial</string>
   <string name="hide_icon_labels_dock_summary">Ocultar rótulos dos ícones na dock</string>
   <string name="drawer_title">Gaveta</string>
+  <string name="drawer_style_title">Estilo da gaveta</string>
+  <string name="drawer_style_paged">Paginado</string>
+  <string name="drawer_style_vertical">Vertical</string>
+  <string name="drawer_style_vertical_folder">Pastas verticais</string>
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Ícones da dock</string>
   <string name="dock_icons_summary">Número de ícones na dock</string>
@@ -57,7 +64,16 @@
   <string name="smart_folder_title">Pasta inteligente</string>
   <string name="smart_folder_summary_one">Deslizar: abre o primeiro aplicativo\nTocar: abre a pasta</string>
   <string name="smart_folder_summart_two">Deslizar: abre a pasta\nTocar: abre o primeiro aplicativo</string>
+  <string name="scrolling_folders_title">Pastas rolantes</string>
+  <string name="gestures_buttons_title">Gestos &amp; botões</string>
   <string name="gestures_title">Gestos</string>
+  <string name="buttons_title">Botões</string>
+  <string name="home_button_title">Botão home</string>
+  <string name="home_button_default_title">Somente na tela inicial padrão</string>
+  <string name="home_button_default_summary">Pressione botão Home uma vez para a tela padrão, e então novamente para a ação</string>
+  <string name="back_button_title">Botão voltar</string>
+  <string name="menu_button_title">Botão menu</string>
+  <string name="gestures_summary">Atribuir ações para gestos na tela</string>
   <string name="gesture_default">nada</string>
   <string name="gestures_left_up_gesture_title">Deslizar para cima à esquerda</string>
   <string name="gestures_middle_up_gesture_title">Deslizar para cima ao meio</string>

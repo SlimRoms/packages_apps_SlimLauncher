@@ -58,6 +58,12 @@
   <string name="smart_folder_summary_one">Deslizar: lanzar la primera aplicación\nPulsar: abrir la carpeta</string>
   <string name="smart_folder_summart_two">Deslizar: abrir la carpeta\nPulsar: lanzar la primera aplicación</string>
   <string name="gestures_title">Gestos</string>
+  <string name="buttons_title">Botones</string>
+  <string name="home_button_title">Botón Inicio</string>
+  <string name="home_button_default_title">Sólo en el escritorio predeterminado</string>
+  <string name="home_button_default_summary">Pulsa el botón Inicio una vez para el escritorio predeterminado y otra vez para la acción</string>
+  <string name="back_button_title">Botón Atrás</string>
+  <string name="menu_button_title">Botón Menú</string>
   <string name="gesture_default">ninguno</string>
   <string name="gestures_left_up_gesture_title">Deslizar arriba en la izquierda</string>
   <string name="gestures_middle_up_gesture_title">Deslizar arriba en el centro</string>

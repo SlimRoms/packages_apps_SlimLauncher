@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Количество уведомлений</string>
   <string name="notification_badges_summary">Отображать количество уведомлений на значке приложения</string>
   <string name="notification_badge_warning_message">Для включения количества уведомлений, пожалуйста, активируйте SlimLauncher как обработчик уведомлений на следующем экране.</string>
+  <string name="lock_workspace_title">Заблокировать домашний экран</string>
+  <string name="lock_workspace_summary">Заблокировать положение ярлыков и папок на домашнем экране, в доке, приложениях и в шторке виджетов.</string>
+  <string name="workspace_locked">Домашний экран заблокирован, разблокируйте для перемещения.</string>
   <string name="homescreen_title">Главный экран</string>
   <string name="show_search_bar_title">Показывать строку поиска</string>
   <string name="hide_icon_labels_title">Скрывать подписи значков</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Скрывать подписи значков на главном экране</string>
   <string name="hide_icon_labels_dock_summary">Скрывать подписи значков в док-баре</string>
   <string name="drawer_title">Шторка</string>
+  <string name="drawer_style_title">Стиль шторки</string>
+  <string name="drawer_style_paged">Страничный</string>
+  <string name="drawer_style_vertical">Вертикальный</string>
+  <string name="drawer_style_vertical_folder">Вертикальные папки</string>
   <string name="dock_title">Док-бар</string>
   <string name="dock_icons_title">Значки док-бара</string>
   <string name="dock_icons_summary">Количество значков в док-баре</string>
@@ -57,7 +64,16 @@
   <string name="smart_folder_title">\"Умная\" папка</string>
   <string name="smart_folder_summary_one">Свайп - запустить первое приложение\nКасание - открыть папку</string>
   <string name="smart_folder_summart_two">Свайп - открыть папку\nКасание - запустить первое приложение</string>
+  <string name="scrolling_folders_title">Папки с прокруткой</string>
+  <string name="gestures_buttons_title">Жесты и кнопки</string>
   <string name="gestures_title">Жесты</string>
+  <string name="buttons_title">Кнопки</string>
+  <string name="home_button_title">Кнопка \"Домой\"</string>
+  <string name="home_button_default_title">Только на домашнем экране по умолчанию</string>
+  <string name="home_button_default_summary">Нажатие кнопки \"Домой\" один раз для экрана по умолчанию, второй - для действия</string>
+  <string name="back_button_title">Кнопка \"Назад\"</string>
+  <string name="menu_button_title">Кнопка \"Меню\"</string>
+  <string name="gestures_summary">Назначить действия на жесты на домашнем экране</string>
   <string name="gesture_default">нет</string>
   <string name="gestures_left_up_gesture_title">Свайп вверх слева</string>
   <string name="gestures_middle_up_gesture_title">Свайп вверх посередине</string>

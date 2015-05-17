@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Ungelesen-Zähler</string>
   <string name="notification_badges_summary">Anzahl der ungelesenen Benachrichtigungen auf App-Symbol anzeigen</string>
   <string name="notification_badge_warning_message">Um die \"Ungelesen\"-Zähler zu aktivieren, müssen Sie im folgenden Fenster SlimLauncher erlauben, Benachrichtigungen überwachen zu dürfen.</string>
+  <string name="lock_workspace_title">Startseite sperren</string>
+  <string name="lock_workspace_summary">Das Positionieren von Verknüpfungen und Ordnern auf den Startseiten, im Dock, sowie in der App- und Widget-Übersicht sperren.</string>
+  <string name="workspace_locked">Startseite ist gesperrt, zum neu anordnen in den Einstellungen freischalten.</string>
   <string name="homescreen_title">Startbildschirm</string>
   <string name="show_search_bar_title">Suchleiste anzeigen</string>
   <string name="hide_icon_labels_title">Symbolbezeichnung ausblenden</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Symbolbeschriftungen auf den Startseiten ausblenden</string>
   <string name="hide_icon_labels_dock_summary">Beschriftung unter App-Symbolen in der Dockleiste ausblenden</string>
   <string name="drawer_title">App-Übersicht</string>
+  <string name="drawer_style_title">Übersichts-Stil</string>
+  <string name="drawer_style_paged">Einzelseiten</string>
+  <string name="drawer_style_vertical">Vertikal</string>
+  <string name="drawer_style_vertical_folder">Vertikale Ordner</string>
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Dock-Symbole</string>
   <string name="dock_icons_summary">Anzahl der Symbole im Dock</string>
@@ -57,7 +64,16 @@
   <string name="smart_folder_title">Clevere Ordner</string>
   <string name="smart_folder_summary_one">Wischen - erste App starten \nTippen - Ordner öffnen</string>
   <string name="smart_folder_summart_two">Wischen - Ordner öffnen \nTippen - erste App starten</string>
+  <string name="scrolling_folders_title">Ordner scrollen</string>
+  <string name="gestures_buttons_title">Gesten &amp; Tasten</string>
   <string name="gestures_title">Gesten</string>
+  <string name="buttons_title">Tasten</string>
+  <string name="home_button_title">Home-Taste</string>
+  <string name="home_button_default_title">Nur auf der Standard-Startseite</string>
+  <string name="home_button_default_summary">Die Home-Taste einmal drücken um auf den Standard-Bildschirm zu gelanden, erneut drücken um eine Aktion auszulösen</string>
+  <string name="back_button_title">Zurück-Taste</string>
+  <string name="menu_button_title">Menü-Taste</string>
+  <string name="gestures_summary">Den Startseiten-Gesten Aktionen zuweisen</string>
   <string name="gesture_default">Nichts</string>
   <string name="gestures_left_up_gesture_title">Links nach oben wischen</string>
   <string name="gestures_middle_up_gesture_title">Mittig nach oben wischen</string>

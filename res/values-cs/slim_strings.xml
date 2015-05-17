@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Počet upozornění</string>
   <string name="notification_badges_summary">Zobrazovat počet upozornění nad ikonou aplikace</string>
   <string name="notification_badge_warning_message">Na další obrazovce prosím povolte SlimLauncheru naslouchat upozornění, aby mohl zobrazovat jejich počet.</string>
+  <string name="lock_workspace_title">Zamknout výchozí obrazovku</string>
+  <string name="lock_workspace_summary">Zamknout pozice zástupců a složek na domovské obrazovce, doku a seznamu aplikací a widgetů.</string>
+  <string name="workspace_locked">Domovská stránka je uzamčena, pro přeuspořádání ji odemkněte v nastavení.</string>
   <string name="homescreen_title">Domovská obrazovka</string>
   <string name="show_search_bar_title">Zobrazit vyhledávací lištu</string>
   <string name="hide_icon_labels_title">Skrýt popisky ikon</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Skrýt popisky ikon na domovské obrazovce</string>
   <string name="hide_icon_labels_dock_summary">Skrýt popisky ikon v doku</string>
   <string name="drawer_title">Seznam aplikací</string>
+  <string name="drawer_style_title">Styl seznamu aplikací</string>
+  <string name="drawer_style_paged">Stránkovaný</string>
+  <string name="drawer_style_vertical">Vertikální</string>
+  <string name="drawer_style_vertical_folder">Vertikální složky</string>
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony v doku</string>
   <string name="dock_icons_summary">Počet zástupců v doku</string>
@@ -57,7 +64,16 @@
   <string name="smart_folder_title">Chytrá složka</string>
   <string name="smart_folder_summary_one">Švihem spustit první aplikaci\nKlepnutím otevřít složku</string>
   <string name="smart_folder_summart_two">Švihem otevřít složku\nKlepnutím spustit první aplikaci</string>
+  <string name="scrolling_folders_title">Procházení složek</string>
+  <string name="gestures_buttons_title">Gesta &amp; tlačítka</string>
   <string name="gestures_title">Gesta</string>
+  <string name="buttons_title">Tlačítka</string>
+  <string name="home_button_title">Tlačítko Domů</string>
+  <string name="home_button_default_title">Pouze na výchozí domovské obrazovce</string>
+  <string name="home_button_default_summary">Stiskněte tlačítko Domů jednou pro výchozí obrazovku, pak znovu pro akci</string>
+  <string name="back_button_title">Tlačítko Zpět</string>
+  <string name="menu_button_title">Tlačítko Menu</string>
+  <string name="gestures_summary">Přiřadit akce ke gestům na úvodní obrazovce</string>
   <string name="gesture_default">Žádná akce</string>
   <string name="gestures_left_up_gesture_title">Švih nahoru doleva</string>
   <string name="gestures_middle_up_gesture_title">Švih nahoru doprostřed</string>

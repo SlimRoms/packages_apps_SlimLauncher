@@ -38,6 +38,8 @@
   <string name="notification_badges_title">Badges de notification</string>
   <string name="notification_badges_summary">Afficher les notifications sur l\'icône de l\'application</string>
   <string name="notification_badge_warning_message">Dans le prochain écran, veuillez activer SlimLauncher comme un auditeur de notification pour activer les badges de notification.</string>
+  <string name="lock_workspace_title">Verrouiller l\'écran d\'accueil</string>
+  <string name="workspace_locked">L\'écran d\'accueil est verrouillé. Déverrouiller dans les paramètres pour réarranger.</string>
   <string name="homescreen_title">Écran d\'accueil</string>
   <string name="show_search_bar_title">Afficher la barre de recherche</string>
   <string name="hide_icon_labels_title">Masquer le libellé des icônes</string>
@@ -45,6 +47,10 @@
   <string name="hide_icon_labels_homescreen_summary">Masquer le libellé des icônes sur l\'écran d\'accueil</string>
   <string name="hide_icon_labels_dock_summary">Masquer le libellé des icônes dans le dock</string>
   <string name="drawer_title">Tiroir</string>
+  <string name="drawer_style_title">Style de tiroir</string>
+  <string name="drawer_style_paged">Pages</string>
+  <string name="drawer_style_vertical">Vertical</string>
+  <string name="drawer_style_vertical_folder">Dossiers verticaux</string>
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Icônes du dock</string>
   <string name="dock_icons_summary">Nombre d\'icônes dans le dock</string>
@@ -57,7 +63,16 @@
   <string name="smart_folder_title">Dossier intelligent</string>
   <string name="smart_folder_summary_one">Glisser - ouvrir la première application \nToucher - ouvrir le dossier</string>
   <string name="smart_folder_summart_two">Glisser - Ouvrir le dossier \nToucher - Ouvrir la première application</string>
+  <string name="scrolling_folders_title">Défilement des dossiers</string>
+  <string name="gestures_buttons_title">Mouvements &amp; boutons</string>
   <string name="gestures_title">Opérations gestuelles</string>
+  <string name="buttons_title">Boutons</string>
+  <string name="home_button_title">Bouton accueil</string>
+  <string name="home_button_default_title">Uniquement sur l\'écran d\'accueil par défaut</string>
+  <string name="home_button_default_summary">Appuyez sur le bouton accueil une fois pour l\'écran par défaut, puis une seconde fois pour une action</string>
+  <string name="back_button_title">Bouton retour</string>
+  <string name="menu_button_title">Bouton menu</string>
+  <string name="gestures_summary">Attribuer des actions aux mouvements sur l\'écran d\'accueil</string>
   <string name="gesture_default">rien</string>
   <string name="gestures_left_up_gesture_title">Glisser vers le haut, côté gauche</string>
   <string name="gestures_middle_up_gesture_title">Glisser vers le centre haut</string>
