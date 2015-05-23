@@ -141,4 +141,7 @@
     <string name="hidden_apps_shortcuts_title">Remove shortcuts</string>
     <string name="hidden_apps_widgets_title">Remove widgets</string>
 
+    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
+    <string name="edit_target_label">Edit</string>
+
 </resources>

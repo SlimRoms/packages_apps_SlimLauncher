@@ -88,6 +88,11 @@ public class ShortcutInfo extends ItemInfo {
     private Bitmap mIcon;
 
     /**
+     * Title change listener
+     */
+    private ShortcutListener mListener;
+
+    /**
      * Indicates that the icon is disabled due to safe mode restrictions.
      */
     public static final int FLAG_DISABLED_SAFEMODE = 1;
@@ -188,6 +193,17 @@ public class ShortcutInfo extends ItemInfo {
         usingFallbackIcon = iconCache.isDefaultIcon(mIcon, user);
     }
 
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        if (mListener != null) {
+            mListener.onTitleChanged(title);
+        }
+    }
+
+    void setListener(ShortcutListener listener) {
+        mListener = listener;
+    }
+
     @Override
     void onAddToDatabase(Context context, ContentValues values) {
         super.onAddToDatabase(context, values);
@@ -255,6 +271,10 @@ public class ShortcutInfo extends ItemInfo {
     public void setInstallProgress(int progress) {
         mInstallProgress = progress;
         status |= FLAG_INSTALL_SESSION_ACTIVE;
+    }
+
+    interface ShortcutListener {
+        public void onTitleChanged(CharSequence title);
     }
 }
 

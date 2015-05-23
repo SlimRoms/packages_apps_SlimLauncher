@@ -54,5 +54,18 @@
                 android:drawableStart="@drawable/info_target_selector"
                 android:text="@string/info_target_label" />
         </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1" >
+
+            <com.slim.slimlauncher.EditDropTarget
+                android:id="@+id/edit_target_text"
+                style="@style/DropTargetButton"
+                android:drawableStart="@drawable/edit_target_selector"
+                android:text="@string/edit_target_label" />
+            
+        </FrameLayout>
+        
     </LinearLayout>
 </com.slim.slimlauncher.SearchDropTargetBar>

@@ -201,6 +201,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".IconPickerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:launchMode="singleTop" />
+
         <service android:name="com.slim.slimlauncher.MemoryTracker"
             android:enabled="@bool/debug_memory_enabled"
             >
