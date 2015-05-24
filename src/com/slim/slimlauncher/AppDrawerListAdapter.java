@@ -81,6 +81,8 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     private LinearLayout.LayoutParams mIconParams;
     private Rect mIconRect;
 
+    private ArrayList<ComponentName> mHiddenApps;
+
     private int mDrawerType;
 
     public static class DrawerType {
@@ -325,6 +327,8 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         mLayoutInflater = LayoutInflater.from(launcher);
         mItemAnimatorSet = new ItemAnimatorSet(launcher);
         initParams();
+
+        updateHiddenAppsList(mLauncher);
     }
 
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -434,6 +438,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     public void setApps(ArrayList<AppInfo> list) {
         if (!LauncherAppState.isDisableAllApps()) {
             initParams();
+            filterHiddenApps(list);
 
             mHeaderList.clear();
             Collections.sort(list, LauncherModel.getAppNameComparator());
@@ -804,5 +809,29 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             Log.w(TAG, "AppItemIndexedInfo is null");
         }
         return index;
+    }
+
+    private void filterHiddenApps(ArrayList<AppInfo> list) {
+        updateHiddenAppsList(mLauncher);
+
+        Iterator<AppInfo> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            AppInfo appInfo = iterator.next();
+            if (mHiddenApps.contains(appInfo.componentName)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void updateHiddenAppsList(Context context) {
+        String[] flattened = SettingsProvider.getString(context,
+                SettingsProvider.KEY_HIDDEN_APPS, "").split("\\|");
+        mHiddenApps = new ArrayList<ComponentName>(flattened.length);
+        for (String flat : flattened) {
+            ComponentName cmp = ComponentName.unflattenFromString(flat);
+            if (cmp != null) {
+                mHiddenApps.add(cmp);
+            }
+        }
     }
 }
