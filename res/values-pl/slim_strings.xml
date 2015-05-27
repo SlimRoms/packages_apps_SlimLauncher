@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Etykiety powiadomień</string>
   <string name="notification_badges_summary">Wyświetl liczbę powiadomień na ikonce aplikacji</string>
   <string name="notification_badge_warning_message">Na następnym ekranie zezwól SlimLauncher na dostęp do powiadomień by włączyć etykiety powiadomień.</string>
+  <string name="lock_workspace_title">Zablokuj ekran główny</string>
+  <string name="lock_workspace_summary">Zablokuj pozycję skrótów i folderów na ekranie głównym, doku i szufladzie widżetów oraz aplikacji.</string>
+  <string name="workspace_locked">Ekran główny jest zablokowany, odblokuj w ustawieniach by móc edytować.</string>
   <string name="homescreen_title">Pulpit domowy</string>
   <string name="show_search_bar_title">Pokaż pasek wyszukiwania</string>
   <string name="hide_icon_labels_title">Ukryj etykiety ikon</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Ukryj etykiety ikon na pulpicie</string>
   <string name="hide_icon_labels_dock_summary">Ukryj etykiety ikon w doku</string>
   <string name="drawer_title">Szuflada aplikacji</string>
+  <string name="drawer_style_title">Styl szuflady aplikacji</string>
+  <string name="drawer_style_paged">Strony</string>
+  <string name="drawer_style_vertical">Pionowa</string>
+  <string name="drawer_style_vertical_folder">Foldery pionowo</string>
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony w doku</string>
   <string name="dock_icons_summary">Ilość ikon w doku</string>
@@ -57,7 +64,15 @@
   <string name="smart_folder_title">Folder Smart</string>
   <string name="smart_folder_summary_one">Przesuń - uruchom pierwszą aplikację \nDotknij - otwórz folder</string>
   <string name="smart_folder_summart_two">Przesuń - otwórz folder \nDotknij - uruchom pierwszą aplikację</string>
+  <string name="scrolling_folders_title">Przewijane foldery</string>
+  <string name="gestures_buttons_title">Gesty &amp; przyciski</string>
   <string name="gestures_title">Gesty</string>
+  <string name="buttons_title">Przyciski</string>
+  <string name="home_button_title">Przycisk Home</string>
+  <string name="home_button_default_title">Tylko na ekranie głównym</string>
+  <string name="back_button_title">Przycisk wstecz</string>
+  <string name="menu_button_title">Przycisk menu</string>
+  <string name="gestures_summary">Przypisz gesty dla ekranu głównego</string>
   <string name="gesture_default">żaden</string>
   <string name="gestures_left_up_gesture_title">Przesunięcie w górę po lewej</string>
   <string name="gestures_middle_up_gesture_title">Przesunięcie w górę pośrodku</string>

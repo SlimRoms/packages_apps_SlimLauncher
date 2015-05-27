@@ -39,6 +39,7 @@
   <string name="notification_badges_summary">Afficher les notifications sur l\'icône de l\'application</string>
   <string name="notification_badge_warning_message">Dans le prochain écran, veuillez activer SlimLauncher comme un auditeur de notification pour activer les badges de notification.</string>
   <string name="lock_workspace_title">Verrouiller l\'écran d\'accueil</string>
+  <string name="lock_workspace_summary">Verrouiller la position des raccourcis et des dossiers sur l\'écran d\'accueil et dans le dock.</string>
   <string name="workspace_locked">L\'écran d\'accueil est verrouillé. Déverrouiller dans les paramètres pour réarranger.</string>
   <string name="homescreen_title">Écran d\'accueil</string>
   <string name="show_search_bar_title">Afficher la barre de recherche</string>
