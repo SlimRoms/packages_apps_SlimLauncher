@@ -38,6 +38,8 @@
   <string name="notification_badges_title">Etiquetas de notificação</string>
   <string name="notification_badges_summary">Exibir contagem de notificações no ícone da aplicação</string>
   <string name="notification_badge_warning_message">No próximo ecrã ative o recetor de notificações SlimLauncher para permitir as etiquetas de notificação.</string>
+  <string name="lock_workspace_title">Bloqueio do ecrã inicial</string>
+  <string name="lock_workspace_summary">Bloquear as posições de atalhos e pastas no ecrã inicial, doca e aplicações e na gaveta de widgets.</string>
   <string name="homescreen_title">Ecrã inicial</string>
   <string name="show_search_bar_title">Mostrar barra de pesquisa</string>
   <string name="hide_icon_labels_title">Ocultar etiquetas dos ícones</string>
@@ -45,6 +47,10 @@
   <string name="hide_icon_labels_homescreen_summary">Ocultar as etiquetas dos ícones no ecrã inicial</string>
   <string name="hide_icon_labels_dock_summary">Ocultar as etiquetas dos ícones na dock</string>
   <string name="drawer_title">Gaveta de aplicações</string>
+  <string name="drawer_style_title">Estilo da gaveta</string>
+  <string name="drawer_style_paged">Paginada</string>
+  <string name="drawer_style_vertical">Vertical</string>
+  <string name="drawer_style_vertical_folder">Pastas verticais</string>
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Ícones da dock</string>
   <string name="dock_icons_summary">Número de ícones na dock</string>
@@ -57,7 +63,13 @@
   <string name="smart_folder_title">Pasta inteligente</string>
   <string name="smart_folder_summary_one">Deslizar - abre a primeira aplicação\nTocar - abre a pasta</string>
   <string name="smart_folder_summart_two">Deslizar - abre a pasta\nTocar: abre a primeira aplicação</string>
+  <string name="gestures_buttons_title">Gestos &amp; botões</string>
   <string name="gestures_title">Gestos</string>
+  <string name="buttons_title">Botões</string>
+  <string name="home_button_default_title">Só no ecrã inicial padrão</string>
+  <string name="back_button_title">Botão Voltar</string>
+  <string name="menu_button_title">Botão Menu</string>
+  <string name="gestures_summary">Atribuir ações para gestos no ecrã inicial</string>
   <string name="gesture_default">nada</string>
   <string name="gestures_left_up_gesture_title">Deslizar para cima à esquerda</string>
   <string name="gestures_middle_up_gesture_title">Deslizar para cima ao meio</string>
