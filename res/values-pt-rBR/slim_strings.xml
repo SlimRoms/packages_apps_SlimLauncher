@@ -92,6 +92,11 @@
   <string name="gesture_target_settings">Abrir as configurações do launcher</string>
   <string name="gesture_target_last_app">Último aplicativo</string>
   <string name="gesture_target_custom">Personalizar</string>
+  <string name="dialog_pick_iconpack_title">Escolha o pacote de ícones</string>
+  <string name="default_iconpack_title">Ícones padrão</string>
+  <string name="icon_packs_title">Pacotes de ícones</string>
+  <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
+  <string name="pref_icon_pack_title">Pacote de ícones</string>
   <string name="hidden_apps_title">Aplicativos ocultos</string>
   <string name="hidden_apps_summary">Ocultar aplicativos da gaveta</string>
   <string name="hidden_apps_shortcuts_title">Remover atalhos</string>

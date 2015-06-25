@@ -40,6 +40,7 @@
   <string name="notification_badge_warning_message">No próximo ecrã ative o recetor de notificações SlimLauncher para permitir as etiquetas de notificação.</string>
   <string name="lock_workspace_title">Bloqueio do ecrã inicial</string>
   <string name="lock_workspace_summary">Bloquear as posições de atalhos e pastas no ecrã inicial, doca e aplicações e na gaveta de widgets.</string>
+  <string name="workspace_locked">O ecrã inicial está bloqueado, para alterar desbloqueie nas definições.</string>
   <string name="homescreen_title">Ecrã inicial</string>
   <string name="show_search_bar_title">Mostrar barra de pesquisa</string>
   <string name="hide_icon_labels_title">Ocultar etiquetas dos ícones</string>
@@ -63,10 +64,13 @@
   <string name="smart_folder_title">Pasta inteligente</string>
   <string name="smart_folder_summary_one">Deslizar - abre a primeira aplicação\nTocar - abre a pasta</string>
   <string name="smart_folder_summart_two">Deslizar - abre a pasta\nTocar: abre a primeira aplicação</string>
+  <string name="scrolling_folders_title">Transição das pastas</string>
   <string name="gestures_buttons_title">Gestos &amp; botões</string>
   <string name="gestures_title">Gestos</string>
   <string name="buttons_title">Botões</string>
+  <string name="home_button_title">Botão Home</string>
   <string name="home_button_default_title">Só no ecrã inicial padrão</string>
+  <string name="home_button_default_summary">Pressione o botão Home uma vez para ecrã padrão, pressione novamente para a ação</string>
   <string name="back_button_title">Botão Voltar</string>
   <string name="menu_button_title">Botão Menu</string>
   <string name="gestures_summary">Atribuir ações para gestos no ecrã inicial</string>
@@ -88,6 +92,11 @@
   <string name="gesture_target_settings">Abrir as definições do launcher</string>
   <string name="gesture_target_last_app">Última aplicação</string>
   <string name="gesture_target_custom">Personalizado</string>
+  <string name="dialog_pick_iconpack_title">Escolher pacote de ícones</string>
+  <string name="default_iconpack_title">Ícones padrão</string>
+  <string name="icon_packs_title">Pacotes de ícones</string>
+  <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
+  <string name="pref_icon_pack_title">Pacote de ícones</string>
   <string name="hidden_apps_title">Aplicações ocultas</string>
   <string name="hidden_apps_summary">Ocultar aplicações da gaveta</string>
   <string name="hidden_apps_shortcuts_title">Remover atalhos</string>

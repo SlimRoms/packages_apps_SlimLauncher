@@ -92,6 +92,11 @@
   <string name="gesture_target_settings">Ouvrir les paramètres du lanceur</string>
   <string name="gesture_target_last_app">Dernière application</string>
   <string name="gesture_target_custom">Personnalisé</string>
+  <string name="dialog_pick_iconpack_title">Choisir un pack d\'icônes</string>
+  <string name="default_iconpack_title">Icônes par défaut</string>
+  <string name="icon_packs_title">Packs d\'icônes</string>
+  <string name="no_iconpacks_summary">Aucun pack d\'icônes installé</string>
+  <string name="pref_icon_pack_title">Pack d\'icônes</string>
   <string name="hidden_apps_title">Applications masquées</string>
   <string name="hidden_apps_summary">Sélectionner les applications à ne pas afficher dans le tiroir</string>
   <string name="hidden_apps_shortcuts_title">Masquer des raccourcis</string>

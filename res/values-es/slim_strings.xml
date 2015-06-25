@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Marcas de notificación</string>
   <string name="notification_badges_summary">Mostrar el número de notificaciones pendientes en el icono de la aplicaciṕn</string>
   <string name="notification_badge_warning_message">En la siguiente pantalla, habilita SlimLauncher como escucha para habilitar las marcas de notificación</string>
+  <string name="lock_workspace_title">Bloquear pantalla de inicio</string>
+  <string name="lock_workspace_summary">Bloquea accesos directos y posiciones de las carpetas en la pantalla de inicio, dock, aplicaciones y widgets.</string>
+  <string name="workspace_locked">La pantalla de inicio está bloqueada, desbloquea en los ajustes para reorganizar.</string>
   <string name="homescreen_title">Pantalla de inicio</string>
   <string name="show_search_bar_title">Mostrar la barra de búsqueda</string>
   <string name="hide_icon_labels_title">Ocultar etiquetas de iconos</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Ocultar etiquetas en el escritorio</string>
   <string name="hide_icon_labels_dock_summary">Ocultar etiquetas en la barra de aplicaciones</string>
   <string name="drawer_title">Cajón de aplicaciones</string>
+  <string name="drawer_style_title">Estilo del cajón</string>
+  <string name="drawer_style_paged">Paginado</string>
+  <string name="drawer_style_vertical">Vertical</string>
+  <string name="drawer_style_vertical_folder">Carpetas verticales</string>
   <string name="dock_title">Barra de aplicaciones</string>
   <string name="dock_icons_title">Iconos en la barra de aplicaciones</string>
   <string name="dock_icons_summary">Determinar cuántos iconos puede albergar la barra de aplicaciones</string>
@@ -57,6 +64,8 @@
   <string name="smart_folder_title">Carpeta inteligente</string>
   <string name="smart_folder_summary_one">Deslizar: lanzar la primera aplicación\nPulsar: abrir la carpeta</string>
   <string name="smart_folder_summart_two">Deslizar: abrir la carpeta\nPulsar: lanzar la primera aplicación</string>
+  <string name="scrolling_folders_title">Carpetas con desplazamiento</string>
+  <string name="gestures_buttons_title">Gestos y botones</string>
   <string name="gestures_title">Gestos</string>
   <string name="buttons_title">Botones</string>
   <string name="home_button_title">Botón Inicio</string>
@@ -64,6 +73,7 @@
   <string name="home_button_default_summary">Pulsa el botón Inicio una vez para el escritorio predeterminado y otra vez para la acción</string>
   <string name="back_button_title">Botón Atrás</string>
   <string name="menu_button_title">Botón Menú</string>
+  <string name="gestures_summary">Asignar acciones a gestos de la pantalla de inicio</string>
   <string name="gesture_default">ninguno</string>
   <string name="gestures_left_up_gesture_title">Deslizar arriba en la izquierda</string>
   <string name="gestures_middle_up_gesture_title">Deslizar arriba en el centro</string>
@@ -82,6 +92,11 @@
   <string name="gesture_target_settings">Ajustes del lanzador</string>
   <string name="gesture_target_last_app">Última aplicación</string>
   <string name="gesture_target_custom">Personalizado</string>
+  <string name="dialog_pick_iconpack_title">Escoger paquete de iconos</string>
+  <string name="default_iconpack_title">Iconos por defecto</string>
+  <string name="icon_packs_title">Paquete de iconos</string>
+  <string name="no_iconpacks_summary">No se han instalado paquetes de iconos</string>
+  <string name="pref_icon_pack_title">Paquete de iconos</string>
   <string name="hidden_apps_title">Aplicaciones ocultas</string>
   <string name="hidden_apps_summary">Ocultar iconos en el cajón de aplicaciones</string>
   <string name="hidden_apps_shortcuts_title">Ocultar aplicaciones</string>

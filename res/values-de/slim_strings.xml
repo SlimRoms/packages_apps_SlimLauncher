@@ -92,6 +92,11 @@
   <string name="gesture_target_settings">Launcher-Einstellungen öffnen</string>
   <string name="gesture_target_last_app">Letzte App</string>
   <string name="gesture_target_custom">Benutzerdefiniert</string>
+  <string name="dialog_pick_iconpack_title">Symbolpaket auswählen</string>
+  <string name="default_iconpack_title">Standardsymbole</string>
+  <string name="icon_packs_title">Symbolpakete</string>
+  <string name="no_iconpacks_summary">Keine Symbolpakete installiert</string>
+  <string name="pref_icon_pack_title">Symbolpaket</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
   <string name="hidden_apps_summary">Apps in der App-Übersicht ausblenden</string>
   <string name="hidden_apps_shortcuts_title">Verknüpfungen entfernen</string>

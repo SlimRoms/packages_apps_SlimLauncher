@@ -38,6 +38,9 @@
   <string name="notification_badges_title">Ταμπέλα ειδοποίησης</string>
   <string name="notification_badges_summary">Εμφάνιση αριθμού ειδοποιήσεων στο εικονίδιο της εφαρμογής</string>
   <string name="notification_badge_warning_message">Στην επόμενη οθόνη παρακαλούμε ενεργοποιήστε τον SlimLauncher σαν ακροατή ειδοποιήσεων για την ενεργοποίηση των ταμπελών ειδοποίησης.</string>
+  <string name="lock_workspace_title">Οθόνη κλειδώματος</string>
+  <string name="lock_workspace_summary">Θέσεις εφαρμογών σε οθόνη κλειδώματος.</string>
+  <string name="workspace_locked">Ξεκλειδώστε την οθόνη για να αλλάξετε.</string>
   <string name="homescreen_title">Αρχική οθόνη</string>
   <string name="show_search_bar_title">Εμφάνιση μπάρας αναζήτησης</string>
   <string name="hide_icon_labels_title">Απόκρυψη ετικέτας εικονιδίου</string>
@@ -45,6 +48,10 @@
   <string name="hide_icon_labels_homescreen_summary">Απόκρυψη ετικέτας εικονιδίου στην αρχική οθόνη</string>
   <string name="hide_icon_labels_dock_summary">Απόκρυψη ετικέτας εικονιδίου στην μπάρα εφαρμογών</string>
   <string name="drawer_title">Συρτάρι εφαρμογών</string>
+  <string name="drawer_style_title">Εμφάνιση εφαρμογών στο μενού</string>
+  <string name="drawer_style_paged">Μένου σελίδας</string>
+  <string name="drawer_style_vertical">Κατακόρυφα</string>
+  <string name="drawer_style_vertical_folder">Κάθετη φακέλους</string>
   <string name="dock_title">Μπάρα εφαρμογών</string>
   <string name="dock_icons_title">Εικονίδια μπάρας εφαρμογών</string>
   <string name="dock_icons_summary">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
@@ -57,6 +64,7 @@
   <string name="smart_folder_title">Έξυπνος φάκελος</string>
   <string name="smart_folder_summary_one">Γλίστρημα - ξεκίνημα της πρώτης εφαρμογής \nΑγγίγμα - άνοιγμα φακέλου</string>
   <string name="smart_folder_summart_two">Γλίστρημα - άνοιγμα φακέλου \nΑγγίγμα - ξεκίνημα της πρώτης εφαρμογής</string>
+  <string name="scrolling_folders_title">Κύλιση φακέλους</string>
   <string name="gestures_title">Χειρονομίες</string>
   <string name="gesture_default">τίποτα</string>
   <string name="gestures_left_up_gesture_title">Γλίστρημα από τα αριστερά &amp; πάνω</string>

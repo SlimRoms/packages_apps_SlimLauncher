@@ -92,6 +92,11 @@
   <string name="gesture_target_settings">Otevřít nastavení launcheru</string>
   <string name="gesture_target_last_app">Poslední aplikace</string>
   <string name="gesture_target_custom">Vlastní</string>
+  <string name="dialog_pick_iconpack_title">Zvolit balíček ikon</string>
+  <string name="default_iconpack_title">Výchozí ikony</string>
+  <string name="icon_packs_title">Balíčky ikon</string>
+  <string name="no_iconpacks_summary">Není nainstalován žádný balíček ikon</string>
+  <string name="pref_icon_pack_title">Balíček ikon</string>
   <string name="hidden_apps_title">Skryté aplikace</string>
   <string name="hidden_apps_summary">Skrýt aplikace v seznamu aplikací</string>
   <string name="hidden_apps_shortcuts_title">Odebrat zástupce</string>
