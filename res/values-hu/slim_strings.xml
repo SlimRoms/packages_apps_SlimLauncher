@@ -80,6 +80,11 @@
   <string name="gesture_target_settings">launcher beállítások megnyitása</string>
   <string name="gesture_target_last_app">Utolsó Alkalmazás</string>
   <string name="gesture_target_custom">Egyéni</string>
+  <string name="dialog_pick_iconpack_title">Ikoncsomag választása</string>
+  <string name="default_iconpack_title">Alapértelmezett ikonok</string>
+  <string name="icon_packs_title">Ikon csomagok</string>
+  <string name="no_iconpacks_summary">Nincs ikon csomag telepítve</string>
+  <string name="pref_icon_pack_title">Ikon csomag</string>
   <string name="hidden_apps_title">Rejtett alkalmazások</string>
   <string name="hidden_apps_summary">Alkalmazások elrejtése az alkalmazásképernyőről</string>
   <string name="hidden_apps_shortcuts_title">hivatkozások eltávolítása</string>

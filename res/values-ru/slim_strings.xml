@@ -92,6 +92,11 @@
   <string name="gesture_target_settings">Открыть настройки лаунчера</string>
   <string name="gesture_target_last_app">Предыдущее приложение</string>
   <string name="gesture_target_custom">Свой ярлык</string>
+  <string name="dialog_pick_iconpack_title">Выбрать набор значков</string>
+  <string name="default_iconpack_title">Значки по умолчанию</string>
+  <string name="icon_packs_title">Наборы значков</string>
+  <string name="no_iconpacks_summary">Наборов значков не установлено</string>
+  <string name="pref_icon_pack_title">Набор значков</string>
   <string name="hidden_apps_title">Скрытые приложения</string>
   <string name="hidden_apps_summary">Выбрать приложения, которые не будут отображаться в шторке</string>
   <string name="hidden_apps_shortcuts_title">Удалить ярлыки</string>
