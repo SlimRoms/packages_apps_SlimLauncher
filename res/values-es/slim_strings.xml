@@ -38,10 +38,10 @@
   <string name="notification_badges_title">Marcas de notificación</string>
   <string name="notification_badges_summary">Mostrar el número de notificaciones pendientes en el icono de la aplicaciṕn</string>
   <string name="notification_badge_warning_message">En la siguiente pantalla, habilita SlimLauncher como escucha para habilitar las marcas de notificación</string>
-  <string name="lock_workspace_title">Bloquear pantalla de inicio</string>
-  <string name="lock_workspace_summary">Bloquea accesos directos y posiciones de las carpetas en la pantalla de inicio, dock, aplicaciones y widgets.</string>
-  <string name="workspace_locked">La pantalla de inicio está bloqueada, desbloquea en los ajustes para reorganizar.</string>
-  <string name="homescreen_title">Pantalla de inicio</string>
+  <string name="lock_workspace_title">Bloquear el escritorio</string>
+  <string name="lock_workspace_summary">Bloquear accesos directos y posiciones de las carpetas en el escritorio, barra de aplicaciones, widgets y cajón de aplicaciones.</string>
+  <string name="workspace_locked">El escritorio está bloqueado. Para reorganizarlo, debes desbloquearlo en los ajustes.</string>
+  <string name="homescreen_title">Escritorio</string>
   <string name="show_search_bar_title">Mostrar la barra de búsqueda</string>
   <string name="hide_icon_labels_title">Ocultar etiquetas de iconos</string>
   <string name="hide_icon_labels_drawer_summary">Ocultar etiquetas en el cajón de aplicaciones</string>
