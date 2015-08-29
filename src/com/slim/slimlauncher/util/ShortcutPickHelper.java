@@ -17,14 +17,13 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.slim.slimlauncher.R;
+import com.slim.slimlauncher.util.ShortcutPickHelper.AppExpandableAdapter.GroupInfo;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import com.slim.slimlauncher.util.ShortcutPickHelper.AppExpandableAdapter.GroupInfo;
 
 public class ShortcutPickHelper {
 

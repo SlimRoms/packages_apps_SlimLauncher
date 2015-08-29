@@ -23,8 +23,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 
-import com.slim.slimlauncher.NotificationListener;
 import com.slim.slimlauncher.IconPackHelper;
+import com.slim.slimlauncher.NotificationListener;
 import com.slim.slimlauncher.R;
 
 public class GeneralFragment extends SettingsPreferenceFragment implements

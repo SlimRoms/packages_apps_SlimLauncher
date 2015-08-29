@@ -39,7 +39,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.slim.slimlauncher.compat.LauncherAppsCompat;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 
 public class DeleteDropTarget extends ButtonDropTarget {

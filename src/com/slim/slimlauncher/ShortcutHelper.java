@@ -1,12 +1,10 @@
 package com.slim.slimlauncher;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 
 
 public class ShortcutHelper {

@@ -20,7 +20,12 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.Binder;
+import android.os.Debug;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.LongSparseArray;
 

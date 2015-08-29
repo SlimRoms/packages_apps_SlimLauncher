@@ -17,8 +17,6 @@
 package com.slim.slimlauncher.settings;
 
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
 
 import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.preference.NumberPickerPreference;
