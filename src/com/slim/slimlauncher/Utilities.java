@@ -700,4 +700,11 @@ public final class Utilities {
         float px = dp * (metrics.densityDpi / (float) DisplayMetrics.DENSITY_DEFAULT);
         return px;
     }
+
+    public static boolean darkTextColor(int background) {
+        // Counting the perceptive luminance - human eye favors green color...
+        double a = 1 - ( 0.299 * Color.red(background) + 0.587 * Color.green(background)
+                + 0.114 * Color.blue(background)) / 255;
+        return a < 0.5;
+    }
 }

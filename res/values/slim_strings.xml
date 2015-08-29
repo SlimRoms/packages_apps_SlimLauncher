@@ -79,6 +79,7 @@
     <string name="drawer_style_paged">Paged</string>
     <string name="drawer_style_vertical">Vertical</string>
     <string name="drawer_style_vertical_folder">Vertical folders</string>
+    <string name="drawer_background_title">Drawer background color</string>
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>

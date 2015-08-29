@@ -144,6 +144,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     public static boolean willAcceptDrop(Object info) {
+        android.util.Log.d("TEST", "accept+" + info.toString());
         if (info instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) info;
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
