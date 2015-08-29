@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.Point;
@@ -36,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
 
 import com.slim.slimlauncher.settings.SettingsProvider;
+import com.slim.slimlauncher.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -646,6 +648,13 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         holder.mTextView.setPivotX(0);
         holder.mTextView.setPivotY(holder.mTextView.getHeight() / 2);
 
+        if (!ColorUtils.darkTextColor(SettingsProvider.getInt(mLauncher,
+                SettingsProvider.KEY_DRAWER_BACKGROUND, Color.WHITE))) {
+            holder.mTextView.setTextColor(Color.WHITE);
+        } else {
+            holder.mTextView.setTextColor(Color.BLACK);
+        }
+
         final int size = indexedInfo.mInfo.size();
         for (int i = 0; i < holder.mLayout.getChildCount(); i++) {
             AppDrawerIconView icon = (AppDrawerIconView) holder.mLayout.getChildAt(i);
@@ -660,6 +669,20 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
                 d.setBounds(mIconRect);
                 icon.mIcon.setImageDrawable(d);
                 icon.mLabel.setText(info.title);
+
+                if (SettingsProvider.getBoolean(mLauncher,
+                        SettingsProvider.KEY_DRAWER_HIDE_LABELS, false)) {
+                    icon.mLabel.setVisibility(View.GONE);
+                } else {
+                    icon.mLabel.setVisibility(View.VISIBLE);
+                }
+
+                if (!ColorUtils.darkTextColor(SettingsProvider.getInt(mLauncher,
+                        SettingsProvider.KEY_DRAWER_BACKGROUND, Color.WHITE))) {
+                    icon.mLabel.setTextColor(Color.WHITE);
+                } else {
+                    icon.mLabel.setTextColor(Color.BLACK);
+                }
             }
         }
         holder.itemView.setTag(indexedInfo);
