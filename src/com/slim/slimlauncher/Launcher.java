@@ -2765,7 +2765,12 @@ public class Launcher extends Activity
 
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
+            Intent i = ((ShortcutInfo) tag).getIntent();
+            if (i.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+                setAllAppsButton(v);
+            }
             onClickAppShortcut(v);
+            Log.d("TEST", "shortcut");
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v, false);
@@ -2779,6 +2784,17 @@ public class Launcher extends Activity
                 onClickPendingWidget((PendingAppWidgetHostView) v);
             }
         }
+    }
+
+    /**
+     * Sets the all apps button. This method is called from {@link Hotseat}.
+     */
+    public void setAllAppsButton(View allAppsButton) {
+        mAllAppsButton = allAppsButton;
+    }
+
+    public View getAllAppsButton() {
+        return mAllAppsButton;
     }
 
     public void onClickPagedViewIcon(View v) {
@@ -3659,7 +3675,9 @@ public class Launcher extends Activity
             mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
         }
 
-        if (animated) {
+        boolean initialized = getAllAppsButton() != null;
+
+        if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             final AppsCustomizePagedView content = (AppsCustomizePagedView)
                     toView.findViewById(R.id.apps_customize_pane_content);
@@ -3700,13 +3718,17 @@ public class Launcher extends Activity
             revealView.setTranslationY(0);
             revealView.setTranslationX(0);
 
+            // Get the y delta between the center of the page and the center of the all apps button
+            int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
+                    getAllAppsButton(), null);
+
             float alpha = 0;
             float xDrift = 0;
             float yDrift = 0;
             if (material) {
                 alpha = isWidgetTray ? 0.3f : 1f;
-                yDrift = height / 2;
-                xDrift = 0;
+                yDrift = isWidgetTray ?  height / 2 : allAppsToPanelDelta[1];
+                xDrift =  isWidgetTray ? 0 : allAppsToPanelDelta[0];
             } else {
                 yDrift = 2 * height / 3;
                 xDrift = 0;
@@ -3780,11 +3802,15 @@ public class Launcher extends Activity
             }
 
             if (material) {
-                float startRadius = 0;
+                final View allApps = getAllAppsButton();
+                int allAppsButtonSize = LauncherAppState.getInstance().
+                        getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
+                float startRadius = isWidgetTray ? 0 : allAppsButtonSize / 2;
                 Animator reveal = ViewAnimationUtils.createCircularReveal(revealView, width / 2,
                                 height / 2, startRadius, revealRadius);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+
                 mStateAnimation.play(reveal);
             }
 
@@ -3992,13 +4018,16 @@ public class Launcher extends Activity
                     updateStatusBarColor(Color.TRANSPARENT);
                 }
 
+                final View allAppsButton = getAllAppsButton();
                 revealView.setTranslationY(0);
+                int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
+                        allAppsButton, null);
 
                 float xDrift = 0;
                 float yDrift = 0;
                 if (material) {
-                    yDrift = height / 2;
-                    xDrift = 0;
+                    yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
+                    xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
                 } else {
                     yDrift = 5 * height / 4;
                     xDrift = 0;
@@ -4078,7 +4107,9 @@ public class Launcher extends Activity
                 width = revealView.getMeasuredWidth();
 
                 if (material) {
-                    float finalRadius = 0;
+                    int allAppsButtonSize = LauncherAppState.getInstance().
+                            getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
+                    float finalRadius = isWidgetTray ? 0 : allAppsButtonSize / 2;
                     Animator reveal =
                             LauncherAnimUtils.createCircularReveal(revealView, width / 2,
                                     height / 2, revealRadius, finalRadius);
