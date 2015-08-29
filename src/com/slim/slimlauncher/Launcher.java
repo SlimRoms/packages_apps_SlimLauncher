@@ -1571,7 +1571,7 @@ public class Launcher extends Activity
         mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(false);
+        mWorkspace.setHapticFeedbackEnabled(true);
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(dragController);
         dragController.addDragListener(mWorkspace);
@@ -2109,6 +2109,20 @@ public class Launcher extends Activity
         setWaitingForResult(false);
     }
 
+    private void onClickAllAppsShortcut(boolean haptic) {
+        if (haptic) {
+            mWorkspace.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        }
+        if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.enterOverviewMode(true);
+        }
+        if (isAllAppsVisible()) {
+            showWorkspace(true);
+        } else {
+            showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         long startTime = 0;
@@ -2124,11 +2138,7 @@ public class Launcher extends Activity
                 Intent.ACTION_VIEW.equals(intent.getAction())) {
             String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
             if (value.equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
-                if (isAllAppsVisible()) {
-                    showWorkspace(true);
-                } else if (mState == State.WORKSPACE) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
-                }
+                onClickAllAppsShortcut(true);
             } else if (value.equals(ShortcutHelper.SHORTCUT_OVERVIEW)) {
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.exitOverviewMode(true);
