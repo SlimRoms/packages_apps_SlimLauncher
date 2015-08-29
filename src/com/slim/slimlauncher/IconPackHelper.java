@@ -73,11 +73,9 @@ public class IconPackHelper {
     private static final String TRANSLATE_X_ATTR = "xOffset";
     private static final String TRANSLATE_Y_ATTR = "yOffset";
 
-    private static final ComponentName ICON_BACK_COMPONENT;
     private static final ComponentName ICON_MASK_COMPONENT;
     private static final ComponentName ICON_UPON_COMPONENT;
     private static final ComponentName ICON_SCALE_COMPONENT;
-    private static final ComponentName ICON_PALETTIZED_BACK_COMPONENT;
 
     public final static String[] sSupportedActions = new String[] {
         "org.adw.launcher.THEMES",
@@ -113,11 +111,9 @@ public class IconPackHelper {
     private static final Random sRandom = new Random();
 
     static {
-        ICON_BACK_COMPONENT = new ComponentName(ICON_BACK_TAG, "");
         ICON_MASK_COMPONENT = new ComponentName(ICON_MASK_TAG, "");
         ICON_UPON_COMPONENT = new ComponentName(ICON_UPON_TAG, "");
         ICON_SCALE_COMPONENT = new ComponentName(ICON_SCALE_TAG, "");
-        ICON_PALETTIZED_BACK_COMPONENT = new ComponentName(ICON_PALETTIZED_BACK_TAG, "");
     }
 
     public enum SwatchType {
@@ -131,7 +127,10 @@ public class IconPackHelper {
     }
 
     public Drawable getIconBack() {
-        return mIconBacks[sRandom.nextInt(mIconBacks.length)];
+        if (mIconBacks != null && mIconBacks.length >= 1) {
+            return mIconBacks[sRandom.nextInt(mIconBacks.length)];
+        }
+        return null;
     }
 
     public Drawable getIconPaletteBack() {
@@ -180,7 +179,7 @@ public class IconPackHelper {
 
     IconPackHelper(Context context) {
         mContext = context;
-        mIconPackResources = new HashMap<ComponentName, String>();
+        mIconPackResources = new HashMap<>();
         mFilterBuilder = new ColorFilterUtils.Builder();
     }
 
@@ -199,7 +198,7 @@ public class IconPackHelper {
 
     public static Map<String, IconPackInfo> getSupportedPackages(Context context) {
         Intent i = new Intent();
-        Map<String, IconPackInfo> packages = new HashMap<String, IconPackInfo>();
+        Map<String, IconPackInfo> packages = new HashMap<>();
         PackageManager packageManager = context.getPackageManager();
         for (String action : sSupportedActions) {
             i.setAction(action);
@@ -266,7 +265,7 @@ public class IconPackHelper {
             }
 
             if (ICON_PALETTIZED_BACK_TAG.equalsIgnoreCase(parser.getName())) {
-                parsePalettizedBackground(parser, iconPackResources);
+                parsePalettizedBackground(parser);
             }
 
             if (parser.getName().equalsIgnoreCase(ICON_SCALE_TAG)) {
@@ -301,7 +300,7 @@ public class IconPackHelper {
             // Sanitize stored value
             component = component.substring(14, component.length() - 1).toLowerCase();
 
-            ComponentName name = null;
+            ComponentName name;
             if (!component.contains("/")) {
                 // Package icon reference
                 name = new ComponentName(component.toLowerCase(), "");
@@ -315,10 +314,9 @@ public class IconPackHelper {
         } while ((eventType = parser.next()) != XmlPullParser.END_DOCUMENT);
     }
 
-    private void parsePalettizedBackground(
-            XmlPullParser parser, Map<ComponentName, String> iconPackResources) {
+    private void parsePalettizedBackground(XmlPullParser parser) {
         int attrCount = parser.getAttributeCount();
-        ArrayList<Integer> convertedColors = new ArrayList<Integer>();
+        ArrayList<Integer> convertedColors = new ArrayList<>();
         for (int i = 0; i < attrCount; i++) {
             String name = parser.getAttributeName(i);
             String value = parser.getAttributeValue(i);
@@ -352,6 +350,7 @@ public class IconPackHelper {
                     // ensure alpha is always 0xff
                     convertedColors.add(Color.parseColor(value) | 0xff000000);
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
             }
             if (convertedColors.size() > 0) {
@@ -372,12 +371,14 @@ public class IconPackHelper {
             try {
                 mIconRotation = Float.valueOf(angle);
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         if (variance != null) {
             try {
                 mIconRotationVariance = Float.valueOf(variance);
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         return true;
@@ -393,12 +394,14 @@ public class IconPackHelper {
             try {
                 mIconTranslationX = Float.valueOf(translateX) * density;
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         if (translateY != null) {
             try {
                 mIconTranslationY = Float.valueOf(translateY) * density;
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         return true;
@@ -406,17 +409,17 @@ public class IconPackHelper {
 
     private static void loadApplicationResources(Context context,
             Map<ComponentName, String> iconPackResources, String packageName) {
-        Field[] drawableItems = null;
+        Field[] drawableItems;
         try {
             Context appContext = context.createPackageContext(packageName,
                     Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
             drawableItems = Class.forName(packageName+".R$drawable",
                     true, appContext.getClassLoader()).getFields();
-        } catch (Exception e){
+        } catch (Exception e) {
             return;
         }
 
-        ComponentName compName = null;
+        ComponentName compName;
         for (Field f : drawableItems) {
             String name = f.getName();
 
@@ -453,7 +456,7 @@ public class IconPackHelper {
 
     public boolean loadIconPack(String packageName) {
         mIconPackResources = getIconPackResources(mContext, packageName);
-        Resources res = null;
+        Resources res;
         try {
             res = mContext.getPackageManager().getResourcesForApplication(packageName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -469,6 +472,7 @@ public class IconPackHelper {
             try {
                 mIconScale = Float.valueOf(scale);
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         if (mIconBackCount > 0) {
@@ -491,7 +495,7 @@ public class IconPackHelper {
             return null;
         }
 
-        Resources res = null;
+        Resources res;
         try {
             res = context.getPackageManager().getResourcesForApplication(packageName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -501,7 +505,7 @@ public class IconPackHelper {
 
         XmlPullParser parser = null;
         InputStream inputStream = null;
-        Map<ComponentName, String> iconPackResources = new HashMap<ComponentName, String>();
+        Map<ComponentName, String> iconPackResources = new HashMap<>();
 
         try {
             inputStream = res.getAssets().open("appfilter.xml");
@@ -521,9 +525,7 @@ public class IconPackHelper {
             try {
                   loadResourcesFromXmlParser(parser, iconPackResources);
                   return iconPackResources;
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (XmlPullParserException|IOException e) {
                 e.printStackTrace();
             } finally {
                 // Cleanup resources
@@ -534,6 +536,7 @@ public class IconPackHelper {
                     try {
                         inputStream.close();
                     } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -547,7 +550,7 @@ public class IconPackHelper {
 
         if (arrayId != 0) {
             String[] iconPack = res.getStringArray(arrayId);
-            ComponentName compName = null;
+            ComponentName compName;
             for (String entry : iconPack) {
 
                 if (TextUtils.isEmpty(entry)) {
@@ -636,9 +639,8 @@ public class IconPackHelper {
                     if (TextUtils.isEmpty(selectedPackage)) {
                         launcherActivity.onActivityResult(
                                 Launcher.REQUEST_PICK_ICON, Activity.RESULT_OK, null);
-                    } else {
-                        // TODO: add per app icon support
                     }
+                    // TODO: add per app icon support
                 }
             });
         }
@@ -652,9 +654,7 @@ public class IconPackHelper {
     }
 
     private int getResourceIdForDrawable(String resource) {
-        int resId =
-                mLoadedIconPackResource.getIdentifier(resource, "drawable", mLoadedIconPackName);
-        return resId;
+        return mLoadedIconPackResource.getIdentifier(resource, "drawable", mLoadedIconPackName);
     }
 
     public Resources getIconPackResources() {
@@ -713,9 +713,6 @@ public class IconPackHelper {
             label = r.loadLabel(packageManager);
         }
 
-        IconPackInfo(){
-        }
-
         public IconPackInfo(String label, Drawable icon, String packageName) {
             this.label = label;
             this.icon = icon;
@@ -731,7 +728,7 @@ public class IconPackHelper {
 
         IconAdapter(Context ctx, Map<String, IconPackInfo> supportedPackages) {
             mLayoutInflater = LayoutInflater.from(ctx);
-            mSupportedPackages = new ArrayList<IconPackInfo>(supportedPackages.values());
+            mSupportedPackages = new ArrayList<>(supportedPackages.values());
             Collections.sort(mSupportedPackages, new Comparator<IconPackInfo>() {
                 @Override
                 public int compare(IconPackInfo lhs, IconPackInfo rhs) {
@@ -755,7 +752,7 @@ public class IconPackHelper {
 
         @Override
         public String getItem(int position) {
-            return (String) mSupportedPackages.get(position).packageName;
+            return mSupportedPackages.get(position).packageName;
         }
 
         @Override
@@ -770,7 +767,7 @@ public class IconPackHelper {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.iconpack_chooser, null);
+                convertView = mLayoutInflater.inflate(R.layout.iconpack_chooser, parent, false);
             }
             IconPackInfo info = mSupportedPackages.get(position);
             TextView txtView = (TextView) convertView.findViewById(R.id.title);
@@ -853,6 +850,7 @@ public class IconPackHelper {
                         intValue = Color.parseColor(content);
                         builder.tint(intValue);
                     } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -875,7 +873,7 @@ public class IconPackHelper {
          * See the following links for reference
          * http://groups.google.com/group/android-developers/browse_thread/thread/9e215c83c3819953
          * http://gskinner.com/blog/archives/2007/12/colormatrix_cla.html
-         * @param value
+         * @param value value to adjust
          */
         public static ColorMatrix adjustHue(float value) {
             ColorMatrix cm = new ColorMatrix();
@@ -971,7 +969,7 @@ public class IconPackHelper {
             private List<ColorMatrix> mMatrixList;
 
             public Builder() {
-                mMatrixList = new ArrayList<ColorMatrix>();
+                mMatrixList = new ArrayList<>();
             }
 
             public Builder hue(float value) {
