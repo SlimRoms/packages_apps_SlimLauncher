@@ -37,11 +37,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.slim.slimlauncher.settings.SettingsProvider;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import com.slim.slimlauncher.settings.SettingsProvider;
 
 class DeviceProfileQuery {
     DeviceProfile profile;

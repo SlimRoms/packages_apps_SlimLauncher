@@ -19,15 +19,12 @@ package com.slim.slimlauncher;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.slim.slimlauncher.compat.LauncherActivityInfoCompat;
-import com.slim.slimlauncher.compat.UserManagerCompat;
 import com.slim.slimlauncher.compat.UserHandleCompat;
+import com.slim.slimlauncher.compat.UserManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;

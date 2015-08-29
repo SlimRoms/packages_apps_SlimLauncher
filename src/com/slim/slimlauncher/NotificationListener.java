@@ -24,7 +24,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;

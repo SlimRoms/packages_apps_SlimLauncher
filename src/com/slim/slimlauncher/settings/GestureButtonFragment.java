@@ -10,8 +10,6 @@ import com.slim.slimlauncher.R;
 import com.slim.slimlauncher.util.AppHelper;
 import com.slim.slimlauncher.util.ShortcutPickHelper;
 
-import java.util.Set;
-
 public class GestureButtonFragment extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener {
 

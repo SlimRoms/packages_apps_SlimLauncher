@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.slim.slimlauncher.settings.SettingsProvider;
 import com.slim.slimlauncher.compat.UserHandleCompat;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 public class PackageChangedReceiver extends BroadcastReceiver {
     @Override

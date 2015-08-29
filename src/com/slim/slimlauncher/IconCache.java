@@ -37,6 +37,7 @@ import com.slim.slimlauncher.compat.LauncherActivityInfoCompat;
 import com.slim.slimlauncher.compat.LauncherAppsCompat;
 import com.slim.slimlauncher.compat.UserHandleCompat;
 import com.slim.slimlauncher.compat.UserManagerCompat;
+import com.slim.slimlauncher.settings.SettingsProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,11 +45,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import android.preference.PreferenceManager;
-
-import com.slim.slimlauncher.settings.SettingsProvider;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
