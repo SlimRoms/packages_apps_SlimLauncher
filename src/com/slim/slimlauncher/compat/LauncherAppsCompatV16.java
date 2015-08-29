@@ -44,7 +44,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     private PackageManager mPm;
     private Context mContext;
     private List<OnAppsChangedCallbackCompat> mCallbacks
-            = new ArrayList<OnAppsChangedCallbackCompat>();
+            = new ArrayList<>();
     private PackageMonitor mPackageMonitor;
 
     LauncherAppsCompatV16(Context context) {
@@ -60,7 +60,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mainIntent.setPackage(packageName);
         List<ResolveInfo> infos = mPm.queryIntentActivities(mainIntent, 0);
         List<LauncherActivityInfoCompat> list =
-                new ArrayList<LauncherActivityInfoCompat>(infos.size());
+                new ArrayList<>(infos.size());
         for (ResolveInfo info : infos) {
             list.add(new LauncherActivityInfoCompatV16(mContext, info));
         }
@@ -140,7 +140,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     }
 
     private synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
-        return new ArrayList<OnAppsChangedCallbackCompat>(mCallbacks);
+        return new ArrayList<>(mCallbacks);
     }
 
     private class PackageMonitor extends BroadcastReceiver {

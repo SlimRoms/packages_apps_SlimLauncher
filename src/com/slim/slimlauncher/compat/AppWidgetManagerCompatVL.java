@@ -57,7 +57,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public List<AppWidgetProviderInfo> getAllProviders() {
-        ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
+        ArrayList<AppWidgetProviderInfo> providers = new ArrayList<>();
         for (UserHandle user : mUserManager.getUserProfiles()) {
             providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
         }
@@ -86,9 +86,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             AppWidgetHost host, int requestCode) {
         try {
             host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        } catch (SecurityException e) {
+        } catch (ActivityNotFoundException|SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         }
     }

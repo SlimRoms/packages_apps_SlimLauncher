@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.os.UserHandle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,23 +34,20 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     private LauncherApps mLauncherApps;
 
-    private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
-            = new HashMap<OnAppsChangedCallbackCompat, WrappedCallback>();
+    private final Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
+            = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
         super();
-        mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
+        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
             UserHandleCompat user) {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
                 user.getUser());
-        if (list.size() == 0) {
-            return Collections.EMPTY_LIST;
-        }
         ArrayList<LauncherActivityInfoCompat> compatList =
-                new ArrayList<LauncherActivityInfoCompat>(list.size());
+                new ArrayList<>(list.size());
         for (LauncherActivityInfo info : list) {
             compatList.add(new LauncherActivityInfoCompatVL(info));
         }
@@ -86,7 +82,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     public void removeOnAppsChangedCallback(
             LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-        WrappedCallback wrappedCallback = null;
+        WrappedCallback wrappedCallback;
         synchronized (mCallbacks) {
             wrappedCallback = mCallbacks.remove(callback);
         }

@@ -45,7 +45,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
 
     @Override
     public String loadLabel(AppWidgetProviderInfo info) {
-        return info.label.trim();
+        return info.loadLabel(mContext.getPackageManager()).trim();
     }
 
     @Override
