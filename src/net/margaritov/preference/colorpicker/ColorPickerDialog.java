@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,6 +102,8 @@ public class ColorPickerDialog
         mHex = (EditText) layout.findViewById(R.id.hex);
         mSetButton = (ImageButton) layout.findViewById(R.id.enter);
         mResetButton = (ImageButton) layout.findViewById(R.id.reset);
+        mSetButton.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+        mResetButton.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
 
         ((LinearLayout) mOldColor.getParent()).setPadding(
                 Math.round(mColorPicker.getDrawingOffset()),

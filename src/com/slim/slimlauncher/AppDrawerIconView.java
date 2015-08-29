@@ -17,6 +17,7 @@
 package com.slim.slimlauncher;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -24,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.slim.slimlauncher.settings.SettingsProvider;
 
 /**
  * AppDrawerIconView - represents icons in the vertical app drawer.
@@ -56,19 +56,12 @@ public class AppDrawerIconView extends LinearLayout {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-        mLabel.setShadowLayer(BubbleTextView.SHADOW_LARGE_RADIUS, 0.0f,
-                BubbleTextView.SHADOW_Y_OFFSET, BubbleTextView.SHADOW_LARGE_COLOUR);
-
-        if (SettingsProvider.getBoolean(getContext(),
-                SettingsProvider.KEY_DRAWER_HIDE_LABELS, false)) {
-            mLabel.setVisibility(GONE);
-        } else {
-            mLabel.setVisibility(VISIBLE);
-        }
+        //mLabel.setShadowLayer(BubbleTextView.SHADOW_LARGE_RADIUS, 0.0f,
+          //      BubbleTextView.SHADOW_Y_OFFSET, BubbleTextView.SHADOW_LARGE_COLOUR);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 setAlpha(PagedViewIcon.PRESS_ALPHA);
