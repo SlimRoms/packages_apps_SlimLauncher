@@ -28,6 +28,11 @@
         launcher:pickerTitle1="@string/grid_size_rows_title"
         launcher:pickerTitle2="@string/grid_size_columns_title" />
 
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="drawer_background"
+        android:title="@string/drawer_background_title"
+        android:defaultValue="@android:color/white" />
+
     <SwitchPreference
         android:key="drawer_hide_icon_labels"
         android:title="@string/hide_icon_labels_title"
