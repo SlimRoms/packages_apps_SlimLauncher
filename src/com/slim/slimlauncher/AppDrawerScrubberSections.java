@@ -127,6 +127,7 @@ public class AppDrawerScrubberSections {
      * fill out the remaining sections based on the ALPHA_LETTERS.  It will then determine which
      * ones to highlight as well as what letters to highlight when scrolling over the
      * grayed out sections
+     *
      * @param headers list of header Strings
      * @return the list of scrubber sections
      */

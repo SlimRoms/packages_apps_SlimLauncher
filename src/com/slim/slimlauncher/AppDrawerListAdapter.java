@@ -65,6 +65,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     private static class SectionIndices {
         public int mSectionIndex;
         public int mItemIndex;
+
         public SectionIndices(int sectionIndex, int itemIndex) {
             mSectionIndex = sectionIndex;
             mItemIndex = itemIndex;
@@ -101,6 +102,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         public ViewGroup mLayout;
         public View mFadingBackgroundFront;
         public View mFadingBackgroundBack;
+
         public ViewHolder(View itemView) {
             super(itemView);
             mTextView = (AutoFitTextView) itemView.findViewById(R.id.drawer_item_title);
@@ -202,7 +204,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             // if the user is dragging or if we're settling at a fast speed, then show animation
             showAnimation(mDragging ||
                     (mScrollState == RecyclerView.SCROLL_STATE_SETTLING &&
-                    mFastScrollSpeed >= FAST_SCROLL));
+                            mFastScrollSpeed >= FAST_SCROLL));
         }
 
         private void showAnimation(boolean expanding) {
@@ -369,6 +371,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
 
     /**
      * Create and populate mHeaderList (buckets for app sorting)
+     *
      * @param info
      */
     public void populateByCharacter(ArrayList<AppInfo> info) {

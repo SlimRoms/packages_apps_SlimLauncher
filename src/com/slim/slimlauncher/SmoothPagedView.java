@@ -60,7 +60,7 @@ public abstract class SmoothPagedView extends PagedView {
      * Used to inflate the Workspace from XML.
      *
      * @param context The application's context.
-     * @param attrs The attributes set containing the Workspace's customization values.
+     * @param attrs   The attributes set containing the Workspace's customization values.
      */
     public SmoothPagedView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -69,8 +69,8 @@ public abstract class SmoothPagedView extends PagedView {
     /**
      * Used to inflate the Workspace from XML.
      *
-     * @param context The application's context.
-     * @param attrs The attributes set containing the Workspace's customization values.
+     * @param context  The application's context.
+     * @param attrs    The attributes set containing the Workspace's customization values.
      * @param defStyle Unused.
      */
     public SmoothPagedView(Context context, AttributeSet attrs, int defStyle) {
@@ -122,7 +122,7 @@ public abstract class SmoothPagedView extends PagedView {
     }
 
     private void snapToPageWithVelocity(int whichPage, int velocity, boolean settle) {
-            // if (!mScroller.isFinished()) return;
+        // if (!mScroller.isFinished()) return;
 
         whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
 
@@ -153,11 +153,11 @@ public abstract class SmoothPagedView extends PagedView {
 
     @Override
     protected void snapToPage(int whichPage) {
-       if (mScrollMode == X_LARGE_MODE) {
-           super.snapToPage(whichPage);
-       } else {
-           snapToPageWithVelocity(whichPage, 0, false);
-       }
+        if (mScrollMode == X_LARGE_MODE) {
+            super.snapToPage(whichPage);
+        } else {
+            snapToPageWithVelocity(whichPage, 0, false);
+        }
     }
 
     @Override

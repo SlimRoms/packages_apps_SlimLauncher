@@ -161,9 +161,8 @@ public class AutoFitTextView extends TextView {
      * Set the minimum text size to a given unit and value. See TypedValue for the possible
      * dimension units.
      *
-     * @param unit The desired dimension unit.
+     * @param unit    The desired dimension unit.
      * @param minSize The desired size in the given units.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public void setMinTextSize(int unit, float minSize) {
@@ -182,7 +181,6 @@ public class AutoFitTextView extends TextView {
      * is adjusted based on the current density and user font size preference.
      *
      * @param minSize The scaled pixel size.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public void setMinTextSize(int minSize) {
@@ -313,7 +311,7 @@ public class AutoFitTextView extends TextView {
                 displayMetrics));
 
         if (maxLines != 1) {
-            layout = new StaticLayout(text, paint, (int)targetWidth, Layout.Alignment.ALIGN_NORMAL,
+            layout = new StaticLayout(text, paint, (int) targetWidth, Layout.Alignment.ALIGN_NORMAL,
                     1.0f, 0.0f, true);
             lineCount = layout.getLineCount();
         }
@@ -324,12 +322,10 @@ public class AutoFitTextView extends TextView {
         if (lineCount > maxLines) {
             return getTextSize(text, paint, targetWidth, maxLines, low, mid, precision,
                     displayMetrics);
-        }
-        else if (lineCount < maxLines) {
+        } else if (lineCount < maxLines) {
             return getTextSize(text, paint, targetWidth, maxLines, mid, high, precision,
                     displayMetrics);
-        }
-        else {
+        } else {
             float maxLineWidth = 0;
             if (maxLines == 1) {
                 maxLineWidth = paint.measureText(text, 0, text.length());
@@ -359,7 +355,7 @@ public class AutoFitTextView extends TextView {
                                     DisplayMetrics displayMetrics) {
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size,
                 displayMetrics));
-        StaticLayout layout = new StaticLayout(text, paint, (int)width,
+        StaticLayout layout = new StaticLayout(text, paint, (int) width,
                 Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
         return layout.getLineCount();
     }

@@ -72,6 +72,7 @@ public class FocusOnlyTabWidget extends TabWidget {
             super.onFocusChange(tab, true);
         }
     }
+
     public void superOnFocusChange(View v, boolean hasFocus) {
         super.onFocusChange(v, hasFocus);
     }

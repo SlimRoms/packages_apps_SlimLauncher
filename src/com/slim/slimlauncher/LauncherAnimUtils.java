@@ -55,24 +55,25 @@ public class LauncherAnimUtils {
     // it should be cancelled
     public static void startAnimationAfterNextDraw(final Animator animator, final View view) {
         view.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-                private boolean mStarted = false;
-                public void onDraw() {
-                    if (mStarted) return;
-                    mStarted = true;
-                    // Use this as a signal that the animation was cancelled
-                    if (animator.getDuration() == 0) {
-                        return;
-                    }
-                    animator.start();
+            private boolean mStarted = false;
 
-                    final ViewTreeObserver.OnDrawListener listener = this;
-                    view.post(new Runnable() {
-                            public void run() {
-                                view.getViewTreeObserver().removeOnDrawListener(listener);
-                            }
-                        });
+            public void onDraw() {
+                if (mStarted) return;
+                mStarted = true;
+                // Use this as a signal that the animation was cancelled
+                if (animator.getDuration() == 0) {
+                    return;
                 }
-            });
+                animator.start();
+
+                final ViewTreeObserver.OnDrawListener listener = this;
+                view.post(new Runnable() {
+                    public void run() {
+                        view.getViewTreeObserver().removeOnDrawListener(listener);
+                    }
+                });
+            }
+        });
     }
 
     public static void onDestroyActivity() {
@@ -109,7 +110,7 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(View target,
-            PropertyValuesHolder... values) {
+                                                        PropertyValuesHolder... values) {
         ObjectAnimator anim = new ObjectAnimator();
         anim.setTarget(target);
         anim.setValues(values);
@@ -119,7 +120,7 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(Object target,
-            View view, PropertyValuesHolder... values) {
+                                                        View view, PropertyValuesHolder... values) {
         ObjectAnimator anim = new ObjectAnimator();
         anim.setTarget(target);
         anim.setValues(values);
@@ -129,7 +130,7 @@ public class LauncherAnimUtils {
     }
 
     public static Animator createCircularReveal(View view, int centerX,
-            int centerY, float startRadius, float endRadius) {
+                                                int centerY, float startRadius, float endRadius) {
         Animator anim = ViewAnimationUtils.createCircularReveal(view, centerX,
                 centerY, startRadius, endRadius);
         if (anim instanceof ValueAnimator) {

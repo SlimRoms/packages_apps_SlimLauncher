@@ -75,7 +75,8 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
     }
 
     @Override
-    public void onStop() { }
+    public void onStop() {
+    }
 
     private void replayUpdates() {
         if (DEBUG) Log.d(TAG, "updates resumed");
@@ -87,7 +88,7 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
         }
         mReplayPending = false;
         ArrayList<PackageInstallInfo> updates = new ArrayList<PackageInstallInfo>();
-        for (String packageName: mPrefs.getAll().keySet()) {
+        for (String packageName : mPrefs.getAll().keySet()) {
             final String json = mPrefs.getString(packageName, null);
             if (!TextUtils.isEmpty(json)) {
                 updates.add(infoFromJson(packageName, json));

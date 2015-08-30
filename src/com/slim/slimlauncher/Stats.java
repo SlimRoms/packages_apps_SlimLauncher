@@ -180,14 +180,14 @@ public class Stats {
             stats.writeInt(STATS_VERSION);
             final int N = mHistogram.size();
             stats.writeInt(N);
-            for (int i=0; i<N; i++) {
+            for (int i = 0; i < N; i++) {
                 stats.writeUTF(mIntents.get(i));
                 stats.writeInt(mHistogram.get(i));
             }
             stats.close();
             stats = null;
             mLauncher.getFileStreamPath(LauncherFiles.STATS_LOG + ".tmp")
-                     .renameTo(mLauncher.getFileStreamPath(LauncherFiles.STATS_LOG));
+                    .renameTo(mLauncher.getFileStreamPath(LauncherFiles.STATS_LOG));
         } catch (FileNotFoundException e) {
             Log.e(TAG, "unable to create stats data: " + e);
         } catch (IOException e) {
@@ -196,7 +196,8 @@ public class Stats {
             if (stats != null) {
                 try {
                     stats.close();
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
             }
         }
     }
@@ -210,7 +211,7 @@ public class Stats {
             final int version = stats.readInt();
             if (version == STATS_VERSION) {
                 final int N = stats.readInt();
-                for (int i=0; i<N; i++) {
+                for (int i = 0; i < N; i++) {
                     final String pkg = stats.readUTF();
                     final int count = stats.readInt();
                     mIntents.add(pkg);
@@ -226,7 +227,8 @@ public class Stats {
             if (stats != null) {
                 try {
                     stats.close();
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
             }
         }
     }

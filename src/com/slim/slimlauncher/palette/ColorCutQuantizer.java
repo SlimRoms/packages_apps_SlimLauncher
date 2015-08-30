@@ -32,11 +32,11 @@ import java.util.PriorityQueue;
 /**
  * An color quantizer based on the Median-cut algorithm, but optimized for picking out distinct
  * colors rather than representation colors.
- *
+ * <p/>
  * The color space is represented as a 3-dimensional cube with each dimension being an RGB
  * component. The cube is then repeatedly divided until we have reduced the color space to the
  * requested number of colors. An average color is then generated from each cube.
- *
+ * <p/>
  * What makes this different to median-cut is that median-cut divided cubes so that all of the cubes
  * have roughly the same population, where this quantizer divides boxes based on their color volume.
  * This means that the color space is divided into distinct colors, rather than representative
@@ -65,7 +65,7 @@ final class ColorCutQuantizer {
     /**
      * Factory-method to generate a {@link ColorCutQuantizer} from a {@link Bitmap} object.
      *
-     * @param bitmap Bitmap to extract the pixel data from
+     * @param bitmap    Bitmap to extract the pixel data from
      * @param maxColors The maximum number of colors that should be in the result palette.
      */
     static ColorCutQuantizer fromBitmap(Bitmap bitmap, int maxColors) {
@@ -82,7 +82,7 @@ final class ColorCutQuantizer {
      * Private constructor.
      *
      * @param colorHistogram histogram representing an image's pixel data
-     * @param maxColors The maximum number of colors that should be in the result palette.
+     * @param maxColors      The maximum number of colors that should be in the result palette.
      */
     private ColorCutQuantizer(ColorHistogram colorHistogram, int maxColors) {
         final int rawColorCount = colorHistogram.getNumberOfColors();
@@ -146,7 +146,7 @@ final class ColorCutQuantizer {
      * and splitting them. Once split, the new box and the remaining box are offered back to the
      * queue.
      *
-     * @param queue {@link PriorityQueue} to poll for boxes
+     * @param queue   {@link PriorityQueue} to poll for boxes
      * @param maxSize Maximum amount of boxes to split
      */
     private void splitBoxes(final PriorityQueue<Vbox> queue, final int maxSize) {
@@ -284,7 +284,7 @@ final class ColorCutQuantizer {
 
         /**
          * Finds the point within this box's lowerIndex and upperIndex index of where to split.
-         *
+         * <p/>
          * This is calculated by finding the longest color dimension, and then sorting the
          * sub-array based on that dimension value in each color. The colors are then iterated over
          * until a color is found with at least the midpoint of the whole box's dimension midpoint.
@@ -307,7 +307,7 @@ final class ColorCutQuantizer {
 
             final int dimensionMidPoint = midPoint(longestDimension);
 
-            for (int i = mLowerIndex; i <= mUpperIndex; i++)  {
+            for (int i = mLowerIndex; i <= mUpperIndex; i++) {
                 final int color = mColors[i];
 
                 switch (longestDimension) {

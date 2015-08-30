@@ -72,7 +72,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private Launcher mLauncher;
 
     public AppWidgetResizeFrame(Context context,
-            LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
+                                LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
         mLauncher = (Launcher) context;
@@ -92,25 +92,25 @@ public class AppWidgetResizeFrame extends FrameLayout {
         LayoutParams lp;
         mLeftHandle = new ImageView(context);
         mLeftHandle.setImageResource(R.drawable.widget_resize_handle_left);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.LEFT | Gravity.CENTER_VERTICAL);
         addView(mLeftHandle, lp);
 
         mRightHandle = new ImageView(context);
         mRightHandle.setImageResource(R.drawable.widget_resize_handle_right);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         addView(mRightHandle, lp);
 
         mTopHandle = new ImageView(context);
         mTopHandle.setImageResource(R.drawable.widget_resize_handle_top);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         addView(mTopHandle, lp);
 
         mBottomHandle = new ImageView(context);
         mBottomHandle.setImageResource(R.drawable.widget_resize_handle_bottom);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
 
@@ -159,7 +159,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
         if (anyBordersActive) {
             mLeftHandle.setAlpha(mLeftBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
-            mRightHandle.setAlpha(mRightBorderActive ? 1.0f :DIMMED_HANDLE_ALPHA);
+            mRightHandle.setAlpha(mRightBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mTopHandle.setAlpha(mTopBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mBottomHandle.setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
@@ -167,12 +167,12 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Here we bound the deltas such that the frame cannot be stretched beyond the extents
-     *  of the CellLayout, and such that the frame's borders can't cross.
+     * Here we bound the deltas such that the frame cannot be stretched beyond the extents
+     * of the CellLayout, and such that the frame's borders can't cross.
      */
     public void updateDeltas(int deltaX, int deltaY) {
         if (mLeftBorderActive) {
-            mDeltaX = Math.max(-mBaselineX, deltaX); 
+            mDeltaX = Math.max(-mBaselineX, deltaX);
             mDeltaX = Math.min(mBaselineWidth - 2 * mTouchTargetWidth, mDeltaX);
         } else if (mRightBorderActive) {
             mDeltaX = Math.min(mDragLayer.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
@@ -193,7 +193,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Based on the deltas, we resize the frame, and, if needed, we resize the widget.
+     * Based on the deltas, we resize the frame, and, if needed, we resize the widget.
      */
     private void visualizeResizeForDelta(int deltaX, int deltaY, boolean onDismiss) {
         updateDeltas(deltaX, deltaY);
@@ -218,7 +218,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Based on the current deltas, we determine if and how to resize the widget.
+     * Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
@@ -334,7 +334,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-            int spanX, int spanY) {
+                                       int spanX, int spanY) {
 
         getWidgetSizeRanges(launcher, spanX, spanY, mTmpRect);
         widgetView.updateAppWidgetSize(null, mTmpRect.left, mTmpRect.top,
@@ -381,8 +381,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
-        mDeltaXAddOn = mRunningHInc * xThreshold; 
-        mDeltaYAddOn = mRunningVInc * yThreshold; 
+        mDeltaXAddOn = mRunningHInc * xThreshold;
+        mDeltaYAddOn = mRunningVInc * yThreshold;
         mDeltaX = 0;
         mDeltaY = 0;
 

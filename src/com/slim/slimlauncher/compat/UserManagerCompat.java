@@ -39,8 +39,12 @@ public abstract class UserManagerCompat {
     }
 
     public abstract List<UserHandleCompat> getUserProfiles();
+
     public abstract long getSerialNumberForUser(UserHandleCompat user);
+
     public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
+
     public abstract Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user);
+
     public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
 }

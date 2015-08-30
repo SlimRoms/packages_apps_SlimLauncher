@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.slim.slimlauncher.SearchDropTargetBar
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.slim.slimlauncher.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="false"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <!-- Drag specific targets container -->
 
@@ -27,11 +25,11 @@
         android:id="@+id/drag_target_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" >
+        android:layout_gravity="center">
 
         <FrameLayout
             style="@style/DropTargetButtonContainer"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <!-- Delete target -->
 
@@ -44,7 +42,7 @@
 
         <FrameLayout
             style="@style/DropTargetButtonContainer"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <!-- Info target -->
 

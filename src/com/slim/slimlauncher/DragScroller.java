@@ -18,10 +18,10 @@ package com.slim.slimlauncher;
 
 /**
  * Handles scrolling while dragging
- *
  */
 public interface DragScroller {
     void scrollLeft();
+
     void scrollRight();
 
     /**

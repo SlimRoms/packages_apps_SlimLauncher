@@ -37,7 +37,8 @@ public abstract class PackageInstallerCompat {
                 if (Utilities.isLmpOrAbove()) {
                     sInstance = new PackageInstallerCompatVL(context);
                 } else {
-                    sInstance = new PackageInstallerCompatV16(context) { };
+                    sInstance = new PackageInstallerCompatV16(context) {
+                    };
                 }
             }
             return sInstance;

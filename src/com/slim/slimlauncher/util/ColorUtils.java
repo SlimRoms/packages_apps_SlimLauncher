@@ -23,16 +23,16 @@ public class ColorUtils {
     /**
      * Returns darker version of specified <code>color</code>.
      */
-    public static int darker (int color, float factor) {
+    public static int darker(int color, float factor) {
         int a = Color.alpha(color);
-        int r = Color.red( color );
-        int g = Color.green( color );
-        int b = Color.blue( color );
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
 
-        return Color.argb( a,
-                Math.max( (int)(r * factor), 0 ),
-                Math.max( (int)(g * factor), 0 ),
-                Math.max( (int)(b * factor), 0 ) );
+        return Color.argb(a,
+                Math.max((int) (r * factor), 0),
+                Math.max((int) (g * factor), 0),
+                Math.max((int) (b * factor), 0));
     }
 
     /*
@@ -40,7 +40,7 @@ public class ColorUtils {
      */
     public static boolean darkTextColor(int background) {
         // Counting the perceptive luminance - human eye favors green color...
-        double a = 1 - ( 0.299 * Color.red(background) + 0.587 * Color.green(background)
+        double a = 1 - (0.299 * Color.red(background) + 0.587 * Color.green(background)
                 + 0.114 * Color.blue(background)) / 255;
         return a < 0.5;
     }

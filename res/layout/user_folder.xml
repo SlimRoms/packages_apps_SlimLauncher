@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,8 +13,7 @@
      limitations under the License.
 -->
 
-<com.slim.slimlauncher.Folder
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.slim.slimlauncher.Folder xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.slim.slimlauncher"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -26,12 +24,13 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-      <com.slim.slimlauncher.CellLayout
-          android:id="@+id/folder_content"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:cacheColorHint="#ff333333"
-          android:hapticFeedbackEnabled="false" />
+
+        <com.slim.slimlauncher.CellLayout
+            android:id="@+id/folder_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#ff333333"
+            android:hapticFeedbackEnabled="false" />
     </ScrollView>
 
     <com.slim.slimlauncher.FolderEditText
@@ -51,5 +50,5 @@
         android:gravity="center_horizontal"
         android:singleLine="true"
         android:imeOptions="flagNoExtractUi"
-        android:fontFamily="sans-serif-condensed"/>
+        android:fontFamily="sans-serif-condensed" />
 </com.slim.slimlauncher.Folder>

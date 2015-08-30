@@ -71,7 +71,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
-            Bundle options) {
+                                            Bundle options) {
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
     }
@@ -83,7 +83,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public void startConfigActivity(AppWidgetProviderInfo info, int widgetId, Activity activity,
-            AppWidgetHost host, int requestCode) {
+                                    AppWidgetHost host, int requestCode) {
         try {
             host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
         } catch (ActivityNotFoundException e) {

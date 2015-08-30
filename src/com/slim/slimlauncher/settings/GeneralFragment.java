@@ -70,10 +70,10 @@ public class GeneralFragment extends SettingsPreferenceFragment implements
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setMessage(R.string.notification_badge_warning_message);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    startActivity(
-                            new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                    }
+            public void onClick(DialogInterface dialog, int id) {
+                startActivity(
+                        new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+            }
         });
         builder.show();
     }

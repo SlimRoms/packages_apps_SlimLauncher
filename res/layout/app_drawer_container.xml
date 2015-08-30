@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,71 +14,76 @@
      limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <FrameLayout
-            android:id="@+id/fake_page_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false">
+        android:id="@+id/fake_page_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
         <FrameLayout
-                android:id="@+id/fake_page"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible"
-                android:clipToPadding="false" />
-    </FrameLayout>
-    <FrameLayout
-            android:id="@+id/app_drawer_view"
+            android:id="@+id/fake_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false">
+            android:visibility="invisible"
+            android:clipToPadding="false" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/app_drawer_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/app_drawer_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/scrubber_height"
-                android:overScrollMode="never"/>
+            android:id="@+id/app_drawer_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/scrubber_height"
+            android:overScrollMode="never" />
     </FrameLayout>
 
     <RelativeLayout
-            android:id="@+id/scrubber_container"
+        android:id="@+id/scrubber_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clipToPadding="false">
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_below="@+id/scrubberIndicator"
+            android:background="@drawable/scrubber_back"
             android:clipToPadding="false">
-        <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_below="@+id/scrubberIndicator"
-                android:background="@drawable/scrubber_back"
-                android:clipToPadding="false">
 
             <com.slim.slimlauncher.AppDrawerScrubber
-                    android:id="@+id/app_drawer_scrubber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:layout_gravity="bottom"/>
+                android:id="@+id/app_drawer_scrubber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_gravity="bottom" />
         </FrameLayout>
 
         <TextView
-                android:id="@+id/scrubberIndicator"
-                android:background="@drawable/letter_indicator"
-                android:layout_width="100dp"
-                android:layout_marginLeft="@dimen/app_drawer_scrubber_padding"
-                android:paddingTop="18dp"
-                android:textSize="24sp"
-                android:gravity="center_horizontal|top"
-                android:textColor="@android:color/black"
-                android:clickable="false"
-                android:layout_marginBottom="-40dp"
-                android:visibility="invisible"
-                android:layout_height="100dp" />
+            android:id="@+id/scrubberIndicator"
+            android:background="@drawable/letter_indicator"
+            android:layout_width="100dp"
+            android:layout_marginLeft="@dimen/app_drawer_scrubber_padding"
+            android:paddingTop="18dp"
+            android:textSize="24sp"
+            android:gravity="center_horizontal|top"
+            android:textColor="@android:color/black"
+            android:clickable="false"
+            android:layout_marginBottom="-40dp"
+            android:visibility="invisible"
+            android:layout_height="100dp" />
     </RelativeLayout>
 </FrameLayout>

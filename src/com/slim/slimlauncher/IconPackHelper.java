@@ -77,16 +77,16 @@ public class IconPackHelper {
     private static final ComponentName ICON_UPON_COMPONENT;
     private static final ComponentName ICON_SCALE_COMPONENT;
 
-    public final static String[] sSupportedActions = new String[] {
-        "org.adw.launcher.THEMES",
-        "com.gau.go.launcherex.theme",
-        "com.novalauncher.THEME"
+    public final static String[] sSupportedActions = new String[]{
+            "org.adw.launcher.THEMES",
+            "com.gau.go.launcherex.theme",
+            "com.novalauncher.THEME"
     };
 
-    public static final String[] sSupportedCategories = new String[] {
-        "com.fede.launcher.THEME_ICONPACK",
-        "com.anddoes.launcher.THEME",
-        "com.teslacoilsw.launcher.THEME"
+    public static final String[] sSupportedCategories = new String[]{
+            "com.fede.launcher.THEME_ICONPACK",
+            "com.anddoes.launcher.THEME",
+            "com.teslacoilsw.launcher.THEME"
     };
 
     // Holds package/class -> drawable
@@ -220,7 +220,7 @@ public class IconPackHelper {
     }
 
     private void loadResourcesFromXmlParser(XmlPullParser parser,
-            Map<ComponentName, String> iconPackResources)
+                                            Map<ComponentName, String> iconPackResources)
             throws XmlPullParserException, IOException {
         int eventType = parser.getEventType();
         do {
@@ -408,12 +408,12 @@ public class IconPackHelper {
     }
 
     private static void loadApplicationResources(Context context,
-            Map<ComponentName, String> iconPackResources, String packageName) {
+                                                 Map<ComponentName, String> iconPackResources, String packageName) {
         Field[] drawableItems;
         try {
             Context appContext = context.createPackageContext(packageName,
                     Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-            drawableItems = Class.forName(packageName+".R$drawable",
+            drawableItems = Class.forName(packageName + ".R$drawable",
                     true, appContext.getClassLoader()).getFields();
         } catch (Exception e) {
             return;
@@ -523,9 +523,9 @@ public class IconPackHelper {
 
         if (parser != null) {
             try {
-                  loadResourcesFromXmlParser(parser, iconPackResources);
-                  return iconPackResources;
-            } catch (XmlPullParserException|IOException e) {
+                loadResourcesFromXmlParser(parser, iconPackResources);
+                return iconPackResources;
+            } catch (XmlPullParserException | IOException e) {
                 e.printStackTrace();
             } finally {
                 // Cleanup resources
@@ -824,7 +824,7 @@ public class IconPackHelper {
             if (attr != null && content != null && content.length() > 0) {
                 content = content.trim();
                 if (FILTER_HUE.equalsIgnoreCase(attr)) {
-                    intValue = clampValue(getInt(content, 0),MIN_HUE, MAX_HUE);
+                    intValue = clampValue(getInt(content, 0), MIN_HUE, MAX_HUE);
                     builder.hue(intValue);
                 } else if (FILTER_SATURATION.equalsIgnoreCase(attr)) {
                     intValue = clampValue(getInt(content, 100),
@@ -873,6 +873,7 @@ public class IconPackHelper {
          * See the following links for reference
          * http://groups.google.com/group/android-developers/browse_thread/thread/9e215c83c3819953
          * http://gskinner.com/blog/archives/2007/12/colormatrix_cla.html
+         *
          * @param value value to adjust
          */
         public static ColorMatrix adjustHue(float value) {

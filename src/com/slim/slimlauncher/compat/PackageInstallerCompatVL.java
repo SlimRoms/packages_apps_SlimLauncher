@@ -196,7 +196,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat implements 
         }
 
         @Override
-        public void onActiveChanged(int sessionId, boolean active) { }
+        public void onActiveChanged(int sessionId, boolean active) {
+        }
 
         @Override
         public void onBadgingChanged(int sessionId) {

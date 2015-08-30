@@ -51,10 +51,10 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mPm = context.getPackageManager();
         mContext = context;
         mPackageMonitor = new PackageMonitor();
-   }
+    }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         mainIntent.setPackage(packageName);
@@ -76,7 +76,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     }
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+                                        Rect sourceBounds, Bundle opts) {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         launchIntent.setComponent(component);

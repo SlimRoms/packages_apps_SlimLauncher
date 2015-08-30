@@ -60,20 +60,20 @@ public class HiddenAppsActivity extends ListActivity {
         AsyncTask<Void, Void, List<AppEntry>> refreshAppsTask =
                 new AsyncTask<Void, Void, List<AppEntry>>() {
 
-            @Override
-            protected void onPostExecute(List<AppEntry> apps) {
-                mAppsAdapter.clear();
-                mAppsAdapter.addAll(apps);
-                restoreCheckedItems();
-                setProgressBarIndeterminateVisibility(false);
-                setProgressBarIndeterminate(false);
-            }
+                    @Override
+                    protected void onPostExecute(List<AppEntry> apps) {
+                        mAppsAdapter.clear();
+                        mAppsAdapter.addAll(apps);
+                        restoreCheckedItems();
+                        setProgressBarIndeterminateVisibility(false);
+                        setProgressBarIndeterminate(false);
+                    }
 
-            @Override
-            protected List<AppEntry> doInBackground(Void... params) {
-                return refreshApps();
-            }
-        };
+                    @Override
+                    protected List<AppEntry> doInBackground(Void... params) {
+                        return refreshApps();
+                    }
+                };
         refreshAppsTask.execute(null, null, null);
     }
 
@@ -263,7 +263,7 @@ public class HiddenAppsActivity extends ListActivity {
             }
 
             if (newApps.size() > 0) {
-                new LoadIconsTask().execute(newApps.toArray(new AppEntry[] {}));
+                new LoadIconsTask().execute(newApps.toArray(new AppEntry[]{}));
                 newApps.addAll(oldApps);
                 mApps = newApps;
             } else {

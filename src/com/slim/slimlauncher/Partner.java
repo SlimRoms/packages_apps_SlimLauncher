@@ -33,7 +33,9 @@ public class Partner {
 
     static final String TAG = "Launcher.Partner";
 
-    /** Marker action used to discover partner */
+    /**
+     * Marker action used to discover partner
+     */
     private static final String
             ACTION_PARTNER_CUSTOMIZATION = "com.slim.slimlauncher.action.PARTNER_CUSTOMIZATION";
 
@@ -46,7 +48,9 @@ public class Partner {
 
     public static final String RES_REQUIRE_FIRST_RUN_FLOW = "requires_first_run_flow";
 
-    /** These resources are used to override the device profile  */
+    /**
+     * These resources are used to override the device profile
+     */
     public static final String RES_GRID_AA_SHORT_EDGE_COUNT = "grid_aa_short_edge_count";
     public static final String RES_GRID_AA_LONG_EDGE_COUNT = "grid_aa_long_edge_count";
     public static final String RES_GRID_NUM_ROWS = "grid_num_rows";

@@ -12,7 +12,7 @@
         <item>@string/gesture_target_custom</item>
     </string-array>
 
-    <string-array name="gesture_target_values" translatable="false" >
+    <string-array name="gesture_target_values" translatable="false">
         <item>nothing</item>
         <item>default_homescreen</item>
         <item>open_app_drawer</item>

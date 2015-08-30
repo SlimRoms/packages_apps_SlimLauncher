@@ -112,12 +112,12 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean setDefaultPadding) {
+                                      boolean setDefaultPadding) {
         applyFromShortcutInfo(info, iconCache, setDefaultPadding, false);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean setDefaultPadding, boolean promiseStateChanged) {
+                                      boolean setDefaultPadding, boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
         LauncherAppState app = LauncherAppState.getInstance();
 
@@ -288,7 +288,7 @@ public class BubbleTextView extends TextView {
             final int scrollY = getScrollY();
 
             if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
+                background.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
                 mBackgroundSizeChanged = false;
             }
 
@@ -408,7 +408,7 @@ public class BubbleTextView extends TextView {
         Object tag = getTag();
         int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
                 (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
+                : R.style.PreloadIcon;
         Theme theme = sPreloaderThemes.get(style);
         if (theme == null) {
             theme = getResources().newTheme();

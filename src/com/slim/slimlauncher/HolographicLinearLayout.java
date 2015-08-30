@@ -127,7 +127,7 @@ public class HolographicLinearLayout extends LinearLayout {
     public int[] onCreateDrawableState(int extraSpace) {
         final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (isHotwordOn()) {
-            mergeDrawableStates(drawableState, new int[] {R.attr.stateHotwordOn});
+            mergeDrawableStates(drawableState, new int[]{R.attr.stateHotwordOn});
         }
         return drawableState;
     }

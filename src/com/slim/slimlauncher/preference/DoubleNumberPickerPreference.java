@@ -155,18 +155,23 @@ public class DoubleNumberPickerPreference extends DialogPreference {
     public void setMin1(int min) {
         mMin1 = min;
     }
+
     public void setMax1(int max) {
         mMax1 = max;
     }
+
     public void setMin2(int min) {
         mMin2 = min;
     }
+
     public void setMax2(int max) {
         mMax2 = max;
     }
+
     public void setDefault1(int def) {
         mDefault1 = def;
     }
+
     public void setDefault2(int def) {
         mDefault2 = def;
     }

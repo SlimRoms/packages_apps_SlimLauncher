@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,11 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:autofit="http://schemas.android.com/apk/res-auto"
-              android:splitMotionEvents="false"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
+    android:splitMotionEvents="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
     <View
         android:id="@+id/fading_background_back"
         android:alpha="0"
@@ -30,13 +30,13 @@
 
     <!-- Layout in back to front render order -->
     <LinearLayout
-            android:id="@+id/drawer_item_flow"
-            android:layout_alignParentRight="true"
-            android:paddingTop="10dp"
-            android:layout_toRightOf="@+id/drawer_item_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+        android:id="@+id/drawer_item_flow"
+        android:layout_alignParentRight="true"
+        android:paddingTop="10dp"
+        android:layout_toRightOf="@+id/drawer_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
 
     <View
         android:id="@+id/fading_background_front"
@@ -64,6 +64,6 @@
         android:textColor="@android:color/white"
         android:shadowRadius="4.0"
         android:shadowDy="2"
-        android:shadowColor="#b0000000"/>
+        android:shadowColor="#b0000000" />
 
 </RelativeLayout>

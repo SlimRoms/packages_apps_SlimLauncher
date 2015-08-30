@@ -71,7 +71,7 @@ public abstract class AppWidgetManagerCompat {
     public abstract UserHandleCompat getUser(AppWidgetProviderInfo info);
 
     public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
-            Activity activity, AppWidgetHost host, int requestCode);
+                                             Activity activity, AppWidgetHost host, int requestCode);
 
     public abstract Drawable loadPreview(AppWidgetProviderInfo info);
 

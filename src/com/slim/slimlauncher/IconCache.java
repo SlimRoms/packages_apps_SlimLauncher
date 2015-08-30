@@ -216,13 +216,13 @@ public class IconCache {
      */
     public synchronized void remove(String packageName, UserHandleCompat user) {
         HashSet<CacheKey> forDeletion = new HashSet<CacheKey>();
-        for (CacheKey key: mCache.keySet()) {
+        for (CacheKey key : mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
                     && key.user.equals(user)) {
                 forDeletion.add(key);
             }
         }
-        for (CacheKey condemned: forDeletion) {
+        for (CacheKey condemned : forDeletion) {
             mCache.remove(condemned);
         }
     }
@@ -253,7 +253,7 @@ public class IconCache {
      * Fill in "application" with the icon and label for "info."
      */
     public synchronized void getTitleAndIcon(AppInfo application, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache) {
+                                             HashMap<Object, CharSequence> labelCache) {
         CacheEntry entry = cacheLocked(application.componentName, info, labelCache,
                 info.getUser(), false, application.unreadNum);
 
@@ -279,7 +279,7 @@ public class IconCache {
      * Fill in "shortcutInfo" with the icon and label for "info."
      */
     public synchronized void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent,
-            UserHandleCompat user, boolean usePkgIcon) {
+                                             UserHandleCompat user, boolean usePkgIcon) {
         ComponentName component = intent.getComponent();
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
@@ -307,7 +307,7 @@ public class IconCache {
     }
 
     public synchronized Bitmap getIcon(ComponentName component, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache) {
+                                       HashMap<Object, CharSequence> labelCache) {
         if (info == null || component == null) {
             return null;
         }
@@ -336,8 +336,8 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache, UserHandleCompat user,
-            boolean usePackageIcon, int unreadNum) {
+                                   HashMap<Object, CharSequence> labelCache, UserHandleCompat user,
+                                   boolean usePackageIcon, int unreadNum) {
         CacheKey cacheKey = new CacheKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || unreadNum >= 0) {
@@ -391,7 +391,7 @@ public class IconCache {
                     if (mIconPackHelper.isIconPackLoaded() && (mIconPackHelper
                             .getResourceIdForActivityIcon(componentName) == 0)) {
                         entry.icon = Utilities.createIconBitmap(
-                        (new BitmapDrawable(entry.icon)), mContext, mIconPackHelper);
+                                (new BitmapDrawable(entry.icon)), mContext, mIconPackHelper);
                     }
                 }
             }
@@ -404,7 +404,7 @@ public class IconCache {
      * when the cache is flushed.
      */
     public synchronized void cachePackageInstallInfo(String packageName, UserHandleCompat user,
-            Bitmap icon, CharSequence title) {
+                                                     Bitmap icon, CharSequence title) {
         remove(packageName, user);
 
         CacheEntry entry = getEntryForPackage(packageName, user);
@@ -422,7 +422,8 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry getEntryForPackage(String packageName, UserHandleCompat user) {
-        ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);;
+        ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);
+        ;
         CacheKey cacheKey = new CacheKey(cn, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
@@ -452,8 +453,8 @@ public class IconCache {
         return entry;
     }
 
-    public synchronized HashMap<ComponentName,Bitmap> getAllIcons() {
-        HashMap<ComponentName,Bitmap> set = new HashMap<ComponentName,Bitmap>();
+    public synchronized HashMap<ComponentName, Bitmap> getAllIcons() {
+        HashMap<ComponentName, Bitmap> set = new HashMap<ComponentName, Bitmap>();
         for (CacheKey ck : mCache.keySet()) {
             final CacheEntry e = mCache.get(ck);
             set.put(ck.componentName, e.icon);
@@ -463,17 +464,17 @@ public class IconCache {
 
     /**
      * Pre-load an icon into the persistent cache.
-     *
+     * <p/>
      * <P>Queries for a component that does not exist in the package manager
      * will be answered by the persistent cache.
      *
-     * @param context application context
+     * @param context       application context
      * @param componentName the icon should be returned for this component
-     * @param icon the icon to be persisted
-     * @param dpi the native density of the icon
+     * @param icon          the icon to be persisted
+     * @param dpi           the native density of the icon
      */
     public static void preloadIcon(Context context, ComponentName componentName, Bitmap icon,
-            int dpi) {
+                                   int dpi) {
         // TODO rescale to the correct native DPI
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -534,7 +535,7 @@ public class IconCache {
             byte[] buffer = new byte[1024];
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             int bytesRead = 0;
-            while(bytesRead >= 0) {
+            while (bytesRead >= 0) {
                 bytes.write(buffer, 0, bytesRead);
                 bytesRead = resourceFile.read(buffer, 0, buffer.length);
             }
@@ -548,7 +549,7 @@ public class IconCache {
         } catch (IOException e) {
             Log.w(TAG, "failed to read pre-load icon for: " + key, e);
         } finally {
-            if(resourceFile != null) {
+            if (resourceFile != null) {
                 try {
                     resourceFile.close();
                 } catch (IOException e) {

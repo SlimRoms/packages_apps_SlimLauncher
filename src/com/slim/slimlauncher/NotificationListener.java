@@ -61,7 +61,8 @@ public class NotificationListener extends NotificationListenerService {
         StatusBarNotification[] notifications = null;
         try {
             notifications = getActiveNotifications();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         if (notifications != null && notifications.length > 0) {
             for (StatusBarNotification sbn : notifications) {
                 onNotificationPosted(sbn);

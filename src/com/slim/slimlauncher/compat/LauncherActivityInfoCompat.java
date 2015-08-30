@@ -26,10 +26,16 @@ public abstract class LauncherActivityInfoCompat {
     }
 
     public abstract ComponentName getComponentName();
+
     public abstract UserHandleCompat getUser();
+
     public abstract CharSequence getLabel();
+
     public abstract Drawable getIcon(int density);
+
     public abstract ApplicationInfo getApplicationInfo();
+
     public abstract long getFirstInstallTime();
+
     public abstract Drawable getBadgedIcon(int density);
 }

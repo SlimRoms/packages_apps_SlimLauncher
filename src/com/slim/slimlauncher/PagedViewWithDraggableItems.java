@@ -33,7 +33,7 @@ import android.widget.Toast;
  *
  */
 public abstract class PagedViewWithDraggableItems extends PagedView
-    implements View.OnLongClickListener, View.OnTouchListener {
+        implements View.OnLongClickListener, View.OnTouchListener {
     private View mLastTouchedItem;
     private boolean mIsDragging;
     private boolean mIsDragEnabled;

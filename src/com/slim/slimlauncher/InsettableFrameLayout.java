@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 public class InsettableFrameLayout extends FrameLayout implements
-    ViewGroup.OnHierarchyChangeListener, Insettable {
+        ViewGroup.OnHierarchyChangeListener, Insettable {
 
     protected Rect mInsets = new Rect();
 

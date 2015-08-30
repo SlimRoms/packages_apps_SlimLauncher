@@ -23,7 +23,9 @@ import android.provider.BaseColumns;
  * Settings related utilities.
  */
 class LauncherSettings {
-    /** Columns required on table staht will be subject to backup and restore. */
+    /**
+     * Columns required on table staht will be subject to backup and restore.
+     */
     static interface ChangeLogColumns extends BaseColumns {
         /**
          * The time of the last update to this row.
@@ -49,7 +51,7 @@ class LauncherSettings {
 
         /**
          * The type of the gesture
-         *
+         * <p/>
          * <P>Type: INTEGER</P>
          */
         static final String ITEM_TYPE = "itemType";
@@ -101,7 +103,7 @@ class LauncherSettings {
 
     /**
      * Workspace Screens.
-     *
+     * <p/>
      * Tracks the order of workspace screens.
      */
     static final class WorkspaceScreens implements ChangeLogColumns {
@@ -148,9 +150,8 @@ class LauncherSettings {
         /**
          * The content:// style URL for a given row, identified by its id.
          *
-         * @param id The row id.
+         * @param id     The row id.
          * @param notify True to send a notification is the content changes.
-         *
          * @return The unique content URL for the specified row.
          */
         static Uri getContentUri(long id, boolean notify) {
@@ -173,9 +174,12 @@ class LauncherSettings {
 
         static final String containerToString(int container) {
             switch (container) {
-                case CONTAINER_DESKTOP: return "desktop";
-                case CONTAINER_HOTSEAT: return "hotseat";
-                default: return String.valueOf(container);
+                case CONTAINER_DESKTOP:
+                    return "desktop";
+                case CONTAINER_HOTSEAT:
+                    return "hotseat";
+                default:
+                    return String.valueOf(container);
             }
         }
 
@@ -213,7 +217,7 @@ class LauncherSettings {
 
         /**
          * The profile id of the item in the cell.
-         * <P>
+         * <p/>
          * Type: INTEGER
          * </P>
          */
@@ -225,12 +229,12 @@ class LauncherSettings {
         static final int ITEM_TYPE_FOLDER = 2;
 
         /**
-        * The favorite is a live folder
-        *
-        * Note: live folders can no longer be added to Launcher, and any live folders which
-        * exist within the launcher database will be ignored when loading.  That said, these
-        * entries in the database may still exist, and are not automatically stripped.
-        */
+         * The favorite is a live folder
+         * <p/>
+         * Note: live folders can no longer be added to Launcher, and any live folders which
+         * exist within the launcher database will be ignored when loading.  That said, these
+         * entries in the database may still exist, and are not automatically stripped.
+         */
         static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**
@@ -255,18 +259,18 @@ class LauncherSettings {
 
         /**
          * The appWidgetId of the widget
-         *
+         * <p/>
          * <P>Type: INTEGER</P>
          */
         static final String APPWIDGET_ID = "appWidgetId";
 
         /**
          * The ComponentName of the widget provider
-         *
+         * <p/>
          * <P>Type: STRING</P>
          */
         public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
-        
+
         /**
          * Indicates whether this favorite is an application-created shortcut or not.
          * If the value is 0, the favorite is not an application-created shortcut, if the

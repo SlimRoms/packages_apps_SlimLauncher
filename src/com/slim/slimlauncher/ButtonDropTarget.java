@@ -38,10 +38,14 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     protected TextView mText;
     protected SearchDropTargetBar mSearchDropTargetBar;
 
-    /** Whether this drop target is active for the current drag */
+    /**
+     * Whether this drop target is active for the current drag
+     */
     protected boolean mActive;
 
-    /** The paint applied to the drag view on hover */
+    /**
+     * The paint applied to the drag view on hover
+     */
     protected int mHoverColor = 0;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
@@ -145,7 +149,7 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         }
 
         final int top = to.top + (getMeasuredHeight() - height) / 2;
-        final int bottom = top +  height;
+        final int bottom = top + height;
 
         to.set(left, top, right, bottom);
 

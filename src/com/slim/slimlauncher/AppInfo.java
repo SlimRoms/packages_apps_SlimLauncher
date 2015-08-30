@@ -78,7 +78,7 @@ public class AppInfo extends ItemInfo {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
-            IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
+                   IconCache iconCache, HashMap<Object, CharSequence> labelCache) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
 
@@ -123,7 +123,7 @@ public class AppInfo extends ItemInfo {
 
     public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
         Log.d(tag, label + " size=" + list.size());
-        for (AppInfo info: list) {
+        for (AppInfo info : list) {
             Log.d(tag, "   title=\"" + info.title + "\" iconBitmap="
                     + info.iconBitmap + " firstInstallTime="
                     + info.firstInstallTime);
@@ -135,12 +135,12 @@ public class AppInfo extends ItemInfo {
     }
 
     public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
-            UserHandleCompat user) {
+                                          UserHandleCompat user) {
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         return new Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setComponent(info.getComponentName())
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            .putExtra(EXTRA_PROFILE, serialNumber);
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(info.getComponentName())
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                .putExtra(EXTRA_PROFILE, serialNumber);
     }
 }

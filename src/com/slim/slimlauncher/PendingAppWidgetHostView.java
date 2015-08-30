@@ -54,7 +54,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode) {
+                                    boolean disabledForSafeMode) {
         super(context);
         mInfo = info;
         mStartState = info.restoreStatus;
@@ -71,7 +71,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @Override
     public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
-            int maxHeight) {
+                                    int maxHeight) {
         // No-op
     }
 
@@ -190,7 +190,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 mDrawableSizeChanged = false;
             }
             mCenterDrawable.draw(canvas);
-        } else  {
+        } else {
             // Draw the top corner icon and "Setup" text is possible
             if (mDrawableSizeChanged) {
                 DeviceProfile grid = getDeviceProfile();

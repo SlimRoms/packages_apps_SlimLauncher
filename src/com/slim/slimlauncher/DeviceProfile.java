@@ -268,12 +268,12 @@ public class DeviceProfile {
                 SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
         searchBarSpaceHeightPx = 2 * edgeMarginPx
-                + (showSearchBar ? searchBarHeightPx  : 3 * edgeMarginPx);
+                + (showSearchBar ? searchBarHeightPx : 3 * edgeMarginPx);
     }
 
     /**
      * Apply any Partner customization grid overrides.
-     *
+     * <p/>
      * Currently we support: all apps row / column count.
      */
     private void applyPartnerDeviceProfileOverrides(Context ctx, DisplayMetrics dm) {
@@ -313,12 +313,13 @@ public class DeviceProfile {
         mCallbacks.add(cb);
         cb.onAvailableSizeChanged(this);
     }
+
     void removeCallback(DeviceProfileCallbacks cb) {
         mCallbacks.remove(cb);
     }
 
     private int getDeviceOrientation(Context context) {
-        WindowManager windowManager =  (WindowManager)
+        WindowManager windowManager = (WindowManager)
                 context.getSystemService(Context.WINDOW_SERVICE);
         Resources resources = context.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
@@ -337,7 +338,7 @@ public class DeviceProfile {
     }
 
     private void updateAvailableDimensions(Context context) {
-        WindowManager windowManager =  (WindowManager)
+        WindowManager windowManager = (WindowManager)
                 context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         Resources resources = context.getResources();
@@ -560,12 +561,12 @@ public class DeviceProfile {
     }
 
     private float dist(PointF p0, PointF p1) {
-        return (float) Math.sqrt((p1.x - p0.x)*(p1.x-p0.x) +
-                (p1.y-p0.y)*(p1.y-p0.y));
+        return (float) Math.sqrt((p1.x - p0.x) * (p1.x - p0.x) +
+                (p1.y - p0.y) * (p1.y - p0.y));
     }
 
     private float weight(PointF a, PointF b,
-                        float pow) {
+                         float pow) {
         float d = dist(a, b);
         if (d == 0f) {
             return Float.POSITIVE_INFINITY;
@@ -573,15 +574,19 @@ public class DeviceProfile {
         return (float) (1f / Math.pow(d, pow));
     }
 
-    /** Returns the closest device profile given the width and height and a list of profiles */
+    /**
+     * Returns the closest device profile given the width and height and a list of profiles
+     */
     private DeviceProfile findClosestDeviceProfile(float width, float height,
                                                    ArrayList<DeviceProfileQuery> points) {
         return findClosestDeviceProfiles(width, height, points).get(0).profile;
     }
 
-    /** Returns the closest device profiles ordered by closeness to the specified width and height */
+    /**
+     * Returns the closest device profiles ordered by closeness to the specified width and height
+     */
     private ArrayList<DeviceProfileQuery> findClosestDeviceProfiles(float width, float height,
-                                                   ArrayList<DeviceProfileQuery> points) {
+                                                                    ArrayList<DeviceProfileQuery> points) {
         final PointF xy = new PointF(width, height);
 
         // Sort the profiles by their closeness to the dimensions
@@ -596,7 +601,7 @@ public class DeviceProfile {
     }
 
     private float invDistWeightedInterpolate(float width, float height,
-                ArrayList<DeviceProfileQuery> points) {
+                                             ArrayList<DeviceProfileQuery> points) {
         float sum = 0;
         float weights = 0;
         float pow = 5;
@@ -628,7 +633,9 @@ public class DeviceProfile {
         return sum;
     }
 
-    /** Returns the search bar top offset */
+    /**
+     * Returns the search bar top offset
+     */
     int getSearchBarTopOffset() {
         if (isTablet() && !isVerticalBarLayout()) {
             return showSearchBar ? 4 * edgeMarginPx : 0;
@@ -637,11 +644,16 @@ public class DeviceProfile {
         }
     }
 
-    /** Returns the search bar bounds in the current orientation */
+    /**
+     * Returns the search bar bounds in the current orientation
+     */
     Rect getSearchBarBounds() {
         return getSearchBarBounds(isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
     }
-    /** Returns the search bar bounds in the specified orientation */
+
+    /**
+     * Returns the search bar bounds in the specified orientation
+     */
     Rect getSearchBarBounds(int orientation) {
         Rect bounds = new Rect();
         if (orientation == CellLayout.LANDSCAPE &&
@@ -671,14 +683,16 @@ public class DeviceProfile {
                 bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
                         getSearchBarTopOffset(),
                         availableWidthPx - (desiredWorkspaceLeftRightMarginPx -
-                        defaultWidgetPadding.right),
+                                defaultWidgetPadding.right),
                         showSearchBar ? searchBarSpaceHeightPx : edgeMarginPx);
             }
         }
         return bounds;
     }
 
-    /** Returns the bounds of the workspace page indicators. */
+    /**
+     * Returns the bounds of the workspace page indicators.
+     */
     Rect getWorkspacePageIndicatorBounds(Rect insets) {
         Rect workspacePadding = getWorkspacePadding();
         if (isLandscape && transposeLayoutWithOrientation) {
@@ -699,10 +713,13 @@ public class DeviceProfile {
         }
     }
 
-    /** Returns the workspace padding in the specified orientation */
+    /**
+     * Returns the workspace padding in the specified orientation
+     */
     Rect getWorkspacePadding() {
         return getWorkspacePadding(isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
     }
+
     Rect getWorkspacePadding(int orientation) {
         Rect searchBarBounds = getSearchBarBounds(orientation);
         Rect padding = new Rect();
@@ -787,6 +804,7 @@ public class DeviceProfile {
     int calculateCellWidth(int width, int countX) {
         return width / countX;
     }
+
     int calculateCellHeight(int height, int countY) {
         return height / countY;
     }
@@ -794,9 +812,11 @@ public class DeviceProfile {
     boolean isPhone() {
         return !isTablet && !isLargeTablet;
     }
+
     boolean isTablet() {
         return isTablet;
     }
+
     boolean isLargeTablet() {
         return isLargeTablet;
     }
@@ -821,7 +841,7 @@ public class DeviceProfile {
 
     int calculateOverviewModeWidth(int visibleChildCount) {
         return visibleChildCount * overviewModeBarItemWidthPx +
-                (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
+                (visibleChildCount - 1) * overviewModeBarSpacerWidthPx;
     }
 
     public void layout(Launcher launcher) {
@@ -978,8 +998,8 @@ public class DeviceProfile {
                         (2 * (allAppsNumCols + 1));
                 int paddingTB = (availableHeightPx - (allAppsCellHeightPx * allAppsNumRows)) /
                         (2 * (allAppsNumRows + 1));
-                paddingLR = Math.min(paddingLR, (int)((paddingLR + paddingTB) * 0.75f));
-                paddingTB = Math.min(paddingTB, (int)((paddingLR + paddingTB) * 0.75f));
+                paddingLR = Math.min(paddingLR, (int) ((paddingLR + paddingTB) * 0.75f));
+                paddingTB = Math.min(paddingTB, (int) ((paddingLR + paddingTB) * 0.75f));
                 int maxAllAppsWidth = (allAppsNumCols * (allAppsCellWidthPx + 2 * paddingLR));
                 int gridPaddingLR = (availableWidthPx - maxAllAppsWidth) / 2;
                 // Only adjust the side paddings on landscape phones, or tablets

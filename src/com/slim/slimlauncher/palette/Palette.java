@@ -26,27 +26,27 @@ import java.util.List;
 
 /**
  * A helper class to extract prominent colors from an image.
- * <p>
+ * <p/>
  * A number of colors with different profiles are extracted from the image:
  * <ul>
- *     <li>Vibrant</li>
- *     <li>Vibrant Dark</li>
- *     <li>Vibrant Light</li>
- *     <li>Muted</li>
- *     <li>Muted Dark</li>
- *     <li>Muted Light</li>
+ * <li>Vibrant</li>
+ * <li>Vibrant Dark</li>
+ * <li>Vibrant Light</li>
+ * <li>Muted</li>
+ * <li>Muted Dark</li>
+ * <li>Muted Light</li>
  * </ul>
  * These can be retrieved from the appropriate getter method.
- *
- * <p>
+ * <p/>
+ * <p/>
  * Instances can be created with the synchronous factory methods {@link #generate(Bitmap)} and
  * {@link #generate(Bitmap, int)}.
- * <p>
+ * <p/>
  * These should be called on a background thread, ideally the one in
  * which you load your images on. Sometimes that is not possible, so asynchronous factory methods
  * have also been provided: {@link #generateAsync(Bitmap, PaletteAsyncListener)} and
  * {@link #generateAsync(Bitmap, int, PaletteAsyncListener)}. These can be used as so:
- *
+ * <p/>
  * <pre>
  * Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
  *     public void onGenerated(Palette palette) {
@@ -150,7 +150,6 @@ public final class Palette {
      * what would be created by calling {@link #generate(Bitmap)}.
      *
      * @param listener Listener to be invoked when the {@link Palette} has been generated.
-     *
      * @return the {@link AsyncTask} used to asynchronously generate the instance.
      */
     public static AsyncTask<Bitmap, Void, Palette> generateAsync(
@@ -164,7 +163,6 @@ public final class Palette {
      * would be created by calling {@link #generate(Bitmap, int)}.
      *
      * @param listener Listener to be invoked when the {@link Palette} has been generated.
-     *
      * @return the {@link AsyncTask} used to asynchronously generate the instance.
      */
     public static AsyncTask<Bitmap, Void, Palette> generateAsync(
@@ -474,8 +472,8 @@ public final class Palette {
     }
 
     private static float createComparisonValue(float saturation, float targetSaturation,
-            float luma, float targetLuma,
-            int population, int highestPopulation) {
+                                               float luma, float targetLuma,
+                                               int population, int highestPopulation) {
         return weightedMean(
                 invertDiff(saturation, targetSaturation), WEIGHT_SATURATION,
                 invertDiff(luma, targetLuma), WEIGHT_LUMA,
@@ -497,7 +495,7 @@ public final class Palette {
      * {@code targetValue} and then decreases as the absolute difference between {@code value} and
      * {@code targetValue} increases.
      *
-     * @param value the item's value
+     * @param value       the item's value
      * @param targetValue the value which we desire
      */
     private static float invertDiff(float value, float targetValue) {
@@ -580,9 +578,9 @@ public final class Palette {
 
         /**
          * Return this swatch's HSL values.
-         *     hsv[0] is Hue [0 .. 360)
-         *     hsv[1] is Saturation [0...1]
-         *     hsv[2] is Lightness [0...1]
+         * hsv[0] is Hue [0 .. 360)
+         * hsv[1] is Saturation [0...1]
+         * hsv[2] is Lightness [0...1]
          */
         public float[] getHsl() {
             if (mHsl == null) {
@@ -622,7 +620,7 @@ public final class Palette {
             if (!mGeneratedTextColors) {
                 // First check white, as most colors will be dark
                 final int lightBody = ColorUtils.getTextColorForBackground(
-                        mRgb, Color.WHITE,  MIN_CONTRAST_BODY_TEXT);
+                        mRgb, Color.WHITE, MIN_CONTRAST_BODY_TEXT);
                 final int lightTitle = ColorUtils.getTextColorForBackground(
                         mRgb, Color.WHITE, MIN_CONTRAST_TITLE_TEXT);
 

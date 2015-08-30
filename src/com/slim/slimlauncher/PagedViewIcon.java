@@ -30,7 +30,9 @@ import android.widget.TextView;
  * drawables on the top).
  */
 public class PagedViewIcon extends TextView {
-    /** A simple callback interface to allow a PagedViewIcon to notify when it has been pressed */
+    /**
+     * A simple callback interface to allow a PagedViewIcon to notify when it has been pressed
+     */
     public static interface PressedCallback {
         void iconPressed(PagedViewIcon icon);
     }
@@ -66,7 +68,7 @@ public class PagedViewIcon extends TextView {
     }
 
     public void applyFromApplicationInfo(AppInfo info, boolean scaleUp,
-            PagedViewIcon.PressedCallback cb) {
+                                         PagedViewIcon.PressedCallback cb) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 

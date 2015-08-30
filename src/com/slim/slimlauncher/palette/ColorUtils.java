@@ -18,13 +18,16 @@ package com.slim.slimlauncher.palette;
 
 import android.graphics.Color;
 
-/** @hide */
+/**
+ * @hide
+ */
 final class ColorUtils {
 
     private static final int MIN_ALPHA_SEARCH_MAX_ITERATIONS = 10;
     private static final int MIN_ALPHA_SEARCH_PRECISION = 10;
 
-    private ColorUtils() {}
+    private ColorUtils() {
+    }
 
     /**
      * Composite two potentially translucent colors over each other and returns the result.
@@ -43,7 +46,7 @@ final class ColorUtils {
 
     /**
      * Returns the luminance of a color.
-     *
+     * <p/>
      * Formula defined here: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
      */
     private static double calculateLuminance(int color) {
@@ -61,7 +64,7 @@ final class ColorUtils {
 
     /**
      * Returns the contrast ratio between two colors.
-     *
+     * <p/>
      * Formula defined here: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
      */
     private static double calculateContrast(int foreground, int background) {
@@ -161,7 +164,7 @@ final class ColorUtils {
                 h = ((rf - gf) / deltaMaxMin) + 4f;
             }
 
-            s =  deltaMaxMin / (1f - Math.abs(2f * l - 1f));
+            s = deltaMaxMin / (1f - Math.abs(2f * l - 1f));
         }
 
         hsl[0] = (h * 60f) % 360f;
@@ -169,7 +172,7 @@ final class ColorUtils {
         hsl[2] = l;
     }
 
-    static int HSLtoRGB (float[] hsl) {
+    static int HSLtoRGB(float[] hsl) {
         final float h = hsl[0];
         final float s = hsl[1];
         final float l = hsl[2];

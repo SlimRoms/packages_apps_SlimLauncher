@@ -67,7 +67,7 @@ public class MemoryDumpActivity extends Activity {
                     ZipEntry entry = new ZipEntry(filename);
                     zos.putNextEntry(entry);
                     int len;
-                    while ( 0 < (len = is.read(buf, 0, BUFSIZ)) ) {
+                    while (0 < (len = is.read(buf, 0, BUFSIZ))) {
                         zos.write(buf, 0, len);
                     }
                     zos.closeEntry();
@@ -102,10 +102,10 @@ public class MemoryDumpActivity extends Activity {
             MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
             if (info != null) {
                 body.append("pid ").append(pid).append(":")
-                    .append(" up=").append(info.getUptime())
-                    .append(" pss=").append(info.currentPss)
-                    .append(" uss=").append(info.currentUss)
-                    .append("\n");
+                        .append(" up=").append(info.getUptime())
+                        .append(" pss=").append(info.currentPss)
+                        .append(" uss=").append(info.currentUss)
+                        .append("\n");
             }
             if (pid == myPid) {
                 final String path = String.format("%s/launcher-memory-%d.ahprof",

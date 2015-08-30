@@ -269,7 +269,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public static boolean isScreenLandscape(Context context) {
         return context.getResources().getConfiguration().orientation ==
-            Configuration.ORIENTATION_LANDSCAPE;
+                Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public float getScreenDensity() {

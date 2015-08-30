@@ -82,6 +82,7 @@ public class AppDrawerScrubber extends LinearLayout {
          * letters, we need to map from the larger list to the smaller list.
          * In the case that curIdx is not highlighted, it will use the directional index to
          * determine the adapter index
+         *
          * @return the mHeaders index (aka the underlying adapter index).
          */
         public int getAdapterIndex(int prevIdx, int curIdx) {
@@ -132,8 +133,8 @@ public class AppDrawerScrubber extends LinearLayout {
 
         // show a white line if there are no letters, otherwise show transparent
         Drawable d = mSectionContainer.showLetters() ? new ColorDrawable(Color.TRANSPARENT)
-            : getContext().getResources().getDrawable(R.drawable.seek_back);
-        ((ViewGroup)mSeekBar.getParent()).setBackground(d);
+                : getContext().getResources().getDrawable(R.drawable.seek_back);
+        ((ViewGroup) mSeekBar.getParent()).setBackground(d);
 
     }
 
@@ -204,37 +205,37 @@ public class AppDrawerScrubber extends LinearLayout {
             mAnimatingIn = true;
 
             mScrubberIndicator.animate()
-                .alpha(SCRUBBER_ALPHA_END)
-                .scaleX(SCRUBBER_SCALE_END)
-                .scaleY(SCRUBBER_SCALE_END)
-                .setStartDelay(SCRUBBER_DISPLAY_DELAY_IN)
-                .setDuration(SCRUBBER_DISPLAY_DURATION_IN)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mAnimatingIn = false;
-                        // if the user has stopped touching the seekbar, animate back out
-                        if (!mTouchingTrack) {
-                            animateOut();
+                    .alpha(SCRUBBER_ALPHA_END)
+                    .scaleX(SCRUBBER_SCALE_END)
+                    .scaleY(SCRUBBER_SCALE_END)
+                    .setStartDelay(SCRUBBER_DISPLAY_DELAY_IN)
+                    .setDuration(SCRUBBER_DISPLAY_DURATION_IN)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mAnimatingIn = false;
+                            // if the user has stopped touching the seekbar, animate back out
+                            if (!mTouchingTrack) {
+                                animateOut();
+                            }
                         }
-                    }
-                })
-                .start();
+                    })
+                    .start();
         }
 
         private void animateOut() {
             mScrubberIndicator.animate()
-                .alpha(SCRUBBER_ALPHA_START)
-                .scaleX(SCRUBBER_SCALE_START)
-                .scaleY(SCRUBBER_SCALE_START)
-                .setStartDelay(SCRUBBER_DISPLAY_DELAY_OUT)
-                .setDuration(SCRUBBER_DISPLAY_DURATION_OUT)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mScrubberIndicator.setVisibility(View.INVISIBLE);
-                    }
-                });
+                    .alpha(SCRUBBER_ALPHA_START)
+                    .scaleX(SCRUBBER_SCALE_START)
+                    .scaleY(SCRUBBER_SCALE_START)
+                    .setStartDelay(SCRUBBER_DISPLAY_DELAY_OUT)
+                    .setDuration(SCRUBBER_DISPLAY_DURATION_OUT)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mScrubberIndicator.setVisibility(View.INVISIBLE);
+                        }
+                    });
         }
 
         @Override
@@ -248,7 +249,7 @@ public class AppDrawerScrubber extends LinearLayout {
                 int directionalIndex = mSectionContainer.getDirectionalIndex(mLastIndex, index);
                 String sectionText = mSectionContainer.getHeader(directionalIndex);
 
-                float translateX = (index * seekBar.getWidth()) / (float)mSectionContainer.size();
+                float translateX = (index * seekBar.getWidth()) / (float) mSectionContainer.size();
                 // if we are showing letters, grab the position based on the text view
                 if (mSectionContainer.showLetters()) {
                     translateX = mScrubberText.getPositionOfSection(index);

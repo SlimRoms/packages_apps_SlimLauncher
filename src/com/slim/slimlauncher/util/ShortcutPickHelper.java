@@ -116,7 +116,7 @@ public class ShortcutPickHelper {
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
             startFragmentOrActivity(pickIntent, requestCodeApplication);
-        } else if (application2name != null && application2name.equals(shortcutName)){
+        } else if (application2name != null && application2name.equals(shortcutName)) {
             final List<PackageInfo> pInfos = mPackageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
             ExpandableListView appListView = new ExpandableListView(mParent);
             AppExpandableAdapter appAdapter = new AppExpandableAdapter(pInfos, mParent);
@@ -126,9 +126,9 @@ public class ShortcutPickHelper {
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
                     Intent shortIntent = new Intent(Intent.ACTION_MAIN);
-                    String pkgName = ((GroupInfo)parent.getExpandableListAdapter().getGroup(groupPosition))
+                    String pkgName = ((GroupInfo) parent.getExpandableListAdapter().getGroup(groupPosition))
                             .info.packageName;
-                    String actName = ((GroupInfo)parent.getExpandableListAdapter().getGroup(groupPosition))
+                    String actName = ((GroupInfo) parent.getExpandableListAdapter().getGroup(groupPosition))
                             .info.activities[childPosition].name;
                     shortIntent.setClassName(pkgName, actName);
                     completeSetCustomApp(shortIntent);
@@ -163,9 +163,9 @@ public class ShortcutPickHelper {
                 String rank1 = item1.label.toLowerCase();
                 String rank2 = item2.label.toLowerCase();
                 int result = rank1.compareTo(rank2);
-                if(result == 0) {
+                if (result == 0) {
                     return 0;
-                } else if(result < 0) {
+                } else if (result < 0) {
                     return -1;
                 } else {
                     return +1;
@@ -176,7 +176,8 @@ public class ShortcutPickHelper {
         class GroupInfo {
             String label;
             PackageInfo info;
-            GroupInfo (String l, PackageInfo p) {
+
+            GroupInfo(String l, PackageInfo p) {
                 label = l;
                 info = p;
             }
@@ -214,7 +215,7 @@ public class ShortcutPickHelper {
                 convertView.setPadding(groupPadding, 0, 0, 0);
 
             }
-            TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
+            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
             textView.setText(getChild(groupPosition, childPosition).replaceFirst(allList.get(groupPosition).info.packageName + ".", ""));
             return convertView;
         }
@@ -237,7 +238,7 @@ public class ShortcutPickHelper {
                 convertView = View.inflate(mParent, android.R.layout.simple_list_item_1, null);
                 convertView.setPadding(70, 0, 0, 0);
             }
-            TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
+            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
             textView.setText(getGroup(groupPosition).label.toString());
             return convertView;
         }

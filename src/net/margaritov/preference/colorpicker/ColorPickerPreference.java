@@ -115,7 +115,7 @@ public class ColorPickerPreference extends Preference implements
                 widgetFrameView.getPaddingTop(),
                 (int) (mDensity * 8),
                 widgetFrameView.getPaddingBottom()
-                );
+        );
         // remove already create preview image
         int count = widgetFrameView.getChildCount();
         if (count > 0) {
@@ -194,8 +194,9 @@ public class ColorPickerPreference extends Preference implements
 
     /**
      * For custom purposes. Not used by ColorPickerPreferrence
-     *
+     * <p/>
      * set color preview value from outside
+     *
      * @author kufikugel
      */
     public void setNewPreviewColor(int color) {
@@ -253,8 +254,7 @@ public class ColorPickerPreference extends Preference implements
             red = Integer.parseInt(argb.substring(2, 4), 16);
             green = Integer.parseInt(argb.substring(4, 6), 16);
             blue = Integer.parseInt(argb.substring(6, 8), 16);
-        }
-        else if (argb.length() == 6) {
+        } else if (argb.length() == 6) {
             alpha = 255;
             red = Integer.parseInt(argb.substring(0, 2), 16);
             green = Integer.parseInt(argb.substring(2, 4), 16);
@@ -310,13 +310,13 @@ public class ColorPickerPreference extends Preference implements
         @SuppressWarnings("unused")
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
 
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }

@@ -30,7 +30,7 @@ import android.view.ViewTreeObserver;
  *  prevent jank at the beginning of the animation
  */
 public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
-    implements ValueAnimator.AnimatorUpdateListener {
+        implements ValueAnimator.AnimatorUpdateListener {
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
     private static final int IDEAL_FRAME_DURATION = 16;
@@ -70,16 +70,17 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
         sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-                private long mTime = System.currentTimeMillis();
-                public void onDraw() {
-                    sGlobalFrameCounter++;
-                    if (DEBUG) {
-                        long newTime = System.currentTimeMillis();
-                        Log.d("FirstFrameAnimatorHelper", "TICK " + (newTime - mTime));
-                        mTime = newTime;
-                    }
+            private long mTime = System.currentTimeMillis();
+
+            public void onDraw() {
+                sGlobalFrameCounter++;
+                if (DEBUG) {
+                    long newTime = System.currentTimeMillis();
+                    Log.d("FirstFrameAnimatorHelper", "TICK " + (newTime - mTime));
+                    mTime = newTime;
                 }
-            };
+            }
+        };
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
         sVisible = true;
     }
@@ -95,11 +96,11 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         boolean isFinalFrame = Float.compare(1f, animation.getAnimatedFraction()) == 0;
 
         if (!mHandlingOnAnimationUpdate &&
-            sVisible &&
-            // If the current play time exceeds the duration, or the animated fraction is 1,
-            // the animation will get finished, even if we call setCurrentPlayTime -- therefore
-            // don't adjust the animation in that case
-            currentPlayTime < animation.getDuration() && !isFinalFrame) {
+                sVisible &&
+                // If the current play time exceeds the duration, or the animated fraction is 1,
+                // the animation will get finished, even if we call setCurrentPlayTime -- therefore
+                // don't adjust the animation in that case
+                currentPlayTime < animation.getDuration() && !isFinalFrame) {
             mHandlingOnAnimationUpdate = true;
             long frameNum = sGlobalFrameCounter - mStartFrame;
             // If we haven't drawn our first frame, reset the time to t = 0
@@ -110,22 +111,22 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 // force an invalidate here to make sure the animation continues to advance
                 mTarget.getRootView().invalidate();
                 animation.setCurrentPlayTime(0);
-            // For the second frame, if the first frame took more than 16ms,
-            // adjust the start time and pretend it took only 16ms anyway. This
-            // prevents a large jump in the animation due to an expensive first frame
+                // For the second frame, if the first frame took more than 16ms,
+                // adjust the start time and pretend it took only 16ms anyway. This
+                // prevents a large jump in the animation due to an expensive first frame
             } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
-                       !mAdjustedSecondFrameTime &&
-                       currentTime > mStartTime + IDEAL_FRAME_DURATION &&
-                       currentPlayTime > IDEAL_FRAME_DURATION) {
+                    !mAdjustedSecondFrameTime &&
+                    currentTime > mStartTime + IDEAL_FRAME_DURATION &&
+                    currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
             } else {
                 if (frameNum > 1) {
                     mTarget.post(new Runnable() {
-                            public void run() {
-                                animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
-                            }
-                        });
+                        public void run() {
+                            animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
+                        }
+                    });
                 }
                 if (DEBUG) print(animation);
             }
@@ -138,7 +139,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     public void print(ValueAnimator animation) {
         float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
         Log.d("FirstFrameAnimatorHelper", sGlobalFrameCounter +
-              "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-              mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
+                "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
+                mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
     }
 }

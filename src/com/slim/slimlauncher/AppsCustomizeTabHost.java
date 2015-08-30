@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.FrameLayout;
 
-public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransitionable, Insettable  {
+public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransitionable, Insettable {
     static final String LOG_TAG = "AppsCustomizeTabHost";
 
     private static final String APPS_TAB_TAG = "APPS";
@@ -131,6 +131,7 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
             mPagedView.loadAssociatedPages(mPagedView.getCurrentPage());
         }
     }
+
     @Override
     public ViewGroup getContent() {
         return mPagedView;

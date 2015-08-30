@@ -178,7 +178,7 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery,
-                Bundle appSearchData, Rect sourceBounds) {
+                                   Bundle appSearchData, Rect sourceBounds) {
             return false;
         }
 
@@ -252,7 +252,7 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
-                LauncherOverlayCallbacks callbacks) {
+                                                      LauncherOverlayCallbacks callbacks) {
 
             mLauncherOverlay.setOverlayCallbacks(callbacks);
             mLauncherOverlay.setOverlayContainer(container);
@@ -290,7 +290,7 @@ public class LauncherExtension extends Launcher {
             private void updatePanelOffset(int progress) {
                 int panelWidth = mSearchOverlay.getMeasuredWidth();
                 int offset = (int) ((progress / 100f) * panelWidth);
-                mSearchOverlay.setTranslationX(- panelWidth + offset);
+                mSearchOverlay.setTranslationX(-panelWidth + offset);
             }
 
             @Override
@@ -348,6 +348,8 @@ public class LauncherExtension extends Launcher {
             public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks) {
                 mLauncherOverlayCallbacks = callbacks;
             }
-        };
+        }
+
+        ;
     }
 }

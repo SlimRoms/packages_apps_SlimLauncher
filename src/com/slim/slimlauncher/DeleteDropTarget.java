@@ -75,7 +75,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
-        mUninstallDrawable = (TransitionDrawable) 
+        mUninstallDrawable = (TransitionDrawable)
                 r.getDrawable(R.drawable.uninstall_target_selector);
         mRemoveDrawable = (TransitionDrawable) r.getDrawable(R.drawable.remove_target_selector);
 
@@ -98,6 +98,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isAllAppsApplication(DragSource source, Object info) {
         return source.supportsAppInfoDropTarget() && (info instanceof AppInfo);
     }
+
     private boolean isAllAppsWidget(DragSource source, Object info) {
         if (source instanceof AppsCustomizePagedView) {
             if (info instanceof PendingAddItemInfo) {
@@ -111,15 +112,19 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
         return false;
     }
+
     private boolean isDragSourceWorkspaceOrFolder(DragObject d) {
         return (d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder);
     }
+
     private boolean isWorkspaceOrFolderApplication(DragObject d) {
         return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof ShortcutInfo);
     }
+
     private boolean isWorkspaceOrFolderWidget(DragObject d) {
         return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof LauncherAppWidgetInfo);
     }
+
     private boolean isWorkspaceFolder(DragObject d) {
         return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof FolderInfo);
     }
@@ -130,6 +135,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
         setTextColor(mHoverColor);
     }
+
     private void resetHoverColor() {
         if (mCurrentDrawable != null) {
             mCurrentDrawable.resetTransition();
@@ -163,7 +169,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             }
 
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                item instanceof ShortcutInfo) {
+                    item instanceof ShortcutInfo) {
                 if (LauncherAppState.isDisableAllApps()) {
                     ShortcutInfo shortcutInfo = (ShortcutInfo) info;
                     return (shortcutInfo.flags & AppInfo.DOWNLOADED_FLAG) != 0;
@@ -214,7 +220,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (isVisible && getText().length() > 0) {
             setText(useUninstallLabel ? R.string.delete_target_uninstall_label
-                : R.string.delete_target_label);
+                    : R.string.delete_target_label);
         }
     }
 
@@ -317,10 +323,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
                                     getContext(), packageName, user);
                             if (dragSource instanceof Folder) {
                                 ((Folder) dragSource).
-                                    onUninstallActivityReturned(uninstallSuccessful);
+                                        onUninstallActivityReturned(uninstallSuccessful);
                             } else if (dragSource instanceof Workspace) {
                                 ((Workspace) dragSource).
-                                    onUninstallActivityReturned(uninstallSuccessful);
+                                        onUninstallActivityReturned(uninstallSuccessful);
                             }
                         }
                     };
@@ -345,7 +351,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
+                    public Void doInBackground(Void... args) {
                         appWidgetHost.deleteAppWidgetId(launcherAppWidgetInfo.appWidgetId);
                         return null;
                     }
@@ -369,7 +375,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * Creates an animation from the current drag view to the delete trash icon.
      */
     private AnimatorUpdateListener createFlingToTrashAnimatorListener(final DragLayer dragLayer,
-            DragObject d, PointF vel, ViewConfiguration config) {
+                                                                      DragObject d, PointF vel, ViewConfiguration config) {
 
         int width = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicWidth();
         int height = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicHeight();
@@ -438,7 +444,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         private final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(0.75f);
 
         public FlingAlongVectorAnimatorUpdateListener(DragLayer dragLayer, PointF vel, Rect from,
-                long startTime, float friction) {
+                                                      long startTime, float friction) {
             mDragLayer = dragLayer;
             mVelocity = vel;
             mFrom = from;
@@ -473,10 +479,13 @@ public class DeleteDropTarget extends ButtonDropTarget {
             mVelocity.y *= mFriction;
             mPrevTime = curTime;
         }
-    };
+    }
+
+    ;
+
     private AnimatorUpdateListener createFlingAlongVectorAnimatorListener(final DragLayer dragLayer,
-            DragObject d, PointF vel, final long startTime, final int duration,
-            ViewConfiguration config) {
+                                                                          DragObject d, PointF vel, final long startTime, final int duration,
+                                                                          ViewConfiguration config) {
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 

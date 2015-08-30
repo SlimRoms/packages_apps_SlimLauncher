@@ -33,15 +33,23 @@ import java.util.List;
 class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
-    /** The list off all apps. */
+    /**
+     * The list off all apps.
+     */
     public ArrayList<AppInfo> data =
             new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
-    /** The list of apps that have been added since the last notify() call. */
+    /**
+     * The list of apps that have been added since the last notify() call.
+     */
     public ArrayList<AppInfo> added =
             new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
-    /** The list of apps that have been removed since the last notify() call. */
+    /**
+     * The list of apps that have been removed since the last notify() call.
+     */
     public ArrayList<AppInfo> removed = new ArrayList<AppInfo>();
-    /** The list of apps that have been modified since the last notify() call. */
+    /**
+     * The list of apps that have been modified since the last notify() call.
+     */
     public ArrayList<AppInfo> modified = new ArrayList<AppInfo>();
 
     private IconCache mIconCache;
@@ -68,7 +76,7 @@ class AllAppsList {
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
      * list to broadcast when notify() is called.
-     *
+     * <p/>
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info) {
@@ -186,7 +194,7 @@ class AllAppsList {
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
     private static boolean findActivity(List<LauncherActivityInfoCompat> apps,
-            ComponentName component) {
+                                        ComponentName component) {
         for (LauncherActivityInfoCompat info : apps) {
             if (info.getComponentName().equals(component)) {
                 return true;
@@ -200,7 +208,7 @@ class AllAppsList {
      * MAIN/LAUNCHER activities in the supplied package.
      */
     static boolean packageHasActivities(Context context, String packageName,
-            UserHandleCompat user) {
+                                        UserHandleCompat user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         return launcherApps.getActivityList(packageName, user).size() > 0;
     }
@@ -209,7 +217,7 @@ class AllAppsList {
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
     private static boolean findActivity(ArrayList<AppInfo> apps, ComponentName component,
-            UserHandleCompat user) {
+                                        UserHandleCompat user) {
         final int N = apps.size();
         for (int i = 0; i < N; i++) {
             final AppInfo info = apps.get(i);
@@ -224,8 +232,8 @@ class AllAppsList {
      * Find an ApplicationInfo object for the given packageName and className.
      */
     private AppInfo findApplicationInfoLocked(String packageName, UserHandleCompat user,
-            String className) {
-        for (AppInfo info: data) {
+                                              String className) {
+        for (AppInfo info : data) {
             final ComponentName component = info.intent.getComponent();
             if (user.equals(info.user) && packageName.equals(component.getPackageName())
                     && className.equals(component.getClassName())) {
@@ -236,9 +244,11 @@ class AllAppsList {
     }
 
     public AppInfo unreadNumbersChanged(Context context, ComponentName component,
-            int unreadNum) {
+                                        int unreadNum) {
 
-        if (component == null) { return null; }
+        if (component == null) {
+            return null;
+        }
 
         LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();

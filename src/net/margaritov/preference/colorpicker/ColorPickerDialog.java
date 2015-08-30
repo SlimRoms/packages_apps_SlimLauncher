@@ -107,7 +107,7 @@ public class ColorPickerDialog
                 0,
                 Math.round(mColorPicker.getDrawingOffset()),
                 0
-                );
+        );
 
         mOldColor.setOnClickListener(this);
         mNewColor.setOnClickListener(this);
@@ -126,7 +126,7 @@ public class ColorPickerDialog
             mHex.setText(ColorPickerPreference.convertToARGB(color));
         }
         if (mSetButton != null) {
-           mSetButton.setOnClickListener(new View.OnClickListener() {
+            mSetButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {

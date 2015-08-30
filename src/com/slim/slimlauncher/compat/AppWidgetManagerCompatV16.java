@@ -50,7 +50,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
 
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
-            Bundle options) {
+                                            Bundle options) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.provider);
         } else {
@@ -65,7 +65,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
 
     @Override
     public void startConfigActivity(AppWidgetProviderInfo info, int widgetId, Activity activity,
-            AppWidgetHost host, int requestCode) {
+                                    AppWidgetHost host, int requestCode) {
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
         intent.setComponent(info.configure);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);

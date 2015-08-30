@@ -136,7 +136,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
-            Bitmap icon, UserHandleCompat user) {
+                 Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
         this.title = title;
@@ -162,7 +162,9 @@ public class ShortcutInfo extends ItemInfo {
         status = info.status;
     }
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
+    /**
+     * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
+     */
     public ShortcutInfo(AppInfo info) {
         super(info);
         title = info.title.toString();
@@ -227,9 +229,9 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public static void dumpShortcutInfoList(String tag, String label,
-            ArrayList<ShortcutInfo> list) {
+                                            ArrayList<ShortcutInfo> list) {
         Log.d(tag, label + " size=" + list.size());
-        for (ShortcutInfo info: list) {
+        for (ShortcutInfo info : list) {
             Log.d(tag, "   title=\"" + info.title + " icon=" + info.mIcon
                     + " customIcon=" + info.customIcon);
         }

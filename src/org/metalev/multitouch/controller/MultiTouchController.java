@@ -2,40 +2,40 @@ package org.metalev.multitouch.controller;
 
 /**
  * MultiTouchController.java
- *
+ * <p/>
  * Author: Luke Hutchison (luke.hutch@mit.edu)
- *   Please drop me an email if you use this code so I can list your project here!
- *
+ * Please drop me an email if you use this code so I can list your project here!
+ * <p/>
  * Usage:
- *   <code>
- *   public class MyMTView extends View implements MultiTouchObjectCanvas<PinchWidgetType> {
- *
- *       private MultiTouchController<PinchWidgetType> multiTouchController = new MultiTouchController<PinchWidgetType>(this);
- *
- *       // Pass touch events to the MT controller
- *       public boolean onTouchEvent(MotionEvent event) {
- *           return multiTouchController.onTouchEvent(event);
- *       }
- *
- *       // ... then implement the MultiTouchObjectCanvas interface here, see details in the comments of that interface.
- *   }
- *   </code>
- *
+ * <code>
+ * public class MyMTView extends View implements MultiTouchObjectCanvas<PinchWidgetType> {
+ * <p/>
+ * private MultiTouchController<PinchWidgetType> multiTouchController = new MultiTouchController<PinchWidgetType>(this);
+ * <p/>
+ * // Pass touch events to the MT controller
+ * public boolean onTouchEvent(MotionEvent event) {
+ * return multiTouchController.onTouchEvent(event);
+ * }
+ * <p/>
+ * // ... then implement the MultiTouchObjectCanvas interface here, see details in the comments of that interface.
+ * }
+ * </code>
+ * <p/>
  * Changelog:
- *   2010-06-09 v1.5.1  Some API changes to make it possible to selectively update or not update scale / rotation.
- *                      Fixed anisotropic zoom.  Cleaned up rotation code.  Added more comments.  Better var names. (LH)
- *   2010-06-09 v1.4    Added ability to track pinch rotation (Mickael Despesse, author of "Face Frenzy") and anisotropic pinch-zoom (LH)
- *   2010-06-09 v1.3.3  Bugfixes for Android-2.1; added optional debug info (LH)
- *   2010-06-09 v1.3    Ported to Android-2.2 (handle ACTION_POINTER_* actions); fixed several bugs; refactoring; documentation (LH)
- *   2010-05-17 v1.2.1  Dual-licensed under Apache and GPL licenses
- *   2010-02-18 v1.2    Support for compilation under Android 1.5/1.6 using introspection (mmin, author of handyCalc)
- *   2010-01-08 v1.1.1  Bugfixes to Cyanogen's patch that only showed up in more complex uses of controller (LH)
- *   2010-01-06 v1.1    Modified for official level 5 MT API (Cyanogen)
- *   2009-01-25 v1.0    Original MT controller, released for hacked G1 kernel (LH)
- *
+ * 2010-06-09 v1.5.1  Some API changes to make it possible to selectively update or not update scale / rotation.
+ * Fixed anisotropic zoom.  Cleaned up rotation code.  Added more comments.  Better var names. (LH)
+ * 2010-06-09 v1.4    Added ability to track pinch rotation (Mickael Despesse, author of "Face Frenzy") and anisotropic pinch-zoom (LH)
+ * 2010-06-09 v1.3.3  Bugfixes for Android-2.1; added optional debug info (LH)
+ * 2010-06-09 v1.3    Ported to Android-2.2 (handle ACTION_POINTER_* actions); fixed several bugs; refactoring; documentation (LH)
+ * 2010-05-17 v1.2.1  Dual-licensed under Apache and GPL licenses
+ * 2010-02-18 v1.2    Support for compilation under Android 1.5/1.6 using introspection (mmin, author of handyCalc)
+ * 2010-01-08 v1.1.1  Bugfixes to Cyanogen's patch that only showed up in more complex uses of controller (LH)
+ * 2010-01-06 v1.1    Modified for official level 5 MT API (Cyanogen)
+ * 2009-01-25 v1.0    Original MT controller, released for hacked G1 kernel (LH)
+ * <p/>
  * Planned features:
  * - Add inertia (flick-pinch-zoom or flick-scroll)
- *
+ * <p/>
  * Known usages:
  * - Mickael Despesse's "Face Frenzy" face distortion app, to be published to the Market soon
  * - Yuan Chin's fork of ADW Launcher to support multitouch
@@ -43,10 +43,10 @@ package org.metalev.multitouch.controller;
  * - mmin's handyCalc calculator
  * - My own "MultiTouch Visualizer 2" in the Market
  * - Formerly: The browser in cyanogenmod (and before that, JesusFreke), and other firmwares like dwang5.  This usage has been
- *   replaced with official pinch/zoom in Maps, Browser and Gallery[3D] as of API level 5.
- *
+ * replaced with official pinch/zoom in Maps, Browser and Gallery[3D] as of API level 5.
+ * <p/>
  * License:
- *   Dual-licensed under the Apache License v2 and the GPL v2.
+ * Dual-licensed under the Apache License v2 and the GPL v2.
  */
 
 import java.lang.reflect.Method;
@@ -279,7 +279,7 @@ public class MultiTouchController<T> {
                 }
                 // Decode event
                 decodeTouchEvent(pointerCount, xVals, yVals, pressureVals, pointerIdxs, //
-						/* action = */processingHist ? MotionEvent.ACTION_MOVE : action, //
+                        /* action = */processingHist ? MotionEvent.ACTION_MOVE : action, //
 						/* down = */processingHist ? true : action != MotionEvent.ACTION_UP //
                                 && (action & ((1 << ACTION_POINTER_INDEX_SHIFT) - 1)) != ACTION_POINTER_UP //
                                 && action != MotionEvent.ACTION_CANCEL, //

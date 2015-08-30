@@ -73,7 +73,8 @@ public final class Utilities {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
     }
-    static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
+
+    static int sColors[] = {0xffff0000, 0xff00ff00, 0xff0000ff};
     static int sColorIndex = 0;
 
     static int[] sLoc0 = new int[2];
@@ -84,47 +85,47 @@ public final class Utilities {
     static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
     public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
-   static Bitmap createIconBitmap(Drawable icon, Context context, int count) {
-       Bitmap b = createIconBitmap(icon, context);
+    static Bitmap createIconBitmap(Drawable icon, Context context, int count) {
+        Bitmap b = createIconBitmap(icon, context);
 
-       if (!SettingsProvider.getBoolean(context,
-               SettingsProvider.KEY_NOTIFICATION_BADGES, false) || count <= 0) {
-           return b;
-       }
+        if (!SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_NOTIFICATION_BADGES, false) || count <= 0) {
+            return b;
+        }
 
-       int textureWidth = b.getWidth();
-       final Resources resources = context.getResources();
-       final Canvas canvas = sCanvas;
-       canvas.setBitmap(b);
+        int textureWidth = b.getWidth();
+        final Resources resources = context.getResources();
+        final Canvas canvas = sCanvas;
+        canvas.setBitmap(b);
 
-       float textsize = resources.getDimension(R.dimen.infomation_count_textsize);
-       Paint countPaint = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
-       countPaint.setColor(Color.WHITE);
-       countPaint.setTextSize(textsize);
+        float textsize = resources.getDimension(R.dimen.infomation_count_textsize);
+        Paint countPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
+        countPaint.setColor(Color.WHITE);
+        countPaint.setTextSize(textsize);
 
-       String text = String.valueOf(count);
-       if (count >= 1000) {
-           text = "999+";
-       }
+        String text = String.valueOf(count);
+        if (count >= 1000) {
+            text = "999+";
+        }
 
-       float count_hight = resources.getDimension(R.dimen.infomation_count_height);
-       float padding = resources.getDimension(R.dimen.infomation_count_padding);
-       float radius = resources.getDimension(R.dimen.infomation_count_circle_radius);
-       int  textwidth = (int) (countPaint.measureText(text) + 1);
-       float width =textwidth + padding * 2;
-       width = Math.max(width, resources.getDimensionPixelSize(R.dimen.infomation_count_min_width));
+        float count_hight = resources.getDimension(R.dimen.infomation_count_height);
+        float padding = resources.getDimension(R.dimen.infomation_count_padding);
+        float radius = resources.getDimension(R.dimen.infomation_count_circle_radius);
+        int textwidth = (int) (countPaint.measureText(text) + 1);
+        float width = textwidth + padding * 2;
+        width = Math.max(width, resources.getDimensionPixelSize(R.dimen.infomation_count_min_width));
 
-       RectF rect = new RectF(textureWidth - width -1, 1, textureWidth - 1, count_hight + 1);
-       Paint paint = new Paint();
-       paint.setAntiAlias(true);
-       paint.setColor(resources.getColor(R.color.infomation_count_circle_color));
-       canvas.drawRoundRect(rect , radius, radius, paint);
+        RectF rect = new RectF(textureWidth - width - 1, 1, textureWidth - 1, count_hight + 1);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(resources.getColor(R.color.infomation_count_circle_color));
+        canvas.drawRoundRect(rect, radius, radius, paint);
 
-       float x = textureWidth - (width + textwidth ) / 2 - 1;
-       float y = textsize;
-       canvas.drawText(text, x, y, countPaint);
+        float x = textureWidth - (width + textwidth) / 2 - 1;
+        float y = textsize;
+        canvas.drawText(text, x, y, countPaint);
 
-       return b;
+        return b;
     }
 
     /**
@@ -132,7 +133,7 @@ public final class Utilities {
      * exist, it returns null.
      */
     static Bitmap createIconBitmap(String packageName, String resourceName, IconCache cache,
-            Context context) {
+                                   Context context) {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
@@ -216,7 +217,7 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view.
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context,
-            IconPackHelper iconPackHelper) {
+                                          IconPackHelper iconPackHelper) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
@@ -234,7 +235,7 @@ public final class Utilities {
             int backTintColor = 0;
             IconPackHelper.SwatchType swatchType = IconPackHelper.SwatchType.None;
             float[] colorFilter = null;
-            
+
 
             if (iconPackHelper != null) {
                 iconMask = iconPackHelper.getIconMask();
@@ -285,8 +286,8 @@ public final class Utilities {
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int left = (textureWidth - width) / 2;
+            final int top = (textureHeight - height) / 2;
 
             @SuppressWarnings("all") // suppress dead code warning
             final boolean debug = false;
@@ -296,7 +297,7 @@ public final class Utilities {
                 if (++sColorIndex >= sColors.length) sColorIndex = 0;
                 Paint debugPaint = new Paint();
                 debugPaint.setColor(0xffcccc00);
-                canvas.drawRect(left, top, left+width, top+height, debugPaint);
+                canvas.drawRect(left, top, left + width, top + height, debugPaint);
             }
 
             if (swatchType != null && swatchType != IconPackHelper.SwatchType.None) {
@@ -324,7 +325,7 @@ public final class Utilities {
             }
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left+width, top+height);
+            icon.setBounds(left, top, left + width, top + height);
             canvas.save();
             final float halfWidth = width / 2f;
             final float halfHeight = width / 2f;
@@ -385,11 +386,10 @@ public final class Utilities {
     /**
      * Returns a Bitmap representing the thumbnail of the specified Bitmap.
      *
-     * @param bitmap The bitmap to get a thumbnail of.
+     * @param bitmap  The bitmap to get a thumbnail of.
      * @param context The application's context.
-     *
      * @return A thumbnail for the specified bitmap or the bitmap itself if the
-     *         thumbnail could not be created.
+     * thumbnail could not be created.
      */
     static Bitmap resampleIconBitmap(Bitmap bitmap, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
@@ -410,14 +410,14 @@ public final class Utilities {
      * Given a coordinate relative to the descendant, find the coordinate in a parent view's
      * coordinates.
      *
-     * @param descendant The descendant to which the passed coordinate is relative.
-     * @param root The root view to make the coordinates relative to.
-     * @param coord The coordinate that we want mapped.
+     * @param descendant        The descendant to which the passed coordinate is relative.
+     * @param root              The root view to make the coordinates relative to.
+     * @param coord             The coordinate that we want mapped.
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     *                          sometimes this is relevant as in a child's coordinates within the descendant.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
+     * this scale factor is assumed to be equal in X and Y, and so if at any point this
+     * assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToParent(View descendant, View root,
                                                            int[] coord, boolean includeRootScroll) {
@@ -426,7 +426,7 @@ public final class Utilities {
         float[] pt = {coord[0], coord[1]};
 
         View v = descendant;
-        while(v != root && v != null) {
+        while (v != root && v != null) {
             ancestorChain.add(v);
             v = (View) v.getParent();
         }
@@ -464,7 +464,7 @@ public final class Utilities {
         float[] pt = {coord[0], coord[1]};
 
         View v = descendant;
-        while(v != root) {
+        while (v != root) {
             ancestorChain.add(v);
             v = (View) v.getParent();
         }
@@ -475,7 +475,7 @@ public final class Utilities {
         int count = ancestorChain.size();
         for (int i = count - 1; i >= 0; i--) {
             View ancestor = ancestorChain.get(i);
-            View next = i > 0 ? ancestorChain.get(i-1) : null;
+            View next = i > 0 ? ancestorChain.get(i - 1) : null;
 
             pt[0] += ancestor.getScrollX();
             pt[1] += ancestor.getScrollY();
@@ -593,7 +593,8 @@ public final class Utilities {
 
     /**
      * This picks a dominant color, looking for high-saturation, high-value, repeated hues.
-     * @param bitmap The bitmap to scan
+     *
+     * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
     static int findDominantColorByHue(Bitmap bitmap, int samples) {
@@ -692,7 +693,7 @@ public final class Utilities {
         return null;
     }
 
-    public static float convertDpToPixel(float dp, Context context){
+    public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * (metrics.densityDpi / (float) DisplayMetrics.DENSITY_DEFAULT);

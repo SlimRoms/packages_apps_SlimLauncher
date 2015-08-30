@@ -42,7 +42,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
-            AppWidgetProviderInfo appWidget) {
+                                             AppWidgetProviderInfo appWidget) {
         return new LauncherAppWidgetHostView(context);
     }
 

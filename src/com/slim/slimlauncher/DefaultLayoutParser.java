@@ -45,7 +45,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId) {
+                               LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
         Log.e(TAG, "Default layout parser initialized");
     }
@@ -89,7 +89,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             XmlResourceParser parser,
             HashMap<String, TagParser> tagParserMap,
             ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
+            throws XmlPullParserException, IOException {
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
             if (resId != 0) {
@@ -178,7 +178,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
 
         private boolean wouldLaunchResolverActivity(ResolveInfo resolved,
-                List<ResolveInfo> appList) {
+                                                    List<ResolveInfo> appList) {
             // If the list contains the above resolved activity, then it can't be
             // ResolverActivity itself.
             for (int i = 0; i < appList.size(); ++i) {

@@ -33,10 +33,11 @@ public class FastBitmapView extends View {
 
     /**
      * Applies the new bitmap.
+     *
      * @return true if the view was invalidated.
      */
     public boolean setBitmap(Bitmap b) {
-        if (b != mBitmap){
+        if (b != mBitmap) {
             if (mBitmap != null) {
                 invalidate(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
             }

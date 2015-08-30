@@ -52,14 +52,16 @@ public class AutoInstallsLayout {
     private static final String TAG = "AutoInstalls";
     private static final boolean LOGD = false;
 
-    /** Marker action used to discover a package which defines launcher customization */
+    /**
+     * Marker action used to discover a package which defines launcher customization
+     */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
             "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
     private static final String LAYOUT_RES = "default_layout";
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback) {
+                                  LayoutParserCallback callback) {
         Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
@@ -127,8 +129,8 @@ public class AutoInstallsLayout {
     protected SQLiteDatabase mDb;
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources res,
-            int layoutId, String rootTag) {
+                              LayoutParserCallback callback, Resources res,
+                              int layoutId, String rootTag) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -180,6 +182,7 @@ public class AutoInstallsLayout {
 
     /**
      * Parses container and screenId attribute from the current tag, and puts it in the out.
+     *
      * @param out array of size 2.
      */
     protected void parseContainerAndScreen(XmlResourceParser parser, long[] out) {
@@ -201,7 +204,7 @@ public class AutoInstallsLayout {
             XmlResourceParser parser,
             HashMap<String, TagParser> tagParserMap,
             ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
+            throws XmlPullParserException, IOException {
         mValues.clear();
         parseContainerAndScreen(parser, mTemp);
         final long container = mTemp[0];
@@ -265,6 +268,7 @@ public class AutoInstallsLayout {
     protected interface TagParser {
         /**
          * Parses the tag and adds to the db
+         *
          * @return the id of the row added or -1;
          */
         long parseAndAdd(XmlResourceParser parser)
@@ -290,20 +294,21 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[] { packageName });
+                                new String[]{packageName});
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
                     final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                        .addCategory(Intent.CATEGORY_LAUNCHER)
-                        .setComponent(cn)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            .addCategory(Intent.CATEGORY_LAUNCHER)
+                            .setComponent(cn)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    if (LOGD) Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    if (LOGD)
+                        Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
                 }
                 return -1;
             } else {
@@ -336,10 +341,10 @@ public class AutoInstallsLayout {
 
             mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(new ComponentName(packageName, className))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(new ComponentName(packageName, className))
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
                     Favorites.ITEM_TYPE_APPLICATION);
         }
@@ -383,7 +388,7 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mSourceRes.getString(titleResId),
                     intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
@@ -419,7 +424,7 @@ public class AutoInstallsLayout {
                 mPackageManager.getReceiverInfo(cn, 0);
             } catch (Exception e) {
                 String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                        new String[] { packageName });
+                        new String[]{packageName});
                 cn = new ComponentName(packages[0], className);
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);
@@ -581,7 +586,7 @@ public class AutoInstallsLayout {
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
-                && type != XmlPullParser.END_DOCUMENT);
+                && type != XmlPullParser.END_DOCUMENT) ;
 
         if (type != XmlPullParser.START_TAG) {
             throw new XmlPullParserException("No start tag found");
@@ -611,7 +616,7 @@ public class AutoInstallsLayout {
      * first before falling back to anonymous attribute.
      */
     protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
-            int defaultValue) {
+                                                   int defaultValue) {
         int value = parser.getAttributeResourceValue(
                 "http://schemas.android.com/apk/res-auto/com.slim.slimlauncher", attribute,
                 defaultValue);

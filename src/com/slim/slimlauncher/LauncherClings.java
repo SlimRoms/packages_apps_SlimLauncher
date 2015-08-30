@@ -53,7 +53,9 @@ class LauncherClings implements OnClickListener {
     private Launcher mLauncher;
     private LayoutInflater mInflater;
 
-    /** Ctor */
+    /**
+     * Ctor
+     */
     public LauncherClings(Launcher launcher) {
         mLauncher = launcher;
         mInflater = LayoutInflater.from(new
@@ -88,7 +90,7 @@ class LauncherClings implements OnClickListener {
 
     /**
      * Shows the migration cling.
-     *
+     * <p/>
      * This flow is mutually exclusive with showFirstRunCling, and only runs if this Launcher
      * package was not preinstalled and there exists a db to migrate from.
      */
@@ -186,7 +188,9 @@ class LauncherClings implements OnClickListener {
         mLauncher.getWorkspace().post(dismissCb);
     }
 
-    /** Hides the specified Cling */
+    /**
+     * Hides the specified Cling
+     */
     private void dismissCling(final View cling, final Runnable postAnimationCb,
                               final String flag, int duration) {
         // To catch cases where siblings of top-level views are made invisible, just check whether
@@ -196,8 +200,8 @@ class LauncherClings implements OnClickListener {
                 public void run() {
                     cling.setVisibility(View.GONE);
                     mLauncher.getSharedPrefs().edit()
-                        .putBoolean(flag, true)
-                        .apply();
+                            .putBoolean(flag, true)
+                            .apply();
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -211,14 +215,16 @@ class LauncherClings implements OnClickListener {
         }
     }
 
-    /** Returns whether the clings are enabled or should be shown */
+    /**
+     * Returns whether the clings are enabled or should be shown
+     */
     private boolean areClingsEnabled() {
         if (DISABLE_CLINGS) {
             return false;
         }
 
         // disable clings when running in a test harness
-        if(ActivityManager.isRunningInTestHarness()) return false;
+        if (ActivityManager.isRunningInTestHarness()) return false;
 
         // Disable clings for accessibility when explore by touch is enabled
         final AccessibilityManager a11yManager = (AccessibilityManager) mLauncher.getSystemService(
@@ -249,8 +255,8 @@ class LauncherClings implements OnClickListener {
     public boolean shouldShowFirstRunOrMigrationClings() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         return areClingsEnabled() &&
-            !sharedPrefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false) &&
-            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
+                !sharedPrefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false) &&
+                !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
 
     public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {

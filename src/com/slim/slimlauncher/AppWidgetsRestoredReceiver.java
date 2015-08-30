@@ -57,13 +57,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             values.put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i]);
             values.put(LauncherSettings.Favorites.RESTORED, state);
 
-            String[] widgetIdParams = new String[] { Integer.toString(oldWidgetIds[i]) };
+            String[] widgetIdParams = new String[]{Integer.toString(oldWidgetIds[i])};
 
             int result = cr.update(Favorites.CONTENT_URI, values,
                     "appWidgetId=? and (restored & 1) = 1", widgetIdParams);
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
-                        new String[] {Favorites.APPWIDGET_ID},
+                        new String[]{Favorites.APPWIDGET_ID},
                         "appWidgetId=?", widgetIdParams, null);
                 try {
                     if (!cursor.moveToFirst()) {
@@ -81,7 +81,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             final AppWidgetHost appWidgetHost =
                     new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
             new AsyncTask<Void, Void, Void>() {
-                public Void doInBackground(Void ... args) {
+                public Void doInBackground(Void... args) {
                     for (Integer id : idsToRemove) {
                         appWidgetHost.deleteAppWidgetId(id);
                         Log.e(TAG, "Widget no longer present, appWidgetId=" + id);

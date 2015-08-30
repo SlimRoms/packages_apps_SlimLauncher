@@ -146,7 +146,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            FolderInfo folderInfo, IconCache iconCache) {
+                              FolderInfo folderInfo, IconCache iconCache) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
@@ -351,7 +351,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER &&
-                canMergeDragFolder((FolderInfo) item)) &&
+                        canMergeDragFolder((FolderInfo) item)) &&
                 !mFolder.isFull() && item != mInfo && !mInfo.opened);
     }
 
@@ -413,8 +413,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     };
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
-            final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
-            float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
+                                       final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
+                                       float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         // These correspond two the drawable and view that the icon was dropped _onto_
         Drawable animateDrawable = getTopDrawable((TextView) destView);
@@ -451,8 +451,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable,
-            DragObject d) {
+                        float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable,
+                        DragObject d) {
         item.cellX = -1;
         item.cellY = -1;
 
@@ -486,7 +486,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
-                      center[1] - animateView.getMeasuredHeight() / 2);
+                    center[1] - animateView.getMeasuredHeight() / 2);
 
             float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
@@ -570,6 +570,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.scale = scale;
             this.overlayAlpha = overlayAlpha;
         }
+
         float transX;
         float transY;
         float scale;
@@ -591,7 +592,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
-            PreviewItemDrawingParams params) {
+                                                                     PreviewItemDrawingParams params) {
         index = NUM_ITEMS_IN_PREVIEW - index - 1;
         float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
         float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
@@ -686,7 +687,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void animateFirstItem(final Drawable d, int duration, final boolean reverse,
-            final Runnable onCompleteRunnable) {
+                                  final Runnable onCompleteRunnable) {
         final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
 
         final float scale0 = 1.0f;
@@ -695,7 +696,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mAnimParams.drawable = d;
 
         ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1.0f);
-        va.addUpdateListener(new AnimatorUpdateListener(){
+        va.addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float progress = (Float) animation.getAnimatedValue();
                 if (reverse) {
@@ -714,6 +715,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             public void onAnimationStart(Animator animation) {
                 mAnimating = true;
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 mAnimating = false;

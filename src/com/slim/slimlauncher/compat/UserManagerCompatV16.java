@@ -37,7 +37,7 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     }
 
     public Drawable getBadgedDrawableForUser(Drawable unbadged,
-            UserHandleCompat user) {
+                                             UserHandleCompat user) {
         return unbadged;
     }
 

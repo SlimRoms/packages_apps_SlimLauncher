@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     launcher:layout_ignoreInsets="true"
     android:background="@color/cling_scrim_background"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <Space
         android:layout_width="match_parent"

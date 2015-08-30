@@ -29,7 +29,7 @@ import java.util.ListIterator;
  * Queue of things to run on a looper thread.  Items posted with {@link #post} will not
  * be actually enqued on the handler until after the last one has run, to keep from
  * starving the thread.
- *
+ * <p/>
  * This class is fifo.
  */
 public class DeferredHandler {
@@ -75,10 +75,13 @@ public class DeferredHandler {
     public DeferredHandler() {
     }
 
-    /** Schedule runnable to run after everything that's on the queue right now. */
+    /**
+     * Schedule runnable to run after everything that's on the queue right now.
+     */
     public void post(Runnable runnable) {
         post(runnable, 0);
     }
+
     public void post(Runnable runnable, int type) {
         synchronized (mQueue) {
             mQueue.add(new Pair<Runnable, Integer>(runnable, type));
@@ -88,19 +91,24 @@ public class DeferredHandler {
         }
     }
 
-    /** Schedule runnable to run when the queue goes idle. */
+    /**
+     * Schedule runnable to run when the queue goes idle.
+     */
     public void postIdle(final Runnable runnable) {
         postIdle(runnable, 0);
     }
+
     public void postIdle(final Runnable runnable, int type) {
         post(new IdleRunnable(runnable), type);
     }
 
     public void cancelRunnable(Runnable runnable) {
         synchronized (mQueue) {
-            while (mQueue.remove(runnable)) { }
+            while (mQueue.remove(runnable)) {
+            }
         }
     }
+
     public void cancelAllRunnablesOfType(int type) {
         synchronized (mQueue) {
             ListIterator<Pair<Runnable, Integer>> iter = mQueue.listIterator();
@@ -120,7 +128,9 @@ public class DeferredHandler {
         }
     }
 
-    /** Runs all queued Runnables from the calling thread. */
+    /**
+     * Runs all queued Runnables from the calling thread.
+     */
     public void flush() {
         LinkedList<Pair<Runnable, Integer>> queue = new LinkedList<Pair<Runnable, Integer>>();
         synchronized (mQueue) {
