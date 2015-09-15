@@ -57,7 +57,7 @@ import com.slim.slimlauncher.settings.SettingsProvider;
 import java.util.ArrayList;
 
 /**
- * An icon that can appear on in the workspace representing an {@link UserFolder}.
+ * An icon that can appear on in the workspace representing an {@link FolderIcon}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
     private Launcher mLauncher;
@@ -786,12 +786,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 if (mLongPressHelper.hasPerformedLongPress()) {
                     return result;
                 }
-                if (value != 0) {
-                    if (downY - event.getRawY() >= 10.0) {
-                        mLauncher.onClickFolderIcon(this, true);
+                if (MotionEvent.ACTION_CANCEL != event.getAction()) {
+                    if (value != 0) {
+                        if (downY - event.getRawY() >=
+                                Utilities.convertDpToPixel(50, getContext())) {
+                            mLauncher.onClickFolderIcon(this, true);
+                        }
                     }
+                    mLongPressHelper.cancelLongPress();
                 }
-                mLongPressHelper.cancelLongPress();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
