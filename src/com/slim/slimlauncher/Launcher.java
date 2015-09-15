@@ -2118,6 +2118,7 @@ public class Launcher extends Activity
         super.onNewIntent(intent);
 
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
 
         if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)  &&
                 Intent.ACTION_VIEW.equals(intent.getAction())) {
