@@ -2221,8 +2221,12 @@ public class Workspace extends SmoothPagedView
         if (overviewPanel != null) {
             View defaultPageButton = overviewPanel.findViewById(R.id.default_screen_button);
             if (defaultPageButton != null) {
-                defaultPageButton.setActivated(
-                        getScreenIdForPageIndex(getCurrentPage()) == mDefaultScreenId);
+                if (getPageCount() <= 1) {
+                    defaultPageButton.setActivated(true);
+                } else {
+                    defaultPageButton.setActivated(
+                            getScreenIdForPageIndex(getCurrentPage()) == mDefaultScreenId);
+                }
             }
         }
     }
@@ -2325,8 +2329,7 @@ public class Workspace extends SmoothPagedView
                 SettingsProvider.DEFAULT_HOMESCREEN, getScreenIdForPageIndex(
                 mLauncher.getResources().getInteger(R.integer.config_workspaceDefaultScreen)));
 
-        mLauncher.updateOverviewPanel();
-
+        
         Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
         if (workspaceAnim != null) {
             onTransitionPrepare();

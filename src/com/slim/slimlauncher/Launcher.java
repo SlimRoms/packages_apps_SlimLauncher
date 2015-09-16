@@ -594,12 +594,6 @@ public class Launcher extends Activity
         return false;
     }
 
-    public void updateOverviewPanel() {
-        View defaultScreenPanel = mOverviewPanel.findViewById(R.id.default_home_screen_panel);
-
-        defaultScreenPanel.setVisibility(mWorkspace.getPageCount() > 1 ? View.VISIBLE : View.GONE);
-    }
-
     /**
      * To be overridden by subclasses to populate the custom content container and call
      * {@link #addToCustomContentPage}. This will only be invoked if
