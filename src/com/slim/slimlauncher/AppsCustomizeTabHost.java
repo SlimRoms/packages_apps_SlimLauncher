@@ -84,6 +84,7 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
      */
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mPagedView = (AppsCustomizePagedView) findViewById(R.id.apps_customize_pane_content);
         mContent = findViewById(R.id.content);
     }

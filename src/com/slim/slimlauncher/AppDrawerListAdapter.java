@@ -24,7 +24,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.Point;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -85,6 +84,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
 
     private int mDrawerType;
 
+    @SuppressWarnings("unused")
     public static class DrawerType {
         public static final int PAGED = 0;
         public static final int VERTICAL = 1;
@@ -115,6 +115,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
      * This class handles animating the different items when the user scrolls through the drawer
      * quickly
      */
+    @SuppressWarnings("unused")
     private class ItemAnimatorSet {
         private static final long ANIMATION_DURATION = 200;
         private static final float MAX_SCALE = 2f;
@@ -283,7 +284,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
             holder.mTextView.setScaleY(targetScale);
 
             if (mDrawerType == DrawerType.VERTICAL_FOLDER) {
-                if (getSectionForPosition(holder.getPosition()) == mSectionTarget) {
+                if (getSectionForPosition(holder.getLayoutPosition()) == mSectionTarget) {
                     holder.mFadingBackgroundFront.setVisibility(View.INVISIBLE);
                     holder.mFadingBackgroundBack.setAlpha(percentage);
                     holder.mFadingBackgroundBack.setVisibility(View.VISIBLE);
@@ -323,7 +324,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
 
     public AppDrawerListAdapter(Launcher launcher) {
         mLauncher = launcher;
-        mHeaderList = new ArrayList<AppItemIndexedInfo>();
+        mHeaderList = new ArrayList<>();
         mLayoutInflater = LayoutInflater.from(launcher);
         mItemAnimatorSet = new ItemAnimatorSet(launcher);
         initParams();
@@ -370,7 +371,6 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
 
     /**
      * Create and populate mHeaderList (buckets for app sorting)
-     * @param info
      */
     public void populateByCharacter(ArrayList<AppInfo> info) {
         if (info == null || info.size() <= 0) {
@@ -378,13 +378,13 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         }
 
         // Create a clone of AppInfo ArrayList to preserve data
-        ArrayList<AppInfo> tempInfo = new ArrayList<AppInfo>(info.size());
+        ArrayList<AppInfo> tempInfo = new ArrayList<>(info.size());
         for (AppInfo i : info) {
             tempInfo.add(i);
         }
 
         ListIterator<AppInfo> it = tempInfo.listIterator();
-        ArrayList<AppInfo> appInfos = new ArrayList<AppInfo>();
+        ArrayList<AppInfo> appInfos = new ArrayList<>();
         appInfos.clear();
 
         // get next app
@@ -415,8 +415,8 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         }
 
         for (int i = 0; i < appInfos.size(); i += mDeviceProfile.allAppsNumCols) {
-            int endIndex = (int) Math.min(i + mDeviceProfile.allAppsNumCols, appInfos.size());
-            ArrayList<AppInfo> subList = new ArrayList<AppInfo>(appInfos.subList(i, endIndex));
+            int endIndex = Math.min(i + mDeviceProfile.allAppsNumCols, appInfos.size());
+            ArrayList<AppInfo> subList = new ArrayList<>(appInfos.subList(i, endIndex));
             AppItemIndexedInfo indexInfo;
             if (mDrawerType == DrawerType.VERTICAL) {
                 indexInfo = new AppItemIndexedInfo(' ', subList, i != 0);
@@ -472,7 +472,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     }
 
     private ArrayList<AppInfo> getAllApps() {
-        ArrayList<AppInfo> indexedInfos = new ArrayList<AppInfo>();
+        ArrayList<AppInfo> indexedInfos = new ArrayList<>();
 
         for (int j = 0; j < mHeaderList.size(); ++j) {
             AppItemIndexedInfo indexedInfo = mHeaderList.get(j);
@@ -529,7 +529,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
                     lastInfoForSection.mInfo.add(info);
                 } else {
                     // we need to create a new section
-                    ArrayList<AppInfo> newInfos = new ArrayList<AppInfo>();
+                    ArrayList<AppInfo> newInfos = new ArrayList<>();
                     newInfos.add(info);
                     AppItemIndexedInfo newInfo =
                             new AppItemIndexedInfo(info.title.charAt(0), newInfos, false);
@@ -547,6 +547,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void removeAppsWithoutInvalidate(ArrayList<AppInfo> list) {
         // loop through all the apps and remove apps that have the same component
         int length = list.size();
@@ -627,12 +628,6 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     @Override
     public int getItemCount() {
         return mHeaderList.size();
-    }
-
-    public AppItemIndexedInfo getItemAt(int position) {
-        if (position < mHeaderList.size())
-            return mHeaderList.get(position);
-        return null;
     }
 
     @Override
@@ -826,7 +821,7 @@ public class AppDrawerListAdapter extends RecyclerView.Adapter<AppDrawerListAdap
     private void updateHiddenAppsList(Context context) {
         String[] flattened = SettingsProvider.getString(context,
                 SettingsProvider.KEY_HIDDEN_APPS, "").split("\\|");
-        mHiddenApps = new ArrayList<ComponentName>(flattened.length);
+        mHiddenApps = new ArrayList<>(flattened.length);
         for (String flat : flattened) {
             ComponentName cmp = ComponentName.unflattenFromString(flat);
             if (cmp != null) {
