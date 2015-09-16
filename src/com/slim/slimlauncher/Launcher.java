@@ -1625,7 +1625,7 @@ public class Launcher extends Activity
             }
             mAppDrawer.setHasFixedSize(true);
             mAppDrawer.setAdapter(mAppDrawerAdapter);
-            mAppDrawer.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            mAppDrawer.setOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     mAppDrawerAdapter.onScrollStateChanged(recyclerView, newState);
