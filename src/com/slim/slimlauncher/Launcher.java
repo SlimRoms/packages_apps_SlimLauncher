@@ -67,6 +67,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -1545,6 +1546,13 @@ public class Launcher extends Activity
                 }
             });
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+            settingsButton.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    return true;
+                }
+            });
         } else {
             settingsButton.setVisibility(View.GONE);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) widgetButton.getLayoutParams();
