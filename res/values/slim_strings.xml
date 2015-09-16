@@ -66,6 +66,8 @@
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>
     <string name="show_search_bar_title">Show search bar</string>
+    <string name="show_shadow_title">Show shadow</string>
+    <string name="show_shadow_summary">Most noticeable on light wallpapers</string>
 
     <!-- Hide icon labels -->
     <string name="hide_icon_labels_title">Hide icon labels</string>

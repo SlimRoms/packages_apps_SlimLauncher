@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.slim.slimlauncher.settings.SettingsProvider;
+
 /**
  * AppDrawerIconView - represents icons in the vertical app drawer.
  * Found to be more performant than the BubbleTextView used in the
@@ -56,6 +58,13 @@ public class AppDrawerIconView extends LinearLayout {
         mLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         mLabel.setShadowLayer(BubbleTextView.SHADOW_LARGE_RADIUS, 0.0f,
                 BubbleTextView.SHADOW_Y_OFFSET, BubbleTextView.SHADOW_LARGE_COLOUR);
+
+        if (SettingsProvider.getBoolean(getContext(),
+                SettingsProvider.KEY_DRAWER_HIDE_LABELS, false)) {
+            mLabel.setVisibility(GONE);
+        } else {
+            mLabel.setVisibility(VISIBLE);
+        }
     }
 
     @Override

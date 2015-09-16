@@ -25,6 +25,7 @@ public interface SettingsKeys {
     public static final String KEY_HOMESCREEN_GRID = "homescreen_grid";
     public static final String KEY_HOMESCREEN_HIDE_LABELS = "homescreen_hide_icon_labels";
     public static final String KEY_HOMESCREEN_ICON_SIZE = "homescreen_icon_size";
+    public static final String KEY_SHOW_SHADOWS = "show_shadows";
 
     // General
     public static final String KEY_NOTIFICATION_BADGES = "notification_badges";
