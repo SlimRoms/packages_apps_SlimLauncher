@@ -68,6 +68,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -1528,6 +1529,13 @@ public class Launcher extends Activity
                 }
             });
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+            settingsButton.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    return true;
+                }
+            });
         } else {
             settingsButton.setVisibility(View.GONE);
         }
