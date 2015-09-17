@@ -32,6 +32,7 @@ import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -1609,6 +1610,27 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public ShortcutInfo updateAllAppsIcon() {
+        for (ItemInfo info : sBgWorkspaceItems) {
+            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                if (info.getIntent().getStringExtra(ShortcutHelper.SHORTCUT_VALUE)
+                        .equals(ShortcutHelper.SHORTCUT_ALL_APPS)) {
+                    if (info instanceof ShortcutInfo) {
+                        Drawable d = mApp.getContext().getResources()
+                                .getDrawable(R.drawable.all_apps_button_icon);
+                        d.setTintMode(PorterDuff.Mode.MULTIPLY);
+                        d.setTint(mApp.getContext()
+                                .getResources().getColor(R.color.quantum_panel_bg_color));
+                        ((ShortcutInfo) info).setIcon(
+                                Utilities.createIconBitmap(d, mApp.getContext()));
+                        return (ShortcutInfo) info;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Add an all apps shortcut to the database if there aren't any already
      */
@@ -2086,6 +2108,9 @@ public class LauncherModel extends BroadcastReceiver
 
             // Bind the workspace
             bindWorkspace(-1);
+
+            // update all apps icon
+            updateAllAppsIcon();
         }
 
         private void waitForIdle() {
