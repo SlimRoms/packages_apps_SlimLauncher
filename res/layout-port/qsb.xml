@@ -28,21 +28,19 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/voice_button_container"
         android:onClick="onClickSearchButton"
         android:focusable="true"
         android:clickable="true"
         android:contentDescription="@string/accessibility_search_button">
        <ImageView
-           android:paddingStart="16dp"
-           android:paddingEnd="16dp"
+           android:paddingStart="8dp"
+           android:paddingEnd="8dp"
            android:id="@+id/search_button"
            android:layout_width="wrap_content"
            android:layout_height="match_parent"
-           android:layout_gravity="center_vertical"
            android:scaleType="center"
-           android:src="@drawable/ic_searchbox_google"
+           android:src="@drawable/ic_qsb_marshmallow_search"
            android:adjustViewBounds="true"
            android:contentDescription="@string/accessibility_search_button"/>
     </com.android.launcher3.HolographicLinearLayout>
@@ -52,7 +50,7 @@
         style="@style/SearchButton"
         launcher:sourceImageViewId="@+id/voice_button"
         android:id="@+id/voice_button_container"
-        android:layout_width="@dimen/app_icon_size"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
@@ -69,9 +67,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_mic_hotword"
-            android:tint="#616161"
             android:contentDescription="@string/accessibility_voice_search_button"
+            android:src="@drawable/ic_qsb_marshmallow_mic_solid"
             android:adjustViewBounds="true" />
     </com.android.launcher3.HolographicLinearLayout>
 </RelativeLayout>
