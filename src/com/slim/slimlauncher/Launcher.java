@@ -4488,7 +4488,7 @@ public class Launcher extends Activity
 
     private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
         ImageView button = (ImageView) findViewById(buttonId);
-        if (button != null && d != null) button.setImageDrawable(d.newDrawable(getResources()));
+        //if (button != null && d != null) button.setImageDrawable(d.newDrawable(getResources()));
     }
 
     private void invalidatePressedFocusedStates(View container, View button) {
@@ -4597,7 +4597,7 @@ public class Launcher extends Activity
 
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
-        updateButtonWithDrawable(R.id.voice_button, d);
+        //updateButtonWithDrawable(R.id.voice_button, d);
         invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
     }
 

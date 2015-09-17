@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_searchbox_google"
+            android:src="@drawable/ic_qsb_marshmallow_search"
             android:adjustViewBounds="true" />
     </com.slim.slimlauncher.HolographicLinearLayout>
 
@@ -67,8 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_mic_hotword"
-            android:tint="#616161"
+            android:src="@drawable/ic_qsb_marshmallow_mic_solid"
             android:adjustViewBounds="true" />
     </com.slim.slimlauncher.HolographicLinearLayout>
 </RelativeLayout>
