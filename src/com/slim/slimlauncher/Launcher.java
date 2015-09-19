@@ -2115,7 +2115,7 @@ public class Launcher extends Activity
             mWorkspace.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         }
         if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.enterOverviewMode(true);
+            mWorkspace.exitOverviewMode(true);
         }
         if (isAllAppsVisible()) {
             showWorkspace(true);

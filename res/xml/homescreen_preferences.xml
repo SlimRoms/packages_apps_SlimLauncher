@@ -34,7 +34,7 @@
         launcher:defaultValue="100" />
 
     <SwitchPreference
-        android:key="show_shadow"
+        android:key="show_shadows"
         android:title="@string/show_shadow_title"
         android:summary="@string/show_shadow_summary"
         android:defaultValue="true" />
