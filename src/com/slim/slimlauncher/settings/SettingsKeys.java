@@ -41,6 +41,7 @@ public interface SettingsKeys {
     String KEY_DRAWER_BACKGROUND = "drawer_background";
 
     // Dock
+    String KEY_HIDE_DOCK = "hide_dock";
     public static final String KEY_DOCK_ICONS = "dock_icon_count";
     public static final String KEY_DOCK_HIDE_LABELS = "dock_hide_icon_labels";
     public static final String KEY_DOCK_ICON_SIZE = "dock_icon_size";

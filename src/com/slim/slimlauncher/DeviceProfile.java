@@ -126,6 +126,7 @@ public class DeviceProfile {
     int hotseatCellWidthPx;
     int hotseatCellHeightPx;
     int hotseatBarHeightPx;
+    int originalHotseatBarHeightPx;
     int hotseatAllAppsRank;
     public int allAppsNumRows;
     public int allAppsNumCols;
@@ -412,7 +413,6 @@ public class DeviceProfile {
         dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat
-        hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
         hotseatCellWidthPx = iconSizePx;
         hotseatCellHeightPx = iconSizePx;
 
@@ -556,6 +556,14 @@ public class DeviceProfile {
                     (iconSizePx + 2 * edgeMarginPx);
             SettingsProvider.putCellCountX(context,
                     SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
+        }
+
+        originalHotseatBarHeightPx = hotseatIconSizePx + 4 * edgeMarginPx;
+        if (SettingsProvider.getBoolean(context,
+                SettingsProvider.KEY_HIDE_DOCK, false)) {
+            hotseatBarHeightPx = 0;
+        } else {
+            hotseatBarHeightPx = originalHotseatBarHeightPx;
         }
     }
 
@@ -770,7 +778,7 @@ public class DeviceProfile {
         Rect workspacePadding = getWorkspacePadding();
         Rect overviewBar = getOverviewModeButtonBarRect();
         int pageSpace = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
-        return overviewModeScaleFactor;
+        return overviewModeScaleFactor - 0.1f;
     }
 
     // The rect returned will be extended to below the system ui that covers the workspace
@@ -907,7 +915,7 @@ public class DeviceProfile {
                 SettingsProvider.KEY_DOCK_HIDE_LABELS, true);
         View hotseat = launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
-        if (hasVerticalBarLayout) {
+        if (isVerticalBarLayout()) {
             // Vertical hotseat
             lp.gravity = Gravity.END;
             lp.width = hotseatBarHeightPx;
@@ -929,6 +937,11 @@ public class DeviceProfile {
             lp.height = hotseatBarHeightPx + (hideDockLabels ? 0 : 3 * edgeMarginPx);
             hotseat.findViewById(R.id.layout).setPadding(2 * edgeMarginPx, 0,
                     2 * edgeMarginPx, 0);
+        }
+        if (SettingsProvider.getBoolean(launcher,
+                SettingsProvider.KEY_HIDE_DOCK, false)) {
+            lp.width = 0;
+            lp.height = 0;
         }
         hotseat.setLayoutParams(lp);
 

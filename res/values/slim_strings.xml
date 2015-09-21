@@ -85,6 +85,7 @@
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>
+    <string name="hide_dock_title">Hide Dock</string>
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
 

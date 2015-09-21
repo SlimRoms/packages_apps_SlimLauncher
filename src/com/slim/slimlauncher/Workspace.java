@@ -221,7 +221,6 @@ public class Workspace extends SmoothPagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
-    private int mOverviewModePageOffset;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -2340,13 +2339,14 @@ public class Workspace extends SmoothPagedView
     int getOverviewModeTranslationY() {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        Rect overviewBar = grid.getOverviewModeButtonBarRect();
+
+        boolean hideDock = SettingsProvider.getBoolean(mLauncher, SettingsProvider.KEY_HIDE_DOCK, false);
 
         int availableHeight = getViewportHeight();
         int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
         int offsetFromTopEdge = (availableHeight - scaledHeight) / 2;
-        int offsetToCenterInOverview = (availableHeight - mInsets.top
-                - scaledHeight) / 2;
+        int offsetToCenterInOverview = ((availableHeight - mInsets.top
+                - scaledHeight) / 2) - (hideDock ? grid.originalHotseatBarHeightPx - (3 * grid.edgeMarginPx) : 0);
 
         return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
     }
