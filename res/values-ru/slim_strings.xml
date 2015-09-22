@@ -43,6 +43,8 @@
   <string name="workspace_locked">Домашний экран заблокирован, разблокируйте для перемещения.</string>
   <string name="homescreen_title">Главный экран</string>
   <string name="show_search_bar_title">Показывать строку поиска</string>
+  <string name="show_shadow_title">Показать тень</string>
+  <string name="show_shadow_summary">Наиболее заметно на светлых обоях</string>
   <string name="hide_icon_labels_title">Скрывать подписи значков</string>
   <string name="hide_icon_labels_drawer_summary">Скрывать подписи значков в шторке</string>
   <string name="hide_icon_labels_homescreen_summary">Скрывать подписи значков на главном экране</string>
@@ -52,6 +54,7 @@
   <string name="drawer_style_paged">Страничный</string>
   <string name="drawer_style_vertical">Вертикальный</string>
   <string name="drawer_style_vertical_folder">Вертикальные папки</string>
+  <string name="drawer_background_title">Цвет фона панели уведомлений</string>
   <string name="dock_title">Док-бар</string>
   <string name="dock_icons_title">Значки док-бара</string>
   <string name="dock_icons_summary">Количество значков в док-баре</string>

@@ -43,6 +43,8 @@
   <string name="workspace_locked">L\'écran d\'accueil est verrouillé. Déverrouiller dans les paramètres pour réarranger.</string>
   <string name="homescreen_title">Écran d\'accueil</string>
   <string name="show_search_bar_title">Afficher la barre de recherche</string>
+  <string name="show_shadow_title">Afficher une ombre</string>
+  <string name="show_shadow_summary">Mieux perceptible avec un fond d\'écran clair</string>
   <string name="hide_icon_labels_title">Masquer le libellé des icônes</string>
   <string name="hide_icon_labels_drawer_summary">Masquer le libellé des icônes dans le tiroir</string>
   <string name="hide_icon_labels_homescreen_summary">Masquer le libellé des icônes sur l\'écran d\'accueil</string>
