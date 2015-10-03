@@ -131,6 +131,7 @@ public class IconPackHelper {
     }
 
     public Drawable getIconBack() {
+        if (mIconBacks == null || mIconBacks.length == 0) return null;
         return mIconBacks[sRandom.nextInt(mIconBacks.length)];
     }
 
