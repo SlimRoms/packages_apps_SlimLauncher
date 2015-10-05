@@ -47,6 +47,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -65,6 +66,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -207,11 +209,14 @@ public class Launcher extends Activity
     static final String ACTION_FIRST_LOAD_COMPLETE =
             "com.android.launcher3.action.FIRST_LOAD_COMPLETE";
 
+    private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
+    private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
+            "com.android.launcher.toolbar_search_icon";
+    private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
+            "com.android.launcher.toolbar_voice_search_icon";
+
     public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
     public static final boolean SHOW_WEIGHT_WATCHER_DEFAULT = false;
-
-    private static final String QSB_WIDGET_ID = "qsb_widget_id";
-    private static final String QSB_WIDGET_PROVIDER = "qsb_widget_provider";
 
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
@@ -278,7 +283,7 @@ public class Launcher extends Activity
     @Thunk WidgetsModel mWidgetsModel;
 
     private boolean mAutoAdvanceRunning = false;
-    private AppWidgetHostView mQsb;
+    private View mQsb;
 
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
@@ -325,6 +330,10 @@ public class Launcher extends Activity
     private final int mRestoreScreenOrientationDelay = 500;
 
     @Thunk Drawable mWorkspaceBackgroundDrawable;
+
+    // External icons saved in case of resource changes, orientation, etc.
+    private static Drawable.ConstantState[] sGlobalSearchIcon = new Drawable.ConstantState[2];
+    private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
     private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
@@ -509,6 +518,7 @@ public class Launcher extends Activity
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
         // we want the screen to auto-rotate based on the current orientation
         setOrientation();
+        updateGlobalIcons();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
@@ -684,6 +694,28 @@ public class Launcher extends Activity
             populateCustomContentContainer();
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
+        }
+    }
+
+    private void updateGlobalIcons() {
+        boolean searchVisible = false;
+        boolean voiceVisible = false;
+        // If we have a saved version of these external icons, we load them up immediately
+        int coi = getCurrentOrientationIndexForGlobalIcons();
+        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null) {
+            searchVisible = updateGlobalSearchIcon();
+            voiceVisible = updateVoiceSearchIcon(searchVisible);
+        }
+        if (sGlobalSearchIcon[coi] != null) {
+             updateGlobalSearchIcon(sGlobalSearchIcon[coi]);
+             searchVisible = true;
+        }
+        if (sVoiceSearchIcon[coi] != null) {
+            updateVoiceSearchIcon(sVoiceSearchIcon[coi]);
+            voiceVisible = true;
+        }
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
         }
     }
 
@@ -1085,6 +1117,12 @@ public class Launcher extends Activity
         getWorkspace().reinflateWidgetsIfNecessary();
         reinflateQSBIfNecessary();
 
+        // Update the voice search button proxy
+        updateVoiceButtonProxyVisible(false);
+
+        // Again, as with the above scenario, it's possible that one or more of the global icons
+        // were updated in the wrong orientation.
+        updateGlobalIcons();
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
@@ -2581,6 +2619,51 @@ public class Launcher extends Activity
     }
 
     /**
+     * Event handler for the search button
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickSearchButton(View v) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
+        onSearchRequested();
+    }
+
+    /**
+     * Event handler for the voice button
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickVoiceButton(View v) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
+        startVoice();
+    }
+
+    public void startVoice() {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            mLauncherCallbacks.startVoice();
+            return;
+        }
+
+        try {
+            final SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            ComponentName activityName = searchManager.getGlobalSearchActivity();
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (activityName != null) {
+                intent.setPackage(activityName.getPackageName());
+            }
+            startActivity(null, intent, "onClickVoiceButton");
+        } catch (ActivityNotFoundException e) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivitySafely(null, intent, "onClickVoiceButton");
+        }
+    }
+
+    /**
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
@@ -2867,8 +2950,10 @@ public class Launcher extends Activity
     }
 
     void startApplicationDetailsActivity(ComponentName componentName, UserHandleCompat user) {
+        String packageName = componentName.getPackageName();
         try {
             LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
+            UserManagerCompat userManager = UserManagerCompat.getInstance(this);
             launcherApps.showAppDetailsForProfile(componentName, user);
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -3515,8 +3600,118 @@ public class Launcher extends Activity
         // TODO
     }
 
-    protected void disableVoiceButtonProxy(boolean disable) {
-        // NO-OP
+    /**
+     * Add an item from all apps or customize onto the given workspace screen.
+     * If layout is null, add to the current screen.
+     */
+    void addExternalItemToScreen(ItemInfo itemInfo, final CellLayout layout) {
+        if (!mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
+            showOutOfSpaceMessage(isHotseatLayout(layout));
+        }
+    }
+
+    /** Maps the current orientation to an index for referencing orientation correct global icons */
+    private int getCurrentOrientationIndexForGlobalIcons() {
+        // default - 0, landscape - 1
+        switch (getResources().getConfiguration().orientation) {
+        case Configuration.ORIENTATION_LANDSCAPE:
+            return 1;
+        default:
+            return 0;
+        }
+    }
+
+    private Drawable getExternalPackageToolbarIcon(ComponentName activityName, String resourceName) {
+        try {
+            PackageManager packageManager = getPackageManager();
+            // Look for the toolbar icon specified in the activity meta-data
+            Bundle metaData = packageManager.getActivityInfo(
+                    activityName, PackageManager.GET_META_DATA).metaData;
+            if (metaData != null) {
+                int iconResId = metaData.getInt(resourceName);
+                if (iconResId != 0) {
+                    Resources res = packageManager.getResourcesForActivity(activityName);
+                    return res.getDrawable(iconResId);
+                }
+            }
+        } catch (NameNotFoundException e) {
+            // This can happen if the activity defines an invalid drawable
+            Log.w(TAG, "Failed to load toolbar icon; " + activityName.flattenToShortString() +
+                    " not found", e);
+        } catch (Resources.NotFoundException nfe) {
+            // This can happen if the activity defines an invalid drawable
+            Log.w(TAG, "Failed to load toolbar icon from " + activityName.flattenToShortString(),
+                    nfe);
+        }
+        return null;
+    }
+
+    // if successful in getting icon, return it; otherwise, set button to use default drawable
+    private Drawable.ConstantState updateTextButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId,
+            String toolbarResourceName) {
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName, toolbarResourceName);
+        Resources r = getResources();
+        int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
+        int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
+
+        TextView button = (TextView) findViewById(buttonId);
+        // If we were unable to find the icon via the meta-data, use a generic one
+        if (toolbarIcon == null) {
+            toolbarIcon = r.getDrawable(fallbackDrawableId);
+            toolbarIcon.setBounds(0, 0, w, h);
+            if (button != null) {
+                button.setCompoundDrawables(toolbarIcon, null, null, null);
+            }
+            return null;
+        } else {
+            toolbarIcon.setBounds(0, 0, w, h);
+            if (button != null) {
+                button.setCompoundDrawables(toolbarIcon, null, null, null);
+            }
+            return toolbarIcon.getConstantState();
+        }
+    }
+
+    // if successful in getting icon, return it; otherwise, set button to use default drawable
+    private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId,
+            String toolbarResourceName) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName, toolbarResourceName);
+
+        if (button != null) {
+            // If we were unable to find the icon via the meta-data, use a
+            // generic one
+            if (toolbarIcon == null) {
+                button.setImageResource(fallbackDrawableId);
+            } else {
+                button.setImageDrawable(toolbarIcon);
+            }
+        }
+
+        return toolbarIcon != null ? toolbarIcon.getConstantState() : null;
+
+    }
+
+    private void updateTextButtonWithDrawable(int buttonId, Drawable d) {
+        TextView button = (TextView) findViewById(buttonId);
+        button.setCompoundDrawables(d, null, null, null);
+    }
+
+    private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        button.setImageDrawable(d.newDrawable(getResources()));
+    }
+
+    private void invalidatePressedFocusedStates(View container, View button) {
+        if (container instanceof HolographicLinearLayout) {
+            HolographicLinearLayout layout = (HolographicLinearLayout) container;
+            layout.invalidatePressedFocusedStates();
+        } else if (button instanceof HolographicImageView) {
+            HolographicImageView view = (HolographicImageView) button;
+            view.invalidatePressedFocusedStates();
+        }
     }
 
     public View getOrCreateQsbBar() {
@@ -3525,54 +3720,137 @@ public class Launcher extends Activity
         }
 
         if (mQsb == null) {
-            AppWidgetProviderInfo searchProvider = Utilities.getSearchWidgetProvider(this);
-            if (searchProvider == null) {
-                return null;
-            }
-
-            Bundle opts = new Bundle();
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
-                    AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX);
-
-            SharedPreferences sp = getSharedPreferences(
-                    LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
-            int widgetId = sp.getInt(QSB_WIDGET_ID, -1);
-            AppWidgetProviderInfo widgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
-            if (!searchProvider.provider.flattenToString().equals(
-                    sp.getString(QSB_WIDGET_PROVIDER, null))
-                    || (widgetInfo == null)
-                    || !widgetInfo.provider.equals(searchProvider.provider)) {
-                // A valid widget is not already bound.
-                if (widgetId > -1) {
-                    mAppWidgetHost.deleteAppWidgetId(widgetId);
-                    widgetId = -1;
-                }
-
-                // Try to bind a new widget
-                widgetId = mAppWidgetHost.allocateAppWidgetId();
-
-                if (!AppWidgetManagerCompat.getInstance(this)
-                        .bindAppWidgetIdIfAllowed(widgetId, searchProvider, opts)) {
-                    mAppWidgetHost.deleteAppWidgetId(widgetId);
-                    widgetId = -1;
-                }
-
-                sp.edit()
-                    .putInt(QSB_WIDGET_ID, widgetId)
-                    .putString(QSB_WIDGET_PROVIDER, searchProvider.provider.flattenToString())
-                    .commit();
-            }
-
-            mAppWidgetHost.setQsbWidgetId(widgetId);
-            if (widgetId != -1) {
-                mQsb = mAppWidgetHost.createView(this, widgetId, searchProvider);
-                mQsb.updateAppWidgetOptions(opts);
-                mQsb.setPadding(0, 0, 0, 0);
-                mSearchDropTargetBar.addView(mQsb);
-                mSearchDropTargetBar.setQsbSearchBar(mQsb);
-            }
+            mQsb = mInflater.inflate(R.layout.qsb, mSearchDropTargetBar, false);
+            mSearchDropTargetBar.addView(mQsb);
         }
         return mQsb;
+    }
+
+    protected boolean updateGlobalSearchIcon() {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return true;
+        }
+
+        final View searchButtonContainer = findViewById(R.id.search_button_container);
+        final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
+        final View voiceButton = findViewById(R.id.voice_button);
+
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName activityName = searchManager.getGlobalSearchActivity();
+        if (activityName != null) {
+            int coi = getCurrentOrientationIndexForGlobalIcons();
+            sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                    R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
+                    TOOLBAR_SEARCH_ICON_METADATA_NAME);
+            if (sGlobalSearchIcon[coi] == null) {
+                sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                        R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
+                        TOOLBAR_ICON_METADATA_NAME);
+            }
+
+            if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
+            invalidatePressedFocusedStates(searchButtonContainer, searchButton);
+            return true;
+        } else {
+            // We disable both search and voice search when there is no global search provider
+            if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
+            if (searchButton != null) searchButton.setVisibility(View.GONE);
+            if (voiceButton != null) voiceButton.setVisibility(View.GONE);
+            updateVoiceButtonProxyVisible(false);
+            return false;
+        }
+    }
+
+    protected void updateGlobalSearchIcon(Drawable.ConstantState d) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) return;
+        final View searchButtonContainer = findViewById(R.id.search_button_container);
+        final View searchButton = (ImageView) findViewById(R.id.search_button);
+        updateButtonWithDrawable(R.id.search_button, d);
+        invalidatePressedFocusedStates(searchButtonContainer, searchButton);
+    }
+
+    protected boolean updateVoiceSearchIcon(boolean searchVisible) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return true;
+        }
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
+        final View voiceButton = findViewById(R.id.voice_button);
+
+        // We only show/update the voice search icon if the search icon is enabled as well
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
+        ComponentName activityName = null;
+        if (globalSearchActivity != null) {
+            // Check if the global search activity handles voice search
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setPackage(globalSearchActivity.getPackageName());
+            activityName = intent.resolveActivity(getPackageManager());
+        }
+
+        if (activityName == null) {
+            // Fallback: check if an activity other than the global search activity
+            // resolves this
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            activityName = intent.resolveActivity(getPackageManager());
+        }
+        if (searchVisible && activityName != null) {
+            int coi = getCurrentOrientationIndexForGlobalIcons();
+            sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                    R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
+                    TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME);
+            if (sVoiceSearchIcon[coi] == null) {
+                sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                        R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
+                        TOOLBAR_ICON_METADATA_NAME);
+            }
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
+            voiceButton.setVisibility(View.VISIBLE);
+            updateVoiceButtonProxyVisible(false);
+            invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
+            return true;
+        } else {
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
+            if (voiceButton != null) voiceButton.setVisibility(View.GONE);
+            updateVoiceButtonProxyVisible(false);
+            return false;
+        }
+    }
+
+    protected void updateVoiceSearchIcon(Drawable.ConstantState d) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return;
+        }
+
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
+        final View voiceButton = findViewById(R.id.voice_button);
+        updateButtonWithDrawable(R.id.voice_button, d);
+        invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
+    }
+
+    public void updateVoiceButtonProxyVisible(boolean forceDisableVoiceButtonProxy) {
+        if (mLauncherCallbacks != null) {
+            forceDisableVoiceButtonProxy |= mLauncherCallbacks.forceDisableVoiceButtonProxy();
+        }
+        /*final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
+        if (voiceButtonProxy != null) {
+            boolean visible = !forceDisableVoiceButtonProxy &&
+                    mWorkspace.shouldVoiceButtonProxyBeVisible();
+            voiceButtonProxy.setVisibility(visible ? View.VISIBLE : View.GONE);
+            voiceButtonProxy.bringToFront();
+        }*/
+    }
+
+    /**
+     * This is an overrid eot disable the voice button proxy.  If disabled is true, then the voice button proxy
+     * will be hidden regardless of what shouldVoiceButtonProxyBeVisible() returns.
+     */
+    public void disableVoiceButtonProxy(boolean disabled) {
+        updateVoiceButtonProxyVisible(disabled);
     }
 
     private void reinflateQSBIfNecessary() {
@@ -4141,13 +4419,12 @@ public class Launcher extends Activity
         return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }
 
+    @Override
     public void bindSearchablesChanged() {
-        if (mSearchDropTargetBar == null) {
-            return;
-        }
-        if (mQsb != null) {
-            mSearchDropTargetBar.removeView(mQsb);
-            mQsb = null;
+        boolean searchVisible = updateGlobalSearchIcon();
+        boolean voiceVisible = updateVoiceSearchIcon(searchVisible);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
         }
         mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
     }

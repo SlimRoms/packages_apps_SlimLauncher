@@ -17,8 +17,10 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
+import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
@@ -845,14 +847,14 @@ public class LauncherProvider extends ContentProvider {
 
                 // Get a map for folder ID to folder width
                 Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
-                        + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
-                        + " GROUP BY container;",
-                        new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
+                                + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
+                                + " GROUP BY container;",
+                        new String[]{Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
 
                 while (c.moveToNext()) {
                     db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
-                            + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
-                            new Object[] {c.getLong(1) + 1, c.getLong(0)});
+                                    + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
+                            new Object[]{c.getLong(1) + 1, c.getLong(0)});
                 }
 
                 c.close();
@@ -1056,6 +1058,32 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = initializeMaxScreenId(db);
 
             return count;
+        }
+
+        private ComponentName getSearchWidgetProvider() {
+            SearchManager searchManager =
+                    (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
+            ComponentName searchComponent = searchManager.getGlobalSearchActivity();
+            if (searchComponent == null) return null;
+            return getProviderInPackage(searchComponent.getPackageName());
+        }
+
+        /**
+         * Gets an appwidget provider from the given package. If the package contains more than
+         * one appwidget provider, an arbitrary one is returned.
+         */
+        private ComponentName getProviderInPackage(String packageName) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            List<AppWidgetProviderInfo> providers = appWidgetManager.getInstalledProviders();
+            if (providers == null) return null;
+            final int providerCount = providers.size();
+            for (int i = 0; i < providerCount; i++) {
+                ComponentName provider = providers.get(i).provider;
+                if (provider != null && provider.getPackageName().equals(packageName)) {
+                    return provider;
+                }
+            }
+            return null;
         }
 
         @Thunk void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {

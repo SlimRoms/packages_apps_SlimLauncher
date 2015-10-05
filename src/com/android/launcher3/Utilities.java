@@ -49,6 +49,8 @@ import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
