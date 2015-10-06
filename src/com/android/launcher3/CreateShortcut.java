@@ -36,9 +36,8 @@ public class CreateShortcut extends Activity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent shortcutIntent = new Intent(
                                 CreateShortcut.this, Launcher.class);
-                        shortcutIntent.setAction(Intent.ACTION_VIEW);
+                        shortcutIntent.setAction(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT);
                         shortcutIntent.putExtra(ShortcutHelper.SHORTCUT_VALUE, dialogValues[i]);
-                        shortcutIntent.putExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, true);
 
                         Bitmap icon = ShortcutHelper.getIcon(
                                 CreateShortcut.this, dialogValues[i]);

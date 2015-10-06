@@ -44,4 +44,7 @@
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
 
+    <!-- General Settings -->
+    <string name="general_title">General</string>
+
 </resources>

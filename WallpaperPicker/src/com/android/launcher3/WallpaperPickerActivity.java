@@ -74,6 +74,7 @@ import android.widget.Toast;
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
@@ -1160,6 +1161,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             return true;
 
         // Check if the user has specifically enabled rotation via preferences.
-        return Utilities.isAllowRotationPrefEnabled(getApplicationContext(), true);
+        return SettingsProvider.getBoolean(this, SettingsProvider.ALLOW_ROTATION,
+                getResources().getBoolean(R.bool.allow_rotation));
     }
 }

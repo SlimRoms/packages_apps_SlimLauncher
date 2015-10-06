@@ -512,7 +512,8 @@ public class Launcher extends Activity
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext(), false);
+            mRotationEnabled = SettingsProvider.getBoolean(this, SettingsProvider.ALLOW_ROTATION,
+                    getResources().getBoolean(R.bool.allow_rotation));
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
@@ -568,23 +569,19 @@ public class Launcher extends Activity
             mSearchDropTargetBar.hideSearchBar(false);
         }
 
-        mDeviceProfile.layout(this);
+        //mDeviceProfile.layout(this);
         mWorkspace.reloadSettings();
         mWorkspace.updateLayout();
 
         mHotseat.updateHotseat();
 
-        //mModel.startLoader(true, mWorkspace.getCurrentPage());
-    }
-
-    @Override
-    public void onSettingsChanged(String settings, boolean value) {
-        if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(settings)) {
-            mRotationEnabled = value;
-            if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
-                mUpdateOrientationRunnable.run();
-            }
+        mRotationEnabled = SettingsProvider.getBoolean(this, SettingsProvider.ALLOW_ROTATION,
+                getResources().getBoolean(R.bool.allow_rotation));
+        if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
+            mUpdateOrientationRunnable.run();
         }
+
+        //mModel.startLoader(true, mWorkspace.getCurrentPage());
     }
 
     private LauncherCallbacks mLauncherCallbacks;
@@ -1040,6 +1037,8 @@ public class Launcher extends Activity
             startTime = System.currentTimeMillis();
             Log.v(TAG, "Launcher.onResume()");
         }
+
+        if (getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) return;
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnResume();
@@ -1943,16 +1942,14 @@ public class Launcher extends Activity
         if (DEBUG_RESUME_TIME) {
             startTime = System.currentTimeMillis();
         }
-        super.onNewIntent(intent);
 
-        if (intent.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)  &&
-                Intent.ACTION_VIEW.equals(intent.getAction())) {
+        if (ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT.equals(intent.getAction())) {
             String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
             switch (value) {
                 case ShortcutHelper.SHORTCUT_ALL_APPS :
                     if (isAllAppsVisible()) {
                         showWorkspace(true);
-                    } else if (mState == State.WORKSPACE) {
+                    } else {
                         onClickAllAppsButton();
                     }
                     break;
@@ -1973,6 +1970,8 @@ public class Launcher extends Activity
             mOnResumeState = State.NONE;
             return;
         }
+
+        super.onNewIntent(intent);
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
@@ -2577,7 +2576,7 @@ public class Launcher extends Activity
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             Intent i = ((ShortcutInfo) tag).getIntent();
-            if (i.getBooleanExtra(ShortcutHelper.SLIM_LAUNCHER_SHORTCUT, false)) {
+            if (i.getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
                 setAllAppsButton(v);
             }
             onClickAppShortcut(v);

@@ -18,10 +18,14 @@ package com.android.launcher3.settings;
 
 import android.os.Bundle;
 
+import com.android.launcher3.R;
+
 public class GeneralFragment extends SettingsPreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        addPreferencesFromResource(R.xml.general_preferences);
     }
 }

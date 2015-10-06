@@ -94,18 +94,8 @@ public final class Utilities {
     private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
     private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
-    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
-    }
-
-    public static boolean isAllowRotationPrefEnabled(Context context, boolean multiProcess) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE | (multiProcess ?
-                        Context.MODE_MULTI_PROCESS : 0));
-        boolean allowRotationPref = sharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
-        return sForceEnableRotation || allowRotationPref;
     }
 
     public static boolean isRotationAllowedForDevice(Context context) {

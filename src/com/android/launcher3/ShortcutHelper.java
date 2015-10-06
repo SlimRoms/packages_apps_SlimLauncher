@@ -11,7 +11,7 @@ import android.os.Bundle;
 
 public class ShortcutHelper {
 
-    public static final String SLIM_LAUNCHER_SHORTCUT = "slim_launcher_shortcut";
+    public static final String ACTION_SLIM_LAUNCHER_SHORTCUT = "action_slim_launcher_shortcut";
     public static final String SHORTCUT_VALUE = "shortcut_value";
 
     public static final String SHORTCUT_ALL_APPS = "**open_app_drawer**";

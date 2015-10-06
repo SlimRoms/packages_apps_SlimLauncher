@@ -255,9 +255,6 @@ public class LauncherProvider extends ContentProvider {
                 getContext().getSharedPreferences(
                         LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE)
                         .edit().putBoolean(arg, value).apply();
-                if (mListener != null) {
-                    mListener.onSettingsChanged(arg, value);
-                }
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
                 return result;

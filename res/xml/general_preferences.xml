@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="allow_rotation"
+        android:title="@string/allow_rotation_title"
+        android:defaultValue="@bool/allow_rotation"
+        android:persistent="true" />
+
+</PreferenceScreen>

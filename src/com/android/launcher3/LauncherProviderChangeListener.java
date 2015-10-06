@@ -7,9 +7,7 @@ package com.android.launcher3;
  */
 public interface LauncherProviderChangeListener {
 
-    public void onLauncherProviderChange();
+    void onLauncherProviderChange();
 
-    public void onSettingsChanged(String settings, boolean value);
-
-    public void onAppWidgetHostReset();
+    void onAppWidgetHostReset();
 }
