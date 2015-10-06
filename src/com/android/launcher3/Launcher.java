@@ -1558,6 +1558,9 @@ public class Launcher extends Activity
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
+        if (info.intent.getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+            info.launcherAction = true;
+        }
         return favorite;
     }
 
@@ -1941,34 +1944,6 @@ public class Launcher extends Activity
         long startTime = 0;
         if (DEBUG_RESUME_TIME) {
             startTime = System.currentTimeMillis();
-        }
-
-        if (ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT.equals(intent.getAction())) {
-            String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
-            switch (value) {
-                case ShortcutHelper.SHORTCUT_ALL_APPS :
-                    if (isAllAppsVisible()) {
-                        showWorkspace(true);
-                    } else {
-                        onClickAllAppsButton();
-                    }
-                    break;
-                case ShortcutHelper.SHORTCUT_OVERVIEW :
-                    if (mWorkspace.isInOverviewMode()) {
-                        showWorkspace(true);
-                    } else {
-                        showOverviewMode(true);
-                    }
-                    break;
-                case ShortcutHelper.SHORTCUT_SETTINGS :
-                    onClickSettingsButton(null);
-                    break;
-                case ShortcutHelper.SHORTCUT_DEFAULT_PAGE :
-                    mWorkspace.moveToDefaultScreen(true);
-                    break;
-            }
-            mOnResumeState = State.NONE;
-            return;
         }
 
         super.onNewIntent(intent);
@@ -2577,9 +2552,10 @@ public class Launcher extends Activity
         if (tag instanceof ShortcutInfo) {
             Intent i = ((ShortcutInfo) tag).getIntent();
             if (i.getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
-                setAllAppsButton(v);
+                onClickLauncherAction(v, i);
+            } else {
+                onClickAppShortcut(v);
             }
-            onClickAppShortcut(v);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
@@ -2591,6 +2567,35 @@ public class Launcher extends Activity
                 onClickPendingWidget((PendingAppWidgetHostView) v);
             }
         }
+    }
+
+    public void onClickLauncherAction(View view, Intent intent) {
+        String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
+        switch (value) {
+            case ShortcutHelper.SHORTCUT_ALL_APPS :
+                setAllAppsButton(view);
+                if (isAllAppsVisible()) {
+                    showWorkspace(true);
+                } else {
+                    onClickAllAppsButton();
+                }
+                break;
+            case ShortcutHelper.SHORTCUT_OVERVIEW :
+                if (mWorkspace.isInOverviewMode()) {
+                    showWorkspace(true);
+                } else {
+                    showOverviewMode(true);
+                }
+                break;
+            case ShortcutHelper.SHORTCUT_SETTINGS :
+                onClickSettingsButton(null);
+                break;
+            case ShortcutHelper.SHORTCUT_DEFAULT_PAGE :
+                mWorkspace.moveToDefaultScreen(true);
+                break;
+        }
+        mOnResumeState = State.NONE;
+        return;
     }
 
     public void setAllAppsButton(View allAppsButton) {
@@ -2867,7 +2872,7 @@ public class Launcher extends Activity
         if (mIsSafeModeEnabled) {
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
         } else {
-            showWidgetsView(true /* animated */, true /* resetPageToZero */);
+            showWidgetsView(true /* animated */, false /* resetPageToZero */);
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onClickAddWidgetButton(view);
             }

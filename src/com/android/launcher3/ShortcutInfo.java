@@ -142,6 +142,11 @@ public class ShortcutInfo extends ItemInfo {
      */
     Intent promisedIntent;
 
+    /**
+     * Whether this shortcut holds a launcher action
+     */
+    public boolean launcherAction = false;
+
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
