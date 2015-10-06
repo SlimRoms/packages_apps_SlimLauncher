@@ -1946,6 +1946,12 @@ public class Launcher extends Activity
             startTime = System.currentTimeMillis();
         }
 
+        if (ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT.equals(intent.getAction())) {
+            onClickLauncherAction(null, intent);
+            mOnResumeState = State.NONE;
+            return;
+        }
+
         super.onNewIntent(intent);
 
         // Close the menu
@@ -2574,7 +2580,7 @@ public class Launcher extends Activity
         switch (value) {
             case ShortcutHelper.SHORTCUT_ALL_APPS :
                 setAllAppsButton(view);
-                if (isAllAppsVisible()) {
+                if (isAppsViewVisible()) {
                     showWorkspace(true);
                 } else {
                     onClickAllAppsButton();
