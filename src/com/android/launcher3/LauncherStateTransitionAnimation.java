@@ -30,6 +30,10 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.BaseAllAppsView;
+import com.android.launcher3.allappspaged.AppsCustomizePagedView;
+import com.android.launcher3.allappspaged.AppsCustomizeTabHost;
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -127,7 +131,8 @@ public class LauncherStateTransitionAnimation {
      */
     public void startAnimationToAllApps(final boolean animated,
             final boolean startSearchAfterTransition) {
-        final AllAppsContainerView toView = mLauncher.getAppsView();
+
+        final BaseAllAppsView toView = mLauncher.getAppsView();
         final View buttonView = mLauncher.getAllAppsButton();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             @Override
@@ -154,13 +159,13 @@ public class LauncherStateTransitionAnimation {
             @Override
             void onTransitionComplete() {
                 if (startSearchAfterTransition) {
-                    toView.startAppsSearch();
+                    //toView.startAppsSearch();
                 }
             }
         };
         // Only animate the search bar if animating from spring loaded mode back to all apps
-        startAnimationToOverlay(Workspace.State.NORMAL_HIDDEN, buttonView, toView,
-                toView.getContentView(), toView.getRevealView(), toView.getSearchBarView(),
+        startAnimationToOverlay(Workspace.State.NORMAL_HIDDEN, buttonView, toView.getView(),
+                toView.getContentView(), toView.getRevealView(), toView.getExtraView(),
                 animated, true /* hideSearchBar */, cb);
     }
 
@@ -416,7 +421,7 @@ public class LauncherStateTransitionAnimation {
      */
     private void startAnimationToWorkspaceFromAllApps(final Workspace.State toWorkspaceState,
             final int toWorkspacePage, final boolean animated, final Runnable onCompleteRunnable) {
-        AllAppsContainerView appsView = mLauncher.getAppsView();
+        BaseAllAppsView appsView = mLauncher.getAppsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             int[] mAllAppsToPanelDelta;
 
@@ -452,8 +457,8 @@ public class LauncherStateTransitionAnimation {
         };
         // Only animate the search bar if animating to spring loaded mode from all apps
         startAnimationToWorkspaceFromOverlay(toWorkspaceState, toWorkspacePage,
-                mLauncher.getAllAppsButton(), appsView, appsView.getContentView(),
-                appsView.getRevealView(), appsView.getSearchBarView(), animated,
+                mLauncher.getAllAppsButton(), appsView.getView(), appsView.getContentView(),
+                appsView.getRevealView(), appsView.getExtraView(), animated,
                 onCompleteRunnable, cb);
     }
 

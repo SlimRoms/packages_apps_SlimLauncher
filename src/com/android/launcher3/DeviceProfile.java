@@ -98,13 +98,13 @@ public class DeviceProfile {
 
     // All apps
     public int allAppsNumCols;
+    public int allAppsNumRows;
     public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
 
     // QSB
     int searchBarSpaceMaxWidthPx;
     int searchBarHeightPx;
-    private int searchBarSpaceWidthPx;
     private int searchBarSpaceHeightPx;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
@@ -190,9 +190,9 @@ public class DeviceProfile {
 
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
-        float scale = 1f;
+        float scale;
         int drawablePadding = iconDrawablePaddingOriginalPx;
-        setOriginalIconSize(1f, drawablePadding, res, dm);
+        setOriginalIconSize(1f, drawablePadding, dm);
         updateIconSizeFromPreferences(context);
         updateIconSize(res);
         float usedHeight = (cellHeightPx * inv.numRows);
@@ -203,13 +203,13 @@ public class DeviceProfile {
         if (usedHeight > maxHeight) {
             scale = maxHeight / usedHeight;
             drawablePadding = 0;
-            setOriginalIconSize(scale, drawablePadding, res, dm);
+            setOriginalIconSize(scale, drawablePadding, dm);
             updateIconSizeFromPreferences(context);
             updateIconSize(res);
         }
     }
 
-    private void setOriginalIconSize(float scale, int drawablePadding, Resources res,
+    private void setOriginalIconSize(float scale, int drawablePadding,
                                      DisplayMetrics dm) {
         originalIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         originalIconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
@@ -221,7 +221,6 @@ public class DeviceProfile {
         // Search Bar
         searchBarSpaceMaxWidthPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
-        searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
         searchBarSpaceHeightPx = searchBarHeightPx + getSearchBarTopOffset();
 
         // Calculate the actual text height
@@ -249,6 +248,36 @@ public class DeviceProfile {
 
         // update Available Dimensions
         updateAvailableDimensions(context);
+
+        int prefAllAppNumRows = SettingsProvider.getCellCountY(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumRows > 0) {
+            allAppsNumRows = prefAllAppNumRows;
+        } else {
+            if (isLandscape) {
+                int pageIndicatorOffset =
+                        context.getResources().getDimensionPixelSize(
+                                R.dimen.apps_customize_page_indicator_offset);
+                allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                        (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+            } else {
+                allAppsNumRows = inv.numRows + 1;
+            }
+            SettingsProvider.putCellCountY(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumRows);
+        }
+
+        int prefAllAppNumCols = SettingsProvider.getCellCountX(
+                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        if (prefAllAppNumCols > 0) {
+            allAppsNumCols = prefAllAppNumCols;
+        } else {
+            Rect padding = getWorkspacePadding(false);
+            allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
+                    (iconSizePx + 2 * edgeMarginPx);
+            SettingsProvider.putCellCountX(context,
+                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
+        }
     }
 
     public void updateIconSizeFromPreferences(Context context) {

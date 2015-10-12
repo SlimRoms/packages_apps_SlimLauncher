@@ -328,8 +328,11 @@ public class Workspace extends PagedView
      */
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContentIsRefreshable = false;
 
         mOutlineHelper = HolographicOutlineHelper.obtain(context);
+
+        setDataIsReady();
 
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
@@ -909,6 +912,14 @@ public class Workspace extends PagedView
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         return newId;
+    }
+
+    @Override
+    public void syncPages() {
+    }
+
+    @Override
+    public void syncPageItems(int page, boolean immediate) {
     }
 
     public CellLayout getScreenWithId(long screenId) {

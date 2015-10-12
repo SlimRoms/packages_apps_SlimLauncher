@@ -78,6 +78,13 @@
     <dimen name="all_apps_prediction_icon_bottom_padding">18dp</dimen>
     <dimen name="all_apps_list_top_bottom_padding">8dp</dimen>
 
+    <dimen name="apps_customize_page_indicator_offset">16dp</dimen>
+
+    <!-- When dragging items on the workspace, the number of dps by which the position of
+     the drag view should be offset from the position of the original view. -->
+    <dimen name="dragViewOffsetX">0dp</dimen>
+    <dimen name="dragViewOffsetY">0dp</dimen>
+
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
@@ -133,6 +140,5 @@
     <dimen name="click_shadow_high_shift">2dp</dimen>
 
     <dimen name="shortcut_picker_left_padding">70dip</dimen>
->>>>>>> 19b1d88... Add all gestures back
 
 </resources>

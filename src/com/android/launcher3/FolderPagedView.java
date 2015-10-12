@@ -86,6 +86,7 @@ public class FolderPagedView extends PagedView {
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LauncherAppState app = LauncherAppState.getInstance();
+        setDataIsReady();
 
         InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
         mMaxCountX = profile.numFolderColumns;
@@ -358,6 +359,15 @@ public class FolderPagedView extends PagedView {
         mFolder.mFolderName.setGravity(getPageCount() > 1 ?
                 (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
     }
+
+    @Override
+    protected void loadAssociatedPages(int page, boolean immediateAndOnly) { }
+
+    @Override
+    public void syncPages() { }
+
+    @Override
+    public void syncPageItems(int page, boolean immediate) { }
 
     public int getDesiredWidth() {
         return getPageCount() > 0 ?

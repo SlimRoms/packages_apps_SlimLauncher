@@ -33,6 +33,8 @@ public interface SettingsKeys {
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";
     String KEY_DOCK_ICON_SIZE = "dock_icon_size";
+    String KEY_HIDDEN_APPS = "hidden_apps";
+    String KEY_DRAWER_TYPE = "drawer_style";
 
     // Folder
     String FOLDER_BACKGROUND_COLOR = "folder_background_color";

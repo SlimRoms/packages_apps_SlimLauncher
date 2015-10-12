@@ -137,7 +137,7 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
  */
 public class AllAppsContainerView extends BaseContainerView implements DragSource,
         LauncherTransitionable, View.OnTouchListener, View.OnLongClickListener,
-        AllAppsSearchBarController.Callbacks {
+        AllAppsSearchBarController.Callbacks, BaseAllAppsView {
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
@@ -257,8 +257,17 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
+     * Returns the base view used for the launcher transitions.
+     */
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    /**
      * Returns the content view used for the launcher transitions.
      */
+    @Override
     public View getContentView() {
         return mContainerView;
     }
@@ -266,13 +275,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     /**
      * Returns the all apps search view.
      */
-    public View getSearchBarView() {
+    @Override
+    public View getExtraView() {
         return mSearchBarView;
     }
 
     /**
      * Returns the reveal view used for the launcher transitions.
      */
+    @Override
     public View getRevealView() {
         return mRevealView;
     }

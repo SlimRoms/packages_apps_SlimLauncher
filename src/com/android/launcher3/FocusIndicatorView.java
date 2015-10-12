@@ -29,7 +29,7 @@ import com.android.launcher3.util.Thunk;
 public class FocusIndicatorView extends View implements View.OnFocusChangeListener {
 
     // It can be any number >0. The view is resized using scaleX and scaleY.
-    static final int DEFAULT_LAYOUT_SIZE = 100;
+    public static final int DEFAULT_LAYOUT_SIZE = 100;
     private static final float MIN_VISIBLE_ALPHA = 0.2f;
     private static final long ANIM_DURATION = 150;
 

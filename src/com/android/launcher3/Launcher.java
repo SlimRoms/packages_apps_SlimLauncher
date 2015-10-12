@@ -100,6 +100,9 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.BaseAllAppsView;
+import com.android.launcher3.allappspaged.AppsCustomizePagedView;
+import com.android.launcher3.allappspaged.AppsCustomizeTabHost;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -277,6 +280,8 @@ public class Launcher extends Activity
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
+    @Thunk AppsCustomizeTabHost mAppsCustomizeTabHost;
+    @Thunk AppsCustomizePagedView mAppsCustomizeContent;
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
@@ -357,6 +362,14 @@ public class Launcher extends Activity
     private Rect mRectForFolderAnimation = new Rect();
 
     private DeviceProfile mDeviceProfile;
+
+    // Settings
+    private boolean mShowSearchBar;
+    private int mDrawerType;
+
+    // Drawer Types
+    public static final int DRAWER_TYPE_VERTICAL = 0;
+    public static final int DRAWER_TYPE_PAGED = 1;
 
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
@@ -448,6 +461,7 @@ public class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
         initializeDynamicGrid();
+        updatePreferences();
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
@@ -560,11 +574,9 @@ public class Launcher extends Activity
     public void updateDynamicGrid() {
         mDeviceProfile.inv.updateFromPreferences(this);
         mDeviceProfile.updateFromPreferences(this);
+        updatePreferences();
 
-        boolean showSearchBar = SettingsProvider.getBoolean(this,
-                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
-
-        if (showSearchBar) {
+        if (mShowSearchBar) {
             mSearchDropTargetBar.showSearchBar(false);
         } else {
             mSearchDropTargetBar.hideSearchBar(false);
@@ -573,6 +585,10 @@ public class Launcher extends Activity
         //mDeviceProfile.layout(this);
         mWorkspace.reloadSettings();
         mWorkspace.updateLayout();
+
+        mAppsCustomizeContent.filterContent();
+        mAppsCustomizeContent.updateGridSize();
+        mAppsCustomizeContent.invalidateOnDataChange();
 
         mHotseat.updateHotseat();
 
@@ -585,6 +601,13 @@ public class Launcher extends Activity
         mIconCache.flush();
         mModel.forceReload();
         mModel.startLoader(mWorkspace.getCurrentPage());
+    }
+
+    public void updatePreferences() {
+        mDrawerType = Integer.parseInt(
+                SettingsProvider.getString(this, SettingsProvider.KEY_DRAWER_TYPE, "0"));
+        mShowSearchBar = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
     }
 
     private LauncherCallbacks mLauncherCallbacks;
@@ -1088,8 +1111,14 @@ public class Launcher extends Activity
                 startTimeCallbacks = System.currentTimeMillis();
             }
 
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.setBulkBind(true);
+            }
             for (int i = 0; i < mBindOnResumeCallbacks.size(); i++) {
                 mBindOnResumeCallbacks.get(i).run();
+            }
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.setBulkBind(false);
             }
             mBindOnResumeCallbacks.clear();
             if (DEBUG_RESUME_TIME) {
@@ -1418,6 +1447,11 @@ public class Launcher extends Activity
             mRestoring = true;
         }
 
+        // Restore the AppsCustomize tab
+        if (mAppsCustomizeTabHost != null) {
+            int currentIndex = savedState.getInt("apps_customize_currentIndex");
+            mAppsCustomizeContent.restorePageForIndex(currentIndex);
+        }
         mItemIdToViewId = (HashMap<Integer, Integer>)
                 savedState.getSerializable(RUNTIME_STATE_VIEW_IDS);
     }
@@ -1506,6 +1540,15 @@ public class Launcher extends Activity
         } else {
             mAppsView.setSearchBarController(mAppsView.newDefaultAppSearchController());
         }
+
+        // Setup AppsCustomize
+        mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
+        mAppsCustomizeContent = (AppsCustomizePagedView)
+                mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+        mAppsCustomizeContent.setup(this, dragController);
+
+        // Setup AppDrawer
+        //setupAppDrawer();
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
@@ -1895,8 +1938,13 @@ public class Launcher extends Activity
         return mDragLayer;
     }
 
-    public AllAppsContainerView getAppsView() {
-        return mAppsView;
+    public BaseAllAppsView getAppsView() {
+        if (mDrawerType == DRAWER_TYPE_PAGED) {
+            return mAppsCustomizeTabHost;
+        } else if (mDrawerType == DRAWER_TYPE_VERTICAL) {
+            return mAppsView;
+        }
+        return null;
     }
 
     public WidgetsContainerView getWidgetsView() {
@@ -2059,6 +2107,12 @@ public class Launcher extends Activity
         // Save the current widgets tray?
         // TODO(hyunyoungs)
         outState.putSerializable(RUNTIME_STATE_VIEW_IDS, mItemIdToViewId);
+
+        // Save the current AppsCustomize tab
+        if (mAppsCustomizeTabHost != null) {
+            int currentIndex = mAppsCustomizeContent.getSaveInstanceStateIndex();
+            outState.putInt("apps_customize_currentIndex", currentIndex);
+        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onSaveInstanceState(outState);
@@ -4075,6 +4129,10 @@ public class Launcher extends Activity
         if (addedApps != null && mAppsView != null) {
             mAppsView.addApps(addedApps);
         }
+
+        if (addedApps != null && mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.addApps(addedApps);
+        }
     }
 
     /**
@@ -4466,6 +4524,10 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
+
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.setApps(apps);
+        }
     }
 
     /**
@@ -4595,6 +4657,10 @@ public class Launcher extends Activity
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
+        }
+
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.removeApps(appInfos);
         }
     }
 
