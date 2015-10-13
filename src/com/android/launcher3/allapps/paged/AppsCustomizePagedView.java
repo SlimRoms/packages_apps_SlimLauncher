@@ -206,7 +206,7 @@ public class AppsCustomizePagedView extends PagedView implements
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
 
-        setSinglePageInViewport();
+        //setSinglePageInViewport();
 
         mGestureDetector = new GestureDetector(context,
                 new GestureDetector.SimpleOnGestureListener() {
@@ -665,8 +665,6 @@ public class AppsCustomizePagedView extends PagedView implements
 
     @Override
     public void syncPages() {
-        disablePagedViewAnimations();
-
         removeAllViews();
 
         Context context = getContext();
@@ -681,7 +679,6 @@ public class AppsCustomizePagedView extends PagedView implements
             throw new RuntimeException("Invalid ContentType");
         }
 
-        enablePagedViewAnimations();
     }
 
     @Override

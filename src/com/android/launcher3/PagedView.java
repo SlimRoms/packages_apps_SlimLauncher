@@ -69,8 +69,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.07f;
-
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
     private static final float SIGNIFICANT_MOVE_THRESHOLD = 0.4f;
@@ -152,12 +150,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mAllowOverScroll = true;
     protected int[] mTempVisiblePagesRange = new int[2];
     protected boolean mForceDrawAllChildrenNextFrame;
-    private boolean mSpacePagesAutomatically = false;
-
-    // mOverScrollX is equal to getScrollX() when we're within the normal scroll range. Otherwise
-    // it is equal to the scaled overscroll position. We use a separate value so as to prevent
-    // the screens from continuing to translate beyond the normal bounds.
-    protected int mOverScrollX;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -183,8 +175,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
     @Thunk PageIndicator mPageIndicator;
-
-    @Thunk boolean mAllowPagedViewAnimations = true;
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
     private Rect mViewport = new Rect();
@@ -295,7 +285,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         ViewGroup grandParent = (ViewGroup) parent.getParent();
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
             mPageIndicator = (PageIndicator) grandParent.findViewById(mPageIndicatorViewId);
-            mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
+            mPageIndicator.removeAllMarkers(true);
 
             ArrayList<PageIndicator.PageMarkerResources> markers =
                     new ArrayList<PageIndicator.PageMarkerResources>();
@@ -303,7 +293,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 markers.add(getPageIndicatorMarker(i));
             }
 
-            mPageIndicator.addMarkers(markers, mAllowPagedViewAnimations);
+            mPageIndicator.addMarkers(markers, true);
 
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
@@ -635,7 +625,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 overScroll(0);
                 mWasInOverscroll = false;
             }
-            mOverScrollX = x;
             super.scrollTo(x, y);
         }
 
@@ -674,8 +663,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
             if (getScrollX() != mScroller.getCurrX()
-                    || getScrollY() != mScroller.getCurrY()
-                    || mOverScrollX != mScroller.getCurrX()) {
+                    || getScrollY() != mScroller.getCurrY()) {
                 float scaleX = mFreeScroll ? getScaleX() : 1f;
                 int scrollX = (int) (mScroller.getCurrX() * (1 / scaleX));
                 scrollTo(scrollX, mScroller.getCurrY());
@@ -867,22 +855,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             }
         }
-        if (mSpacePagesAutomatically) {
-            int spacing = (getViewportWidth() - mInsets.left - mInsets.right
-                    - referenceChildWidth) / 2;
-            if (spacing >= 0) {
-                setPageSpacing(spacing);
-            }
-            mSpacePagesAutomatically = false;
-        }
         setMeasuredDimension(scaledWidthSize, scaledHeightSize);
-    }
-
-    /**
-     * This method should be called once before first layout / measure pass.
-     */
-    protected void setSinglePageInViewport() {
-        mSpacePagesAutomatically = true;
     }
 
     @Override
@@ -1025,26 +998,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Called when the center screen changes during scrolling.
      */
     protected void screenScrolled(int screenCenter) {
-        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
-
-        if (mFadeInAdjacentScreens && !isInOverscroll) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child != null) {
-                    float scrollProgress = getScrollProgress(screenCenter, child, i);
-                    float alpha = 1 - Math.abs(scrollProgress);
-                    child.setAlpha(alpha);
-                }
-            }
-            invalidate();
-        }
-    }
-
-    protected void enablePagedViewAnimations() {
-        mAllowPagedViewAnimations = true;
-    }
-    protected void disablePagedViewAnimations() {
-        mAllowPagedViewAnimations = false;
     }
 
     @Override
@@ -1055,7 +1008,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             int pageIndex = indexOfChild(child);
             mPageIndicator.addMarker(pageIndex,
                     getPageIndicatorMarker(pageIndex),
-                    mAllowPagedViewAnimations);
+                    true);
         }
 
         // This ensures that when children are added, they get the correct transforms / alphas
@@ -1076,7 +1029,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.removeMarker(index, mAllowPagedViewAnimations);
+            mPageIndicator.removeMarker(index, true);
         }
     }
 
@@ -1106,7 +1059,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null) {
-            mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
+            mPageIndicator.removeAllMarkers(true);
         }
 
         super.removeAllViewsInLayout();
@@ -1115,9 +1068,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int getChildOffset(int index) {
         if (index < 0 || index > getChildCount() - 1) return 0;
 
-        int offset = getPageAt(index).getLeft() - getViewportOffsetX();
-
-        return offset;
+        return getPageAt(index).getLeft() - getViewportOffsetX();
     }
 
     protected void getFreeScrollPageRange(int[] range) {
@@ -1182,7 +1133,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int pageCount = getChildCount();
         if (pageCount > 0) {
             int halfScreenSize = getViewportWidth() / 2;
-            int screenCenter = mOverScrollX + halfScreenSize;
+            int screenCenter = getScrollX() + halfScreenSize;
 
             if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
                 // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
@@ -1589,32 +1540,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    // This curve determines how the effect of scrolling over the limits of the page dimishes
-    // as the user pulls further and further from the bounds
-    private float overScrollInfluenceCurve(float f) {
-        f -= 1.0f;
-        return f * f * f + 1.0f;
-    }
-
     protected void dampedOverScroll(float amount) {
         int screenSize = getViewportWidth();
 
         float f = (amount / screenSize);
 
-        if (f == 0) return;
-        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-
-        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
-        if (amount < 0) {
-            mOverScrollX = overScrollAmount;
-            super.scrollTo(mOverScrollX, getScrollY());
+        if (f < 0) {
+            mEdgeGlowLeft.onPull(-f);
+        } else if (f > 0) {
+            mEdgeGlowRight.onPull(f);
         } else {
-            mOverScrollX = mMaxScrollX + overScrollAmount;
-            super.scrollTo(mOverScrollX, getScrollY());
+            return;
         }
         invalidate();
     }
