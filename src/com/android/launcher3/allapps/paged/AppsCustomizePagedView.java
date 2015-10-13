@@ -206,7 +206,8 @@ public class AppsCustomizePagedView extends PagedView implements
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
 
-        //setSinglePageInViewport();
+        setSinglePageInViewport();
+        setOverscrollUseBounce();
 
         mGestureDetector = new GestureDetector(context,
                 new GestureDetector.SimpleOnGestureListener() {
