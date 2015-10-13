@@ -30,6 +30,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
@@ -486,7 +487,8 @@ public class WorkspaceStateTransitionAnimation {
         // The search bar is only visible in the workspace
         final View searchBar = mLauncher.getOrCreateQsbBar();
         if (searchBar != null) {
-            final boolean searchBarWillBeShown = states.stateIsNormal;
+            final boolean searchBarWillBeShown = states.stateIsNormal && SettingsProvider
+                    .getBoolean(mLauncher, SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
             final float finalSearchBarAlpha = searchBarWillBeShown ? 1f : 0f;
             if (animated) {
                 if (hasOverlaySearchBar) {

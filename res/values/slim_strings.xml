@@ -13,6 +13,9 @@
 
     <string name="icon_size_title">Icon size</string>
 
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Default Screen</string>
+
     <!-- App picker -->
     <string name="profile_applist_title">Apps</string>
     <string name="profile_choose_app">Choose app</string>

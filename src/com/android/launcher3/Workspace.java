@@ -123,8 +123,7 @@ public class Workspace extends PagedView
     @Thunk final WallpaperManager mWallpaperManager;
     @Thunk IBinder mWindowToken;
 
-    private int mOriginalDefaultPage;
-    private int mDefaultPage;
+    private long mDefaultScreenId;
 
     private long mLastMultitouch = 0;
     private boolean mMultitouchGestureDetected = false;
@@ -350,7 +349,6 @@ public class Workspace extends PagedView
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor = grid.getOverviewModeScale(mIsRtl);
-        mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
         setOnHierarchyChangeListener(this);
@@ -410,6 +408,9 @@ public class Workspace extends PagedView
         });
 
         initWorkspace();
+
+        mDefaultScreenId = SettingsProvider.getLong(context, SettingsProvider.DEFAULT_HOMESCREEN,
+                getScreenIdForPageIndex(res.getInteger(R.integer.config_workspaceDefaultScreen)));
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
@@ -509,7 +510,6 @@ public class Workspace extends PagedView
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = mDefaultPage;
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mIconCache = app.getIconCache();
@@ -645,6 +645,11 @@ public class Workspace extends PagedView
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
 
+        if (mDefaultScreenId == screenId) {
+            int defaultPage = getPageIndexForScreenId(screenId);
+            moveToScreen(defaultPage, false);
+        }
+
         LauncherAccessibilityDelegate delegate =
                 LauncherAppState.getInstance().getAccessibilityDelegate();
         if (delegate != null && delegate.isInAccessibleDrag()) {
@@ -665,9 +670,6 @@ public class Workspace extends PagedView
         customScreen.setPadding(0, 0, 0, 0);
 
         addFullScreenPage(customScreen);
-
-        // Ensure that the current page and default page are maintained.
-        mDefaultPage = mOriginalDefaultPage + 1;
 
         // Update the custom content hint
         if (mRestorePage != INVALID_RESTORE_PAGE) {
@@ -693,9 +695,6 @@ public class Workspace extends PagedView
         }
 
         mCustomContentCallbacks = null;
-
-        // Ensure that the current page and default page are maintained.
-        mDefaultPage = mOriginalDefaultPage - 1;
 
         // Update the custom content hint
         if (mRestorePage != INVALID_RESTORE_PAGE) {
@@ -1620,6 +1619,10 @@ public class Workspace extends PagedView
     public void computeScroll() {
         super.computeScroll();
         mWallpaperOffset.syncWithScroll();
+
+        if (isInOverviewMode() && !isReordering(true)) {
+            updateDefaultScreenButton();
+        }
     }
 
     @Override
@@ -2018,6 +2021,25 @@ public class Workspace extends PagedView
         dragLayer.clearAllResizeFrames();
     }
 
+    private void updateDefaultScreenButton() {
+        View overviewPanel = mLauncher.getOverviewPanel();
+        if (overviewPanel != null) {
+            View defaultPageButton = overviewPanel.findViewById(R.id.default_screen_button);
+            if (defaultPageButton != null) {
+                defaultPageButton.setActivated(
+                        getScreenIdForPageIndex(getCurrentPage()) == mDefaultScreenId);
+            }
+        }
+    }
+
+    public void onClickDefaultScreenButton() {
+        if (!isInOverviewMode()) return;
+
+        mDefaultScreenId = getScreenIdForPageIndex(getCurrentPage());
+        updateDefaultScreenButton();
+        SettingsProvider.putLong(mLauncher, SettingsProvider.DEFAULT_HOMESCREEN, mDefaultScreenId);
+    }
+
     @Override
     protected void getFreeScrollPageRange(int[] range) {
         getOverviewModePages(range);
@@ -2056,6 +2078,8 @@ public class Workspace extends PagedView
 
         // Re-enable auto layout transitions for page deletion.
         enableLayoutTransitions();
+
+        updateDefaultScreenButton();
     }
 
     public boolean isInOverviewMode() {
@@ -4493,7 +4517,7 @@ public class Workspace extends PagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        moveToScreen(mDefaultPage, animate);
+        moveToScreen(getPageIndexForScreenId(mDefaultScreenId), animate);
     }
 
     void moveToCustomContentScreen(boolean animate) {

@@ -21,6 +21,26 @@
     android:gravity="top"
     android:orientation="horizontal" >
 
+    <LinearLayout
+        android:id="@+id/default_home_screen_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="@dimen/app_icon_size"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/default_screen_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/app_icon_size"
+            android:layout_weight="1"
+            android:src="@drawable/default_screen_button"
+            android:scaleType="fitCenter"
+            android:gravity="top"
+            android:contentDescription="@string/default_screen_button_text"/>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/wallpaper_button"
         android:layout_width="0dp"

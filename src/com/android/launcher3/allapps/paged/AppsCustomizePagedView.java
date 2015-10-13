@@ -21,11 +21,8 @@ import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -66,73 +63,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A simple callback interface which also provides the results of the task.
- */
-interface AsyncTaskCallback {
-    void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data);
-}
-
-/**
- * The data needed to perform either of the custom AsyncTasks.
- */
-class AsyncTaskPageData {
-    int page;
-    ArrayList<Object> items;
-    ArrayList<Bitmap> generatedImages;
-    int maxImageWidth;
-    int maxImageHeight;
-    AsyncTaskCallback doInBackgroundCallback;
-    AsyncTaskCallback postExecuteCallback;
-    AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, AsyncTaskCallback bgR,
-                      AsyncTaskCallback postR) {
-        page = p;
-        items = l;
-        generatedImages = new ArrayList<>();
-        maxImageWidth = cw;
-        maxImageHeight = ch;
-        doInBackgroundCallback = bgR;
-        postExecuteCallback = postR;
-    }
-    enum Type {
-        LoadWidgetPreviewData
-    }
-}
-
-/**
- * A generic template for an async task used in AppsCustomize.
- */
-class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTaskPageData> {
-    // The page that this async task is associated with
-    AsyncTaskPageData.Type dataType;
-    int page;
-    int threadPriority;
-
-    AppsCustomizeAsyncTask(int p, AsyncTaskPageData.Type ty) {
-        page = p;
-        threadPriority = Process.THREAD_PRIORITY_DEFAULT;
-        dataType = ty;
-    }
-
-    @Override
-    protected AsyncTaskPageData doInBackground(AsyncTaskPageData... params) {
-        if (params.length != 1) return null;
-        // Load each of the widget previews in the background
-        params[0].doInBackgroundCallback.run(this, params[0]);
-        return params[0];
-    }
-
-    @Override
-    protected void onPostExecute(AsyncTaskPageData result) {
-        // All the widget previews are loaded, so we can just callback to inflate the page
-        result.postExecuteCallback.run(this, result);
-    }
-
-    void setThreadPriority(int p) {
-        threadPriority = p;
-    }
-}
-
-/**
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
 public class AppsCustomizePagedView extends PagedView implements
@@ -148,7 +78,6 @@ public class AppsCustomizePagedView extends PagedView implements
     private final LayoutInflater mLayoutInflater;
 
     // Previews & outlines
-    ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     boolean mPageBackgroundsVisible = true;
     private ContentType mContentType = ContentType.Applications;
     private SortMode mSortMode = SortMode.Title;
@@ -190,7 +119,6 @@ public class AppsCustomizePagedView extends PagedView implements
         mLayoutInflater = LayoutInflater.from(context);
         mApps = new ArrayList<>();
         mFilteredApps = new ArrayList<>();
-        mRunningTasks = new ArrayList<>();
 
         // Save the default widget preview background
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -581,15 +509,6 @@ public class AppsCustomizePagedView extends PagedView implements
         if (mContentType != type) {
             mContentType = type;
             invalidatePageData(0, true);
-        }
-    }
-
-    protected void snapToPage(int whichPage, int delta, int duration) {
-        super.snapToPage(whichPage, delta, duration);
-
-        // Update the thread priorities given the direction lookahead
-        for (AppsCustomizeAsyncTask task : mRunningTasks) {
-            task.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
         }
     }
 
