@@ -250,8 +250,9 @@ public class DeviceProfile {
         // update Available Dimensions
         updateAvailableDimensions(context);
 
-        int prefAllAppNumRows = SettingsProvider.getCellCountY(
-                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        String settingsKey = isLandscape ? SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID
+                : SettingsProvider.KEY_PORTRAIT_DRAWER_GRID;
+        int prefAllAppNumRows = SettingsProvider.getCellCountY(context, settingsKey, 0);
         if (prefAllAppNumRows > 0) {
             pagedAllAppsNumRows = prefAllAppNumRows;
         } else {
@@ -264,20 +265,17 @@ public class DeviceProfile {
             } else {
                 pagedAllAppsNumRows = inv.numRows + 1;
             }
-            SettingsProvider.putCellCountY(context,
-                    SettingsProvider.KEY_DRAWER_GRID, pagedAllAppsNumRows);
+            SettingsProvider.putCellCountY(context, settingsKey, pagedAllAppsNumRows);
         }
 
-        int prefAllAppNumCols = SettingsProvider.getCellCountX(
-                context, SettingsProvider.KEY_DRAWER_GRID, 0);
+        int prefAllAppNumCols = SettingsProvider.getCellCountX(context, settingsKey, 0);
         if (prefAllAppNumCols > 0) {
             pagedAllAppsNumCols = prefAllAppNumCols;
         } else {
             Rect padding = getWorkspacePadding(false);
             pagedAllAppsNumCols = (availableWidthPx - padding.left
                     - padding.right - 2 * edgeMarginPx) / (iconSizePx + 2 * edgeMarginPx);
-            SettingsProvider.putCellCountX(context,
-                    SettingsProvider.KEY_DRAWER_GRID, pagedAllAppsNumCols);
+            SettingsProvider.putCellCountX(context, settingsKey, pagedAllAppsNumCols);
         }
     }
 

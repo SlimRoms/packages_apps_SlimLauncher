@@ -23,6 +23,8 @@
 
     <!-- Grid Size -->
     <string name="grid_size_title">Grid size</string>
+    <string name="portrait_grid_size_title">Portrait Grid Size</string>
+    <string name="landscape_grid_size_title">Landscae Grid Size</string>
     <string name="grid_size_summary">Choose the number of rows/columns</string>
     <string name="grid_size_rows_title">Rows</string>
     <string name="grid_size_columns_title">Columns</string>

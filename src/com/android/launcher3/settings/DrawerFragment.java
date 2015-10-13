@@ -27,6 +27,7 @@ import com.android.launcher3.preference.DoubleNumberPickerPreference;
 public class DrawerFragment extends SettingsPreferenceFragment {
 
     private DoubleNumberPickerPreference mPortraitDrawerGrid;
+    private DoubleNumberPickerPreference mLandscapeDrawerGrid;
     private ListPreference mDrawerType;
 
     @Override
@@ -40,22 +41,42 @@ public class DrawerFragment extends SettingsPreferenceFragment {
         mDrawerType.setOnPreferenceChangeListener(mPreferenceChangeListener);
 
         mPortraitDrawerGrid = (DoubleNumberPickerPreference)
-                findPreference(SettingsProvider.KEY_DRAWER_GRID);
+                findPreference(SettingsProvider.KEY_PORTRAIT_DRAWER_GRID);
+        mLandscapeDrawerGrid = (DoubleNumberPickerPreference)
+                findPreference(SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID);
 
         if (mProfile != null) {
-            if (SettingsProvider.getCellCountX(getActivity(),
-                    SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
-                SettingsProvider.putCellCountX(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID,
-                        mProfile.portraitProfile.pagedAllAppsNumCols);
-                mPortraitDrawerGrid.setDefault2(mProfile.portraitProfile.pagedAllAppsNumCols);
-            }
-            if (SettingsProvider.getCellCountY(getActivity(),
-                    SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
-                SettingsProvider.putCellCountY(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID,
-                        mProfile.portraitProfile.pagedAllAppsNumRows);
-                mPortraitDrawerGrid.setDefault1(mProfile.portraitProfile.pagedAllAppsNumRows);
+
+            String[] settingsKeys = { SettingsProvider.KEY_PORTRAIT_DRAWER_GRID,
+                    SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID };
+
+            for (String key : settingsKeys) {
+                if (SettingsProvider.getCellCountX(getActivity(), key, 0) < 1) {
+                    if (SettingsProvider.KEY_PORTRAIT_DRAWER_GRID.equals(key)) {
+                        SettingsProvider.putCellCountX(getActivity(), key,
+                                mProfile.portraitProfile.pagedAllAppsNumCols);
+                        mPortraitDrawerGrid.setDefault2(
+                                mProfile.portraitProfile.pagedAllAppsNumCols);
+                    } else if (SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID.equals(key)) {
+                        SettingsProvider.putCellCountX(getActivity(), key,
+                                mProfile.landscapeProfile.pagedAllAppsNumCols);
+                        mLandscapeDrawerGrid.setDefault2(
+                                mProfile.landscapeProfile.pagedAllAppsNumCols);
+                    }
+                }
+                if (SettingsProvider.getCellCountY(getActivity(), key, 0) < 1) {
+                    if (SettingsProvider.KEY_PORTRAIT_DRAWER_GRID.equals(key)) {
+                        SettingsProvider.putCellCountY(getActivity(), key,
+                                mProfile.portraitProfile.pagedAllAppsNumRows);
+                        mPortraitDrawerGrid.setDefault1(
+                                mProfile.portraitProfile.pagedAllAppsNumRows);
+                    } else if (SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID.equals(key)) {
+                        SettingsProvider.putCellCountY(getActivity(), key,
+                                mProfile.landscapeProfile.pagedAllAppsNumRows);
+                        mLandscapeDrawerGrid.setDefault1(
+                                mProfile.landscapeProfile.pagedAllAppsNumRows);
+                    }
+                }
             }
         }
         updatePrefs();
@@ -64,8 +85,10 @@ public class DrawerFragment extends SettingsPreferenceFragment {
     public void updatePrefs() {
         if (Integer.parseInt(mDrawerType.getValue()) == Launcher.DRAWER_TYPE_VERTICAL) {
             mPortraitDrawerGrid.setEnabled(false);
+            mLandscapeDrawerGrid.setEnabled(false);
         } else {
             mPortraitDrawerGrid.setEnabled(true);
+            mLandscapeDrawerGrid.setEnabled(true);
         }
     }
 

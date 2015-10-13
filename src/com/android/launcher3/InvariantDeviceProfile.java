@@ -97,11 +97,6 @@ public class InvariantDeviceProfile {
 
     InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
             float is, float its, float hs, float his, int dlId) {
-        // Ensure that we have an odd number of hotseat items (since we need to place all apps)
-        if (hs % 2 == 0) {
-            throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
-        }
-
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -191,6 +186,9 @@ public class InvariantDeviceProfile {
             numHotseatIcons = prefNumHotseatIcons;
             hotseatAllAppsRank = (int) (numHotseatIcons / 2);
         }
+
+        portraitProfile.updateFromPreferences(context);
+        landscapeProfile.updateFromPreferences(context);
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles() {

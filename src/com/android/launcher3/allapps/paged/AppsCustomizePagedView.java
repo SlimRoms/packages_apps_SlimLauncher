@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Process;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,9 +45,11 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Folder;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -203,7 +206,7 @@ public class AppsCustomizePagedView extends PagedView implements
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
 
-        //setSinglePageInViewport();
+        setSinglePageInViewport();
 
         mGestureDetector = new GestureDetector(context,
                 new GestureDetector.SimpleOnGestureListener() {
@@ -279,6 +282,12 @@ public class AppsCustomizePagedView extends PagedView implements
 
     public void onFinishInflate() {
         super.onFinishInflate();
+
+        LauncherAppState app = LauncherAppState.getInstance();
+        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+        DeviceProfile grid = idp.portraitProfile;
+        setPadding(grid.edgeMarginPx, 2 * grid.edgeMarginPx,
+                grid.edgeMarginPx, 2 * grid.edgeMarginPx);
     }
 
     /**
@@ -344,6 +353,7 @@ public class AppsCustomizePagedView extends PagedView implements
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mCellCountX = grid.pagedAllAppsNumCols;
         mCellCountY = grid.pagedAllAppsNumRows;
+        Log.d("TEST", "cols=" + mCellCountX + " : rows=" + mCellCountY);
         updatePageCounts();
         updateSortMode(mLauncher);
     }
@@ -358,7 +368,6 @@ public class AppsCustomizePagedView extends PagedView implements
         } else if (sortMode == 2) {
             mSortMode = SortMode.InstallTime;
         }
-        mSortMode = SortMode.Title;
     }
 
     protected void onDataReady() {
@@ -656,7 +665,7 @@ public class AppsCustomizePagedView extends PagedView implements
 
     @Override
     public void syncPages() {
-        //disablePagedViewAnimations();
+        disablePagedViewAnimations();
 
         removeAllViews();
 
@@ -672,7 +681,7 @@ public class AppsCustomizePagedView extends PagedView implements
             throw new RuntimeException("Invalid ContentType");
         }
 
-        //enablePagedViewAnimations();
+        enablePagedViewAnimations();
     }
 
     @Override
@@ -796,10 +805,6 @@ public class AppsCustomizePagedView extends PagedView implements
      */
     public void setup(Launcher launcher) {
         mLauncher = launcher;
-
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        setPadding(grid.edgeMarginPx, 2 * grid.edgeMarginPx,
-                grid.edgeMarginPx, 2 * grid.edgeMarginPx);
     }
 
     /**
@@ -813,6 +818,8 @@ public class AppsCustomizePagedView extends PagedView implements
             // The next layout pass will trigger data-ready if both widgets and apps are set, so
             // request a layout to trigger the page data when ready.
             requestLayout();
+        } else {
+            invalidatePageData();
         }
     }
 

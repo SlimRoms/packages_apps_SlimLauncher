@@ -572,8 +572,7 @@ public class Launcher extends Activity
     }
 
     public void updateDynamicGrid() {
-        mDeviceProfile.inv.updateFromPreferences(this);
-        mDeviceProfile.updateFromPreferences(this);
+        LauncherAppState.getInstance().getInvariantDeviceProfile().updateFromPreferences(this);
         updatePreferences();
 
         if (mShowSearchBar) {
@@ -594,6 +593,7 @@ public class Launcher extends Activity
 
         mRotationEnabled = SettingsProvider.getBoolean(this, SettingsProvider.ALLOW_ROTATION,
                 getResources().getBoolean(R.bool.allow_rotation));
+
         if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
             mUpdateOrientationRunnable.run();
         }
