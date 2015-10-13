@@ -283,6 +283,7 @@ public class LauncherStateTransitionAnimation {
 
             if (overlaySearchBarView != null) {
                 overlaySearchBarView.setAlpha(0f);
+                overlaySearchBarView.setVisibility(View.VISIBLE);
                 ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(overlaySearchBarView, "alpha", 0f, 1f);
                 searchBarAlpha.setDuration(100);
                 searchBarAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
@@ -659,6 +660,7 @@ public class LauncherStateTransitionAnimation {
                     }
                     if (overlaySearchBarView != null) {
                         overlaySearchBarView.setAlpha(1f);
+                        overlaySearchBarView.setVisibility(View.GONE);
                     }
 
                     // This can hold unnecessary references to views.

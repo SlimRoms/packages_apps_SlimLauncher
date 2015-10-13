@@ -34,19 +34,21 @@ public class DrawerFragment extends SettingsPreferenceFragment {
         mDrawerGrid = (DoubleNumberPickerPreference)
                 findPreference(SettingsProvider.KEY_DRAWER_GRID);
 
-        /*if (mProfile != null) {
+        if (mProfile != null) {
             if (SettingsProvider.getCellCountX(getActivity(),
                     SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
                 SettingsProvider.putCellCountX(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID, mProfile.allAppsNumCols);
-                mDrawerGrid.setDefault2(mProfile.allAppsNumCols);
+                        SettingsProvider.KEY_DRAWER_GRID,
+                        mProfile.portraitProfile.pagedAllAppsNumCols);
+                mDrawerGrid.setDefault2(mProfile.portraitProfile.pagedAllAppsNumCols);
             }
             if (SettingsProvider.getCellCountY(getActivity(),
                     SettingsProvider.KEY_DRAWER_GRID, 0) < 1) {
                 SettingsProvider.putCellCountY(getActivity(),
-                        SettingsProvider.KEY_DRAWER_GRID, mProfile.allAppsNumRows);
-                mDrawerGrid.setDefault1(mProfile.allAppsNumRows);
+                        SettingsProvider.KEY_DRAWER_GRID,
+                        mProfile.portraitProfile.pagedAllAppsNumRows);
+                mDrawerGrid.setDefault1(mProfile.portraitProfile.pagedAllAppsNumRows);
             }
-        }*/
+        }
     }
 }

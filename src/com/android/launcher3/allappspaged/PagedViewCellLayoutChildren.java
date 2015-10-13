@@ -80,7 +80,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
 
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
 
         if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
@@ -90,7 +90,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             PagedViewCellLayout.LayoutParams lp =
-                (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
+                    (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
             lp.setup(getContext(),
                     mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                     getPaddingLeft(),
@@ -120,7 +120,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
                 View child = getChildAt(i);
                 if (child.getVisibility() != GONE) {
                     PagedViewCellLayout.LayoutParams lp =
-                        (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
+                            (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
                     minRowX = Math.min(minRowX, lp.x);
                     maxRowX = Math.max(maxRowX, lp.x + lp.width);
                 }
@@ -133,7 +133,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
             View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 PagedViewCellLayout.LayoutParams lp =
-                    (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
+                        (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
 
                 int childLeft = offsetX + lp.x;
                 int childTop = lp.y;

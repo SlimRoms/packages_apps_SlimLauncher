@@ -98,7 +98,8 @@ public class DeviceProfile {
 
     // All apps
     public int allAppsNumCols;
-    public int allAppsNumRows;
+    public int pagedAllAppsNumCols;
+    public int pagedAllAppsNumRows;
     public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
 
@@ -252,31 +253,31 @@ public class DeviceProfile {
         int prefAllAppNumRows = SettingsProvider.getCellCountY(
                 context, SettingsProvider.KEY_DRAWER_GRID, 0);
         if (prefAllAppNumRows > 0) {
-            allAppsNumRows = prefAllAppNumRows;
+            pagedAllAppsNumRows = prefAllAppNumRows;
         } else {
             if (isLandscape) {
                 int pageIndicatorOffset =
                         context.getResources().getDimensionPixelSize(
                                 R.dimen.apps_customize_page_indicator_offset);
-                allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                pagedAllAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
                         (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
             } else {
-                allAppsNumRows = inv.numRows + 1;
+                pagedAllAppsNumRows = inv.numRows + 1;
             }
             SettingsProvider.putCellCountY(context,
-                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumRows);
+                    SettingsProvider.KEY_DRAWER_GRID, pagedAllAppsNumRows);
         }
 
         int prefAllAppNumCols = SettingsProvider.getCellCountX(
                 context, SettingsProvider.KEY_DRAWER_GRID, 0);
         if (prefAllAppNumCols > 0) {
-            allAppsNumCols = prefAllAppNumCols;
+            pagedAllAppsNumCols = prefAllAppNumCols;
         } else {
             Rect padding = getWorkspacePadding(false);
-            allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
-                    (iconSizePx + 2 * edgeMarginPx);
+            pagedAllAppsNumCols = (availableWidthPx - padding.left
+                    - padding.right - 2 * edgeMarginPx) / (iconSizePx + 2 * edgeMarginPx);
             SettingsProvider.putCellCountX(context,
-                    SettingsProvider.KEY_DRAWER_GRID, allAppsNumCols);
+                    SettingsProvider.KEY_DRAWER_GRID, pagedAllAppsNumCols);
         }
     }
 

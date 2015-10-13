@@ -32,12 +32,11 @@ import com.android.launcher3.allapps.BaseAllAppsView;
 
 public class AppsCustomizeTabHost extends FrameLayout implements
         LauncherTransitionable, Insettable, BaseAllAppsView {
-    
+
+    private final Rect mInsets = new Rect();
     private AppsCustomizePagedView mPagedView;
     private View mContent;
     private boolean mInTransition = false;
-
-    private final Rect mInsets = new Rect();
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);

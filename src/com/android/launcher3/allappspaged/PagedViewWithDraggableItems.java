@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
@@ -36,7 +35,7 @@ import com.android.launcher3.PagedView;
  *
  */
 public abstract class PagedViewWithDraggableItems extends PagedView
-    implements View.OnLongClickListener, View.OnTouchListener {
+        implements View.OnLongClickListener, View.OnTouchListener {
     private View mLastTouchedItem;
     private boolean mIsDragging;
     private boolean mIsDragEnabled;

@@ -82,8 +82,8 @@ public class InvariantDeviceProfile {
     // Derived invariant properties
     int hotseatAllAppsRank;
 
-    DeviceProfile landscapeProfile;
-    DeviceProfile portraitProfile;
+    public DeviceProfile landscapeProfile;
+    public DeviceProfile portraitProfile;
 
     InvariantDeviceProfile() {
     }

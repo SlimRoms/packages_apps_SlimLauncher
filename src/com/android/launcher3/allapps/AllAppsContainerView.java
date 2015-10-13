@@ -242,9 +242,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Add the new search view to the layout
         View searchBarView = searchController.getView(mSearchBarContainerView);
         mSearchBarContainerView.addView(searchBarView);
-        mSearchBarContainerView.setVisibility(View.VISIBLE);
+        mSearchBarContainerView.setVisibility(VISIBLE);
         mSearchBarView = searchBarView;
         setHasSearchBar();
+        mSearchBarView.setVisibility(GONE);
 
         updateBackgroundAndPaddings();
     }

@@ -34,7 +34,7 @@ import com.android.launcher3.Page;
  */
 public class PagedViewCellLayout extends ViewGroup implements Page {
     static final String TAG = "PagedViewCellLayout";
-
+    protected PagedViewCellLayoutChildren mChildren;
     private int mCellCountX;
     private int mCellCountY;
     private int mOriginalCellWidth;
@@ -45,7 +45,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mOriginalHeightGap;
     private int mWidthGap;
     private int mHeightGap;
-    protected PagedViewCellLayoutChildren mChildren;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -97,7 +96,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId,
-            LayoutParams params) {
+                                       LayoutParams params) {
         final LayoutParams lp = params;
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
@@ -170,7 +169,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
 
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
 
         if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
@@ -198,9 +197,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
             newWidth = getPaddingLeft() + getPaddingRight() + (mCellCountX * mCellWidth) +
-                ((mCellCountX - 1) * mWidthGap);
+                    ((mCellCountX - 1) * mWidthGap);
             newHeight = getPaddingTop() + getPaddingBottom() + (mCellCountY * mCellHeight) +
-                ((mCellCountY - 1) * mHeightGap);
+                    ((mCellCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         }
 
@@ -208,11 +207,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             int childWidthMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
-                        getPaddingRight(), MeasureSpec.EXACTLY);
+                    MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
+                            getPaddingRight(), MeasureSpec.EXACTLY);
             int childheightMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
-                        getPaddingBottom(), MeasureSpec.EXACTLY);
+                    MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
+                            getPaddingBottom(), MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
 
@@ -243,7 +242,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             child.layout(getPaddingLeft(), getPaddingTop(),
-                r - l - getPaddingRight(), b - t - getPaddingBottom());
+                    r - l - getPaddingRight(), b - t - getPaddingBottom());
         }
     }
 
@@ -295,7 +294,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int spanX = (width + smallerSize) / smallerSize;
         int spanY = (height + smallerSize) / smallerSize;
 
-        return new int[] { spanX, spanY };
+        return new int[]{spanX, spanY};
     }
 
     /**
@@ -338,9 +337,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return n;
     }
 
-    /** Returns an estimated center position of the cell at the specified index */
+    /**
+     * Returns an estimated center position of the cell at the specified index
+     */
     public int[] estimateCellPosition(int x, int y) {
-        return new int[] {
+        return new int[]{
                 getPaddingLeft() + (x * mCellWidth) + (x * mWidthGap) + (mCellWidth / 2),
                 getPaddingTop() + (y * mCellHeight) + (y * mHeightGap) + (mCellHeight / 2)
         };
@@ -412,16 +413,14 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
          * Is this item currently being dragged
          */
         public boolean isDragging;
-
-        // a data object that you can bind to this layout params
-        private Object mTag;
-
         // X coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int x;
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
+        // a data object that you can bind to this layout params
+        private Object mTag;
 
         public LayoutParams() {
             super(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -475,8 +474,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
                 x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
                 y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
             } else {*/
-                x = myCellX * (cellWidth + widthGap) + leftMargin;
-                y = myCellY * (cellHeight + heightGap) + topMargin;
+            x = myCellX * (cellWidth + widthGap) + leftMargin;
+            y = myCellY * (cellHeight + heightGap) + topMargin;
             //}
         }
 
@@ -490,7 +489,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
         public String toString() {
             return "(" + this.cellX + ", " + this.cellY + ", " +
-                this.cellHSpan + ", " + this.cellVSpan + ")";
+                    this.cellHSpan + ", " + this.cellVSpan + ")";
         }
     }
 }
