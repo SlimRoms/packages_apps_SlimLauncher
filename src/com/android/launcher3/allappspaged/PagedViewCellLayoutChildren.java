@@ -27,9 +27,6 @@ import android.view.ViewGroup;
  * to give a preview of its contents.
  */
 public class PagedViewCellLayoutChildren extends ViewGroup {
-    static final String TAG = "PagedViewCellLayout";
-
-    private boolean mCenterContent;
 
     private int mCellWidth;
     private int mCellHeight;
@@ -91,10 +88,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
             View child = getChildAt(i);
             PagedViewCellLayout.LayoutParams lp =
                     (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-            lp.setup(getContext(),
-                    mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                    getPaddingLeft(),
-                    getPaddingTop());
+            lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
 
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width,
                     MeasureSpec.EXACTLY);
@@ -112,7 +106,7 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         int count = getChildCount();
 
         int offsetX = 0;
-        if (mCenterContent && count > 0) {
+        if (count > 0) {
             // determine the max width of all the rows and center accordingly
             int maxRowX = 0;
             int minRowX = Integer.MAX_VALUE;
@@ -140,10 +134,6 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
             }
         }
-    }
-
-    public void enableCenteredContent(boolean enabled) {
-        mCenterContent = enabled;
     }
 
     @Override

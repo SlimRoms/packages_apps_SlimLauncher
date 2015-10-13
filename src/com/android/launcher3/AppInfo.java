@@ -54,7 +54,7 @@ public class AppInfo extends ItemInfo {
     /**
      * The time at which the app was first installed.
      */
-    long firstInstallTime;
+    public long firstInstallTime;
 
     public ComponentName componentName;
 

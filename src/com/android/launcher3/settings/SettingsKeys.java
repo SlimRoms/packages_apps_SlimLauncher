@@ -35,6 +35,7 @@ public interface SettingsKeys {
     String KEY_DOCK_ICON_SIZE = "dock_icon_size";
     String KEY_HIDDEN_APPS = "hidden_apps";
     String KEY_DRAWER_TYPE = "drawer_style";
+    String KEY_DRAWER_SORT_MODE = "drawer_sort_mode";
 
     // Folder
     String FOLDER_BACKGROUND_COLOR = "folder_background_color";

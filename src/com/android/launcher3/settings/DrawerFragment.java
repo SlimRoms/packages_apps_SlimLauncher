@@ -17,19 +17,27 @@
 package com.android.launcher3.settings;
 
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.preference.DoubleNumberPickerPreference;
 
 public class DrawerFragment extends SettingsPreferenceFragment {
 
     private DoubleNumberPickerPreference mDrawerGrid;
+    private ListPreference mDrawerType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.drawer_preferences);
+
+        mDrawerType = (ListPreference)
+                findPreference(SettingsProvider.KEY_DRAWER_TYPE);
+        mDrawerType.setOnPreferenceChangeListener(mPreferenceChangeListener);
 
         mDrawerGrid = (DoubleNumberPickerPreference)
                 findPreference(SettingsProvider.KEY_DRAWER_GRID);
@@ -50,5 +58,23 @@ public class DrawerFragment extends SettingsPreferenceFragment {
                 mDrawerGrid.setDefault1(mProfile.portraitProfile.pagedAllAppsNumRows);
             }
         }
+        updatePrefs();
     }
+
+    public void updatePrefs() {
+        if (Integer.parseInt(mDrawerType.getValue()) == Launcher.DRAWER_TYPE_VERTICAL) {
+            mDrawerGrid.setEnabled(false);
+        } else {
+            mDrawerGrid.setEnabled(true);
+        }
+    }
+
+    Preference.OnPreferenceChangeListener mPreferenceChangeListener =
+            new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object o) {
+            updatePrefs();
+            return true;
+        }
+    };
 }

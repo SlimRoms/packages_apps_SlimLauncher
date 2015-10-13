@@ -19,6 +19,7 @@ import android.content.Context;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Stats;
 import com.android.launcher3.util.Thunk;
 
 import java.text.Collator;
@@ -83,7 +84,8 @@ public class AppNameComparator {
     /**
      * Compares two titles with the same return value semantics as Comparator.
      */
-    @Thunk int compareTitles(String titleA, String titleB) {
+    @Thunk
+    int compareTitles(String titleA, String titleB) {
         // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
         boolean aStartsWithLetter = (titleA.length() > 0) &&
                 Character.isLetterOrDigit(titleA.codePointAt(0));
@@ -97,5 +99,61 @@ public class AppNameComparator {
 
         // Order by the title in the current locale
         return mCollator.compare(titleA, titleB);
+    }
+
+    public static Comparator<AppInfo> getAppNameComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            public final int compare(AppInfo a, AppInfo b) {
+                if (a.user.equals(b.user)) {
+                    int result = collator.compare(a.title.toString().trim(),
+                            b.title.toString().trim());
+                    if (result == 0) {
+                        result = a.componentName.compareTo(b.componentName);
+                    }
+                    return result;
+                } else {
+                    // TODO Need to figure out rules for sorting
+                    // profiles, this puts work second.
+                    return a.user.toString().compareTo(b.user.toString());
+                }
+            }
+        };
+    }
+
+    public static Comparator<AppInfo> getLaunchCountComparator(final Stats stats) {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            @Override
+            public int compare(AppInfo a, AppInfo b) {
+                int result = stats.launchCount(b.intent) - stats.launchCount(a.intent);
+                if (result == 0) {
+                    result = collator.compare(a.title.toString().trim(),
+                            b.title.toString().trim());
+                    if (result == 0) {
+                        result = a.componentName.compareTo(b.componentName);
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    public static Comparator<AppInfo> getAppInstallTimeComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            @Override
+            public int compare(AppInfo a, AppInfo b) {
+                if (a.firstInstallTime < b.firstInstallTime) return 1;
+                if (a.firstInstallTime > b.firstInstallTime) return -1;
+                int result = collator.compare(a.title.toString().trim(),
+                        b.title.toString().trim());
+                if (result == 0) {
+                    result = a.componentName.compareTo(b.componentName);
+                }
+                return result;
+            }
+        };
+
     }
 }

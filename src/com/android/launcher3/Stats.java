@@ -25,7 +25,21 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Stats {
+    private static final String TAG = "Launcher3/Stats";
+
+    private static final String STATS_FILE_NAME = "stats.log";
+    private static final int STATS_VERSION = 1;
+    private static final int INITIAL_STATS_SIZE = 100;
+
+    ArrayList<String> mIntents;
+    ArrayList<Integer> mHistogram;
 
     /**
      * Implemented by containers to provide a launch source for a given child.
@@ -110,6 +124,8 @@ public class Stats {
         mLaunchBroadcastPermission =
                 launcher.getResources().getString(R.string.receive_launch_broadcasts_permission);
 
+        loadStats();
+
         if (DEBUG_BROADCASTS) {
             launcher.registerReceiver(
                     new BroadcastReceiver() {
@@ -123,6 +139,29 @@ public class Stats {
                     mLaunchBroadcastPermission,
                     null
             );
+        }
+    }
+
+    public void incrementLaunch(String intentStr) {
+        int pos = mIntents.indexOf(intentStr);
+        if (pos < 0) {
+            mIntents.add(intentStr);
+            mHistogram.add(1);
+        } else {
+            mHistogram.set(pos, mHistogram.get(pos) + 1);
+        }
+    }
+
+    public int launchCount(Intent intent) {
+        intent = new Intent(intent);
+        intent.setSourceBounds(null);
+
+        final String flat = intent.toUri(0);
+        int pos = mIntents.indexOf(flat);
+        if (pos < 0) {
+            return 0;
+        } else {
+            return mHistogram.get(pos);
         }
     }
 
@@ -143,5 +182,68 @@ public class Stats {
         LaunchSourceUtils.populateSourceDataFromAncestorProvider(v, sourceExtras);
         broadcastIntent.putExtra(EXTRA_SOURCE, sourceExtras);
         mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
+
+        incrementLaunch(flat);
+        saveStats();
+    }
+
+    private void saveStats() {
+        DataOutputStream stats = null;
+        try {
+            stats = new DataOutputStream(mLauncher.openFileOutput(STATS_FILE_NAME + ".tmp", Context.MODE_PRIVATE));
+            stats.writeInt(STATS_VERSION);
+            final int N = mHistogram.size();
+            stats.writeInt(N);
+            for (int i=0; i<N; i++) {
+                stats.writeUTF(mIntents.get(i));
+                stats.writeInt(mHistogram.get(i));
+            }
+            stats.close();
+            stats = null;
+            mLauncher.getFileStreamPath(STATS_FILE_NAME + ".tmp")
+                    .renameTo(mLauncher.getFileStreamPath(STATS_FILE_NAME));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "unable to create stats data: " + e);
+        } catch (IOException e) {
+            Log.e(TAG, "unable to write to stats data: " + e);
+        } finally {
+            if (stats != null) {
+                try {
+                    stats.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }
+    }
+
+    private void loadStats() {
+        mIntents = new ArrayList<>(INITIAL_STATS_SIZE);
+        mHistogram = new ArrayList<>(INITIAL_STATS_SIZE);
+        DataInputStream stats = null;
+        try {
+            stats = new DataInputStream(mLauncher.openFileInput(STATS_FILE_NAME));
+            final int version = stats.readInt();
+            if (version == STATS_VERSION) {
+                final int N = stats.readInt();
+                for (int i=0; i<N; i++) {
+                    final String pkg = stats.readUTF();
+                    final int count = stats.readInt();
+                    mIntents.add(pkg);
+                    mHistogram.add(count);
+                }
+            }
+        } catch (IOException e) {
+            // more of a problem
+
+        } finally {
+            if (stats != null) {
+                try {
+                    stats.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }
     }
 }

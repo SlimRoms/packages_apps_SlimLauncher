@@ -17,6 +17,7 @@
 package com.android.launcher3.allappspaged;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,7 +34,6 @@ import com.android.launcher3.Page;
  * to give a preview of its contents.
  */
 public class PagedViewCellLayout extends ViewGroup implements Page {
-    static final String TAG = "PagedViewCellLayout";
     protected PagedViewCellLayoutChildren mChildren;
     private int mCellCountX;
     private int mCellCountY;
@@ -64,8 +64,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         InvariantDeviceProfile grid = app.getInvariantDeviceProfile();
         mOriginalCellWidth = mCellWidth = 100;
         mOriginalCellHeight = mCellHeight = 100;
-        mCellCountX = (int) grid.numColumns;
-        mCellCountY = (int) grid.numRows;
+        mCellCountX = grid.numColumns;
+        mCellCountY = grid.numRows;
         mOriginalWidthGap = mOriginalHeightGap = mWidthGap = mHeightGap = -1;
 
         mChildren = new PagedViewCellLayoutChildren(context);
@@ -73,14 +73,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mChildren.setGap(mWidthGap, mHeightGap);
 
         addView(mChildren);
-    }
-
-    public int getCellWidth() {
-        return mCellWidth;
-    }
-
-    public int getCellHeight() {
-        return mCellHeight;
     }
 
     @Override
@@ -95,27 +87,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         }
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId,
-                                       LayoutParams params) {
-        final LayoutParams lp = params;
-
-        // Generate an id for each view, this assumes we have at most 256x256 cells
-        // per workspace screen
-        if (lp.cellX >= 0 && lp.cellX <= (mCellCountX - 1) &&
-                lp.cellY >= 0 && (lp.cellY <= mCellCountY - 1)) {
-            // If the horizontal or vertical span is set to -1, it is taken to
-            // mean that it spans the extent of the CellLayout
-            if (lp.cellHSpan < 0) lp.cellHSpan = mCellCountX;
-            if (lp.cellVSpan < 0) lp.cellVSpan = mCellCountY;
-
-            child.setId(childId);
-            mChildren.addView(child, index, lp);
-
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void removeAllViewsOnPage() {
         mChildren.removeAllViews();
@@ -127,23 +98,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mChildren.removeViewAt(index);
     }
 
-    /**
-     * Clears all the key listeners for the individual icons.
-     */
-    public void resetChildrenOnKeyListeners() {
-        int childCount = mChildren.getChildCount();
-        for (int j = 0; j < childCount; ++j) {
-            mChildren.getChildAt(j).setOnKeyListener(null);
-        }
-    }
-
     @Override
     public int getPageChildCount() {
         return mChildren.getChildCount();
-    }
-
-    public PagedViewCellLayoutChildren getChildrenLayout() {
-        return mChildren;
     }
 
     @Override
@@ -218,24 +175,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         setMeasuredDimension(newWidth, newHeight);
     }
 
-    int getContentWidth() {
-        return getWidthBeforeFirstLayout() + getPaddingLeft() + getPaddingRight();
-    }
-
-    int getContentHeight() {
-        if (mCellCountY > 0) {
-            return mCellCountY * mCellHeight + (mCellCountY - 1) * Math.max(0, mHeightGap);
-        }
-        return 0;
-    }
-
-    int getWidthBeforeFirstLayout() {
-        if (mCellCountX > 0) {
-            return mCellCountX * mCellWidth + (mCellCountX - 1) * Math.max(0, mWidthGap);
-        }
-        return 0;
-    }
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -247,7 +186,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         boolean result = super.onTouchEvent(event);
         int count = getPageChildCount();
         if (count > 0) {
@@ -264,109 +203,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return result;
     }
 
-    public void enableCenteredContent(boolean enabled) {
-        mChildren.enableCenteredContent(enabled);
-    }
-
     @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
         mChildren.setChildrenDrawingCacheEnabled(enabled);
-    }
-
-    public void setCellCount(int xCount, int yCount) {
-        mCellCountX = xCount;
-        mCellCountY = yCount;
-        requestLayout();
-    }
-
-    public void setGap(int widthGap, int heightGap) {
-        mOriginalWidthGap = mWidthGap = widthGap;
-        mOriginalHeightGap = mHeightGap = heightGap;
-        mChildren.setGap(widthGap, heightGap);
-    }
-
-    public int[] getCellCountForDimensions(int width, int height) {
-        // Always assume we're working with the smallest span to make sure we
-        // reserve enough space in both orientations
-        int smallerSize = Math.min(mCellWidth, mCellHeight);
-
-        // Always round up to next largest cell
-        int spanX = (width + smallerSize) / smallerSize;
-        int spanY = (height + smallerSize) / smallerSize;
-
-        return new int[]{spanX, spanY};
-    }
-
-    /**
-     * Start dragging the specified child
-     *
-     * @param child The child that is being dragged
-     */
-    void onDragChild(View child) {
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.isDragging = true;
-    }
-
-    /**
-     * Estimates the number of cells that the specified width would take up.
-     */
-    public int estimateCellHSpan(int width) {
-        // We don't show the next/previous pages any more, so we use the full width, minus the
-        // padding
-        int availWidth = width - (getPaddingLeft() + getPaddingRight());
-
-        // We know that we have to fit N cells with N-1 width gaps, so we just juggle to solve for N
-        int n = Math.max(1, (availWidth + mWidthGap) / (mCellWidth + mWidthGap));
-
-        // We don't do anything fancy to determine if we squeeze another row in.
-        return n;
-    }
-
-    /**
-     * Estimates the number of cells that the specified height would take up.
-     */
-    public int estimateCellVSpan(int height) {
-        // The space for a page is the height - top padding (current page) - bottom padding (current
-        // page)
-        int availHeight = height - (getPaddingTop() + getPaddingBottom());
-
-        // We know that we have to fit N cells with N-1 height gaps, so we juggle to solve for N
-        int n = Math.max(1, (availHeight + mHeightGap) / (mCellHeight + mHeightGap));
-
-        // We don't do anything fancy to determine if we squeeze another row in.
-        return n;
-    }
-
-    /**
-     * Returns an estimated center position of the cell at the specified index
-     */
-    public int[] estimateCellPosition(int x, int y) {
-        return new int[]{
-                getPaddingLeft() + (x * mCellWidth) + (x * mWidthGap) + (mCellWidth / 2),
-                getPaddingTop() + (y * mCellHeight) + (y * mHeightGap) + (mCellHeight / 2)
-        };
-    }
-
-    public void calculateCellCount(int width, int height, int maxCellCountX, int maxCellCountY) {
-        mCellCountX = Math.min(maxCellCountX, estimateCellHSpan(width));
-        mCellCountY = Math.min(maxCellCountY, estimateCellVSpan(height));
-        requestLayout();
-    }
-
-    /**
-     * Estimates the width that the number of hSpan cells will take up.
-     */
-    public int estimateCellWidth(int hSpan) {
-        // TODO: we need to take widthGap into effect
-        return hSpan * mCellWidth;
-    }
-
-    /**
-     * Estimates the height that the number of vSpan cells will take up.
-     */
-    public int estimateCellHeight(int vSpan) {
-        // TODO: we need to take heightGap into effect
-        return vSpan * mCellHeight;
     }
 
     @Override
@@ -409,10 +248,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         @ViewDebug.ExportedProperty
         public int cellVSpan;
 
-        /**
-         * Is this item currently being dragged
-         */
-        public boolean isDragging;
         // X coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int x;
@@ -456,9 +291,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(Context context,
-                          int cellWidth, int cellHeight, int widthGap, int heightGap,
-                          int hStartPadding, int vStartPadding) {
+        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap) {
 
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
