@@ -29,11 +29,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
-import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.BaseAllAppsView;
-import com.android.launcher3.allappspaged.AppsCustomizePagedView;
-import com.android.launcher3.allappspaged.AppsCustomizeTabHost;
-import com.android.launcher3.settings.SettingsProvider;
 import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;

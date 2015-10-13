@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.allappspaged;
+package com.android.launcher3.allapps.paged;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -42,7 +42,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DragController;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Folder;
@@ -642,7 +641,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         enableHwLayersOnVisiblePages();
     }
 
-    //@Override
+    @Override
     public void syncPages() {
         //disablePagedViewAnimations();
 
@@ -663,7 +662,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         //enablePagedViewAnimations();
     }
 
-    //@Override
+    @Override
     public void syncPageItems(int page, boolean immediate) {
         syncAppsPageItems(page);
     }

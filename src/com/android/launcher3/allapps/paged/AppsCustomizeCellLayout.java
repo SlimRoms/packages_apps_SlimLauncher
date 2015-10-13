@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.allappspaged;
+package com.android.launcher3.allapps.paged;
 
 import android.content.Context;
 import android.view.View;
@@ -22,7 +22,6 @@ import android.view.View;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.FocusIndicatorView;
 import com.android.launcher3.Page;
-import com.android.launcher3.ShortcutAndWidgetContainer;
 
 public class AppsCustomizeCellLayout extends CellLayout implements Page {
 
@@ -63,14 +62,4 @@ public class AppsCustomizeCellLayout extends CellLayout implements Page {
         return indexOfChild(v);
     }
 
-    /**
-     * Clears all the key listeners for the individual icons.
-     */
-    public void resetChildrenOnKeyListeners() {
-        ShortcutAndWidgetContainer children = getShortcutsAndWidgets();
-        int childCount = children.getChildCount();
-        for (int j = 0; j < childCount; ++j) {
-            children.getChildAt(j).setOnKeyListener(null);
-        }
-    }
 }

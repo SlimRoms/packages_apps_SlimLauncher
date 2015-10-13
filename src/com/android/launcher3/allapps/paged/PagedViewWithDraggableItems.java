@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.allappspaged;
+package com.android.launcher3.allapps.paged;
 
 import android.content.Context;
 import android.util.AttributeSet;
