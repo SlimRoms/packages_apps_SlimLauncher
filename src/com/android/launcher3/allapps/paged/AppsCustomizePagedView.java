@@ -20,7 +20,6 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -133,9 +132,9 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
 /**
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
-public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
-        View.OnClickListener, View.OnKeyListener, DragSource, LauncherTransitionable {
-    static final String TAG = "AppsCustomizePagedView";
+public class AppsCustomizePagedView extends PagedView implements
+        View.OnClickListener, View.OnLongClickListener, View.OnKeyListener, View.OnTouchListener,
+        DragSource, LauncherTransitionable {
 
     /*
      * We load an extra page on each side to prevent flashes from scrolling and loading of the
@@ -181,6 +180,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     };
     private boolean mInBulkBind;
     private boolean mNeedToUpdatePageCountsAndInvalidateData;
+    private boolean mIsDragging;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -231,7 +231,28 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         mGestureDetector.onTouchEvent(ev);
+        handleTouchEvent(ev);
         return super.onInterceptTouchEvent(ev);
+    }
+
+    private void handleTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                cancelDragging();
+                break;
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        handleTouchEvent(ev);
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+        return false;
     }
 
     @Override
@@ -254,11 +275,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void init() {
         super.init();
         mCenterPagesVertically = false;
-
-        Context context = getContext();
-        Resources r = context.getResources();
-        setDragSlopeThreshold(r.getInteger(
-                R.integer.config_appsCustomizeDragSlopeThreshold) / 100f);
     }
 
     public void onFinishInflate() {
@@ -413,21 +429,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return false;
     }
 
-    /*
-     * PagedViewWithDraggableItems implementation
-     */
-    @Override
-    protected void determineDraggingStart(MotionEvent ev) {
-        // Disable dragging by pulling an app down for now.
-    }
-
     private void beginDraggingApplication(View v) {
         mLauncher.getWorkspace().beginExternalDragShared(v, this);
     }
 
-    @Override
     protected boolean beginDragging(final View v) {
-        if (!super.beginDragging(v)) return false;
+        if (!shouldBeginDragging()) return false;
 
         if (v instanceof BubbleTextView) {
             beginDraggingApplication(v);
@@ -447,6 +454,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }, 150);
 
         return true;
+    }
+
+    protected boolean shouldBeginDragging() {
+        boolean wasDragging = mIsDragging;
+        mIsDragging = true;
+        return !wasDragging;
+    }
+
+    protected void cancelDragging() {
+        mIsDragging = false;
     }
 
     /**
@@ -602,7 +619,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void syncAppsPageItems(int page) {
         // ensure that we have the right number of items on the pages
-        final boolean isRtl = false;
         int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, mFilteredApps.size());
@@ -632,9 +648,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int index = i - startIndex;
             int x = index % mCellCountX;
             int y = index / mCellCountX;
-            if (isRtl) {
-                x = mCellCountX - x - 1;
-            }
             layout.addViewToCellLayout(icon, -1, i, new CellLayout.LayoutParams(x, y, 1, 1), false);
         }
 
@@ -727,6 +740,33 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     protected void overScroll(float amount) {
         dampedOverScroll(amount);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        /*if (mLauncher.getLockWorkspace()) {
+            Toast.makeText(mLauncher,
+                    mLauncher.getString(R.string.workspace_locked), Toast.LENGTH_SHORT).show();
+            return true;
+        }*/
+        // Return early if this is not initiated from a touch
+        if (!v.isInTouchMode()) return false;
+        // Return early if we are still animating the pages
+        if (mNextPage != INVALID_PAGE) return false;
+        // When we have exited all apps or are in transition, disregard long clicks
+        if (!mLauncher.isAllAppsVisible() ||
+                mLauncher.getWorkspace().isSwitchingState()) return false;
+        // Return if global dragging is not enabled
+
+        return !mLauncher.isDraggingEnabled() && beginDragging(v);
+    }
+
+    /*
+     * Determines if we should change the touch state to start scrolling after the
+     * user moves their touch point too far.
+     */
+    protected void determineScrollingStart(MotionEvent ev) {
+        if (!mIsDragging) super.determineScrollingStart(ev);
     }
 
     @Override
@@ -831,16 +871,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         updatePageCountsAndInvalidateData();
     }
 
-    public void updateApps(ArrayList<AppInfo> list) {
-        // We remove and re-add the updated applications list because it's properties may have
-        // changed (ie. the title), and this will ensure that the items will be in their proper
-        // place in the list.
-        removeAppsWithoutInvalidate(list);
-        addAppsWithoutInvalidate(list);
-        filterAppsWithoutInvalidate();
-        updatePageCountsAndInvalidateData();
-    }
-
     public void filterAppsWithoutInvalidate() {
         updateHiddenAppsList(mLauncher);
 
@@ -853,11 +883,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
         Collections.sort(mFilteredApps, getComparatorForSortMode());
-    }
-
-    public void filterApps() {
-        filterAppsWithoutInvalidate();
-        updatePageCountsAndInvalidateData();
     }
 
     public void reset() {
@@ -877,11 +902,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return (AppsCustomizeTabHost) mLauncher.findViewById(R.id.apps_customize_pane);
     }
 
-    public void dumpState() {
-        // TODO: Dump information related to current list of Applications, Widgets, etc.
-        AppInfo.dumpApplicationInfoList(TAG, "mApps", mApps);
-    }
-
     protected int getAssociatedLowerPageBound(int page) {
         final int count = getChildCount();
         int windowSize = Math.min(count, sLookBehindPageCount + sLookAheadPageCount + 1);
@@ -898,7 +918,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected String getCurrentPageDescription() {
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
         int stringId = R.string.default_scroll_format;
-        int count = 0;
+        int count;
 
         if (mContentType == ContentType.Applications) {
             //stringId = R.string.apps_customize_apps_scroll_format;
@@ -908,6 +928,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         return String.format(getContext().getString(stringId), page + 1, count);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        cancelDragging();
+        super.onDetachedFromWindow();
     }
 
     /**

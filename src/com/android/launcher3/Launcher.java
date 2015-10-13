@@ -1545,7 +1545,7 @@ public class Launcher extends Activity
         mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-        mAppsCustomizeContent.setup(this, dragController);
+        mAppsCustomizeContent.setup(this);
 
         // Setup AppDrawer
         //setupAppDrawer();
