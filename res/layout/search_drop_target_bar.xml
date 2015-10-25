@@ -59,7 +59,7 @@
             <com.android.launcher3.EditDropTarget
                 android:id="@+id/edit_target_text"
                 style="@style/DropTargetButton"
-                android:text="Edit"/>
+                android:text="@string/edit_target_label"/>
         </FrameLayout>
 
         <FrameLayout

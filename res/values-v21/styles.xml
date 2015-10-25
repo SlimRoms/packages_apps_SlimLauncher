@@ -7,4 +7,6 @@
     <style name="Theme.Dark.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
         <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
     </style>
+
+    <style name="Theme.IconPicker" parent="android:Theme.Material.Wallpaper" />
 </resources>

@@ -190,6 +190,7 @@
             android:exported="false"
             android:excludeFromRecents="true"
             android:noHistory="true"
+            android:theme="@style/Theme.IconPicker"
             android:launchMode="singleTop" />
 
         <service android:name="com.android.launcher3.MemoryTracker"

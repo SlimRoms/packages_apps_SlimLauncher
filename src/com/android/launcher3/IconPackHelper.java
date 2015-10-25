@@ -506,6 +506,7 @@ public class IconPackHelper {
                     continue;
                 }
                 IconPickerActivity.Item item = new IconPickerActivity.Item();
+                item.isIcon = true;
                 item.title = drawable;
                 iconPackResources.add(item);
             } else if (parser.getName().equalsIgnoreCase("category")) {

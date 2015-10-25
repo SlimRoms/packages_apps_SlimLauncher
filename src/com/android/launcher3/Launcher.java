@@ -1714,7 +1714,7 @@ public class Launcher extends Activity
 
         PopupMenu menu = new PopupMenu(this, view);
 
-        menu.getMenu().add(0, 0, 0, "Test");
+        menu.getMenu().add(0, 0, 0, getString(R.string.edit_target_label));
 
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

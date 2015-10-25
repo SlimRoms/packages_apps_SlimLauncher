@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,14 +18,11 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class IconPickerActivity extends Activity {
 
@@ -49,6 +48,7 @@ public class IconPickerActivity extends Activity {
 
         RecyclerView recyclerView = new RecyclerView(this);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setBackgroundColor(0x77000000);
 
         final GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
         recyclerView.setLayoutManager(layoutManager);
@@ -63,6 +63,14 @@ public class IconPickerActivity extends Activity {
             }
         });
 
+        PackageManager pm = getPackageManager();
+        ApplicationInfo ai = null;
+        try {
+            ai = pm.getApplicationInfo(pkgName, 0);
+        } catch (NameNotFoundException e) {
+            // ignore
+        }
+        setTitle(ai != null ? pm.getApplicationLabel(ai) : getTitle());
         setContentView(recyclerView);
     }
 
@@ -89,13 +97,15 @@ public class IconPickerActivity extends Activity {
     public static class Item {
         String title;
         boolean isHeader = false;
+        boolean isIcon = false;
+        WeakReference<Drawable> drawable;
+        int resource_id;
     }
 
     public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private Context mContext;
         private Resources mResources;
         private ArrayList<Item> mItems = new ArrayList<>();
-        private ArrayList<DrawableInfo> mDrawables = new ArrayList<>();
         private String mIconPackageName;
 
         public final int ITEM_VIEW_TYPE_HEADER = 0;
@@ -110,7 +120,7 @@ public class IconPickerActivity extends Activity {
 
             @Override
             protected Drawable doInBackground(Integer... position) {
-                DrawableInfo info = mDrawables.get(position[0]);
+                Item info = mItems.get(position[0]);
                 int itemId = info.resource_id;
                 Drawable d = mResources.getDrawable(itemId);
                 info.drawable = new WeakReference<>(d);
@@ -131,12 +141,20 @@ public class IconPickerActivity extends Activity {
             mItems = IconPackHelper.getCustomIconPackResources(c, pkgName);
             if (mItems != null && mItems.size() > 0) {
                 try {
+                    ArrayList<Item> itemsToRemove = new ArrayList<>();
                     mResources = c.getPackageManager().getResourcesForApplication(pkgName);
                     for (Item i : mItems) {
                         int id = mResources.getIdentifier(i.title, "drawable", pkgName);
                         if (id != 0) {
-                            mDrawables.add(new DrawableInfo(i.title, id));
+                            i.resource_id = id;
+                        } else {
+                            if (i.isIcon) {
+                                itemsToRemove.add(i);
+                            }
                         }
+                    }
+                    for (Item i : itemsToRemove) {
+                        mItems.remove(i);
                     }
                 } catch (NameNotFoundException e) {
                     // ignore
@@ -153,10 +171,7 @@ public class IconPickerActivity extends Activity {
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 return new ImageViewHolder(imageView);
             } else if (viewType == ITEM_VIEW_TYPE_HEADER) {
-                Log.d("TEST", "header");
-                TextView textView = new TextView(mContext);
-                textView.setLayoutParams(new GridLayoutManager.LayoutParams(
-                        GridLayoutManager.LayoutParams.MATCH_PARENT, mIconSize));
+                TextView textView = (TextView) View.inflate(mContext, R.layout.header_view, null);
                 return new HeaderViewHolder(textView);
             }
             return null;
@@ -179,10 +194,11 @@ public class IconPickerActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         Intent in = new Intent();
-                        DrawableInfo d = mDrawables.get(position);
-                        in.putExtra(SELECTED_RESOURCE_EXTRA, mIconPackageName + "|" + d.resource_name);
+                        Item i = mItems.get(position);
+                        in.putExtra(SELECTED_RESOURCE_EXTRA,
+                                mIconPackageName + "|" + i.title);
                         in.putExtra(SELECTED_BITMAP_EXTRA,
-                                ((BitmapDrawable) d.drawable.get()).getBitmap());
+                                ((BitmapDrawable) i.drawable.get()).getBitmap());
                         setResult(Activity.RESULT_OK, in);
                         finish();
                     }
@@ -201,17 +217,7 @@ public class IconPickerActivity extends Activity {
 
         @Override
         public int getItemCount() {
-            return mDrawables.size();
-        }
-    }
-
-    private class DrawableInfo {
-        WeakReference<Drawable> drawable;
-        final String resource_name;
-        final int resource_id;
-        DrawableInfo(String n, int i) {
-            resource_name = n;
-            resource_id = i;
+            return mItems.size();
         }
     }
 }
