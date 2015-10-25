@@ -63,6 +63,8 @@ public class AppInfo extends ItemInfo {
 
     int flags = 0;
 
+    private ArrayList<ShortcutInfo.ShortcutListener> mListeners = new ArrayList<>();
+
     AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -111,6 +113,26 @@ public class AppInfo extends ItemInfo {
         flags = info.flags;
         firstInstallTime = info.firstInstallTime;
         iconBitmap = info.iconBitmap;
+    }
+
+    public void setIcon(Bitmap b) {
+        iconBitmap = b;
+        for (ShortcutInfo.ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        for (ShortcutInfo.ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
+    }
+
+    public void addListener(ShortcutInfo.ShortcutListener listener) {
+        if (!mListeners.contains(listener) && listener != null) {
+            mListeners.add(listener);
+        }
     }
 
     @Override

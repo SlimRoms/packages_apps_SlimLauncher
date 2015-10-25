@@ -3462,14 +3462,17 @@ public class LauncherModel extends BroadcastReceiver
 
         final ShortcutInfo info = new ShortcutInfo();
         info.title = Utilities.trim(c.getString(titleIndex));
-        mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
-        if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
-            Bitmap icon = Utilities.createIconBitmap(c, iconIndex, context);
-            info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
+        CursorIconInfo iconInfo = new CursorIconInfo(c);
+        Bitmap bitmap = iconInfo.loadIcon(c, info, context);
+        if (bitmap == null) {
+            Log.d("TEST", "bitmap is null");
+            mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
+        } else {
+            info.setIcon(bitmap);
         }
 
         // from the db
-        if (TextUtils.isEmpty(info.title) && c != null) {
+        if (TextUtils.isEmpty(info.title)) {
             info.title =  Utilities.trim(c.getString(titleIndex));
         }
 

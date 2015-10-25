@@ -49,12 +49,11 @@ public class EditDropTarget extends ButtonDropTarget {
     }
 
     public static boolean supportsDrop(Object info) {
-        return false;
+        return info instanceof AppInfo;
     }
 
     @Override
     public void completeDrop(DragObject d) {
-        d.deferDragViewCleanupPostAnimation = false;
-        mLauncher.updateShortcut((ShortcutInfo) d.dragInfo);
+        mLauncher.updateShortcut((ItemInfo) d.dragInfo);
     }
 }

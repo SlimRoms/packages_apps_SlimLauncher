@@ -196,6 +196,8 @@ public class BubbleTextView extends TextView
 
         // Verify high res immediately
         verifyHighRes();
+
+        info.addListener(this);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -623,19 +625,27 @@ public class BubbleTextView extends TextView
     }
 
     @Override
-    public void onTitleChanged(ShortcutInfo item) {
+    public void onTitleChanged(ItemInfo item) {
         setText(item.title);
     }
 
     @Override
-    public void onIconChanged(ShortcutInfo item) {
-        setIcon(new BitmapDrawable(getResources(), item.getIcon(null)), mIconSize);
+    public void onIconChanged(ItemInfo item) {
+        Bitmap b = null;
+        if (item instanceof ShortcutInfo) {
+            b = ((ShortcutInfo) item).getIcon(null);
+        } else if (item instanceof AppInfo) {
+            b = ((AppInfo) item).iconBitmap;
+        }
+        if (b != null) {
+            setIcon(new BitmapDrawable(getResources(), b), mIconSize);
+        }
     }
 
     /**
      * Interface to be implemented by the grand parent to allow click shadow effect.
      */
-    public static interface BubbleTextShadowHandler {
+    public interface BubbleTextShadowHandler {
         void setPressedIcon(BubbleTextView icon, Bitmap background);
     }
 }

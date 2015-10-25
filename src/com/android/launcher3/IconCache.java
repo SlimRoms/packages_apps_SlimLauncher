@@ -648,6 +648,11 @@ public class IconCache {
         return info.getBadgedIcon(mIconDpi);
     }
 
+    public Drawable getDefaultIconForItemInfo(ItemInfo info) {
+        LauncherActivityInfoCompat app = mLauncherApps.resolveActivity(info.getIntent(), info.user);
+        return getIconForInfo(app);
+    }
+
     /**
      * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
      * This method is not thread safe, it must be called from a synchronized method.

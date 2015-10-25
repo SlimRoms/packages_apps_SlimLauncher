@@ -379,6 +379,8 @@ public class Launcher extends Activity
     private boolean mShowSearchBar;
     private int mDrawerType;
 
+    private ItemInfo mEditItemInfo;
+
     // Drawer Types
     public static final int DRAWER_TYPE_VERTICAL = 0;
     public static final int DRAWER_TYPE_PAGED = 1;
@@ -864,9 +866,21 @@ public class Launcher extends Activity
             if (resultCode == RESULT_OK) {
                 if (data == null) {
                     // Set default icon
+                    Bitmap b = null;
+                    if (mEditItemInfo != null) {
+                        b = Utilities.createIconBitmap(
+                                mIconCache.getDefaultIconForItemInfo(mEditItemInfo), this);
+                        if (b != null) {
+                            mDialogIcon.setImageBitmap(b);
+                            mDialogIcon.setTag("default");
+                        }
+                    }
                 } else {
-                    mDialogIcon.setImageBitmap((Bitmap) data.getParcelableExtra(IconPickerActivity.SELECTED_BITMAP_EXTRA));
-                    mDialogIcon.setTag(data.getStringExtra(IconPickerActivity.SELECTED_RESOURCE_EXTRA));
+                    // Set custom icon from icon pack
+                    mDialogIcon.setImageBitmap((Bitmap) data.getParcelableExtra(
+                            IconPickerActivity.SELECTED_BITMAP_EXTRA));
+                    mDialogIcon.setTag(data.getStringExtra(
+                            IconPickerActivity.SELECTED_RESOURCE_EXTRA));
                 }
             }
             return;
@@ -1612,6 +1626,7 @@ public class Launcher extends Activity
 
     public void updateShortcut(final ItemInfo info) {
         if (info instanceof ShortcutInfo || info instanceof AppInfo) {
+            mEditItemInfo = info;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View layout = View.inflate(this, R.layout.dialog_edit, null);
             mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
@@ -1642,8 +1657,13 @@ public class Launcher extends Activity
                                 }
                                 if (mDialogIcon.getTag() != null) {
                                     String dRes = (String) mDialogIcon.getTag();
-                                    Drawable d =
-                                            mIconCache.getDrawableForCustomIcon(Launcher.this, dRes);
+                                    Drawable d;
+                                    if (dRes.equals("default")) {
+                                        d = mIconCache.getDefaultIconForItemInfo(info);
+                                    } else {
+                                        d = mIconCache.getDrawableForCustomIcon(
+                                                Launcher.this, dRes);
+                                    }
                                     if (d != null) {
                                         Bitmap b = Utilities.createIconBitmap(d, Launcher.this);
                                         sInfo.setIcon(b);
@@ -1665,6 +1685,7 @@ public class Launcher extends Activity
                                     }
                                 }
                             }
+                            mEditItemInfo = null;
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null);

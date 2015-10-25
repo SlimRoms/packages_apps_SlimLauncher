@@ -66,7 +66,6 @@ public class CursorIconInfo {
             info.customIcon = icon != null;
             break;
         }
-        Log.d("TEST", "iconType=" + iconType + " is icon null= " + (icon == null));
         return icon;
     }
 }

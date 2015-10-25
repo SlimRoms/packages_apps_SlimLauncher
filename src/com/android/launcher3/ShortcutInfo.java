@@ -320,8 +320,8 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     interface ShortcutListener {
-        void onTitleChanged(ShortcutInfo item);
-        void onIconChanged(ShortcutInfo item);
+        void onTitleChanged(ItemInfo item);
+        void onIconChanged(ItemInfo item);
     }
 }
 

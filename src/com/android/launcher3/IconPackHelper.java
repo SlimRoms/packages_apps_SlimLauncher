@@ -615,10 +615,11 @@ public class IconPackHelper {
             return;
         }
 
-        final IconAdapter adapter = new IconAdapter(context, supportedPackages);
+        final IconAdapter adapter;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.dialog_pick_iconpack_title);
         if (!pickIcon) {
+            adapter = new IconAdapter(context, supportedPackages);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int position) {
                     if (adapter.isCurrentIconPack(position)) {
@@ -632,6 +633,7 @@ public class IconPackHelper {
                 }
             });
         } else {
+            adapter = new IconAdapter(context, supportedPackages, true);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     String selectedPackage = adapter.getItem(which);
@@ -730,8 +732,13 @@ public class IconPackHelper {
         Context mContext;
         String mCurrentIconPack;
         int mCurrentIconPackPosition = -1;
+        boolean mPickIcon = false;
 
         IconAdapter(Context ctx, Map<String, IconPackInfo> supportedPackages) {
+            this(ctx, supportedPackages, false);
+        }
+
+        IconAdapter(Context ctx, Map<String, IconPackInfo> supportedPackages, boolean pickIcon) {
             mContext = ctx;
             mSupportedPackages = new ArrayList<>(supportedPackages.values());
             Collections.sort(mSupportedPackages, new Comparator<IconPackInfo>() {
@@ -747,6 +754,8 @@ public class IconPackHelper {
             mSupportedPackages.add(0, new IconPackInfo(defaultLabel, icon, ""));
 
             mCurrentIconPack = SettingsProvider.getString(ctx, SettingsProvider.KEY_ICON_PACK, "");
+
+            mPickIcon = pickIcon;
         }
 
         @Override
@@ -779,10 +788,14 @@ public class IconPackHelper {
             ImageView imgView = (ImageView) convertView.findViewById(R.id.icon);
             imgView.setImageDrawable(info.icon);
             RadioButton radioButton = (RadioButton) convertView.findViewById(R.id.radio);
-            boolean isCurrentIconPack = info.packageName.equals(mCurrentIconPack);
-            radioButton.setChecked(isCurrentIconPack);
-            if (isCurrentIconPack) {
-                mCurrentIconPackPosition = position;
+            if (mPickIcon) {
+                radioButton.setVisibility(View.GONE);
+            } else {
+                boolean isCurrentIconPack = info.packageName.equals(mCurrentIconPack);
+                radioButton.setChecked(isCurrentIconPack);
+                if (isCurrentIconPack) {
+                    mCurrentIconPackPosition = position;
+                }
             }
             return convertView;
         }
