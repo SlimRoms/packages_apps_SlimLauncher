@@ -713,25 +713,6 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Invoked by subclasses to signal a change to the {@link #addCustomContentToLeft} value to
-     * ensure the custom content page is added or removed if necessary.
-     */
-    protected void invalidateHasCustomContentToLeft() {
-        if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
-            // Not bound yet, wait for bindScreens to be called.
-            return;
-        }
-
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
-            mWorkspace.removeCustomContentPage();
-        }
-    }
-
     private void updateGlobalIcons() {
         boolean searchVisible = false;
         boolean voiceVisible = false;
@@ -997,7 +978,8 @@ public class Launcher extends Activity
         }
     }
 
-    /** @Override for MNC */
+    @Override
+    @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
         if (mLauncherCallbacks != null) {
@@ -1646,7 +1628,7 @@ public class Launcher extends Activity
             final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
             title.setText(info.title);
             builder.setView(layout)
-                    .setTitle(info.title)
+                    .setTitle(mIconCache.getTitleFromItemInfo(info))
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -2897,7 +2879,6 @@ public class Launcher extends Activity
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
-     * @param v The view that was clicked.
      */
     protected void onClickAllAppsButton() {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
@@ -3419,7 +3400,7 @@ public class Launcher extends Activity
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      *
-     * @param folderInfo The FolderInfo describing the folder to open.
+     * @param folderIcon The FolderIcon describing the folder to open.
      */
     public void openFolder(FolderIcon folderIcon) {
         Folder folder = folderIcon.getFolder();

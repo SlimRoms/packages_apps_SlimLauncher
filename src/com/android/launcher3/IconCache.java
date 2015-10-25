@@ -653,6 +653,11 @@ public class IconCache {
         return getIconForInfo(app);
     }
 
+    public CharSequence getTitleFromItemInfo(ItemInfo info) {
+        LauncherActivityInfoCompat app = mLauncherApps.resolveActivity(info.getIntent(), info.user);
+        return app.getLabel();
+    }
+
     /**
      * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
      * This method is not thread safe, it must be called from a synchronized method.

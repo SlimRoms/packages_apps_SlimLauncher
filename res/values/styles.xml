@@ -19,11 +19,9 @@
 
 <resources>
     <style name="Theme.Light.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
     </style>
 
     <style name="Theme.Dark.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
     </style>
 
     <style name="Icon">
