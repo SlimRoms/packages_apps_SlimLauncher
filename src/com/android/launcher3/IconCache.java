@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -267,6 +268,7 @@ public class IconCache {
     public void flush() {
         synchronized (mCache) {
             mCache.clear();
+            mIconDb.clearDB(mIconDb.getWritableDatabase());
             loadIconPack();
         }
     }
@@ -438,13 +440,11 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            Log.d("TEST", "HERE 1");
             Drawable drawable = getFullResIcon(app);
             if (mIconPackHelper.isIconPackLoaded() &&
                     (mIconPackHelper.getResourceIdForActivityIcon(app) == 0)) {
                 entry.icon = Utilities.createIconBitmap(drawable, mContext, mIconPackHelper);
             } else {
-                Log.d("TEST", "THIS ONE 1");
                 entry.icon = Utilities.createIconBitmap(drawable, mContext);
             }
         }
@@ -453,6 +453,32 @@ public class IconCache {
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
         return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+    }
+
+    public void putCustomIconInDB(Drawable d, ItemInfo info) {
+        LauncherActivityInfoCompat app = mLauncherApps.resolveActivity(info.getIntent(), info.user);
+        final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = mPackageManager.getPackageInfo(app.getComponentName().getPackageName(), 0);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        CacheEntry entry = mCache.get(key);
+        if (entry == null || entry.isLowResIcon || entry.icon == null) {
+            entry = new CacheEntry();
+            if (TextUtils.isEmpty(entry.title)) {
+                entry.title = app.getLabel();
+            }
+            entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
+        }
+        entry.icon = Utilities.createIconBitmap(d, mContext);
+        mCache.put(key, entry);
+        ContentValues vals = newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+        if (packageInfo != null) {
+            addIconToDB(vals, app.getComponentName(), packageInfo,
+                    mUserManager.getSerialNumberForUser(app.getUser()));
+        }
     }
 
     /**
@@ -564,9 +590,27 @@ public class IconCache {
             UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
-        shortcutInfo.title = Utilities.trim(entry.title);
+        if (TextUtils.isEmpty(shortcutInfo.title)) {
+            shortcutInfo.title = Utilities.trim(entry.title);
+        }
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
+    }
+
+    public Drawable getDrawableForCustomIcon(Context context, String customIconResource) {
+        String[] splitResource = customIconResource.split("\\|");
+        String packageName = splitResource[0];
+        String resource = splitResource[1];
+        PackageManager packageManager = context.getPackageManager();
+        Resources resources;
+        try {
+            resources = packageManager.getResourcesForApplication(packageName);
+            int id = resources.getIdentifier(resource, "drawable", packageName);
+            return getFullResIcon(resources, id);
+        } catch (NameNotFoundException e) {
+            // ignore
+        }
+        return null;
     }
 
     /**
@@ -610,7 +654,6 @@ public class IconCache {
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
-        Log.d("TEST", "cacheLocked");
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
@@ -618,14 +661,13 @@ public class IconCache {
             mCache.put(cacheKey, entry);
 
             // Check the DB first.
-            if (!getEntryFromDB(componentName, user, entry, useLowResIcon)) {
+            if (!getEntryFromDB(componentName, user, entry, useLowResIcon) ) {
                 if (info != null) {
                     Drawable icon = getIconForInfo(info);
                     if (mIconPackHelper.isIconPackLoaded() &&
                             (mIconPackHelper.getResourceIdForActivityIcon(info) == 0)) {
                         entry.icon = Utilities.createIconBitmap(icon, mContext, mIconPackHelper);
                     } else {
-                        Log.d("TEST", "THIS ONE 2");
                         entry.icon = Utilities.createIconBitmap(icon, mContext);
                     }
                 } else {
@@ -643,7 +685,6 @@ public class IconCache {
                     if (entry.icon == null) {
                         if (DEBUG) Log.d(TAG, "using default icon for " +
                                 componentName.toShortString());
-                        Log.d("TEST", "I WONDER");
                         entry.icon = getDefaultIcon(user);
                     }
                     if (mIconPackHelper.isIconPackLoaded() &&
@@ -653,6 +694,7 @@ public class IconCache {
                     }
                 }
             }
+
 
             if (TextUtils.isEmpty(entry.title) && info != null) {
                 entry.title = info.getLabel();
@@ -675,7 +717,6 @@ public class IconCache {
             entry.title = title;
         }
         if (icon != null) {
-            Log.d("TEST", "HERE 2");
             entry.icon = Utilities.createIconBitmap(icon, mContext, mIconPackHelper);
         }
     }
@@ -710,7 +751,6 @@ public class IconCache {
                         entry.icon =
                                 Utilities.createIconBitmap(drawable, mContext, mIconPackHelper);
                     } else {
-                        Log.d("TEST", "THIS ONE");
                         entry.icon = Utilities.createIconBitmap(drawable, mContext);
                     }
                     entry.title = appInfo.loadLabel(mPackageManager);

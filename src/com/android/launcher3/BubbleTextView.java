@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -48,7 +49,8 @@ import com.android.launcher3.model.PackageItemInfo;
  * too aggressive.
  */
 public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView,
+        ShortcutInfo.ShortcutListener {
 
     private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
@@ -176,6 +178,7 @@ public class BubbleTextView extends TextView
         }
         setText(info.title);
         setTag(info);
+        info.setListener(this);
 
         if (promiseStateChanged || info.isPromise()) {
             applyState(promiseStateChanged);
@@ -617,6 +620,16 @@ public class BubbleTextView extends TextView
                 mFastScrollFocusFraction = focused ? 1f : 0f;
             }
         }
+    }
+
+    @Override
+    public void onTitleChanged(ShortcutInfo item) {
+        setText(item.title);
+    }
+
+    @Override
+    public void onIconChanged(ShortcutInfo item) {
+        setIcon(new BitmapDrawable(getResources(), item.getIcon(null)), mIconSize);
     }
 
     /**

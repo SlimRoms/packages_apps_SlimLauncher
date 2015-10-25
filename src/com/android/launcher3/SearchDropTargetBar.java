@@ -50,6 +50,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private ButtonDropTarget mInfoDropTarget;
     private ButtonDropTarget mDeleteDropTarget;
     private ButtonDropTarget mUninstallDropTarget;
+    private ButtonDropTarget mEditDropTarget;
 
     private Drawable mPreviousBackground;
     private boolean mEnableDropDownDropTargets;
@@ -69,14 +70,17 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.addDragListener(mInfoDropTarget);
         dragController.addDragListener(mDeleteDropTarget);
         dragController.addDragListener(mUninstallDropTarget);
+        dragController.addDragListener(mEditDropTarget);
 
         dragController.addDropTarget(mInfoDropTarget);
         dragController.addDropTarget(mDeleteDropTarget);
         dragController.addDropTarget(mUninstallDropTarget);
+        dragController.addDropTarget(mEditDropTarget);
 
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
         mUninstallDropTarget.setLauncher(launcher);
+        mEditDropTarget.setLauncher(launcher);
     }
 
     public void setQsbSearchBar(View qsb) {
@@ -121,11 +125,12 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target_text);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target_text);
         mUninstallDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.uninstall_target_text);
+        mEditDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.edit_target_text);
 
         mInfoDropTarget.setSearchDropTargetBar(this);
         mDeleteDropTarget.setSearchDropTargetBar(this);
         mUninstallDropTarget.setSearchDropTargetBar(this);
-
+        mEditDropTarget.setSearchDropTargetBar(this);
         // Create the various fade animations
         mDropTargetBar.setAlpha(0f);
         mShowDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "alpha", 0f, 1f);

@@ -53,6 +53,17 @@
 
         <FrameLayout
             style="@style/DropTargetButtonContainer"
+            android:layout_weight="1">
+
+            <!-- Edit target -->
+            <com.android.launcher3.EditDropTarget
+                android:id="@+id/edit_target_text"
+                style="@style/DropTargetButton"
+                android:text="Edit"/>
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
             android:layout_weight="1" >
 
             <!-- Uninstall target -->

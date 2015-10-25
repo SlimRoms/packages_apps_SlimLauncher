@@ -21,6 +21,7 @@ import android.content.Intent.ShortcutIconResource;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
@@ -65,6 +66,7 @@ public class CursorIconInfo {
             info.customIcon = icon != null;
             break;
         }
+        Log.d("TEST", "iconType=" + iconType + " is icon null= " + (icon == null));
         return icon;
     }
 }

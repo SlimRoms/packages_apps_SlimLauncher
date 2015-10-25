@@ -282,7 +282,6 @@ public class AppsCustomizePagedView extends PagedView implements
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mCellCountX = grid.pagedAllAppsNumCols;
         mCellCountY = grid.pagedAllAppsNumRows;
-        Log.d("TEST", "cols=" + mCellCountX + " : rows=" + mCellCountY);
         updatePageCounts();
         updateSortMode(mLauncher);
     }

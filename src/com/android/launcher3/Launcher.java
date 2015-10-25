@@ -72,12 +72,16 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -92,8 +96,11 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -161,13 +168,13 @@ public class Launcher extends Activity
 
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
 
+    public  static final int REQUEST_PICK_ICON = 13;
+
     private static final int WORKSPACE_BACKGROUND_GRADIENT = 0;
     private static final int WORKSPACE_BACKGROUND_TRANSPARENT = 1;
     private static final int WORKSPACE_BACKGROUND_BLACK = 2;
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
-
-    static final int REQUEST_PICK_ICON = 13;
 
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
@@ -263,6 +270,8 @@ public class Launcher extends Activity
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
     private View mWeightWatcher;
+
+    private ImageButton mDialogIcon;
 
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -848,6 +857,17 @@ public class Launcher extends Activity
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
             if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
                 showWorkspace(false);
+            }
+            return;
+        } else if (requestCode == REQUEST_PICK_ICON) {
+            mWaitingForResult = false;
+            if (resultCode == RESULT_OK) {
+                if (data == null) {
+                    // Set default icon
+                } else {
+                    mDialogIcon.setImageBitmap((Bitmap) data.getParcelableExtra(IconPickerActivity.SELECTED_BITMAP_EXTRA));
+                    mDialogIcon.setTag(data.getStringExtra(IconPickerActivity.SELECTED_RESOURCE_EXTRA));
+                }
             }
             return;
         }
@@ -1590,6 +1610,68 @@ public class Launcher extends Activity
         }
     }
 
+    public void updateShortcut(final ItemInfo info) {
+        if (info instanceof ShortcutInfo || info instanceof AppInfo) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View layout = View.inflate(this, R.layout.dialog_edit, null);
+            mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
+            mDialogIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            if (info instanceof ShortcutInfo) {
+                mDialogIcon.setImageBitmap(((ShortcutInfo) info).getIcon(mIconCache));
+            } else {
+                mDialogIcon.setImageBitmap(((AppInfo) info).iconBitmap);
+            }
+            mDialogIcon.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDialogIcon.setTag(info);
+                    IconPackHelper.pickIconPack(Launcher.this, true);
+                }
+            });
+            final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
+            title.setText(info.title);
+            builder.setView(layout)
+                    .setTitle(info.title)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (info instanceof ShortcutInfo) {
+                                ShortcutInfo sInfo = (ShortcutInfo) info;
+                                if (!sInfo.title.equals(title.getText().toString())) {
+                                    sInfo.setTitle(title.getText().toString());
+                                }
+                                if (mDialogIcon.getTag() != null) {
+                                    String dRes = (String) mDialogIcon.getTag();
+                                    Drawable d =
+                                            mIconCache.getDrawableForCustomIcon(Launcher.this, dRes);
+                                    if (d != null) {
+                                        Bitmap b = Utilities.createIconBitmap(d, Launcher.this);
+                                        sInfo.setIcon(b);
+                                        sInfo.customIcon = true;
+                                        LauncherModel.updateItemInDatabase(Launcher.this, sInfo);
+                                    }
+                                }
+                            } else {
+                                AppInfo aInfo = (AppInfo) info;
+                                if (!info.title.equals(title.getText().toString())) {
+                                    aInfo.title = title.getText().toString();
+                                }
+                                if (mDialogIcon.getTag() != null) {
+                                    String dRes = (String) mDialogIcon.getTag();
+                                    Drawable d = mIconCache.getDrawableForCustomIcon(Launcher.this, dRes);
+                                    if (d != null) {
+                                        aInfo.iconBitmap = Utilities.createIconBitmap(d, Launcher.this);
+                                        mIconCache.putCustomIconInDB(d, info);
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+        }
+    }
+
     public View getWidgetsButton() {
         return mWidgetsButton;
     }
@@ -1611,8 +1693,8 @@ public class Launcher extends Activity
      *
      * @return A View inflated from layoutResId.
      */
-    public View createShortcut(ViewGroup parent, ShortcutInfo info) {
-        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.app_icon,
+    public View createShortcut(ViewGroup parent, final ShortcutInfo info) {
+        final BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.app_icon,
                 parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
@@ -1622,6 +1704,25 @@ public class Launcher extends Activity
             info.launcherAction = true;
         }
         return favorite;
+    }
+
+    public void constructShortcutMenu(View view, final ShortcutInfo info) {
+        if (view == null) return;
+
+        PopupMenu menu = new PopupMenu(this, view);
+
+        menu.getMenu().add(0, 0, 0, "Test");
+
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == 0) {
+                    updateShortcut(info);
+                }
+                return true;
+            }
+        });
+        menu.show();
     }
 
     /**

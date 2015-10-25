@@ -169,7 +169,6 @@ public final class Utilities {
      */
     public static Bitmap createIconBitmap(Bitmap icon, Context context,
                                           IconPackHelper iconPackHelper) {
-        Log.d("TEST", "createIconBitmap(Bitmap, Context)");
         final int iconBitmapSize = getIconBitmapSize();
         /*if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
@@ -179,7 +178,6 @@ public final class Utilities {
     }
 
     public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        Log.d("TEST", "createIconBitmap(Drawable, Context)");
         return createIconBitmap(icon, context, null);
     }
 
@@ -188,7 +186,6 @@ public final class Utilities {
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context,
                                           IconPackHelper iconPackHelper) {
-        Log.d("TEST", "createIconBitmap(Drawable, Context, IconPackHelper)");
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
 
@@ -293,10 +290,10 @@ public final class Utilities {
             }
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left + width, top + height);
+            icon.setBounds(0, 0, width, height);
             canvas.save();
             final float halfWidth = width / 2f;
-            final float halfHeight = width / 2f;
+            final float halfHeight = height / 2f;
             canvas.rotate(angle, halfWidth, halfHeight);
             canvas.scale(scale, scale, halfWidth, halfHeight);
             canvas.translate(translationX, translationY);

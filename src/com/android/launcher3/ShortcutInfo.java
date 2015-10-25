@@ -103,6 +103,11 @@ public class ShortcutInfo extends ItemInfo {
     private Bitmap mIcon;
 
     /**
+     * Title change listener
+     */
+    private ArrayList<ShortcutListener> mListeners = new ArrayList<>();
+
+    /**
      * Indicates that the icon is disabled due to safe mode restrictions.
      */
     public static final int FLAG_DISABLED_SAFEMODE = 1;
@@ -194,6 +199,9 @@ public class ShortcutInfo extends ItemInfo {
 
     public void setIcon(Bitmap b) {
         mIcon = b;
+        for (ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
     }
 
     public Bitmap getIcon(IconCache iconCache) {
@@ -207,6 +215,19 @@ public class ShortcutInfo extends ItemInfo {
         if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
             iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
                     shouldUseLowResIcon());
+        }
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        for (ShortcutListener i : mListeners) {
+            i.onTitleChanged(this);
+        }
+    }
+
+    public void setListener(ShortcutListener listener) {
+        if (!mListeners.contains(listener) && listener != null) {
+            mListeners.add(listener);
         }
     }
 
@@ -296,6 +317,11 @@ public class ShortcutInfo extends ItemInfo {
         shortcut.flags = AppInfo.initFlags(info);
         shortcut.firstInstallTime = info.getFirstInstallTime();
         return shortcut;
+    }
+
+    interface ShortcutListener {
+        void onTitleChanged(ShortcutInfo item);
+        void onIconChanged(ShortcutInfo item);
     }
 }
 
