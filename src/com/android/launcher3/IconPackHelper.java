@@ -31,6 +31,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -41,6 +42,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.settings.SettingsProvider;
+import com.android.launcher3.util.ComponentKey;
 
 public class IconPackHelper {
 
@@ -413,7 +415,7 @@ public class IconPackHelper {
         try {
             Context appContext = context.createPackageContext(packageName,
                     Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-            drawableItems = Class.forName(packageName+".R$drawable",
+            drawableItems = Class.forName(packageName + ".R$drawable",
                     true, appContext.getClassLoader()).getFields();
         } catch (Exception e){
             return;
@@ -452,6 +454,72 @@ public class IconPackHelper {
             compName = new ComponentName(iconPackage, iconActivity);
             iconPackResources.put(compName, icon);
         }
+    }
+
+    public static ArrayList<IconPickerActivity.Item> getCustomIconPackResources(
+            Context context, String packageName) {
+        Resources res;
+        try {
+            res = context.getPackageManager().getResourcesForApplication(packageName);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        XmlResourceParser parser = null;
+        ArrayList<IconPickerActivity.Item> iconPackResources = new ArrayList<>();
+
+        try {
+            parser = res.getAssets().openXmlResourceParser("drawable.xml");
+        } catch (IOException e) {
+            int resId = res.getIdentifier("drawable", "xml", packageName);
+            if (resId != 0) {
+                parser = res.getXml(resId);
+            }
+        }
+
+        if (parser != null) {
+            try {
+                loadCustomResourcesFromXmlParser(parser, iconPackResources);
+            } catch (XmlPullParserException|IOException e) {
+                e.printStackTrace();
+            } finally {
+                parser.close();
+            }
+        }
+        return iconPackResources;
+    }
+
+    private static void loadCustomResourcesFromXmlParser(
+            XmlPullParser parser, ArrayList<IconPickerActivity.Item> iconPackResources)
+            throws XmlPullParserException, IOException {
+
+        int eventType = parser.getEventType();
+        do {
+            if (eventType != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            if (parser.getName().equalsIgnoreCase("item")) {
+                String drawable = parser.getAttributeValue(null, "drawable");
+                if (TextUtils.isEmpty(drawable) || drawable.length() == 0) {
+                    continue;
+                }
+                IconPickerActivity.Item item = new IconPickerActivity.Item();
+                item.title = drawable;
+                iconPackResources.add(item);
+            } else if (parser.getName().equalsIgnoreCase("category")) {
+                String title = parser.getAttributeValue(null, "title");
+                if (TextUtils.isEmpty(title) || title.length() == 0) {
+                    continue;
+                }
+                IconPickerActivity.Item item = new IconPickerActivity.Item();
+                item.isHeader = true;
+                item.title = title;
+                iconPackResources.add(item);
+            }
+        } while ((eventType = parser.next()) != XmlPullParser.END_DOCUMENT);
+
     }
 
     public boolean loadIconPack(String packageName) {
