@@ -36,26 +36,22 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private static Theme sPreloaderTheme;
 
     private final Rect mRect = new Rect();
-    private View mDefaultView;
-    private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
     private final Intent mIconLookupIntent;
     private final boolean mDisabledForSafeMode;
+    private final TextPaint mPaint;
+    private View mDefaultView;
+    private OnClickListener mClickListener;
     private Launcher mLauncher;
-
     private Bitmap mIcon;
-
     private Drawable mCenterDrawable;
     private Drawable mTopCornerDrawable;
-
     private boolean mDrawableSizeChanged;
-
-    private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode) {
+                                    boolean disabledForSafeMode) {
         super(context);
 
         mLauncher = (Launcher) context;
@@ -74,7 +70,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @Override
     public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
-            int maxHeight) {
+                                    int maxHeight) {
         // No-op
     }
 
@@ -193,7 +189,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 mDrawableSizeChanged = false;
             }
             mCenterDrawable.draw(canvas);
-        } else  {
+        } else {
             // Draw the top corner icon and "Setup" text is possible
             if (mDrawableSizeChanged) {
                 int iconSize = grid.iconSizePx;

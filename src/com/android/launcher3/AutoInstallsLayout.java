@@ -51,22 +51,89 @@ import java.util.Locale;
  * Layout parsing code for auto installs layout
  */
 public class AutoInstallsLayout {
-    private static final String TAG = "AutoInstalls";
-    private static final boolean LOGD = false;
-
-    /** Marker action used to discover a package which defines launcher customization */
+    /**
+     * Marker action used to discover a package which defines launcher customization
+     */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
             "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
-
+    private static final String TAG = "AutoInstalls";
+    private static final boolean LOGD = false;
     /**
      * Layout resource which also includes grid size and hotseat count, e.g., default_layout_6x6_h5
      */
     private static final String FORMATTED_LAYOUT_RES_WITH_HOSTEAT = "default_layout_%dx%d_h%s";
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
+    // Object Tags
+    private static final String TAG_INCLUDE = "include";
+    private static final String TAG_WORKSPACE = "workspace";
+    private static final String TAG_APP_ICON = "appicon";
+    private static final String TAG_AUTO_INSTALL = "autoinstall";
+    private static final String TAG_FOLDER = "folder";
+    private static final String TAG_APPWIDGET = "appwidget";
+    private static final String TAG_SHORTCUT = "shortcut";
+    private static final String TAG_EXTRA = "extra";
+    private static final String ATTR_CONTAINER = "container";
+    private static final String ATTR_RANK = "rank";
+    private static final String ATTR_PACKAGE_NAME = "packageName";
+    private static final String ATTR_CLASS_NAME = "className";
+    private static final String ATTR_TITLE = "title";
+    private static final String ATTR_SCREEN = "screen";
+    private static final String ATTR_X = "x";
+    private static final String ATTR_Y = "y";
+    private static final String ATTR_SPAN_X = "spanX";
+    private static final String ATTR_SPAN_Y = "spanY";
+    private static final String ATTR_ICON = "icon";
+    private static final String ATTR_URL = "url";
+    // Attrs for "Include"
+    private static final String ATTR_WORKSPACE = "workspace";
+    // Style attrs -- "Extra"
+    private static final String ATTR_KEY = "key";
+    private static final String ATTR_VALUE = "value";
+    private static final String HOTSEAT_CONTAINER_NAME =
+            Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
+    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+    protected final LayoutParserCallback mCallback;
+    protected final PackageManager mPackageManager;
+    protected final Resources mSourceRes;
+    protected final int mLayoutId;
+    protected final String mRootTag;
+    @Thunk
+    final Context mContext;
+    @Thunk
+    final AppWidgetHost mAppWidgetHost;
+    @Thunk
+    final ContentValues mValues;
+    private final int mHotseatAllAppsRank;
+
+    private final long[] mTemp = new long[2];
+    protected SQLiteDatabase mDb;
+    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+                              LayoutParserCallback callback, Resources res,
+                              int layoutId, String rootTag) {
+        this(context, appWidgetHost, callback, res, layoutId, rootTag,
+                LauncherAppState.getInstance().getInvariantDeviceProfile().hotseatAllAppsRank);
+    }
+
+    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+                              LayoutParserCallback callback, Resources res,
+                              int layoutId, String rootTag, int hotseatAllAppsRank) {
+        mContext = context;
+        mAppWidgetHost = appWidgetHost;
+        mCallback = callback;
+
+        mPackageManager = context.getPackageManager();
+        mValues = new ContentValues();
+        mRootTag = rootTag;
+
+        mSourceRes = res;
+        mLayoutId = layoutId;
+        mHotseatAllAppsRank = hotseatAllAppsRank;
+    }
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback) {
+                                  LayoutParserCallback callback) {
         Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
@@ -77,7 +144,7 @@ public class AutoInstallsLayout {
     }
 
     static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
-            AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
+                                  AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
         InvariantDeviceProfile grid = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         // Try with grid size and hotseat count
@@ -108,80 +175,53 @@ public class AutoInstallsLayout {
                 TAG_WORKSPACE);
     }
 
-    // Object Tags
-    private static final String TAG_INCLUDE = "include";
-    private static final String TAG_WORKSPACE = "workspace";
-    private static final String TAG_APP_ICON = "appicon";
-    private static final String TAG_AUTO_INSTALL = "autoinstall";
-    private static final String TAG_FOLDER = "folder";
-    private static final String TAG_APPWIDGET = "appwidget";
-    private static final String TAG_SHORTCUT = "shortcut";
-    private static final String TAG_EXTRA = "extra";
+    protected static final void beginDocument(XmlPullParser parser, String firstElementName)
+            throws XmlPullParserException, IOException {
+        int type;
+        while ((type = parser.next()) != XmlPullParser.START_TAG
+                && type != XmlPullParser.END_DOCUMENT) ;
 
-    private static final String ATTR_CONTAINER = "container";
-    private static final String ATTR_RANK = "rank";
+        if (type != XmlPullParser.START_TAG) {
+            throw new XmlPullParserException("No start tag found");
+        }
 
-    private static final String ATTR_PACKAGE_NAME = "packageName";
-    private static final String ATTR_CLASS_NAME = "className";
-    private static final String ATTR_TITLE = "title";
-    private static final String ATTR_SCREEN = "screen";
-    private static final String ATTR_X = "x";
-    private static final String ATTR_Y = "y";
-    private static final String ATTR_SPAN_X = "spanX";
-    private static final String ATTR_SPAN_Y = "spanY";
-    private static final String ATTR_ICON = "icon";
-    private static final String ATTR_URL = "url";
-
-    // Attrs for "Include"
-    private static final String ATTR_WORKSPACE = "workspace";
-
-    // Style attrs -- "Extra"
-    private static final String ATTR_KEY = "key";
-    private static final String ATTR_VALUE = "value";
-
-    private static final String HOTSEAT_CONTAINER_NAME =
-            Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
-
-    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
-
-    @Thunk final Context mContext;
-    @Thunk final AppWidgetHost mAppWidgetHost;
-    protected final LayoutParserCallback mCallback;
-
-    protected final PackageManager mPackageManager;
-    protected final Resources mSourceRes;
-    protected final int mLayoutId;
-
-    private final int mHotseatAllAppsRank;
-
-    private final long[] mTemp = new long[2];
-    @Thunk final ContentValues mValues;
-    protected final String mRootTag;
-
-    protected SQLiteDatabase mDb;
-
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources res,
-            int layoutId, String rootTag) {
-        this(context, appWidgetHost, callback, res, layoutId, rootTag,
-                LauncherAppState.getInstance().getInvariantDeviceProfile().hotseatAllAppsRank);
+        if (!parser.getName().equals(firstElementName)) {
+            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
+                    ", expected " + firstElementName);
+        }
     }
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources res,
-            int layoutId, String rootTag, int hotseatAllAppsRank) {
-        mContext = context;
-        mAppWidgetHost = appWidgetHost;
-        mCallback = callback;
+    /**
+     * Return attribute value, attempting launcher-specific namespace first
+     * before falling back to anonymous attribute.
+     */
+    protected static String getAttributeValue(XmlResourceParser parser, String attribute) {
+        String value = parser.getAttributeValue(
+                "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute);
+        if (value == null) {
+            value = parser.getAttributeValue(null, attribute);
+        }
+        return value;
+    }
 
-        mPackageManager = context.getPackageManager();
-        mValues = new ContentValues();
-        mRootTag = rootTag;
+    /**
+     * Return attribute resource value, attempting launcher-specific namespace
+     * first before falling back to anonymous attribute.
+     */
+    protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
+                                                   int defaultValue) {
+        int value = parser.getAttributeResourceValue(
+                "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
+                defaultValue);
+        if (value == defaultValue) {
+            value = parser.getAttributeResourceValue(null, attribute, defaultValue);
+        }
+        return value;
+    }
 
-        mSourceRes = res;
-        mLayoutId = layoutId;
-        mHotseatAllAppsRank = hotseatAllAppsRank;
+    @Thunk
+    static void copyInteger(ContentValues from, ContentValues to, String key) {
+        to.put(key, from.getAsInteger(key));
     }
 
     /**
@@ -221,6 +261,7 @@ public class AutoInstallsLayout {
 
     /**
      * Parses container and screenId attribute from the current tag, and puts it in the out.
+     *
      * @param out array of size 2.
      */
     protected void parseContainerAndScreen(XmlResourceParser parser, long[] out) {
@@ -242,7 +283,7 @@ public class AutoInstallsLayout {
             XmlResourceParser parser,
             HashMap<String, TagParser> tagParserMap,
             ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
+            throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
@@ -317,10 +358,17 @@ public class AutoInstallsLayout {
     protected interface TagParser {
         /**
          * Parses the tag and adds to the db
+         *
          * @return the id of the row added or -1;
          */
         long parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException;
+    }
+
+    public static interface LayoutParserCallback {
+        long generateNewItemId();
+
+        long insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
     /**
@@ -342,20 +390,21 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[] { packageName });
+                                new String[]{packageName});
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
                     final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                        .addCategory(Intent.CATEGORY_LAUNCHER)
-                        .setComponent(cn)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            .addCategory(Intent.CATEGORY_LAUNCHER)
+                            .setComponent(cn)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    if (LOGD) Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    if (LOGD)
+                        Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
                 }
                 return -1;
             } else {
@@ -388,10 +437,10 @@ public class AutoInstallsLayout {
 
             mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(new ComponentName(packageName, className))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(new ComponentName(packageName, className))
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
                     Favorites.ITEM_TYPE_APPLICATION);
         }
@@ -435,7 +484,7 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mSourceRes.getString(titleResId),
                     intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
@@ -471,7 +520,7 @@ public class AutoInstallsLayout {
                 mPackageManager.getReceiverInfo(cn, 0);
             } catch (Exception e) {
                 String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                        new String[] { packageName });
+                        new String[]{packageName});
                 cn = new ComponentName(packages[0], className);
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);
@@ -630,59 +679,5 @@ public class AutoInstallsLayout {
             }
             return addedId;
         }
-    }
-
-    protected static final void beginDocument(XmlPullParser parser, String firstElementName)
-            throws XmlPullParserException, IOException {
-        int type;
-        while ((type = parser.next()) != XmlPullParser.START_TAG
-                && type != XmlPullParser.END_DOCUMENT);
-
-        if (type != XmlPullParser.START_TAG) {
-            throw new XmlPullParserException("No start tag found");
-        }
-
-        if (!parser.getName().equals(firstElementName)) {
-            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                    ", expected " + firstElementName);
-        }
-    }
-
-    /**
-     * Return attribute value, attempting launcher-specific namespace first
-     * before falling back to anonymous attribute.
-     */
-    protected static String getAttributeValue(XmlResourceParser parser, String attribute) {
-        String value = parser.getAttributeValue(
-                "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute);
-        if (value == null) {
-            value = parser.getAttributeValue(null, attribute);
-        }
-        return value;
-    }
-
-    /**
-     * Return attribute resource value, attempting launcher-specific namespace
-     * first before falling back to anonymous attribute.
-     */
-    protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
-            int defaultValue) {
-        int value = parser.getAttributeResourceValue(
-                "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
-                defaultValue);
-        if (value == defaultValue) {
-            value = parser.getAttributeResourceValue(null, attribute, defaultValue);
-        }
-        return value;
-    }
-
-    public static interface LayoutParserCallback {
-        long generateNewItemId();
-
-        long insertAndCheck(SQLiteDatabase db, ContentValues values);
-    }
-
-    @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {
-        to.put(key, from.getAsInteger(key));
     }
 }

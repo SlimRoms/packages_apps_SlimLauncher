@@ -27,7 +27,7 @@ import java.util.Comparator;
 
 /**
  * Class to manage access to an app name comparator.
- * <p>
+ * <p/>
  * Used to sort application name in all apps view and widget tray view.
  */
 public class AppNameComparator {
@@ -63,42 +63,6 @@ public class AppNameComparator {
                 return compareTitles(o1, o2);
             }
         };
-    }
-
-    /**
-     * Returns a locale-aware comparator that will alphabetically order a list of applications.
-     */
-    public Comparator<ItemInfo> getAppInfoComparator() {
-        // Clear the user serial cache so that we get serials as needed in the comparator
-        mAppInfoComparator.clearUserCache();
-        return mAppInfoComparator;
-    }
-
-    /**
-     * Returns a locale-aware comparator that will alphabetically order a list of section names.
-     */
-    public Comparator<String> getSectionNameComparator() {
-        return mSectionNameComparator;
-    }
-
-    /**
-     * Compares two titles with the same return value semantics as Comparator.
-     */
-    @Thunk
-    int compareTitles(String titleA, String titleB) {
-        // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
-        boolean aStartsWithLetter = (titleA.length() > 0) &&
-                Character.isLetterOrDigit(titleA.codePointAt(0));
-        boolean bStartsWithLetter = (titleB.length() > 0) &&
-                Character.isLetterOrDigit(titleB.codePointAt(0));
-        if (aStartsWithLetter && !bStartsWithLetter) {
-            return -1;
-        } else if (!aStartsWithLetter && bStartsWithLetter) {
-            return 1;
-        }
-
-        // Order by the title in the current locale
-        return mCollator.compare(titleA, titleB);
     }
 
     public static Comparator<AppInfo> getAppNameComparator() {
@@ -155,5 +119,41 @@ public class AppNameComparator {
             }
         };
 
+    }
+
+    /**
+     * Returns a locale-aware comparator that will alphabetically order a list of applications.
+     */
+    public Comparator<ItemInfo> getAppInfoComparator() {
+        // Clear the user serial cache so that we get serials as needed in the comparator
+        mAppInfoComparator.clearUserCache();
+        return mAppInfoComparator;
+    }
+
+    /**
+     * Returns a locale-aware comparator that will alphabetically order a list of section names.
+     */
+    public Comparator<String> getSectionNameComparator() {
+        return mSectionNameComparator;
+    }
+
+    /**
+     * Compares two titles with the same return value semantics as Comparator.
+     */
+    @Thunk
+    int compareTitles(String titleA, String titleB) {
+        // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
+        boolean aStartsWithLetter = (titleA.length() > 0) &&
+                Character.isLetterOrDigit(titleA.codePointAt(0));
+        boolean bStartsWithLetter = (titleB.length() > 0) &&
+                Character.isLetterOrDigit(titleB.codePointAt(0));
+        if (aStartsWithLetter && !bStartsWithLetter) {
+            return -1;
+        } else if (!aStartsWithLetter && bStartsWithLetter) {
+            return 1;
+        }
+
+        // Order by the title in the current locale
+        return mCollator.compare(titleA, titleB);
     }
 }

@@ -51,7 +51,8 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
-
+    public final int edgeMarginPx;
+    public final Rect defaultWidgetPadding;
     // Overview mode
     private final int overviewModeMinIconZoneHeightPx;
     private final int overviewModeMaxIconZoneHeightPx;
@@ -59,15 +60,8 @@ public class DeviceProfile {
     private final int overviewModeBarSpacerWidthPx;
     private final float overviewModeIconZoneRatio;
     private final float overviewModeScaleFactor;
-
-    // Workspace
-    private int desiredWorkspaceLeftRightMarginPx;
-    public final int edgeMarginPx;
-    public final Rect defaultWidgetPadding;
     private final int pageIndicatorHeightPx;
     private final int defaultPageSpacingPx;
-    private float dragViewScale;
-
     // Icons
     public int originalIconSizePx;
     public int iconSizePx;
@@ -81,36 +75,34 @@ public class DeviceProfile {
     public int allAppsIconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
-
     public int cellWidthPx;
     public int cellHeightPx;
-
     // Folder
     public int folderBackgroundOffset;
     public int folderIconSizePx;
     public int folderCellWidthPx;
     public int folderCellHeightPx;
-
     // Hotseat
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
-    private int hotseatBarHeightPx;
-
     // All apps
     public int allAppsNumCols;
     public int pagedAllAppsNumCols;
     public int pagedAllAppsNumRows;
     public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
-
     // QSB
     int searchBarSpaceMaxWidthPx;
     int searchBarHeightPx;
+    // Workspace
+    private int desiredWorkspaceLeftRightMarginPx;
+    private float dragViewScale;
+    private int hotseatBarHeightPx;
     private int searchBarSpaceHeightPx;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
-            Point minSize, Point maxSize,
-            int width, int height, boolean isLandscape) {
+                         Point minSize, Point maxSize,
+                         int width, int height, boolean isLandscape) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -172,6 +164,14 @@ public class DeviceProfile {
         updateFromPreferences(context);
         updateAvailableDimensions(context);
         computeAllAppsButtonSize(context);
+    }
+
+    public static int calculateCellWidth(int width, int countX) {
+        return width / countX;
+    }
+
+    public static int calculateCellHeight(int height, int countY) {
+        return height / countY;
     }
 
     /**
@@ -333,7 +333,9 @@ public class DeviceProfile {
         allAppsNumPredictiveCols = numPredictiveAppCols;
     }
 
-    /** Returns the search bar top offset */
+    /**
+     * Returns the search bar top offset
+     */
     private int getSearchBarTopOffset() {
         if (isTablet && !isVerticalBarLayout()) {
             return 4 * edgeMarginPx;
@@ -342,7 +344,9 @@ public class DeviceProfile {
         }
     }
 
-    /** Returns the search bar bounds in the current orientation */
+    /**
+     * Returns the search bar bounds in the current orientation
+     */
     public Rect getSearchBarBounds(boolean isLayoutRtl) {
         Rect bounds = new Rect();
         if (isLandscape && transposeLayoutWithOrientation) {
@@ -369,13 +373,15 @@ public class DeviceProfile {
                 bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
                         getSearchBarTopOffset(),
                         availableWidthPx - (desiredWorkspaceLeftRightMarginPx -
-                        defaultWidgetPadding.right), searchBarSpaceHeightPx);
+                                defaultWidgetPadding.right), searchBarSpaceHeightPx);
             }
         }
         return bounds;
     }
 
-    /** Returns the workspace padding in the specified orientation */
+    /**
+     * Returns the workspace padding in the specified orientation
+     */
     Rect getWorkspacePadding(boolean isLayoutRtl) {
         Rect searchBarBounds = getSearchBarBounds(isLayoutRtl);
         Rect padding = new Rect();
@@ -404,11 +410,11 @@ public class DeviceProfile {
                 padding.set(availableWidth / 2, paddingTop + availableHeight / 2,
                         availableWidth / 2, paddingBottom + availableHeight / 2);
             } else {*/
-                // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
-                        searchBarBounds.bottom,
-                        desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
-                        hotseatBarHeightPx + pageIndicatorHeightPx);
+            // Pad the top and bottom of the workspace with search/hotseat bar sizes
+            padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
+                    searchBarBounds.bottom,
+                    desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
+                    hotseatBarHeightPx + pageIndicatorHeightPx);
             //}
         }
         return padding;
@@ -449,13 +455,6 @@ public class DeviceProfile {
             return new Rect(0, availableHeightPx - hotseatBarHeightPx,
                     availableWidthPx, Integer.MAX_VALUE);
         }
-    }
-
-    public static int calculateCellWidth(int width, int countX) {
-        return width / countX;
-    }
-    public static int calculateCellHeight(int height, int countY) {
-        return height / countY;
     }
 
     /**
@@ -593,7 +592,7 @@ public class DeviceProfile {
 
             int visibleChildCount = getVisibleChildCount(overviewMode);
             int totalItemWidth = visibleChildCount * overviewModeBarItemWidthPx;
-            int maxWidth = totalItemWidth + (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
+            int maxWidth = totalItemWidth + (visibleChildCount - 1) * overviewModeBarSpacerWidthPx;
 
             lp.width = Math.min(availableWidthPx, maxWidth);
             lp.height = r.height();
@@ -601,7 +600,7 @@ public class DeviceProfile {
 
             if (lp.width > totalItemWidth && visibleChildCount > 1) {
                 // We have enough space. Lets add some margin too.
-                int margin = (lp.width - totalItemWidth) / (visibleChildCount-1);
+                int margin = (lp.width - totalItemWidth) / (visibleChildCount - 1);
                 View lastChild = null;
 
                 // Set margin of all visible children except the last visible child

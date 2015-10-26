@@ -53,10 +53,10 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mPm = context.getPackageManager();
         mContext = context;
         mPackageMonitor = new PackageMonitor();
-   }
+    }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         mainIntent.setPackage(packageName);
@@ -78,7 +78,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     }
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+                                        Rect sourceBounds, Bundle opts) {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         launchIntent.setComponent(component);
@@ -141,11 +141,13 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mContext.registerReceiver(mPackageMonitor, filter);
     }
 
-    @Thunk synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
+    @Thunk
+    synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
         return new ArrayList<OnAppsChangedCallbackCompat>(mCallbacks);
     }
 
-    @Thunk class PackageMonitor extends BroadcastReceiver {
+    @Thunk
+    class PackageMonitor extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             final UserHandleCompat user = UserHandleCompat.myUserHandle();

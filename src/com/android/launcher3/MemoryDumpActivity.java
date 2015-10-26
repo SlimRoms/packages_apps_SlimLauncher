@@ -45,11 +45,6 @@ import java.util.zip.ZipOutputStream;
 public class MemoryDumpActivity extends Activity {
     private static final String TAG = "MemoryDumpActivity";
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     public static String zipUp(ArrayList<String> paths) {
         final int BUFSIZ = 256 * 1024; // 256K
         final byte[] buf = new byte[BUFSIZ];
@@ -67,7 +62,7 @@ public class MemoryDumpActivity extends Activity {
                     ZipEntry entry = new ZipEntry(filename);
                     zos.putNextEntry(entry);
                     int len;
-                    while ( 0 < (len = is.read(buf, 0, BUFSIZ)) ) {
+                    while (0 < (len = is.read(buf, 0, BUFSIZ))) {
                         zos.write(buf, 0, len);
                     }
                     zos.closeEntry();
@@ -102,10 +97,10 @@ public class MemoryDumpActivity extends Activity {
             MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
             if (info != null) {
                 body.append("pid ").append(pid).append(":")
-                    .append(" up=").append(info.getUptime())
-                    .append(" pss=").append(info.currentPss)
-                    .append(" uss=").append(info.currentUss)
-                    .append("\n");
+                        .append(" up=").append(info.getUptime())
+                        .append(" pss=").append(info.currentPss)
+                        .append(" uss=").append(info.currentUss)
+                        .append("\n");
             }
             if (pid == myPid) {
                 final String path = String.format("%s/launcher-memory-%d.ahprof",
@@ -147,18 +142,6 @@ public class MemoryDumpActivity extends Activity {
         context.startActivity(shareIntent);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        startDump(this, new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        });
-    }
-
     public static void startDump(final Context context) {
         startDump(context, null);
     }
@@ -179,5 +162,22 @@ public class MemoryDumpActivity extends Activity {
         Log.v(TAG, "attempting to bind to memory tracker");
         context.bindService(new Intent(context, MemoryTracker.class),
                 connection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        startDump(this, new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        });
     }
 }

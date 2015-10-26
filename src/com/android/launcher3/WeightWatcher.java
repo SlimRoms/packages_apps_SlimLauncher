@@ -47,14 +47,8 @@ public class WeightWatcher extends LinearLayout {
     private static final int MSG_START = 1;
     private static final int MSG_STOP = 2;
     private static final int MSG_UPDATE = 3;
-
-    static int indexOf(int[] a, int x) {
-        for (int i=0; i<a.length; i++) {
-            if (a[i] == x) return i;
-        }
-        return -1;
-    }
-
+    @Thunk
+    MemoryTracker mMemoryService;
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message m) {
@@ -70,7 +64,7 @@ public class WeightWatcher extends LinearLayout {
 
                     final int N = getChildCount();
                     if (pids.length != N) initViews();
-                    else for (int i=0; i<N; i++) {
+                    else for (int i = 0; i < N; i++) {
                         ProcessWatcher pw = ((ProcessWatcher) getChildAt(i));
                         if (indexOf(pids, pw.getPid()) < 0) {
                             initViews();
@@ -83,14 +77,12 @@ public class WeightWatcher extends LinearLayout {
             }
         }
     };
-    @Thunk MemoryTracker mMemoryService;
-
     public WeightWatcher(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         ServiceConnection connection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
-                mMemoryService = ((MemoryTracker.MemoryTrackerInterface)service).getService();
+                mMemoryService = ((MemoryTracker.MemoryTrackerInterface) service).getService();
                 initViews();
             }
 
@@ -106,18 +98,25 @@ public class WeightWatcher extends LinearLayout {
         setBackgroundColor(BACKGROUND_COLOR);
     }
 
+    public WeightWatcher(Context context) {
+        this(context, null);
+    }
+
+    static int indexOf(int[] a, int x) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] == x) return i;
+        }
+        return -1;
+    }
+
     public void initViews() {
         removeAllViews();
         int[] processes = mMemoryService.getTrackedProcesses();
-        for (int i=0; i<processes.length; i++) {
+        for (int i = 0; i < processes.length; i++) {
             final ProcessWatcher v = new ProcessWatcher(getContext());
             v.setPid(processes[i]);
             addView(v);
         }
-    }
-
-    public WeightWatcher(Context context) {
-        this(context, null);
     }
 
     @Override
@@ -136,7 +135,8 @@ public class WeightWatcher extends LinearLayout {
         GraphView mRamGraph;
         TextView mText;
         int mPid;
-        @Thunk MemoryTracker.ProcessMemInfo mMemInfo;
+        @Thunk
+        MemoryTracker.ProcessMemInfo mMemInfo;
 
         public ProcessWatcher(Context context) {
             this(context, null);
@@ -152,22 +152,26 @@ public class WeightWatcher extends LinearLayout {
             mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, 10 * dp);
             mText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
 
-            final int p = (int)(2*dp);
+            final int p = (int) (2 * dp);
             setPadding(p, 0, p, 0);
 
             mRamGraph = new GraphView(getContext());
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     0,
-                    (int)(14 * dp),
+                    (int) (14 * dp),
                     1f
             );
 
             addView(mText, params);
-            params.leftMargin = (int)(4*dp);
+            params.leftMargin = (int) (4 * dp);
             params.weight = 0f;
-            params.width = (int)(200 * dp);
+            params.width = (int) (200 * dp);
             addView(mRamGraph, params);
+        }
+
+        public int getPid() {
+            return mPid;
         }
 
         public void setPid(int pid) {
@@ -177,10 +181,6 @@ public class WeightWatcher extends LinearLayout {
                 Log.v("WeightWatcher", "Missing info for pid " + mPid + ", removing view: " + this);
                 initViews();
             }
-        }
-
-        public int getPid() {
-            return mPid;
         }
 
         public String getUptimeString() {
@@ -216,13 +216,13 @@ public class WeightWatcher extends LinearLayout {
             //Log.v("WeightWatcher.ProcessWatcher",
             //        "MSG_UPDATE pss=" + mMemInfo.currentPss);
             mText.setText("(" + mPid
-                          + (mPid == android.os.Process.myPid()
-                                ? "/A"  // app
-                                : "/S") // service
-                          + ") up " + getUptimeString()
-                          + " P=" + mMemInfo.currentPss
-                          + " U=" + mMemInfo.currentUss
-                          );
+                            + (mPid == android.os.Process.myPid()
+                            ? "/A"  // app
+                            : "/S") // service
+                            + ") up " + getUptimeString()
+                            + " P=" + mMemInfo.currentPss
+                            + " U=" + mMemInfo.currentUss
+            );
             mRamGraph.invalidate();
         }
 
@@ -258,7 +258,7 @@ public class WeightWatcher extends LinearLayout {
 
                 int i;
                 float x;
-                for (i=0; i<N; i++) {
+                for (i = 0; i < N; i++) {
                     x = i * barStep;
                     c.drawRect(x, h - scale * mMemInfo.pss[i], x + barWidth, h, pssPaint);
                     c.drawRect(x, h - scale * mMemInfo.uss[i], x + barWidth, h, ussPaint);

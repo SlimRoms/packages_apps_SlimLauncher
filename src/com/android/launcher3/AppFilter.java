@@ -9,8 +9,6 @@ public abstract class AppFilter {
     private static final boolean DBG = false;
     private static final String TAG = "AppFilter";
 
-    public abstract boolean shouldShowApp(ComponentName app);
-
     public static AppFilter loadByName(String className) {
         if (TextUtils.isEmpty(className)) return null;
         if (DBG) Log.d(TAG, "Loading AppFilter: " + className);
@@ -31,5 +29,7 @@ public abstract class AppFilter {
             return null;
         }
     }
+
+    public abstract boolean shouldShowApp(ComponentName app);
 
 }

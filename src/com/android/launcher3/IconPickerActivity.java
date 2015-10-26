@@ -74,6 +74,14 @@ public class IconPickerActivity extends Activity {
         setContentView(recyclerView);
     }
 
+    public static class Item {
+        String title;
+        boolean isHeader = false;
+        boolean isIcon = false;
+        WeakReference<Drawable> drawable;
+        int resource_id;
+    }
+
     class ImageViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
@@ -94,46 +102,13 @@ public class IconPickerActivity extends Activity {
         }
     }
 
-    public static class Item {
-        String title;
-        boolean isHeader = false;
-        boolean isIcon = false;
-        WeakReference<Drawable> drawable;
-        int resource_id;
-    }
-
     public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        public final int ITEM_VIEW_TYPE_HEADER = 0;
+        public final int ITEM_VIEW_TYPE_ITEM = 1;
         private Context mContext;
         private Resources mResources;
         private ArrayList<Item> mItems = new ArrayList<>();
         private String mIconPackageName;
-
-        public final int ITEM_VIEW_TYPE_HEADER = 0;
-        public final int ITEM_VIEW_TYPE_ITEM = 1;
-
-        public class FetchDrawable extends AsyncTask<Integer, Void, Drawable> {
-            WeakReference<ImageView> mImageView;
-
-            FetchDrawable(ImageView imgView) {
-                mImageView = new WeakReference<>(imgView);
-            }
-
-            @Override
-            protected Drawable doInBackground(Integer... position) {
-                Item info = mItems.get(position[0]);
-                int itemId = info.resource_id;
-                Drawable d = mResources.getDrawable(itemId);
-                info.drawable = new WeakReference<>(d);
-                return d;
-            }
-
-            @Override
-            public void onPostExecute(Drawable result) {
-                if (mImageView.get() != null) {
-                    mImageView.get().setImageDrawable(result);
-                }
-            }
-        }
 
         public ImageAdapter(Context c, String pkgName) {
             mContext = c;
@@ -218,6 +193,30 @@ public class IconPickerActivity extends Activity {
         @Override
         public int getItemCount() {
             return mItems.size();
+        }
+
+        public class FetchDrawable extends AsyncTask<Integer, Void, Drawable> {
+            WeakReference<ImageView> mImageView;
+
+            FetchDrawable(ImageView imgView) {
+                mImageView = new WeakReference<>(imgView);
+            }
+
+            @Override
+            protected Drawable doInBackground(Integer... position) {
+                Item info = mItems.get(position[0]);
+                int itemId = info.resource_id;
+                Drawable d = mResources.getDrawable(itemId);
+                info.drawable = new WeakReference<>(d);
+                return d;
+            }
+
+            @Override
+            public void onPostExecute(Drawable result) {
+                if (mImageView.get() != null) {
+                    mImageView.get().setImageDrawable(result);
+                }
+            }
         }
     }
 }

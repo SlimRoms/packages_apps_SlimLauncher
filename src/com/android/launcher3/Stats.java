@@ -32,67 +32,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Stats {
-    private static final String TAG = "Launcher3/Stats";
-
-    private static final String STATS_FILE_NAME = "stats.log";
-    private static final int STATS_VERSION = 1;
-    private static final int INITIAL_STATS_SIZE = 100;
-
-    ArrayList<String> mIntents;
-    ArrayList<Integer> mHistogram;
-
-    /**
-     * Implemented by containers to provide a launch source for a given child.
-     */
-    public interface LaunchSourceProvider {
-        void fillInLaunchSourceData(Bundle sourceData);
-    }
-
-    /**
-     * Helpers to add the source to a launch intent.
-     */
-    public static class LaunchSourceUtils {
-        /**
-         * Create a default bundle for LaunchSourceProviders to fill in their data.
-         */
-        public static Bundle createSourceData() {
-            Bundle sourceData = new Bundle();
-            sourceData.putString(SOURCE_EXTRA_CONTAINER, CONTAINER_HOMESCREEN);
-            // Have default container/sub container pages
-            sourceData.putInt(SOURCE_EXTRA_CONTAINER_PAGE, 0);
-            sourceData.putInt(SOURCE_EXTRA_SUB_CONTAINER_PAGE, 0);
-            return sourceData;
-        }
-
-        /**
-         * Finds the next launch source provider in the parents of the view hierarchy and populates
-         * the source data from that provider.
-         */
-        public static void populateSourceDataFromAncestorProvider(View v, Bundle sourceData) {
-            if (v == null) {
-                return;
-            }
-
-            Stats.LaunchSourceProvider provider = null;
-            ViewParent parent = v.getParent();
-            while (parent != null && parent instanceof View) {
-                if (parent instanceof Stats.LaunchSourceProvider) {
-                    provider = (Stats.LaunchSourceProvider) parent;
-                    break;
-                }
-                parent = parent.getParent();
-            }
-
-            if (provider != null) {
-                provider.fillInLaunchSourceData(sourceData);
-            } else if (LauncherAppState.isDogfoodBuild()) {
-                throw new RuntimeException("Expected LaunchSourceProvider");
-            }
-        }
-    }
-
-    private static final boolean DEBUG_BROADCASTS = false;
-
     public static final String ACTION_LAUNCH = "com.android.launcher3.action.LAUNCH";
     public static final String EXTRA_INTENT = "intent";
     public static final String EXTRA_CONTAINER = "container";
@@ -100,24 +39,27 @@ public class Stats {
     public static final String EXTRA_CELLX = "cellX";
     public static final String EXTRA_CELLY = "cellY";
     public static final String EXTRA_SOURCE = "source";
-
     public static final String SOURCE_EXTRA_CONTAINER = "container";
     public static final String SOURCE_EXTRA_CONTAINER_PAGE = "container_page";
     public static final String SOURCE_EXTRA_SUB_CONTAINER = "sub_container";
     public static final String SOURCE_EXTRA_SUB_CONTAINER_PAGE = "sub_container_page";
-
     public static final String CONTAINER_SEARCH_BOX = "search_box";
     public static final String CONTAINER_ALL_APPS = "all_apps";
     public static final String CONTAINER_HOMESCREEN = "homescreen"; // aka. Workspace
     public static final String CONTAINER_HOTSEAT = "hotseat";
-
     public static final String SUB_CONTAINER_FOLDER = "folder";
     public static final String SUB_CONTAINER_ALL_APPS_A_Z = "a-z";
     public static final String SUB_CONTAINER_ALL_APPS_PREDICTION = "prediction";
     public static final String SUB_CONTAINER_ALL_APPS_SEARCH = "search";
-
+    private static final String TAG = "Launcher3/Stats";
+    private static final String STATS_FILE_NAME = "stats.log";
+    private static final int STATS_VERSION = 1;
+    private static final int INITIAL_STATS_SIZE = 100;
+    private static final boolean DEBUG_BROADCASTS = false;
     private final Launcher mLauncher;
     private final String mLaunchBroadcastPermission;
+    ArrayList<String> mIntents;
+    ArrayList<Integer> mHistogram;
 
     public Stats(Launcher launcher) {
         mLauncher = launcher;
@@ -194,7 +136,7 @@ public class Stats {
             stats.writeInt(STATS_VERSION);
             final int N = mHistogram.size();
             stats.writeInt(N);
-            for (int i=0; i<N; i++) {
+            for (int i = 0; i < N; i++) {
                 stats.writeUTF(mIntents.get(i));
                 stats.writeInt(mHistogram.get(i));
             }
@@ -226,7 +168,7 @@ public class Stats {
             final int version = stats.readInt();
             if (version == STATS_VERSION) {
                 final int N = stats.readInt();
-                for (int i=0; i<N; i++) {
+                for (int i = 0; i < N; i++) {
                     final String pkg = stats.readUTF();
                     final int count = stats.readInt();
                     mIntents.add(pkg);
@@ -243,6 +185,56 @@ public class Stats {
                 } catch (IOException e) {
                     // Ignore
                 }
+            }
+        }
+    }
+
+    /**
+     * Implemented by containers to provide a launch source for a given child.
+     */
+    public interface LaunchSourceProvider {
+        void fillInLaunchSourceData(Bundle sourceData);
+    }
+
+    /**
+     * Helpers to add the source to a launch intent.
+     */
+    public static class LaunchSourceUtils {
+        /**
+         * Create a default bundle for LaunchSourceProviders to fill in their data.
+         */
+        public static Bundle createSourceData() {
+            Bundle sourceData = new Bundle();
+            sourceData.putString(SOURCE_EXTRA_CONTAINER, CONTAINER_HOMESCREEN);
+            // Have default container/sub container pages
+            sourceData.putInt(SOURCE_EXTRA_CONTAINER_PAGE, 0);
+            sourceData.putInt(SOURCE_EXTRA_SUB_CONTAINER_PAGE, 0);
+            return sourceData;
+        }
+
+        /**
+         * Finds the next launch source provider in the parents of the view hierarchy and populates
+         * the source data from that provider.
+         */
+        public static void populateSourceDataFromAncestorProvider(View v, Bundle sourceData) {
+            if (v == null) {
+                return;
+            }
+
+            Stats.LaunchSourceProvider provider = null;
+            ViewParent parent = v.getParent();
+            while (parent != null && parent instanceof View) {
+                if (parent instanceof Stats.LaunchSourceProvider) {
+                    provider = (Stats.LaunchSourceProvider) parent;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+
+            if (provider != null) {
+                provider.fillInLaunchSourceData(sourceData);
+            } else if (LauncherAppState.isDogfoodBuild()) {
+                throw new RuntimeException("Expected LaunchSourceProvider");
             }
         }
     }

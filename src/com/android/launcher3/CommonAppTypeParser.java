@@ -35,18 +35,15 @@ import java.io.IOException;
  * A class that parses content values corresponding to some common app types.
  */
 public class CommonAppTypeParser implements LayoutParserCallback {
-    private static final String TAG = "CommonAppTypeParser";
-
     // Including TARGET_NONE
     public static final int SUPPORTED_TYPE_COUNT = 7;
-
+    private static final String TAG = "CommonAppTypeParser";
     private static final int RESTORE_FLAG_BIT_SHIFT = 4;
-
-
+    @Thunk
+    final int mResId;
+    @Thunk
+    final Context mContext;
     private final long mItemId;
-    @Thunk final int mResId;
-    @Thunk final Context mContext;
-
     ContentValues parsedValues;
     Intent parsedIntent;
     String parsedTitle;
@@ -55,6 +52,21 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         mItemId = itemId;
         mContext = context;
         mResId = getResourceForItemType(itemType);
+    }
+
+    public static int getResourceForItemType(int type) {
+        switch (type) {
+            default:
+                return 0;
+        }
+    }
+
+    public static int encodeItemTypeToFlag(int itemType) {
+        return itemType << RESTORE_FLAG_BIT_SHIFT;
+    }
+
+    public static int decodeItemTypeFromFlag(int flag) {
+        return (flag & ShortcutInfo.FLAG_RESTORED_APP_TYPE) >> RESTORE_FLAG_BIT_SHIFT;
     }
 
     @Override
@@ -114,21 +126,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
             }
             parser.close();
         }
-    }
-
-    public static int getResourceForItemType(int type) {
-        switch (type) {
-            default:
-                return 0;
-        }
-    }
-
-    public static int encodeItemTypeToFlag(int itemType) {
-        return itemType << RESTORE_FLAG_BIT_SHIFT;
-    }
-
-    public static int decodeItemTypeFromFlag(int flag) {
-        return (flag & ShortcutInfo.FLAG_RESTORED_APP_TYPE) >> RESTORE_FLAG_BIT_SHIFT;
     }
 
 }

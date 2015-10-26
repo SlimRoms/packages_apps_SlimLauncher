@@ -32,11 +32,12 @@ public final class WallpaperUtils {
     public static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
     public static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
     public static final float WALLPAPER_SCREENS_SPAN = 2f;
+    private static Point sDefaultWallpaperSize;
 
     public static void suggestWallpaperDimension(Resources res,
-            final SharedPreferences sharedPrefs,
-            WindowManager windowManager,
-            final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
+                                                 final SharedPreferences sharedPrefs,
+                                                 WindowManager windowManager,
+                                                 final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
         final Point defaultWallpaperSize = WallpaperUtils.getDefaultWallpaperSize(res, windowManager);
         // If we have saved a wallpaper width/height, use that instead
 
@@ -70,8 +71,8 @@ public final class WallpaperUtils {
         // We will use these two data points to extrapolate how much the wallpaper parallax effect
         // to span (ie travel) at any aspect ratio:
 
-        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
-        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float ASPECT_RATIO_LANDSCAPE = 16 / 10f;
+        final float ASPECT_RATIO_PORTRAIT = 10 / 16f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
 
@@ -81,13 +82,11 @@ public final class WallpaperUtils {
         //   (10/16)x + y = 1.2
         // We solve for x and y and end up with a final formula:
         final float x =
-            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
-            (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
     }
-
-    private static Point sDefaultWallpaperSize;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static Point getDefaultWallpaperSize(Resources res, WindowManager windowManager) {

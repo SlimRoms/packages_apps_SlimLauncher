@@ -55,10 +55,11 @@ public class ClickShadowView extends View {
 
     /**
      * Applies the new bitmap.
+     *
      * @return true if the view was invalidated.
      */
     public boolean setBitmap(Bitmap b) {
-        if (b != mBitmap){
+        if (b != mBitmap) {
             mBitmap = b;
             invalidate();
             return true;
@@ -79,13 +80,14 @@ public class ClickShadowView extends View {
     public void animateShadow() {
         setAlpha(0);
         animate().alpha(1)
-            .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
-            .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
-            .start();
+                .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
+                .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
+                .start();
     }
 
     /**
      * Aligns the shadow with {@param view}
+     *
      * @param viewParent immediate parent of {@param view}. It must be a sibling of this view.
      */
     public void alignWithIconView(BubbleTextView view, ViewGroup viewParent) {
@@ -101,12 +103,12 @@ public class ClickShadowView extends View {
                 + (iconHSpace - drawableWidth) * view.getScaleX() / 2  /* drawable gap */
                 + iconWidth * (1 - view.getScaleX()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
-                );
+        );
         setTranslationY(topShift
                 + viewParent.getTranslationY()
                 + view.getPaddingTop() * view.getScaleY()  /* drawable gap */
                 + view.getHeight() * (1 - view.getScaleY()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
-                );
+        );
     }
 }

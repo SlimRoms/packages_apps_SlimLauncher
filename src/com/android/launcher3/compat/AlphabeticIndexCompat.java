@@ -17,7 +17,8 @@ class BaseAlphabeticIndex {
     private static final String BUCKETS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
     private static final int UNKNOWN_BUCKET_INDEX = BUCKETS.length() - 1;
 
-    public BaseAlphabeticIndex() {}
+    public BaseAlphabeticIndex() {
+    }
 
     /**
      * Sets the max number of the label buckets in this index.

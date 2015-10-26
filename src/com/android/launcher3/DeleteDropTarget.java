@@ -37,36 +37,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
-
-        setDrawable(R.drawable.ic_remove_launcher);
-    }
-
     public static boolean supportsDrop(Object info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
     }
 
-    @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
-        return source.supportsDeleteDropTarget() && supportsDrop(info);
-    }
-
-    @Override
-    @Thunk void completeDrop(DragObject d) {
-        ItemInfo item = (ItemInfo) d.dragInfo;
-        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
-            removeWorkspaceOrFolderItem(mLauncher, item, null);
-        }
-    }
-
     /**
      * Removes the item from the workspace. If the view is not null, it also removes the view.
+     *
      * @return true if the item was removed.
      */
     public static boolean removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
@@ -90,7 +69,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
+                    public Void doInBackground(Void... args) {
                         appWidgetHost.deleteAppWidgetId(widget.appWidgetId);
                         return null;
                     }
@@ -108,6 +87,29 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Get the hover color
+        mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
+
+        setDrawable(R.drawable.ic_remove_launcher);
+    }
+
+    @Override
+    protected boolean supportsDrop(DragSource source, Object info) {
+        return source.supportsDeleteDropTarget() && supportsDrop(info);
+    }
+
+    @Override
+    @Thunk
+    void completeDrop(DragObject d) {
+        ItemInfo item = (ItemInfo) d.dragInfo;
+        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
+            removeWorkspaceOrFolderItem(mLauncher, item, null);
+        }
+    }
+
+    @Override
     public void onFlingToDelete(final DragObject d, PointF vel) {
         // Don't highlight the icon as it's animating
         d.dragView.setColor(0);
@@ -117,7 +119,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         FlingAnimation fling = new FlingAnimation(d, vel,
                 getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                         mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
-                        dragLayer);
+                dragLayer);
 
         final int duration = fling.getDuration();
         final long startTime = AnimationUtils.currentAnimationTimeMillis();

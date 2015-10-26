@@ -43,109 +43,10 @@ public class AlphabeticalAppsList {
     public static final String TAG = "AlphabeticalAppsList";
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_PREDICTIONS = false;
-
-    /**
-     * Info about a section in the alphabetic list
-     */
-    public static class SectionInfo {
-        // The number of applications in this section
-        public int numApps;
-        // The section break AdapterItem for this section
-        public AdapterItem sectionBreakItem;
-        // The first app AdapterItem for this section
-        public AdapterItem firstAppItem;
-    }
-
-    /**
-     * Info about a fast scroller section, depending if sections are merged, the fast scroller
-     * sections will not be the same set as the section headers.
-     */
-    public static class FastScrollSectionInfo {
-        // The section name
-        public String sectionName;
-        // The AdapterItem to scroll to for this section
-        public AdapterItem fastScrollToItem;
-        // The touch fraction that should map to this fast scroll section info
-        public float touchFraction;
-
-        public FastScrollSectionInfo(String sectionName) {
-            this.sectionName = sectionName;
-        }
-    }
-
-    /**
-     * Info about a particular adapter item (can be either section or app)
-     */
-    public static class AdapterItem {
-        /** Common properties */
-        // The index of this adapter item in the list
-        public int position;
-        // The type of this item
-        public int viewType;
-        // The row that this item shows up on
-        public int rowIndex;
-
-        /** Section & App properties */
-        // The section for this item
-        public SectionInfo sectionInfo;
-
-        /** App-only properties */
-        // The section name of this app.  Note that there can be multiple items with different
-        // sectionNames in the same section
-        public String sectionName = null;
-        // The index of this app in the section
-        public int sectionAppIndex = -1;
-        // The index of this app in the row
-        public int rowAppIndex;
-        // The associated AppInfo for the app
-        public AppInfo appInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
-
-        public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE;
-            item.position = pos;
-            item.sectionInfo = section;
-            section.sectionBreakItem = item;
-            return item;
-        }
-
-        public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
-            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
-            item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
-            return item;
-        }
-
-        public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
-            item.position = pos;
-            item.sectionInfo = section;
-            item.sectionName = sectionName;
-            item.sectionAppIndex = sectionAppIndex;
-            item.appInfo = appInfo;
-            item.appIndex = appIndex;
-            return item;
-        }
-    }
-
-    /**
-     * Common interface for different merging strategies.
-     */
-    public interface MergeAlgorithm {
-        boolean continueMerging(SectionInfo section, SectionInfo withSection,
-                int sectionAppCount, int numAppsPerRow, int mergeCount);
-    }
-
-    private Launcher mLauncher;
-
     // The set of apps from the system not including predictions
     private final List<AppInfo> mApps = new ArrayList<>();
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
-
+    private Launcher mLauncher;
     // The set of filtered apps with the current filter
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     // The current set of adapter items
@@ -168,7 +69,6 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
-
     public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
         mIndexer = new AlphabeticIndexCompat(context);
@@ -179,7 +79,7 @@ public class AlphabeticalAppsList {
      * Sets the number of apps per row.
      */
     public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow,
-            MergeAlgorithm mergeAlgorithm) {
+                                 MergeAlgorithm mergeAlgorithm) {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
         mMergeAlgorithm = mergeAlgorithm;
@@ -199,6 +99,14 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
+    }
+
+    /**
+     * Sets the current set of apps.
+     */
+    public void setApps(List<AppInfo> apps) {
+        mComponentToAppMap.clear();
+        addApps(apps);
     }
 
     /**
@@ -268,14 +176,6 @@ public class AlphabeticalAppsList {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
         onAppsUpdated();
-    }
-
-    /**
-     * Sets the current set of apps.
-     */
-    public void setApps(List<AppInfo> apps) {
-        mComponentToAppMap.clear();
-        addApps(apps);
     }
 
     /**
@@ -587,5 +487,107 @@ public class AlphabeticalAppsList {
             mCachedSectionNames.put(title, sectionName);
         }
         return sectionName;
+    }
+
+    /**
+     * Common interface for different merging strategies.
+     */
+    public interface MergeAlgorithm {
+        boolean continueMerging(SectionInfo section, SectionInfo withSection,
+                                int sectionAppCount, int numAppsPerRow, int mergeCount);
+    }
+
+    /**
+     * Info about a section in the alphabetic list
+     */
+    public static class SectionInfo {
+        // The number of applications in this section
+        public int numApps;
+        // The section break AdapterItem for this section
+        public AdapterItem sectionBreakItem;
+        // The first app AdapterItem for this section
+        public AdapterItem firstAppItem;
+    }
+
+    /**
+     * Info about a fast scroller section, depending if sections are merged, the fast scroller
+     * sections will not be the same set as the section headers.
+     */
+    public static class FastScrollSectionInfo {
+        // The section name
+        public String sectionName;
+        // The AdapterItem to scroll to for this section
+        public AdapterItem fastScrollToItem;
+        // The touch fraction that should map to this fast scroll section info
+        public float touchFraction;
+
+        public FastScrollSectionInfo(String sectionName) {
+            this.sectionName = sectionName;
+        }
+    }
+
+    /**
+     * Info about a particular adapter item (can be either section or app)
+     */
+    public static class AdapterItem {
+        /**
+         * Common properties
+         */
+        // The index of this adapter item in the list
+        public int position;
+        // The type of this item
+        public int viewType;
+        // The row that this item shows up on
+        public int rowIndex;
+
+        /**
+         * Section & App properties
+         */
+        // The section for this item
+        public SectionInfo sectionInfo;
+
+        /**
+         * App-only properties
+         */
+        // The section name of this app.  Note that there can be multiple items with different
+        // sectionNames in the same section
+        public String sectionName = null;
+        // The index of this app in the section
+        public int sectionAppIndex = -1;
+        // The index of this app in the row
+        public int rowAppIndex;
+        // The associated AppInfo for the app
+        public AppInfo appInfo = null;
+        // The index of this app not including sections
+        public int appIndex = -1;
+
+        public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE;
+            item.position = pos;
+            item.sectionInfo = section;
+            section.sectionBreakItem = item;
+            return item;
+        }
+
+        public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
+                                                 int sectionAppIndex, AppInfo appInfo, int appIndex) {
+            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
+            item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
+            return item;
+        }
+
+        public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
+                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
+            item.position = pos;
+            item.sectionInfo = section;
+            item.sectionName = sectionName;
+            item.sectionAppIndex = sectionAppIndex;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
+            return item;
+        }
     }
 }

@@ -53,17 +53,6 @@ public class GestureHelper {
     static int height;
     static int sector;
 
-    public enum Gesture {
-        DOWN_LEFT,
-        DOWN_MIDDLE,
-        DOWN_RIGHT,
-        UP_LEFT,
-        UP_MIDDLE,
-        UP_RIGHT,
-        DOUBLE_TAP,
-        NONE
-    }
-
     static void init(Context context) {
         wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         display = wm.getDefaultDisplay();
@@ -202,5 +191,16 @@ public class GestureHelper {
 
     public static boolean isSwipeRIGHT(float downX) {
         return downX > (sector * 2);
+    }
+
+    public enum Gesture {
+        DOWN_LEFT,
+        DOWN_MIDDLE,
+        DOWN_RIGHT,
+        UP_LEFT,
+        UP_MIDDLE,
+        UP_RIGHT,
+        DOUBLE_TAP,
+        NONE
     }
 }

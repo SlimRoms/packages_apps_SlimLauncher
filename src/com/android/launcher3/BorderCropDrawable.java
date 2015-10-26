@@ -28,7 +28,7 @@ public class BorderCropDrawable extends Drawable {
     private final Rect mPadding;
 
     BorderCropDrawable(Drawable child, boolean cropLeft,
-            boolean cropTop, boolean cropRight, boolean cropBottom) {
+                       boolean cropTop, boolean cropRight, boolean cropBottom) {
         mChild = child;
 
         mBoundsShift = new Rect();

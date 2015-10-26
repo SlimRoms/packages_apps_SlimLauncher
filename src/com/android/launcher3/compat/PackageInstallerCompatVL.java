@@ -35,55 +35,13 @@ import java.util.HashMap;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
-    @Thunk final SparseArray<String> mActiveSessions = new SparseArray<>();
+    @Thunk
+    final SparseArray<String> mActiveSessions = new SparseArray<>();
 
-    @Thunk final PackageInstaller mInstaller;
+    @Thunk
+    final PackageInstaller mInstaller;
     private final IconCache mCache;
     private final Handler mWorker;
-
-    PackageInstallerCompatVL(Context context) {
-        mInstaller = context.getPackageManager().getPackageInstaller();
-        LauncherAppState.setApplicationContext(context.getApplicationContext());
-        mCache = LauncherAppState.getInstance().getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-
-        mInstaller.registerSessionCallback(mCallback, mWorker);
-    }
-
-    @Override
-    public HashMap<String, Integer> updateAndGetActiveSessionCache() {
-        HashMap<String, Integer> activePackages = new HashMap<>();
-        UserHandleCompat user = UserHandleCompat.myUserHandle();
-        for (SessionInfo info : mInstaller.getAllSessions()) {
-            addSessionInfoToCahce(info, user);
-            if (info.getAppPackageName() != null) {
-                activePackages.put(info.getAppPackageName(), (int) (info.getProgress() * 100));
-                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
-            }
-        }
-        return activePackages;
-    }
-
-    @Thunk void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
-        String packageName = info.getAppPackageName();
-        if (packageName != null) {
-            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
-                    info.getAppLabel());
-        }
-    }
-
-    @Override
-    public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
-    }
-
-    @Thunk void sendUpdate(PackageInstallInfo info) {
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app != null) {
-            app.getModel().setPackageState(info);
-        }
-    }
-
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
@@ -115,7 +73,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onActiveChanged(int sessionId, boolean active) { }
+        public void onActiveChanged(int sessionId, boolean active) {
+        }
 
         @Override
         public void onBadgingChanged(int sessionId) {
@@ -134,4 +93,49 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             }
         }
     };
+
+    PackageInstallerCompatVL(Context context) {
+        mInstaller = context.getPackageManager().getPackageInstaller();
+        LauncherAppState.setApplicationContext(context.getApplicationContext());
+        mCache = LauncherAppState.getInstance().getIconCache();
+        mWorker = new Handler(LauncherModel.getWorkerLooper());
+
+        mInstaller.registerSessionCallback(mCallback, mWorker);
+    }
+
+    @Override
+    public HashMap<String, Integer> updateAndGetActiveSessionCache() {
+        HashMap<String, Integer> activePackages = new HashMap<>();
+        UserHandleCompat user = UserHandleCompat.myUserHandle();
+        for (SessionInfo info : mInstaller.getAllSessions()) {
+            addSessionInfoToCahce(info, user);
+            if (info.getAppPackageName() != null) {
+                activePackages.put(info.getAppPackageName(), (int) (info.getProgress() * 100));
+                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
+            }
+        }
+        return activePackages;
+    }
+
+    @Thunk
+    void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
+        String packageName = info.getAppPackageName();
+        if (packageName != null) {
+            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
+                    info.getAppLabel());
+        }
+    }
+
+    @Override
+    public void onStop() {
+        mInstaller.unregisterSessionCallback(mCallback);
+    }
+
+    @Thunk
+    void sendUpdate(PackageInstallInfo info) {
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.getModel().setPackageState(info);
+        }
+    }
 }

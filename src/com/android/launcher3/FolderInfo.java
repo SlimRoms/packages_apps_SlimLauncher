@@ -45,19 +45,15 @@ public class FolderInfo extends ItemInfo {
      * The multi-page animation has run for this folder
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
-
-    /**
-     * Whether this folder has been opened
-     */
-    boolean opened;
-
     public int options;
-
     /**
      * The apps and shortcuts
      */
     public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
-
+    /**
+     * Whether this folder has been opened
+     */
+    boolean opened;
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
     public FolderInfo() {
@@ -128,13 +124,6 @@ public class FolderInfo extends ItemInfo {
         listeners.clear();
     }
 
-    interface FolderListener {
-        public void onAdd(ShortcutInfo item);
-        public void onRemove(ShortcutInfo item);
-        public void onTitleChanged(CharSequence title);
-        public void onItemsChanged();
-    }
-
     @Override
     public String toString() {
         return "FolderInfo(id=" + this.id + " type=" + this.itemType
@@ -148,9 +137,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * @param option flag to set or clear
+     * @param option    flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param context if not null, save changes to the db.
+     * @param context   if not null, save changes to the db.
      */
     public void setOption(int option, boolean isEnabled, Context context) {
         int oldOptions = options;
@@ -162,5 +151,15 @@ public class FolderInfo extends ItemInfo {
         if (context != null && oldOptions != options) {
             LauncherModel.updateItemInDatabase(context, this);
         }
+    }
+
+    interface FolderListener {
+        public void onAdd(ShortcutInfo item);
+
+        public void onRemove(ShortcutInfo item);
+
+        public void onTitleChanged(CharSequence title);
+
+        public void onItemsChanged();
     }
 }

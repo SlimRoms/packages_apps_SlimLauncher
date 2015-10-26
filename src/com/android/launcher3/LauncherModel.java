@@ -86,134 +86,95 @@ import java.util.Set;
  */
 public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
-    static final boolean DEBUG_LOADERS = false;
-    private static final boolean DEBUG_RECEIVER = false;
-    private static final boolean REMOVE_UNRESTORED_ICONS = true;
-
-    static final String TAG = "Launcher.Model";
-
     public static final int LOADER_FLAG_NONE = 0;
     public static final int LOADER_FLAG_CLEAR_WORKSPACE = 1 << 0;
     public static final int LOADER_FLAG_MIGRATE_SHORTCUTS = 1 << 1;
-
-    private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
-    private static final long INVALID_SCREEN_ID = -1L;
-
-    @Thunk final boolean mAppsCanBeOnRemoveableStorage;
-    private final boolean mOldContentProviderExists;
-
-    @Thunk final LauncherAppState mApp;
-    @Thunk final Object mLock = new Object();
-    @Thunk DeferredHandler mHandler = new DeferredHandler();
-    @Thunk LoaderTask mLoaderTask;
-    @Thunk boolean mIsLoaderTaskRunning;
-    @Thunk boolean mHasLoaderCompletedOnce;
-
-    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
-
-    @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
-    static {
-        sWorkerThread.start();
-    }
-    @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
-
-    // We start off with everything not loaded.  After that, we assume that
-    // our monitoring of the package manager provides all updates and we never
-    // need to do a requery.  These are only ever touched from the loader thread.
-    @Thunk boolean mWorkspaceLoaded;
-    @Thunk boolean mAllAppsLoaded;
-
+    static final boolean DEBUG_LOADERS = false;
+    static final String TAG = "Launcher.Model";
+    @Thunk
+    static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    @Thunk
+    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
     // When we are loading pages synchronously, we can't just post the binding of items on the side
     // pages as this delays the rotation process.  Instead, we wait for a callback from the first
     // draw (in Workspace) to initiate the binding of the remaining side pages.  Any time we start
     // a normal load, we also clear this set of Runnables.
     static final ArrayList<Runnable> mDeferredBindRunnables = new ArrayList<Runnable>();
-
     /**
      * Set of runnables to be called on the background thread after the workspace binding
      * is complete.
      */
     static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<Runnable>();
-
-    @Thunk WeakReference<Callbacks> mCallbacks;
-
-    // < only access in worker thread >
-    AllAppsList mBgAllAppsList;
-    // Entire list of widgets.
-    WidgetsModel mBgWidgetsModel;
-
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
     // static data structures to be referenced outside of the worker thread except on the first
     // load after configuration change.
     static final Object sBgLock = new Object();
-
     // sBgItemsIdMap maps *all* the ItemInfos (shortcuts, folders, and widgets) created by
     // LauncherModel to their ids
     static final LongArrayMap<ItemInfo> sBgItemsIdMap = new LongArrayMap<>();
-
     // sBgWorkspaceItems is passed to bindItems, which expects a list of all folders and shortcuts
     //       created by LauncherModel that are directly on the home screen (however, no widgets or
     //       shortcuts within folders).
     static final ArrayList<ItemInfo> sBgWorkspaceItems = new ArrayList<ItemInfo>();
-
     // sBgAppWidgets is all LauncherAppWidgetInfo created by LauncherModel. Passed to bindAppWidget()
     static final ArrayList<LauncherAppWidgetInfo> sBgAppWidgets =
-        new ArrayList<LauncherAppWidgetInfo>();
-
+            new ArrayList<LauncherAppWidgetInfo>();
     // sBgFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
     static final LongArrayMap<FolderInfo> sBgFolders = new LongArrayMap<>();
-
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
-
-    // sBgWidgetProviders is the set of widget providers including custom internal widgets
-    public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
-
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
             new HashMap<UserHandleCompat, HashSet<String>>();
+    private static final boolean DEBUG_RECEIVER = false;
+    private static final boolean REMOVE_UNRESTORED_ICONS = true;
+    private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
+    private static final long INVALID_SCREEN_ID = -1L;
+    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
+    // sBgWidgetProviders is the set of widget providers including custom internal widgets
+    public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
+
+    static {
+        sWorkerThread.start();
+    }
+
+    @Thunk
+    final boolean mAppsCanBeOnRemoveableStorage;
+    @Thunk
+    final LauncherAppState mApp;
+    @Thunk
+    final Object mLock = new Object();
+    @Thunk
+    final LauncherAppsCompat mLauncherApps;
+    @Thunk
+    final UserManagerCompat mUserManager;
+    private final boolean mOldContentProviderExists;
+    @Thunk
+    DeferredHandler mHandler = new DeferredHandler();
+    @Thunk
+    LoaderTask mLoaderTask;
+    @Thunk
+    boolean mIsLoaderTaskRunning;
+    @Thunk
+    boolean mHasLoaderCompletedOnce;
+    // We start off with everything not loaded.  After that, we assume that
+    // our monitoring of the package manager provides all updates and we never
+    // need to do a requery.  These are only ever touched from the loader thread.
+    @Thunk
+    boolean mWorkspaceLoaded;
+    @Thunk
+    boolean mAllAppsLoaded;
+    @Thunk
+    WeakReference<Callbacks> mCallbacks;
 
     // </ only access in worker thread >
-
-    @Thunk IconCache mIconCache;
-
-    @Thunk final LauncherAppsCompat mLauncherApps;
-    @Thunk final UserManagerCompat mUserManager;
-
-    public interface Callbacks {
-        public boolean setLoadOnResume();
-        public int getCurrentWorkspaceScreen();
-        public void startBinding();
-        public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
-                              boolean forceAnimateIcons);
-        public void bindScreens(ArrayList<Long> orderedScreenIds);
-        public void bindAddScreens(ArrayList<Long> orderedScreenIds);
-        public void bindFolders(LongArrayMap<FolderInfo> folders);
-        public void finishBindingItems();
-        public void bindAppWidget(LauncherAppWidgetInfo info);
-        public void bindAllApplications(ArrayList<AppInfo> apps);
-        public void bindAppsAdded(ArrayList<Long> newScreens,
-                                  ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated,
-                                  ArrayList<AppInfo> addedApps);
-        public void bindAppsUpdated(ArrayList<AppInfo> apps);
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                ArrayList<ShortcutInfo> removed, UserHandleCompat user);
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindComponentsRemoved(ArrayList<String> packageNames,
-                        ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
-        public void bindAllPackages(WidgetsModel model);
-        public void bindSearchablesChanged();
-        public boolean isAllAppsButtonRank(int rank);
-        public void onPageBoundSynchronously(int page);
-        public void dumpLogsToLocalData();
-    }
-
-    public interface ItemInfoFilter {
-        public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
-    }
+    // < only access in worker thread >
+    AllAppsList mBgAllAppsList;
+    // Entire list of widgets.
+    WidgetsModel mBgWidgetsModel;
+    @Thunk
+    IconCache mIconCache;
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         Context context = app.getContext();
@@ -246,19 +207,10 @@ public class LauncherModel extends BroadcastReceiver
         mUserManager = UserManagerCompat.getInstance(context);
     }
 
-    /** Runs the specified runnable immediately if called from the main thread, otherwise it is
-     * posted on the main thread handler. */
-    @Thunk void runOnMainThread(Runnable r) {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            // If we are on the worker thread, post onto the main handler
-            mHandler.post(r);
-        } else {
-            r.run();
-        }
-    }
-
-    /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
-     * posted on the worker thread handler. */
+    /**
+     * Runs the specified runnable immediately if called from the worker thread, otherwise it is
+     * posted on the worker thread handler.
+     */
     private static void runOnWorkerThread(Runnable r) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             r.run();
@@ -268,10 +220,692 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    private static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> occupiedPos,
+                                                              int[] xy, int spanX, int spanY) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+        final int xCount = (int) profile.numColumns;
+        final int yCount = (int) profile.numRows;
+        boolean[][] occupied = new boolean[xCount][yCount];
+        if (occupiedPos != null) {
+            for (ItemInfo r : occupiedPos) {
+                int right = r.cellX + r.spanX;
+                int bottom = r.cellY + r.spanY;
+                for (int x = r.cellX; 0 <= x && x < right && x < xCount; x++) {
+                    for (int y = r.cellY; 0 <= y && y < bottom && y < yCount; y++) {
+                        occupied[x][y] = true;
+                    }
+                }
+            }
+        }
+        return Utilities.findVacantCell(xy, spanX, spanY, xCount, yCount, occupied);
+    }
+
+    /**
+     * Adds an item to the DB if it was not created previously, or move it to a new
+     * <container, screen, cellX, cellY>
+     */
+    static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
+                                        long screenId, int cellX, int cellY) {
+        if (item.container == ItemInfo.NO_ID) {
+            // From all apps
+            addItemToDatabase(context, item, container, screenId, cellX, cellY);
+        } else {
+            // From somewhere else
+            moveItemInDatabase(context, item, container, screenId, cellX, cellY);
+        }
+    }
+
+    static void checkItemInfoLocked(
+            final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+        if (modelItem != null && item != modelItem) {
+            // check all the data is consistent
+            if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+                ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
+                ShortcutInfo shortcut = (ShortcutInfo) item;
+                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
+                        modelShortcut.intent.filterEquals(shortcut.intent) &&
+                        modelShortcut.id == shortcut.id &&
+                        modelShortcut.itemType == shortcut.itemType &&
+                        modelShortcut.container == shortcut.container &&
+                        modelShortcut.screenId == shortcut.screenId &&
+                        modelShortcut.cellX == shortcut.cellX &&
+                        modelShortcut.cellY == shortcut.cellY &&
+                        modelShortcut.spanX == shortcut.spanX &&
+                        modelShortcut.spanY == shortcut.spanY &&
+                        ((modelShortcut.dropPos == null && shortcut.dropPos == null) ||
+                                (modelShortcut.dropPos != null &&
+                                        shortcut.dropPos != null &&
+                                        modelShortcut.dropPos[0] == shortcut.dropPos[0] &&
+                                        modelShortcut.dropPos[1] == shortcut.dropPos[1]))) {
+                    // For all intents and purposes, this is the same object
+                    return;
+                }
+            }
+
+            // the modelItem needs to match up perfectly with item if our model is
+            // to be consistent with the database-- for now, just require
+            // modelItem == item or the equality check above
+            String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                    "modelItem: " +
+                    ((modelItem != null) ? modelItem.toString() : "null") +
+                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
+            RuntimeException e = new RuntimeException(msg);
+            if (stackTrace != null) {
+                e.setStackTrace(stackTrace);
+            }
+            throw e;
+        }
+    }
+
+    static void checkItemInfo(final ItemInfo item) {
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        final long itemId = item.id;
+        Runnable r = new Runnable() {
+            public void run() {
+                synchronized (sBgLock) {
+                    checkItemInfoLocked(itemId, item, stackTrace);
+                }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    static void updateItemInDatabaseHelper(Context context, final ContentValues values,
+                                           final ItemInfo item, final String callingFunction) {
+        final long itemId = item.id;
+        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
+        final ContentResolver cr = context.getContentResolver();
+
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        Runnable r = new Runnable() {
+            public void run() {
+                cr.update(uri, values, null, null);
+                updateItemArrays(item, itemId, stackTrace);
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    static void updateItemsInDatabaseHelper(Context context, final ArrayList<ContentValues> valuesList,
+                                            final ArrayList<ItemInfo> items, final String callingFunction) {
+        final ContentResolver cr = context.getContentResolver();
+
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        Runnable r = new Runnable() {
+            public void run() {
+                ArrayList<ContentProviderOperation> ops =
+                        new ArrayList<ContentProviderOperation>();
+                int count = items.size();
+                for (int i = 0; i < count; i++) {
+                    ItemInfo item = items.get(i);
+                    final long itemId = item.id;
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
+                    ContentValues values = valuesList.get(i);
+
+                    ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
+                    updateItemArrays(item, itemId, stackTrace);
+
+                }
+                try {
+                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    static void updateItemArrays(ItemInfo item, long itemId, StackTraceElement[] stackTrace) {
+        // Lock on mBgLock *after* the db operation
+        synchronized (sBgLock) {
+            checkItemInfoLocked(itemId, item, stackTrace);
+
+            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                    item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                // Item is in a folder, make sure this folder exists
+                if (!sBgFolders.containsKey(item.container)) {
+                    // An items container is being set to a that of an item which is not in
+                    // the list of Folders.
+                    String msg = "item: " + item + " container being set to: " +
+                            item.container + ", not in the list of folders";
+                    Log.e(TAG, msg);
+                }
+            }
+
+            // Items are added/removed from the corresponding FolderInfo elsewhere, such
+            // as in Workspace.onDrop. Here, we just add/remove them from the list of items
+            // that are on the desktop, as appropriate
+            ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+            if (modelItem != null &&
+                    (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                            modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                switch (modelItem.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                        if (!sBgWorkspaceItems.contains(modelItem)) {
+                            sBgWorkspaceItems.add(modelItem);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                sBgWorkspaceItems.remove(modelItem);
+            }
+        }
+    }
+
+    /**
+     * Move an item in the DB to a new <container, screen, cellX, cellY>
+     */
+    public static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
+                                          final long screenId, final int cellX, final int cellY) {
+        item.container = container;
+        item.cellX = cellX;
+        item.cellY = cellY;
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screenId < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screenId = screenId;
+        }
+
+        final ContentValues values = new ContentValues();
+        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.RANK, item.rank);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
+
+        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+    }
+
+    /**
+     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
+     * cellX, cellY have already been updated on the ItemInfos.
+     */
+    static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
+                                    final long container, final int screen) {
+
+        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+        int count = items.size();
+
+        for (int i = 0; i < count; i++) {
+            ItemInfo item = items.get(i);
+            item.container = container;
+
+            // We store hotseat items in canonical form which is this orientation invariant position
+            // in the hotseat
+            if (context instanceof Launcher && screen < 0 &&
+                    container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(item.cellX,
+                        item.cellY);
+            } else {
+                item.screenId = screen;
+            }
+
+            final ContentValues values = new ContentValues();
+            values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+            values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+            values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+            values.put(LauncherSettings.Favorites.RANK, item.rank);
+            values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
+
+            contentValues.add(values);
+        }
+        updateItemsInDatabaseHelper(context, contentValues, items, "moveItemInDatabase");
+    }
+
+    /**
+     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
+     */
+    static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
+                                     final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
+        item.container = container;
+        item.cellX = cellX;
+        item.cellY = cellY;
+        item.spanX = spanX;
+        item.spanY = spanY;
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screenId < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screenId = screenId;
+        }
+
+        final ContentValues values = new ContentValues();
+        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.RANK, item.rank);
+        values.put(LauncherSettings.Favorites.SPANX, item.spanX);
+        values.put(LauncherSettings.Favorites.SPANY, item.spanY);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
+
+        updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
+    }
+
+    /**
+     * Update an item to the database in a specified container.
+     */
+    public static void updateItemInDatabase(Context context, final ItemInfo item) {
+        final ContentValues values = new ContentValues();
+        item.onAddToDatabase(context, values);
+        updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
+    }
+
+    /**
+     * Add an item to the database in a specified container. Sets the container, screen, cellX and
+     * cellY fields of the item. Also assigns an ID to the item.
+     */
+    public static void addItemToDatabase(Context context, final ItemInfo item, final long container,
+                                         final long screenId, final int cellX, final int cellY) {
+        item.container = container;
+        item.cellX = cellX;
+        item.cellY = cellY;
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screenId < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screenId = screenId;
+        }
+
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+        item.onAddToDatabase(context, values);
+
+        item.id = LauncherAppState.getLauncherProvider().generateNewItemId();
+        values.put(LauncherSettings.Favorites._ID, item.id);
+
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        Runnable r = new Runnable() {
+            public void run() {
+                cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
+
+                // Lock on mBgLock *after* the db operation
+                synchronized (sBgLock) {
+                    checkItemInfoLocked(item.id, item, stackTrace);
+                    sBgItemsIdMap.put(item.id, item);
+                    switch (item.itemType) {
+                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                            sBgFolders.put(item.id, (FolderInfo) item);
+                            // Fall through
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                                    item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                                sBgWorkspaceItems.add(item);
+                            } else {
+                                if (!sBgFolders.containsKey(item.container)) {
+                                    // Adding an item to a folder that doesn't exist.
+                                    String msg = "adding item: " + item + " to a folder that " +
+                                            " doesn't exist";
+                                    Log.e(TAG, msg);
+                                }
+                            }
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            sBgAppWidgets.add((LauncherAppWidgetInfo) item);
+                            break;
+                    }
+                }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Creates a new unique child id, for a given cell span across all layouts.
+     */
+    static int getCellLayoutChildId(
+            long container, long screen, int localCellX, int localCellY, int spanX, int spanY) {
+        return (((int) container & 0xFF) << 24)
+                | ((int) screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
+    }
+
+    private static ArrayList<ItemInfo> getItemsByPackageName(
+            final String pn, final UserHandleCompat user) {
+        ItemInfoFilter filter = new ItemInfoFilter() {
+            @Override
+            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
+                return cn.getPackageName().equals(pn) && info.user.equals(user);
+            }
+        };
+        return filterItemInfos(sBgItemsIdMap, filter);
+    }
+
+    /**
+     * Removes all the items from the database corresponding to the specified package.
+     */
+    static void deletePackageFromDatabase(Context context, final String pn,
+                                          final UserHandleCompat user) {
+        deleteItemsFromDatabase(context, getItemsByPackageName(pn, user));
+    }
+
+    /**
+     * Removes the specified item from the database
+     *
+     * @param context
+     * @param item
+     */
+    public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
+        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        items.add(item);
+        deleteItemsFromDatabase(context, items);
+    }
+
+    /**
+     * Removes the specified items from the database
+     *
+     * @param context
+     * @param items
+     */
+    static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
+        final ContentResolver cr = context.getContentResolver();
+        Runnable r = new Runnable() {
+            public void run() {
+                for (ItemInfo item : items) {
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
+                    cr.delete(uri, null, null);
+
+                    // Lock on mBgLock *after* the db operation
+                    synchronized (sBgLock) {
+                        switch (item.itemType) {
+                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                                sBgFolders.remove(item.id);
+                                for (ItemInfo info : sBgItemsIdMap) {
+                                    if (info.container == item.id) {
+                                        // We are deleting a folder which still contains items that
+                                        // think they are contained by that folder.
+                                        String msg = "deleting a folder (" + item + ") which still " +
+                                                "contains items (" + info + ")";
+                                        Log.e(TAG, msg);
+                                    }
+                                }
+                                sBgWorkspaceItems.remove(item);
+                                break;
+                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                                sBgWorkspaceItems.remove(item);
+                                break;
+                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                                sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
+                                break;
+                        }
+                        sBgItemsIdMap.remove(item.id);
+                    }
+                }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Remove the contents of the specified folder from the database
+     */
+    public static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
+        final ContentResolver cr = context.getContentResolver();
+
+        Runnable r = new Runnable() {
+            public void run() {
+                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+                // Lock on mBgLock *after* the db operation
+                synchronized (sBgLock) {
+                    sBgItemsIdMap.remove(info.id);
+                    sBgFolders.remove(info.id);
+                    sBgWorkspaceItems.remove(info);
+                }
+
+                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                // Lock on mBgLock *after* the db operation
+                synchronized (sBgLock) {
+                    for (ItemInfo childInfo : info.contents) {
+                        sBgItemsIdMap.remove(childInfo.id);
+                    }
+                }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Loads the workspace screen ids in an ordered list.
+     */
+    @Thunk
+    static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+
+        // Get screens ordered by rank.
+        final Cursor sc = contentResolver.query(screensUri, null, null, null,
+                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+        ArrayList<Long> screenIds = new ArrayList<Long>();
+        try {
+            final int idIndex = sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID);
+            while (sc.moveToNext()) {
+                try {
+                    screenIds.add(sc.getLong(idIndex));
+                } catch (Exception e) {
+                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted"
+                            + " - invalid screens: " + e, true);
+                }
+            }
+        } finally {
+            sc.close();
+        }
+        return screenIds;
+    }
+
+    /**
+     * Checks whether there is an all apps shortcut in the database
+     */
+    static boolean hasAllAppsShortcut() {
+        for (ItemInfo info : sBgWorkspaceItems) {
+            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
+                                                                         boolean refresh) {
+        ArrayList<LauncherAppWidgetProviderInfo> results =
+                new ArrayList<LauncherAppWidgetProviderInfo>();
+        try {
+            synchronized (sBgLock) {
+                if (sBgWidgetProviders == null || refresh) {
+                    HashMap<ComponentKey, LauncherAppWidgetProviderInfo> tmpWidgetProviders
+                            = new HashMap<>();
+                    AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
+                    LauncherAppWidgetProviderInfo info;
+
+                    List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
+                    for (AppWidgetProviderInfo pInfo : widgets) {
+                        info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
+                        UserHandleCompat user = wm.getUser(info);
+                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                    }
+
+                    Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
+                    for (CustomAppWidget widget : customWidgets) {
+                        info = new LauncherAppWidgetProviderInfo(context, widget);
+                        UserHandleCompat user = wm.getUser(info);
+                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                    }
+                    // Replace the global list at the very end, so that if there is an exception,
+                    // previously loaded provider list is used.
+                    sBgWidgetProviders = tmpWidgetProviders;
+                }
+                results.addAll(sBgWidgetProviders.values());
+                return results;
+            }
+        } catch (Exception e) {
+            if (e.getCause() instanceof TransactionTooLargeException) {
+                // the returned value may be incomplete and will not be refreshed until the next
+                // time Launcher starts.
+                // TODO: after figuring out a repro step, introduce a dirty bit to check when
+                // onResume is called to refresh the widget provider list.
+                synchronized (sBgLock) {
+                    if (sBgWidgetProviders != null) {
+                        results.addAll(sBgWidgetProviders.values());
+                    }
+                    return results;
+                }
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name,
+                                                                UserHandleCompat user) {
+        synchronized (sBgLock) {
+            if (sBgWidgetProviders == null) {
+                getWidgetProviders(ctx, false /* refresh */);
+            }
+            return sBgWidgetProviders.get(new ComponentKey(name, user));
+        }
+    }
+
+    @Thunk
+    static boolean isPackageDisabled(Context context, String packageName,
+                                     UserHandleCompat user) {
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        return !launcherApps.isPackageEnabledForProfile(packageName, user);
+    }
+
+    public static boolean isValidPackageActivity(Context context, ComponentName cn,
+                                                 UserHandleCompat user) {
+        if (cn == null) {
+            return false;
+        }
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        if (!launcherApps.isPackageEnabledForProfile(cn.getPackageName(), user)) {
+            return false;
+        }
+        return launcherApps.isActivityEnabledForProfile(cn, user);
+    }
+
+    public static boolean isValidPackage(Context context, String packageName,
+                                         UserHandleCompat user) {
+        if (packageName == null) {
+            return false;
+        }
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        return launcherApps.isPackageEnabledForProfile(packageName, user);
+    }
+
+    static Intent getMarketIntent(String packageName) {
+        return new Intent(Intent.ACTION_VIEW)
+                .setData(new Uri.Builder()
+                        .scheme("market")
+                        .authority("details")
+                        .appendQueryParameter("id", packageName)
+                        .build());
+    }
+
+    public static void restoreCustomShortcutIcons(Context context, IconCache iconCache) {
+        for (ItemInfo info : sBgItemsIdMap) {
+            if (info instanceof ShortcutInfo) {
+                ShortcutInfo si = (ShortcutInfo) info;
+                if (si.useCustomIcon) {
+                    si.removeCustomIcon();
+                    updateItemInDatabase(context, si);
+                }
+            }
+        }
+    }
+
+    static ArrayList<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos,
+                                               ItemInfoFilter f) {
+        HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
+        for (ItemInfo i : infos) {
+            if (i instanceof ShortcutInfo) {
+                ShortcutInfo info = (ShortcutInfo) i;
+                ComponentName cn = info.getTargetComponent();
+                if (cn != null && f.filterItem(null, info, cn)) {
+                    filtered.add(info);
+                }
+            } else if (i instanceof FolderInfo) {
+                FolderInfo info = (FolderInfo) i;
+                for (ShortcutInfo s : info.contents) {
+                    ComponentName cn = s.getTargetComponent();
+                    if (cn != null && f.filterItem(info, s, cn)) {
+                        filtered.add(s);
+                    }
+                }
+            } else if (i instanceof LauncherAppWidgetInfo) {
+                LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) i;
+                ComponentName cn = info.providerName;
+                if (cn != null && f.filterItem(null, info, cn)) {
+                    filtered.add(info);
+                }
+            }
+        }
+        return new ArrayList<ItemInfo>(filtered);
+    }
+
+    /**
+     * Return an existing FolderInfo object if we have encountered this ID previously,
+     * or make a new one.
+     */
+    @Thunk
+    static FolderInfo findOrMakeFolder(LongArrayMap<FolderInfo> folders, long id) {
+        // See if a placeholder was created for us already
+        FolderInfo folderInfo = folders.get(id);
+        if (folderInfo == null) {
+            // No placeholder -- create a new instance
+            folderInfo = new FolderInfo();
+            folders.put(id, folderInfo);
+        }
+        return folderInfo;
+    }
+
+    static boolean isValidProvider(AppWidgetProviderInfo provider) {
+        return (provider != null) && (provider.provider != null)
+                && (provider.provider.getPackageName() != null);
+    }
+
+    /**
+     * @return the looper for the worker thread which can be used to start background tasks.
+     */
+    public static Looper getWorkerLooper() {
+        return sWorkerThread.getLooper();
+    }
+
+    /**
+     * Runs the specified runnable immediately if called from the main thread, otherwise it is
+     * posted on the main thread handler.
+     */
+    @Thunk
+    void runOnMainThread(Runnable r) {
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            // If we are on the worker thread, post onto the main handler
+            mHandler.post(r);
+        } else {
+            r.run();
+        }
+    }
+
     /**
      * Runs the specified runnable after the loader is complete
      */
-    @Thunk void runAfterBindCompletes(Runnable r) {
+    @Thunk
+    void runAfterBindCompletes(Runnable r) {
         if (isLoadingWorkspace() || !mHasLoaderCompletedOnce) {
             synchronized (mBindCompleteRunnables) {
                 mBindCompleteRunnables.add(r);
@@ -282,7 +916,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     boolean canMigrateFromOldLauncherDb(Launcher launcher) {
-        return mOldContentProviderExists && !launcher.isLauncherPreinstalled() ;
+        return mOldContentProviderExists && !launcher.isLauncherPreinstalled();
     }
 
     public void setPackageState(final PackageInstallInfo installInfo) {
@@ -417,32 +1051,13 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    private static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> occupiedPos,
-            int[] xy, int spanX, int spanY) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-        final int xCount = (int) profile.numColumns;
-        final int yCount = (int) profile.numRows;
-        boolean[][] occupied = new boolean[xCount][yCount];
-        if (occupiedPos != null) {
-            for (ItemInfo r : occupiedPos) {
-                int right = r.cellX + r.spanX;
-                int bottom = r.cellY + r.spanY;
-                for (int x = r.cellX; 0 <= x && x < right && x < xCount; x++) {
-                    for (int y = r.cellY; 0 <= y && y < bottom && y < yCount; y++) {
-                        occupied[x][y] = true;
-                    }
-                }
-            }
-        }
-        return Utilities.findVacantCell(xy, spanX, spanY, xCount, yCount, occupied);
-    }
-
     /**
      * Find a position on the screen for the given size or adds a new screen.
+     *
      * @return screenId and the coordinates for the item.
      */
-    @Thunk Pair<Long, int[]> findSpaceForItem(
+    @Thunk
+    Pair<Long, int[]> findSpaceForItem(
             Context context,
             ArrayList<Long> workspaceScreens,
             ArrayList<Long> addedWorkspaceScreensFinal,
@@ -512,7 +1127,7 @@ public class LauncherModel extends BroadcastReceiver
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(final Context context,
-            final ArrayList<? extends ItemInfo> workspaceApps) {
+                                              final ArrayList<? extends ItemInfo> workspaceApps) {
         final Callbacks callbacks = getCallback();
         if (workspaceApps.isEmpty()) {
             return;
@@ -527,7 +1142,7 @@ public class LauncherModel extends BroadcastReceiver
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
                 // called.
                 ArrayList<Long> workspaceScreens = loadWorkspaceScreensDb(context);
-                synchronized(sBgLock) {
+                synchronized (sBgLock) {
                     for (ItemInfo item : workspaceApps) {
                         if (item instanceof ShortcutInfo) {
                             // Short-circuit this logic if the icon exists somewhere on the workspace
@@ -610,7 +1225,9 @@ public class LauncherModel extends BroadcastReceiver
         unbindWorkspaceItemsOnMainThread();
     }
 
-    /** Unbinds all the sBgWorkspaceItems and sBgAppWidgets on the main thread */
+    /**
+     * Unbinds all the sBgWorkspaceItems and sBgAppWidgets on the main thread
+     */
     void unbindWorkspaceItemsOnMainThread() {
         // Ensure that we don't use the same workspace items data structure on the main thread
         // by making a copy of workspace items first.
@@ -620,277 +1237,14 @@ public class LauncherModel extends BroadcastReceiver
             tmpItems.addAll(sBgAppWidgets);
         }
         Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                   for (ItemInfo item : tmpItems) {
-                       item.unbind();
-                   }
+            @Override
+            public void run() {
+                for (ItemInfo item : tmpItems) {
+                    item.unbind();
                 }
-            };
+            }
+        };
         runOnMainThread(r);
-    }
-
-    /**
-     * Adds an item to the DB if it was not created previously, or move it to a new
-     * <container, screen, cellX, cellY>
-     */
-    static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
-            long screenId, int cellX, int cellY) {
-        if (item.container == ItemInfo.NO_ID) {
-            // From all apps
-            addItemToDatabase(context, item, container, screenId, cellX, cellY);
-        } else {
-            // From somewhere else
-            moveItemInDatabase(context, item, container, screenId, cellX, cellY);
-        }
-    }
-
-    static void checkItemInfoLocked(
-            final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
-        ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-        if (modelItem != null && item != modelItem) {
-            // check all the data is consistent
-            if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
-                ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
-                ShortcutInfo shortcut = (ShortcutInfo) item;
-                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
-                        modelShortcut.intent.filterEquals(shortcut.intent) &&
-                        modelShortcut.id == shortcut.id &&
-                        modelShortcut.itemType == shortcut.itemType &&
-                        modelShortcut.container == shortcut.container &&
-                        modelShortcut.screenId == shortcut.screenId &&
-                        modelShortcut.cellX == shortcut.cellX &&
-                        modelShortcut.cellY == shortcut.cellY &&
-                        modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY &&
-                        ((modelShortcut.dropPos == null && shortcut.dropPos == null) ||
-                        (modelShortcut.dropPos != null &&
-                                shortcut.dropPos != null &&
-                                modelShortcut.dropPos[0] == shortcut.dropPos[0] &&
-                        modelShortcut.dropPos[1] == shortcut.dropPos[1]))) {
-                    // For all intents and purposes, this is the same object
-                    return;
-                }
-            }
-
-            // the modelItem needs to match up perfectly with item if our model is
-            // to be consistent with the database-- for now, just require
-            // modelItem == item or the equality check above
-            String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                    "modelItem: " +
-                    ((modelItem != null) ? modelItem.toString() : "null") +
-                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
-            RuntimeException e = new RuntimeException(msg);
-            if (stackTrace != null) {
-                e.setStackTrace(stackTrace);
-            }
-            throw e;
-        }
-    }
-
-    static void checkItemInfo(final ItemInfo item) {
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        final long itemId = item.id;
-        Runnable r = new Runnable() {
-            public void run() {
-                synchronized (sBgLock) {
-                    checkItemInfoLocked(itemId, item, stackTrace);
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    static void updateItemInDatabaseHelper(Context context, final ContentValues values,
-            final ItemInfo item, final String callingFunction) {
-        final long itemId = item.id;
-        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
-        final ContentResolver cr = context.getContentResolver();
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.update(uri, values, null, null);
-                updateItemArrays(item, itemId, stackTrace);
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    static void updateItemsInDatabaseHelper(Context context, final ArrayList<ContentValues> valuesList,
-            final ArrayList<ItemInfo> items, final String callingFunction) {
-        final ContentResolver cr = context.getContentResolver();
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        Runnable r = new Runnable() {
-            public void run() {
-                ArrayList<ContentProviderOperation> ops =
-                        new ArrayList<ContentProviderOperation>();
-                int count = items.size();
-                for (int i = 0; i < count; i++) {
-                    ItemInfo item = items.get(i);
-                    final long itemId = item.id;
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
-                    ContentValues values = valuesList.get(i);
-
-                    ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
-                    updateItemArrays(item, itemId, stackTrace);
-
-                }
-                try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    static void updateItemArrays(ItemInfo item, long itemId, StackTraceElement[] stackTrace) {
-        // Lock on mBgLock *after* the db operation
-        synchronized (sBgLock) {
-            checkItemInfoLocked(itemId, item, stackTrace);
-
-            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                    item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Item is in a folder, make sure this folder exists
-                if (!sBgFolders.containsKey(item.container)) {
-                    // An items container is being set to a that of an item which is not in
-                    // the list of Folders.
-                    String msg = "item: " + item + " container being set to: " +
-                            item.container + ", not in the list of folders";
-                    Log.e(TAG, msg);
-                }
-            }
-
-            // Items are added/removed from the corresponding FolderInfo elsewhere, such
-            // as in Workspace.onDrop. Here, we just add/remove them from the list of items
-            // that are on the desktop, as appropriate
-            ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-            if (modelItem != null &&
-                    (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                     modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
-                switch (modelItem.itemType) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                        if (!sBgWorkspaceItems.contains(modelItem)) {
-                            sBgWorkspaceItems.add(modelItem);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                sBgWorkspaceItems.remove(modelItem);
-            }
-        }
-    }
-
-    /**
-     * Move an item in the DB to a new <container, screen, cellX, cellY>
-     */
-    public static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-        values.put(LauncherSettings.Favorites.RANK, item.rank);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
-    }
-
-    /**
-     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
-     * cellX, cellY have already been updated on the ItemInfos.
-     */
-    static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
-            final long container, final int screen) {
-
-        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
-        int count = items.size();
-
-        for (int i = 0; i < count; i++) {
-            ItemInfo item = items.get(i);
-            item.container = container;
-
-            // We store hotseat items in canonical form which is this orientation invariant position
-            // in the hotseat
-            if (context instanceof Launcher && screen < 0 &&
-                    container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(item.cellX,
-                        item.cellY);
-            } else {
-                item.screenId = screen;
-            }
-
-            final ContentValues values = new ContentValues();
-            values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-            values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-            values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-            values.put(LauncherSettings.Favorites.RANK, item.rank);
-            values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-            contentValues.add(values);
-        }
-        updateItemsInDatabaseHelper(context, contentValues, items, "moveItemInDatabase");
-    }
-
-    /**
-     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
-     */
-    static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-        item.spanX = spanX;
-        item.spanY = spanY;
-
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-        values.put(LauncherSettings.Favorites.RANK, item.rank);
-        values.put(LauncherSettings.Favorites.SPANX, item.spanX);
-        values.put(LauncherSettings.Favorites.SPANY, item.spanY);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-        updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
-    }
-
-    /**
-     * Update an item to the database in a specified container.
-     */
-    public static void updateItemInDatabase(Context context, final ItemInfo item) {
-        final ContentValues values = new ContentValues();
-        item.onAddToDatabase(context, values);
-        updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
     }
 
     private void assertWorkspaceLoaded() {
@@ -903,7 +1257,8 @@ public class LauncherModel extends BroadcastReceiver
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
-    @Thunk boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
+    @Thunk
+    boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
         assertWorkspaceLoaded();
         final String intentWithPkg, intentWithoutPkg;
         if (intent.getComponent() != null) {
@@ -947,7 +1302,7 @@ public class LauncherModel extends BroadcastReceiver
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
                 "_id=? and (itemType=? or itemType=?)",
-                new String[] { String.valueOf(id),
+                new String[]{String.valueOf(id),
                         String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)}, null);
 
         try {
@@ -983,152 +1338,6 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         return null;
-    }
-
-    /**
-     * Add an item to the database in a specified container. Sets the container, screen, cellX and
-     * cellY fields of the item. Also assigns an ID to the item.
-     */
-    public static void addItemToDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentValues values = new ContentValues();
-        final ContentResolver cr = context.getContentResolver();
-        item.onAddToDatabase(context, values);
-
-        item.id = LauncherAppState.getLauncherProvider().generateNewItemId();
-        values.put(LauncherSettings.Favorites._ID, item.id);
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
-
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    checkItemInfoLocked(item.id, item, stackTrace);
-                    sBgItemsIdMap.put(item.id, item);
-                    switch (item.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                            sBgFolders.put(item.id, (FolderInfo) item);
-                            // Fall through
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                                    item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                                sBgWorkspaceItems.add(item);
-                            } else {
-                                if (!sBgFolders.containsKey(item.container)) {
-                                    // Adding an item to a folder that doesn't exist.
-                                    String msg = "adding item: " + item + " to a folder that " +
-                                            " doesn't exist";
-                                    Log.e(TAG, msg);
-                                }
-                            }
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            sBgAppWidgets.add((LauncherAppWidgetInfo) item);
-                            break;
-                    }
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    /**
-     * Creates a new unique child id, for a given cell span across all layouts.
-     */
-    static int getCellLayoutChildId(
-            long container, long screen, int localCellX, int localCellY, int spanX, int spanY) {
-        return (((int) container & 0xFF) << 24)
-                | ((int) screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
-    }
-
-    private static ArrayList<ItemInfo> getItemsByPackageName(
-            final String pn, final UserHandleCompat user) {
-        ItemInfoFilter filter  = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                return cn.getPackageName().equals(pn) && info.user.equals(user);
-            }
-        };
-        return filterItemInfos(sBgItemsIdMap, filter);
-    }
-
-    /**
-     * Removes all the items from the database corresponding to the specified package.
-     */
-    static void deletePackageFromDatabase(Context context, final String pn,
-            final UserHandleCompat user) {
-        deleteItemsFromDatabase(context, getItemsByPackageName(pn, user));
-    }
-
-    /**
-     * Removes the specified item from the database
-     * @param context
-     * @param item
-     */
-    public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
-        items.add(item);
-        deleteItemsFromDatabase(context, items);
-    }
-
-    /**
-     * Removes the specified items from the database
-     * @param context
-     * @param items
-     */
-    static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
-        final ContentResolver cr = context.getContentResolver();
-        Runnable r = new Runnable() {
-            public void run() {
-                for (ItemInfo item : items) {
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
-                    cr.delete(uri, null, null);
-
-                    // Lock on mBgLock *after* the db operation
-                    synchronized (sBgLock) {
-                        switch (item.itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                                sBgFolders.remove(item.id);
-                                for (ItemInfo info: sBgItemsIdMap) {
-                                    if (info.container == item.id) {
-                                        // We are deleting a folder which still contains items that
-                                        // think they are contained by that folder.
-                                        String msg = "deleting a folder (" + item + ") which still " +
-                                                "contains items (" + info + ")";
-                                        Log.e(TAG, msg);
-                                    }
-                                }
-                                sBgWorkspaceItems.remove(item);
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                                sBgWorkspaceItems.remove(item);
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                                sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
-                                break;
-                        }
-                        sBgItemsIdMap.remove(item.id);
-                    }
-                }
-            }
-        };
-        runOnWorkerThread(r);
     }
 
     /**
@@ -1180,35 +1389,6 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Remove the contents of the specified folder from the database
-     */
-    public static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
-        final ContentResolver cr = context.getContentResolver();
-
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    sBgItemsIdMap.remove(info.id);
-                    sBgFolders.remove(info.id);
-                    sBgWorkspaceItems.remove(info);
-                }
-
-                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    for (ItemInfo childInfo : info.contents) {
-                        sBgItemsIdMap.remove(childInfo.id);
-                    }
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    /**
      * Set this as the current Launcher activity object for the loader.
      */
     public void initialize(Callbacks callbacks) {
@@ -1223,27 +1403,27 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onPackageChanged(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_UPDATE;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[]{packageName},
                 user));
     }
 
     @Override
     public void onPackageRemoved(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_REMOVE;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[]{packageName},
                 user));
     }
 
     @Override
     public void onPackageAdded(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_ADD;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[]{packageName},
                 user));
     }
 
     @Override
     public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
-            boolean replacing) {
+                                    boolean replacing) {
         if (!replacing) {
             enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packageNames,
                     user));
@@ -1262,7 +1442,7 @@ public class LauncherModel extends BroadcastReceiver
 
     @Override
     public void onPackagesUnavailable(String[] packageNames, UserHandleCompat user,
-            boolean replacing) {
+                                      boolean replacing) {
         if (!replacing) {
             enqueuePackageUpdated(new PackageUpdatedTask(
                     PackageUpdatedTask.OP_UNAVAILABLE, packageNames,
@@ -1283,7 +1463,7 @@ public class LauncherModel extends BroadcastReceiver
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
         } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
-                   SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
+                SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
             Callbacks callbacks = getCallback();
             if (callbacks != null) {
                 callbacks.bindSearchablesChanged();
@@ -1411,45 +1591,6 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Loads the workspace screen ids in an ordered list.
-     */
-    @Thunk static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
-        final ContentResolver contentResolver = context.getContentResolver();
-        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-
-        // Get screens ordered by rank.
-        final Cursor sc = contentResolver.query(screensUri, null, null, null,
-                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
-        ArrayList<Long> screenIds = new ArrayList<Long>();
-        try {
-            final int idIndex = sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID);
-            while (sc.moveToNext()) {
-                try {
-                    screenIds.add(sc.getLong(idIndex));
-                } catch (Exception e) {
-                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted"
-                            + " - invalid screens: " + e, true);
-                }
-            }
-        } finally {
-            sc.close();
-        }
-        return screenIds;
-    }
-
-    /**
-     * Checks whether there is an all apps shortcut in the database
-     */
-    static boolean hasAllAppsShortcut() {
-        for (ItemInfo info : sBgWorkspaceItems) {
-            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Add an all apps shortcut to the database if there aren't any already
      */
     private ItemInfo addAllAppsShortcutIfNecessary() {
@@ -1506,16 +1647,395 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
+     * Called when the icons for packages have been updated in the icon cache.
+     */
+    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandleCompat user) {
+        final Callbacks callbacks = getCallback();
+        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
+        final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+
+        // If any package icon has changed (app was updated while launcher was dead),
+        // update the corresponding shortcuts.
+        synchronized (sBgLock) {
+            for (ItemInfo info : sBgItemsIdMap) {
+                if (info instanceof ShortcutInfo && user.equals(info.user)
+                        && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    ShortcutInfo si = (ShortcutInfo) info;
+                    ComponentName cn = si.getTargetComponent();
+                    if (cn != null && updatedPackages.contains(cn.getPackageName())) {
+                        si.updateIcon(mIconCache);
+                        updatedShortcuts.add(si);
+                    }
+                }
+            }
+            mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
+        }
+
+        if (!updatedShortcuts.isEmpty()) {
+            final UserHandleCompat userFinal = user;
+            mHandler.post(new Runnable() {
+
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindShortcutsChanged(updatedShortcuts,
+                                new ArrayList<ShortcutInfo>(), userFinal);
+                    }
+                }
+            });
+        }
+
+        if (!updatedApps.isEmpty()) {
+            mHandler.post(new Runnable() {
+
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindAppsUpdated(updatedApps);
+                    }
+                }
+            });
+        }
+
+        // Reload widget list. No need to refresh, as we only want to update the icons and labels.
+        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks, false);
+    }
+
+    void enqueuePackageUpdated(PackageUpdatedTask task) {
+        sWorker.post(task);
+    }
+
+    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
+                                               final boolean refresh) {
+
+        runOnWorkerThread(new Runnable() {
+            @Override
+            public void run() {
+                updateWidgetsModel(context, refresh);
+                final WidgetsModel model = mBgWidgetsModel.clone();
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindAllPackages(model);
+                        }
+                    }
+                });
+                // update the Widget entries inside DB on the worker thread.
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
+                        model.getRawList());
+            }
+        });
+    }
+
+    /**
+     * Returns a list of ResolveInfos/AppWidgetInfos.
+     *
+     * @see #loadAndBindWidgetsAndShortcuts
+     */
+    @Thunk
+    void updateWidgetsModel(Context context, boolean refresh) {
+        PackageManager packageManager = context.getPackageManager();
+        final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
+        widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
+        Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
+        widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
+        mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
+    }
+
+    /**
+     * Make an ShortcutInfo object for a restored application or shortcut item that points
+     * to a package that is not yet installed on the system.
+     */
+    public ShortcutInfo getRestoredItemInfo(Cursor c, int titleIndex, Intent intent,
+                                            int promiseType, int itemType, CursorIconInfo iconInfo, Context context) {
+        final ShortcutInfo info = new ShortcutInfo();
+        info.user = UserHandleCompat.myUserHandle();
+
+        Bitmap icon = iconInfo.loadIcon(c, info, context);
+        Bitmap customIcon = iconInfo.loadCustomIcon(c, context);
+        // the fallback icon
+        if (icon == null) {
+            mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
+        } else {
+            info.setIcon(icon);
+        }
+        if (customIcon != null) {
+            info.useCustomIcon = true;
+            info.setIcon(customIcon);
+        }
+
+        if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
+            String title = (c != null) ? c.getString(titleIndex) : null;
+            if (!TextUtils.isEmpty(title)) {
+                info.title = Utilities.trim(title);
+            }
+        } else if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+            if (TextUtils.isEmpty(info.title)) {
+                info.title = (c != null) ? Utilities.trim(c.getString(titleIndex)) : "";
+            }
+        } else {
+            throw new InvalidParameterException("Invalid restoreType " + promiseType);
+        }
+
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
+        info.itemType = itemType;
+        info.promisedIntent = intent;
+        info.status = promiseType;
+        return info;
+    }
+
+    /**
+     * Make an Intent object for a restored application or shortcut item that points
+     * to the market page for the item.
+     */
+    @Thunk
+    Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
+        ComponentName componentName = intent.getComponent();
+        return getMarketIntent(componentName.getPackageName());
+    }
+
+    /**
+     * Make an ShortcutInfo object for a shortcut that is an application.
+     * <p/>
+     * If c is not null, then it will be used to fill in missing data like the title and icon.
+     */
+    public ShortcutInfo getAppShortcutInfo(PackageManager manager, Intent intent,
+                                           UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
+                                           boolean allowMissingTarget, boolean useLowResIcon) {
+        if (user == null) {
+            Log.d(TAG, "Null user found in getShortcutInfo");
+            return null;
+        }
+
+        ComponentName componentName = intent.getComponent();
+        if (componentName == null) {
+            Log.d(TAG, "Missing component found in getShortcutInfo: " + componentName);
+            return null;
+        }
+
+        Intent newIntent = new Intent(intent.getAction(), null);
+        newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        newIntent.setComponent(componentName);
+        LauncherActivityInfoCompat lai = mLauncherApps.resolveActivity(newIntent, user);
+        if ((lai == null) && !allowMissingTarget) {
+            Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
+            return null;
+        }
+
+        final ShortcutInfo info = new ShortcutInfo();
+        info.title = Utilities.trim(c.getString(titleIndex));
+        CursorIconInfo iconInfo = new CursorIconInfo(c);
+        Bitmap bitmap = iconInfo.loadIcon(c, info, context);
+        if (bitmap == null) {
+            mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
+        } else {
+            info.setIcon(bitmap);
+        }
+
+        // from the db
+        if (TextUtils.isEmpty(info.title)) {
+            info.title = Utilities.trim(c.getString(titleIndex));
+        }
+
+        // fall back to the class name of the activity
+        if (info.title == null) {
+            info.title = componentName.getClassName();
+        }
+
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        info.user = user;
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
+        if (lai != null) {
+            info.flags = AppInfo.initFlags(lai);
+        }
+        return info;
+    }
+
+    @Thunk
+    ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
+                                                    final UserHandleCompat user) {
+        ItemInfoFilter filter = new ItemInfoFilter() {
+            @Override
+            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
+                if (info.user == null) {
+                    return cn.equals(cname);
+                } else {
+                    return cn.equals(cname) && info.user.equals(user);
+                }
+            }
+        };
+        return filterItemInfos(sBgItemsIdMap, filter);
+    }
+
+    /**
+     * Make an ShortcutInfo object for a shortcut that isn't an application.
+     */
+    @Thunk
+    ShortcutInfo getShortcutInfo(Cursor c, Context context,
+                                 int titleIndex, CursorIconInfo iconInfo) {
+        final ShortcutInfo info = new ShortcutInfo();
+        // Non-app shortcuts are only supported for current user.
+        info.user = UserHandleCompat.myUserHandle();
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+
+        // TODO: If there's an explicit component and we can't install that, delete it.
+
+        info.title = Utilities.trim(c.getString(titleIndex));
+
+        Bitmap icon = iconInfo.loadIcon(c, info, context);
+        // the fallback icon
+        if (icon == null) {
+            icon = mIconCache.getDefaultIcon(info.user);
+            info.usingFallbackIcon = true;
+        }
+        info.setIcon(icon);
+        return info;
+    }
+
+    ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
+        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+
+        if (intent == null) {
+            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
+            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
+            return null;
+        }
+
+        Bitmap icon = null;
+        boolean customIcon = false;
+        ShortcutIconResource iconResource = null;
+
+        if (bitmap instanceof Bitmap) {
+            icon = Utilities.createIconBitmap((Bitmap) bitmap, context);
+            customIcon = true;
+        } else {
+            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra instanceof ShortcutIconResource) {
+                iconResource = (ShortcutIconResource) extra;
+                icon = Utilities.createIconBitmap(iconResource.packageName,
+                        iconResource.resourceName, context);
+            }
+        }
+
+        final ShortcutInfo info = new ShortcutInfo();
+
+        // Only support intents for current user for now. Intents sent from other
+        // users wouldn't get here without intent forwarding anyway.
+        info.user = UserHandleCompat.myUserHandle();
+        if (icon == null) {
+            icon = mIconCache.getDefaultIcon(info.user);
+            info.usingFallbackIcon = true;
+        }
+        info.setIcon(icon);
+
+        info.title = Utilities.trim(name);
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
+        info.intent = intent;
+        info.customIcon = customIcon;
+        info.iconResource = iconResource;
+
+        return info;
+    }
+
+    public void dumpState() {
+        Log.d(TAG, "mCallbacks=" + mCallbacks);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
+        if (mLoaderTask != null) {
+            mLoaderTask.dumpState();
+        } else {
+            Log.d(TAG, "mLoaderTask=null");
+        }
+    }
+
+    public Callbacks getCallback() {
+        return mCallbacks != null ? mCallbacks.get() : null;
+    }
+
+    /**
+     * @return {@link FolderInfo} if its already loaded.
+     */
+    public FolderInfo findFolderById(Long folderId) {
+        synchronized (sBgLock) {
+            return sBgFolders.get(folderId);
+        }
+    }
+
+
+    public interface Callbacks {
+        public boolean setLoadOnResume();
+
+        public int getCurrentWorkspaceScreen();
+
+        public void startBinding();
+
+        public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
+                              boolean forceAnimateIcons);
+
+        public void bindScreens(ArrayList<Long> orderedScreenIds);
+
+        public void bindAddScreens(ArrayList<Long> orderedScreenIds);
+
+        public void bindFolders(LongArrayMap<FolderInfo> folders);
+
+        public void finishBindingItems();
+
+        public void bindAppWidget(LauncherAppWidgetInfo info);
+
+        public void bindAllApplications(ArrayList<AppInfo> apps);
+
+        public void bindAppsAdded(ArrayList<Long> newScreens,
+                                  ArrayList<ItemInfo> addNotAnimated,
+                                  ArrayList<ItemInfo> addAnimated,
+                                  ArrayList<AppInfo> addedApps);
+
+        public void bindAppsUpdated(ArrayList<AppInfo> apps);
+
+        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
+                                         ArrayList<ShortcutInfo> removed, UserHandleCompat user);
+
+        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+
+        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+
+        public void bindComponentsRemoved(ArrayList<String> packageNames,
+                                          ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
+
+        public void bindAllPackages(WidgetsModel model);
+
+        public void bindSearchablesChanged();
+
+        public boolean isAllAppsButtonRank(int rank);
+
+        public void onPageBoundSynchronously(int page);
+
+        public void dumpLogsToLocalData();
+    }
+
+    public interface ItemInfoFilter {
+        public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
+    }
+
+    /**
      * Runnable for the thread that loads the contents of the launcher:
-     *   - workspace icons
-     *   - widgets
-     *   - all apps icons
+     * - workspace icons
+     * - widgets
+     * - all apps icons
      */
     private class LoaderTask implements Runnable {
+        @Thunk
+        boolean mIsLoadingAndBindingWorkspace;
+        @Thunk
+        boolean mLoadAndBindStepFinished;
         private Context mContext;
-        @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
-        @Thunk boolean mLoadAndBindStepFinished;
         private int mFlags;
 
         LoaderTask(Context context, int flags) {
@@ -1557,16 +2077,16 @@ public class LauncherModel extends BroadcastReceiver
                 final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
                 mHandler.postIdle(new Runnable() {
-                        public void run() {
-                            synchronized (LoaderTask.this) {
-                                mLoadAndBindStepFinished = true;
-                                if (DEBUG_LOADERS) {
-                                    Log.d(TAG, "done with previous binding step");
-                                }
-                                LoaderTask.this.notify();
+                    public void run() {
+                        synchronized (LoaderTask.this) {
+                            mLoadAndBindStepFinished = true;
+                            if (DEBUG_LOADERS) {
+                                Log.d(TAG, "done with previous binding step");
                             }
+                            LoaderTask.this.notify();
                         }
-                    });
+                    }
+                });
 
                 while (!mStopped && !mLoadAndBindStepFinished) {
                     try {
@@ -1579,7 +2099,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "waited "
-                            + (SystemClock.uptimeMillis()-workspaceWaitTime)
+                            + (SystemClock.uptimeMillis() - workspaceWaitTime)
                             + "ms for previous step to finish binding");
                 }
             }
@@ -1631,7 +2151,8 @@ public class LauncherModel extends BroadcastReceiver
             // Optimize for end-user experience: if the Launcher is up and // running with the
             // All Apps interface in the foreground, load All Apps first. Otherwise, load the
             // workspace first (default).
-            keep_running: {
+            keep_running:
+            {
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
                 loadAndBindWorkspace();
 
@@ -1725,7 +2246,7 @@ public class LauncherModel extends BroadcastReceiver
                                 + item.cellY + ") occupied by "
                                 + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                                 [(int) item.screenId][0]);
-                            return false;
+                        return false;
                     } else {
                         hotseatItems[(int) item.screenId][0] = item;
                         return true;
@@ -1758,20 +2279,20 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Check if any workspace icons overlap with each other
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+            for (int x = item.cellX; x < (item.cellX + item.spanX); x++) {
+                for (int y = item.cellY; y < (item.cellY + item.spanY); y++) {
                     if (screens[x][y] != null) {
                         Log.e(TAG, "Error loading shortcut " + item
-                            + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                            + x + "," + y
-                            + ") occupied by "
-                            + screens[x][y]);
+                                + " into cell (" + containerIndex + "-" + item.screenId + ":"
+                                + x + "," + y
+                                + ") occupied by "
+                                + screens[x][y]);
                         return false;
                     }
                 }
             }
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+            for (int x = item.cellX; x < (item.cellX + item.spanX); x++) {
+                for (int y = item.cellY; y < (item.cellY + item.spanY); y++) {
                     screens[x][y] = item;
                 }
             }
@@ -1779,7 +2300,9 @@ public class LauncherModel extends BroadcastReceiver
             return true;
         }
 
-        /** Clears all the sBg data structures */
+        /**
+         * Clears all the sBg data structures
+         */
         private void clearSBgDataStructures() {
             synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
@@ -1895,409 +2418,409 @@ public class LauncherModel extends BroadcastReceiver
                             container = c.getInt(containerIndex);
 
                             switch (itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                                id = c.getLong(idIndex);
-                                intentDescription = c.getString(intentIndex);
-                                serialNumber = c.getInt(profileIdIndex);
-                                user = allUsers.get(serialNumber);
-                                int promiseType = c.getInt(restoredIndex);
-                                int disabledState = 0;
-                                boolean itemReplaced = false;
-                                if (user == null) {
-                                    // User has been deleted remove the item.
-                                    itemsToRemove.add(id);
-                                    continue;
-                                }
-                                try {
-                                    intent = Intent.parseUri(intentDescription, 0);
-                                    ComponentName cn = intent.getComponent();
-                                    if (cn != null && cn.getPackageName() != null) {
-                                        boolean validPkg = launcherApps.isPackageEnabledForProfile(
-                                                cn.getPackageName(), user);
-                                        boolean validComponent = validPkg &&
-                                                launcherApps.isActivityEnabledForProfile(cn, user);
+                                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                                    id = c.getLong(idIndex);
+                                    intentDescription = c.getString(intentIndex);
+                                    serialNumber = c.getInt(profileIdIndex);
+                                    user = allUsers.get(serialNumber);
+                                    int promiseType = c.getInt(restoredIndex);
+                                    int disabledState = 0;
+                                    boolean itemReplaced = false;
+                                    if (user == null) {
+                                        // User has been deleted remove the item.
+                                        itemsToRemove.add(id);
+                                        continue;
+                                    }
+                                    try {
+                                        intent = Intent.parseUri(intentDescription, 0);
+                                        ComponentName cn = intent.getComponent();
+                                        if (cn != null && cn.getPackageName() != null) {
+                                            boolean validPkg = launcherApps.isPackageEnabledForProfile(
+                                                    cn.getPackageName(), user);
+                                            boolean validComponent = validPkg &&
+                                                    launcherApps.isActivityEnabledForProfile(cn, user);
 
-                                        if (validComponent) {
-                                            if (restored) {
-                                                // no special handling necessary for this item
-                                                restoredRows.add(id);
-                                                restored = false;
-                                            }
-                                        } else if (validPkg) {
-                                            intent = null;
-                                            if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
-                                                // We allow auto install apps to have their intent
-                                                // updated after an install.
-                                                intent = manager.getLaunchIntentForPackage(
-                                                        cn.getPackageName());
-                                                if (intent != null) {
-                                                    ContentValues values = new ContentValues();
-                                                    values.put(LauncherSettings.Favorites.INTENT,
-                                                            intent.toUri(0));
-                                                    updateItem(id, values);
-                                                }
-                                            }
-
-                                            if (intent == null) {
-                                                // The app is installed but the component is no
-                                                // longer available.
-                                                Launcher.addDumpLog(TAG,
-                                                        "Invalid component removed: " + cn, true);
-                                                itemsToRemove.add(id);
-                                                continue;
-                                            } else {
-                                                // no special handling necessary for this item
-                                                restoredRows.add(id);
-                                                restored = false;
-                                            }
-                                        } else if (restored) {
-                                            // Package is not yet available but might be
-                                            // installed later.
-                                            Launcher.addDumpLog(TAG,
-                                                    "package not yet restored: " + cn, true);
-
-                                            if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
-                                                // Restore has started once.
-                                            } else if (installingPkgs.containsKey(cn.getPackageName())) {
-                                                // App restore has started. Update the flag
-                                                promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
-                                                ContentValues values = new ContentValues();
-                                                values.put(LauncherSettings.Favorites.RESTORED,
-                                                        promiseType);
-                                                updateItem(id, values);
-                                            } else if ((promiseType & ShortcutInfo.FLAG_RESTORED_APP_TYPE) != 0) {
-                                                // This is a common app. Try to replace this.
-                                                int appType = CommonAppTypeParser.decodeItemTypeFromFlag(promiseType);
-                                                CommonAppTypeParser parser = new CommonAppTypeParser(id, appType, context);
-                                                if (parser.findDefaultApp()) {
-                                                    // Default app found. Replace it.
-                                                    intent = parser.parsedIntent;
-                                                    cn = intent.getComponent();
-                                                    ContentValues values = parser.parsedValues;
-                                                    values.put(LauncherSettings.Favorites.RESTORED, 0);
-                                                    updateItem(id, values);
+                                            if (validComponent) {
+                                                if (restored) {
+                                                    // no special handling necessary for this item
+                                                    restoredRows.add(id);
                                                     restored = false;
-                                                    itemReplaced = true;
+                                                }
+                                            } else if (validPkg) {
+                                                intent = null;
+                                                if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+                                                    // We allow auto install apps to have their intent
+                                                    // updated after an install.
+                                                    intent = manager.getLaunchIntentForPackage(
+                                                            cn.getPackageName());
+                                                    if (intent != null) {
+                                                        ContentValues values = new ContentValues();
+                                                        values.put(LauncherSettings.Favorites.INTENT,
+                                                                intent.toUri(0));
+                                                        updateItem(id, values);
+                                                    }
+                                                }
 
+                                                if (intent == null) {
+                                                    // The app is installed but the component is no
+                                                    // longer available.
+                                                    Launcher.addDumpLog(TAG,
+                                                            "Invalid component removed: " + cn, true);
+                                                    itemsToRemove.add(id);
+                                                    continue;
+                                                } else {
+                                                    // no special handling necessary for this item
+                                                    restoredRows.add(id);
+                                                    restored = false;
+                                                }
+                                            } else if (restored) {
+                                                // Package is not yet available but might be
+                                                // installed later.
+                                                Launcher.addDumpLog(TAG,
+                                                        "package not yet restored: " + cn, true);
+
+                                                if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
+                                                    // Restore has started once.
+                                                } else if (installingPkgs.containsKey(cn.getPackageName())) {
+                                                    // App restore has started. Update the flag
+                                                    promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
+                                                    ContentValues values = new ContentValues();
+                                                    values.put(LauncherSettings.Favorites.RESTORED,
+                                                            promiseType);
+                                                    updateItem(id, values);
+                                                } else if ((promiseType & ShortcutInfo.FLAG_RESTORED_APP_TYPE) != 0) {
+                                                    // This is a common app. Try to replace this.
+                                                    int appType = CommonAppTypeParser.decodeItemTypeFromFlag(promiseType);
+                                                    CommonAppTypeParser parser = new CommonAppTypeParser(id, appType, context);
+                                                    if (parser.findDefaultApp()) {
+                                                        // Default app found. Replace it.
+                                                        intent = parser.parsedIntent;
+                                                        cn = intent.getComponent();
+                                                        ContentValues values = parser.parsedValues;
+                                                        values.put(LauncherSettings.Favorites.RESTORED, 0);
+                                                        updateItem(id, values);
+                                                        restored = false;
+                                                        itemReplaced = true;
+
+                                                    } else if (REMOVE_UNRESTORED_ICONS) {
+                                                        Launcher.addDumpLog(TAG,
+                                                                "Unrestored package removed: " + cn, true);
+                                                        itemsToRemove.add(id);
+                                                        continue;
+                                                    }
                                                 } else if (REMOVE_UNRESTORED_ICONS) {
                                                     Launcher.addDumpLog(TAG,
                                                             "Unrestored package removed: " + cn, true);
                                                     itemsToRemove.add(id);
                                                     continue;
                                                 }
-                                            } else if (REMOVE_UNRESTORED_ICONS) {
+                                            } else if (launcherApps.isAppEnabled(
+                                                    manager, cn.getPackageName(),
+                                                    PackageManager.GET_UNINSTALLED_PACKAGES)) {
+                                                // Package is present but not available.
+                                                allowMissingTarget = true;
+                                                disabledState = ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
+                                            } else if (!isSdCardReady) {
+                                                // SdCard is not ready yet. Package might get available,
+                                                // once it is ready.
+                                                Launcher.addDumpLog(TAG, "Invalid package: " + cn
+                                                        + " (check again later)", true);
+                                                HashSet<String> pkgs = sPendingPackages.get(user);
+                                                if (pkgs == null) {
+                                                    pkgs = new HashSet<String>();
+                                                    sPendingPackages.put(user, pkgs);
+                                                }
+                                                pkgs.add(cn.getPackageName());
+                                                allowMissingTarget = true;
+                                                // Add the icon on the workspace anyway.
+
+                                            } else {
+                                                // Do not wait for external media load anymore.
+                                                // Log the invalid package, and remove it
                                                 Launcher.addDumpLog(TAG,
-                                                        "Unrestored package removed: " + cn, true);
+                                                        "Invalid package removed: " + cn, true);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             }
-                                        } else if (launcherApps.isAppEnabled(
-                                                manager, cn.getPackageName(),
-                                                PackageManager.GET_UNINSTALLED_PACKAGES)) {
-                                            // Package is present but not available.
-                                            allowMissingTarget = true;
-                                            disabledState = ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
-                                        } else if (!isSdCardReady) {
-                                            // SdCard is not ready yet. Package might get available,
-                                            // once it is ready.
-                                            Launcher.addDumpLog(TAG, "Invalid package: " + cn
-                                                    + " (check again later)", true);
-                                            HashSet<String> pkgs = sPendingPackages.get(user);
-                                            if (pkgs == null) {
-                                                pkgs = new HashSet<String>();
-                                                sPendingPackages.put(user, pkgs);
-                                            }
-                                            pkgs.add(cn.getPackageName());
-                                            allowMissingTarget = true;
-                                            // Add the icon on the workspace anyway.
+                                        } else if (cn == null) {
+                                            // For shortcuts with no component, keep them as they are
+                                            restoredRows.add(id);
+                                            restored = false;
+                                        }
+                                    } catch (URISyntaxException e) {
+                                        Launcher.addDumpLog(TAG,
+                                                "Invalid uri: " + intentDescription, true);
+                                        continue;
+                                    }
 
+                                    boolean useLowResIcon = container >= 0 &&
+                                            c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+
+                                    if (itemReplaced) {
+                                        if (user.equals(UserHandleCompat.myUserHandle())) {
+                                            info = getAppShortcutInfo(manager, intent, user, context, null,
+                                                    cursorIconInfo.iconIndex, titleIndex,
+                                                    false, useLowResIcon);
                                         } else {
-                                            // Do not wait for external media load anymore.
-                                            // Log the invalid package, and remove it
-                                            Launcher.addDumpLog(TAG,
-                                                    "Invalid package removed: " + cn, true);
+                                            // Don't replace items for other profiles.
                                             itemsToRemove.add(id);
                                             continue;
                                         }
-                                    } else if (cn == null) {
-                                        // For shortcuts with no component, keep them as they are
-                                        restoredRows.add(id);
-                                        restored = false;
-                                    }
-                                } catch (URISyntaxException e) {
-                                    Launcher.addDumpLog(TAG,
-                                            "Invalid uri: " + intentDescription, true);
-                                    continue;
-                                }
-
-                                boolean useLowResIcon = container >= 0 &&
-                                        c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
-
-                                if (itemReplaced) {
-                                    if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        info = getAppShortcutInfo(manager, intent, user, context, null,
+                                    } else if (restored) {
+                                        if (user.equals(UserHandleCompat.myUserHandle())) {
+                                            Launcher.addDumpLog(TAG,
+                                                    "constructing info for partially restored package",
+                                                    true);
+                                            info = getRestoredItemInfo(c, titleIndex, intent,
+                                                    promiseType, itemType, cursorIconInfo, context);
+                                            intent = getRestoredItemIntent(c, context, intent);
+                                        } else {
+                                            // Don't restore items for other profiles.
+                                            itemsToRemove.add(id);
+                                            continue;
+                                        }
+                                    } else if (itemType ==
+                                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                        info = getAppShortcutInfo(manager, intent, user, context, c,
                                                 cursorIconInfo.iconIndex, titleIndex,
-                                                false, useLowResIcon);
+                                                allowMissingTarget, useLowResIcon);
                                     } else {
-                                        // Don't replace items for other profiles.
-                                        itemsToRemove.add(id);
-                                        continue;
-                                    }
-                                } else if (restored) {
-                                    if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        Launcher.addDumpLog(TAG,
-                                                "constructing info for partially restored package",
-                                                true);
-                                        info = getRestoredItemInfo(c, titleIndex, intent,
-                                                promiseType, itemType, cursorIconInfo, context);
-                                        intent = getRestoredItemIntent(c, context, intent);
-                                    } else {
-                                        // Don't restore items for other profiles.
-                                        itemsToRemove.add(id);
-                                        continue;
-                                    }
-                                } else if (itemType ==
-                                        LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getAppShortcutInfo(manager, intent, user, context, c,
-                                            cursorIconInfo.iconIndex, titleIndex,
-                                            allowMissingTarget, useLowResIcon);
-                                } else {
-                                    info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
+                                        info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
 
-                                    // App shortcuts that used to be automatically added to Launcher
-                                    // didn't always have the correct intent flags set, so do that
-                                    // here
-                                    if (intent.getAction() != null &&
-                                        intent.getCategories() != null &&
-                                        intent.getAction().equals(Intent.ACTION_MAIN) &&
-                                        intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
-                                        intent.addFlags(
-                                            Intent.FLAG_ACTIVITY_NEW_TASK |
-                                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                                    }
-                                }
-
-                                if (info != null) {
-                                    info.id = id;
-                                    info.intent = intent;
-                                    info.container = container;
-                                    info.screenId = c.getInt(screenIndex);
-                                    info.cellX = c.getInt(cellXIndex);
-                                    info.cellY = c.getInt(cellYIndex);
-                                    info.rank = c.getInt(rankIndex);
-                                    info.spanX = 1;
-                                    info.spanY = 1;
-                                    info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
-                                    if (info.promisedIntent != null) {
-                                        info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
-                                    }
-                                    info.isDisabled = disabledState;
-                                    if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
-                                        info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
-                                    }
-                                    if (intent.getAction().equals(
-                                            ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
-                                        info.launcherAction = true;
+                                        // App shortcuts that used to be automatically added to Launcher
+                                        // didn't always have the correct intent flags set, so do that
+                                        // here
+                                        if (intent.getAction() != null &&
+                                                intent.getCategories() != null &&
+                                                intent.getAction().equals(Intent.ACTION_MAIN) &&
+                                                intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+                                            intent.addFlags(
+                                                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                                                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                        }
                                     }
 
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info)) {
-                                        itemsToRemove.add(id);
-                                        break;
-                                    }
+                                    if (info != null) {
+                                        info.id = id;
+                                        info.intent = intent;
+                                        info.container = container;
+                                        info.screenId = c.getInt(screenIndex);
+                                        info.cellX = c.getInt(cellXIndex);
+                                        info.cellY = c.getInt(cellYIndex);
+                                        info.rank = c.getInt(rankIndex);
+                                        info.spanX = 1;
+                                        info.spanY = 1;
+                                        info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                        if (info.promisedIntent != null) {
+                                            info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                        }
+                                        info.isDisabled = disabledState;
+                                        if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
+                                            info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
+                                        }
+                                        if (intent.getAction().equals(
+                                                ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                                            info.launcherAction = true;
+                                        }
 
-                                    if (restored) {
-                                        ComponentName cn = info.getTargetComponent();
-                                        if (cn != null) {
-                                            Integer progress = installingPkgs.get(cn.getPackageName());
-                                            if (progress != null) {
-                                                info.setInstallProgress(progress);
-                                            } else {
-                                                info.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                        // check & update map of what's occupied
+                                        if (!checkItemPlacement(occupied, info)) {
+                                            itemsToRemove.add(id);
+                                            break;
+                                        }
+
+                                        if (restored) {
+                                            ComponentName cn = info.getTargetComponent();
+                                            if (cn != null) {
+                                                Integer progress = installingPkgs.get(cn.getPackageName());
+                                                if (progress != null) {
+                                                    info.setInstallProgress(progress);
+                                                } else {
+                                                    info.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                                }
                                             }
                                         }
+
+                                        switch (container) {
+                                            case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                            case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                                                sBgWorkspaceItems.add(info);
+                                                break;
+                                            default:
+                                                // Item is in a user folder
+                                                FolderInfo folderInfo =
+                                                        findOrMakeFolder(sBgFolders, container);
+                                                folderInfo.add(info);
+                                                break;
+                                        }
+                                        sBgItemsIdMap.put(info.id, info);
+                                    } else {
+                                        throw new RuntimeException("Unexpected null ShortcutInfo");
+                                    }
+                                    break;
+
+                                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                                    id = c.getLong(idIndex);
+                                    FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
+
+                                    // Do not trim the folder label, as is was set by the user.
+                                    folderInfo.title = c.getString(titleIndex);
+                                    folderInfo.id = id;
+                                    folderInfo.container = container;
+                                    folderInfo.screenId = c.getInt(screenIndex);
+                                    folderInfo.cellX = c.getInt(cellXIndex);
+                                    folderInfo.cellY = c.getInt(cellYIndex);
+                                    folderInfo.spanX = 1;
+                                    folderInfo.spanY = 1;
+                                    folderInfo.options = c.getInt(optionsIndex);
+
+                                    // check & update map of what's occupied
+                                    if (!checkItemPlacement(occupied, folderInfo)) {
+                                        itemsToRemove.add(id);
+                                        break;
                                     }
 
                                     switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
-                                        sBgWorkspaceItems.add(info);
-                                        break;
-                                    default:
-                                        // Item is in a user folder
-                                        FolderInfo folderInfo =
-                                                findOrMakeFolder(sBgFolders, container);
-                                        folderInfo.add(info);
-                                        break;
+                                        case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                        case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                                            sBgWorkspaceItems.add(folderInfo);
+                                            break;
                                     }
-                                    sBgItemsIdMap.put(info.id, info);
-                                } else {
-                                    throw new RuntimeException("Unexpected null ShortcutInfo");
-                                }
-                                break;
 
-                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                                id = c.getLong(idIndex);
-                                FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
+                                    if (restored) {
+                                        // no special handling required for restored folders
+                                        restoredRows.add(id);
+                                    }
 
-                                // Do not trim the folder label, as is was set by the user.
-                                folderInfo.title = c.getString(titleIndex);
-                                folderInfo.id = id;
-                                folderInfo.container = container;
-                                folderInfo.screenId = c.getInt(screenIndex);
-                                folderInfo.cellX = c.getInt(cellXIndex);
-                                folderInfo.cellY = c.getInt(cellYIndex);
-                                folderInfo.spanX = 1;
-                                folderInfo.spanY = 1;
-                                folderInfo.options = c.getInt(optionsIndex);
-
-                                // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo)) {
-                                    itemsToRemove.add(id);
+                                    sBgItemsIdMap.put(folderInfo.id, folderInfo);
+                                    sBgFolders.put(folderInfo.id, folderInfo);
                                     break;
-                                }
 
-                                switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
-                                        sBgWorkspaceItems.add(folderInfo);
-                                        break;
-                                }
+                                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                                case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+                                    // Read all Launcher-specific widget details
+                                    boolean customWidget = itemType ==
+                                            LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
-                                if (restored) {
-                                    // no special handling required for restored folders
-                                    restoredRows.add(id);
-                                }
-
-                                sBgItemsIdMap.put(folderInfo.id, folderInfo);
-                                sBgFolders.put(folderInfo.id, folderInfo);
-                                break;
-
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                                // Read all Launcher-specific widget details
-                                boolean customWidget = itemType ==
-                                    LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
-
-                                int appWidgetId = c.getInt(appWidgetIdIndex);
-                                serialNumber = c.getLong(profileIdIndex);
-                                String savedProvider = c.getString(appWidgetProviderIndex);
-                                id = c.getLong(idIndex);
-                                user = allUsers.get(serialNumber);
-                                if (user == null) {
-                                    itemsToRemove.add(id);
-                                    continue;
-                                }
-
-                                final ComponentName component =
-                                        ComponentName.unflattenFromString(savedProvider);
-
-                                final int restoreStatus = c.getInt(restoredIndex);
-                                final boolean isIdValid = (restoreStatus &
-                                        LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) == 0;
-                                final boolean wasProviderReady = (restoreStatus &
-                                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
-
-                                final LauncherAppWidgetProviderInfo provider =
-                                        LauncherModel.getProviderInfo(context,
-                                                ComponentName.unflattenFromString(savedProvider),
-                                                user);
-
-                                final boolean isProviderReady = isValidProvider(provider);
-                                if (!isSafeMode && !customWidget &&
-                                        wasProviderReady && !isProviderReady) {
-                                    String log = "Deleting widget that isn't installed anymore: "
-                                            + "id=" + id + " appWidgetId=" + appWidgetId;
-
-                                    Log.e(TAG, log);
-                                    Launcher.addDumpLog(TAG, log, false);
-                                    itemsToRemove.add(id);
-                                } else {
-                                    if (isProviderReady) {
-                                        appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
-                                                provider.provider);
-
-                                        int status = restoreStatus;
-                                        if (!wasProviderReady) {
-                                            // If provider was not previously ready, update the
-                                            // status and UI flag.
-
-                                            // Id would be valid only if the widget restore broadcast was received.
-                                            if (isIdValid) {
-                                                status = LauncherAppWidgetInfo.RESTORE_COMPLETED;
-                                            } else {
-                                                status &= ~LauncherAppWidgetInfo
-                                                        .FLAG_PROVIDER_NOT_READY;
-                                            }
-                                        }
-                                        appWidgetInfo.restoreStatus = status;
-                                    } else {
-                                        Log.v(TAG, "Widget restore pending id=" + id
-                                                + " appWidgetId=" + appWidgetId
-                                                + " status =" + restoreStatus);
-                                        appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
-                                                component);
-                                        appWidgetInfo.restoreStatus = restoreStatus;
-                                        Integer installProgress = installingPkgs.get(component.getPackageName());
-
-                                        if ((restoreStatus & LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) != 0) {
-                                            // Restore has started once.
-                                        } else if (installProgress != null) {
-                                            // App restore has started. Update the flag
-                                            appWidgetInfo.restoreStatus |=
-                                                    LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
-                                        } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
-                                            Launcher.addDumpLog(TAG,
-                                                    "Unrestored widget removed: " + component, true);
-                                            itemsToRemove.add(id);
-                                            continue;
-                                        }
-
-                                        appWidgetInfo.installProgress =
-                                                installProgress == null ? 0 : installProgress;
-                                    }
-
-                                    appWidgetInfo.id = id;
-                                    appWidgetInfo.screenId = c.getInt(screenIndex);
-                                    appWidgetInfo.cellX = c.getInt(cellXIndex);
-                                    appWidgetInfo.cellY = c.getInt(cellYIndex);
-                                    appWidgetInfo.spanX = c.getInt(spanXIndex);
-                                    appWidgetInfo.spanY = c.getInt(spanYIndex);
-                                    appWidgetInfo.user = user;
-
-                                    if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                                        container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                                        Log.e(TAG, "Widget found where container != " +
-                                            "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
+                                    int appWidgetId = c.getInt(appWidgetIdIndex);
+                                    serialNumber = c.getLong(profileIdIndex);
+                                    String savedProvider = c.getString(appWidgetProviderIndex);
+                                    id = c.getLong(idIndex);
+                                    user = allUsers.get(serialNumber);
+                                    if (user == null) {
+                                        itemsToRemove.add(id);
                                         continue;
                                     }
 
-                                    appWidgetInfo.container = container;
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo)) {
-                                        itemsToRemove.add(id);
-                                        break;
-                                    }
+                                    final ComponentName component =
+                                            ComponentName.unflattenFromString(savedProvider);
 
-                                    if (!customWidget) {
-                                        String providerName =
-                                                appWidgetInfo.providerName.flattenToString();
-                                        if (!providerName.equals(savedProvider) ||
-                                                (appWidgetInfo.restoreStatus != restoreStatus)) {
-                                            ContentValues values = new ContentValues();
-                                            values.put(
-                                                    LauncherSettings.Favorites.APPWIDGET_PROVIDER,
-                                                    providerName);
-                                            values.put(LauncherSettings.Favorites.RESTORED,
-                                                    appWidgetInfo.restoreStatus);
-                                            updateItem(id, values);
+                                    final int restoreStatus = c.getInt(restoredIndex);
+                                    final boolean isIdValid = (restoreStatus &
+                                            LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) == 0;
+                                    final boolean wasProviderReady = (restoreStatus &
+                                            LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
+
+                                    final LauncherAppWidgetProviderInfo provider =
+                                            LauncherModel.getProviderInfo(context,
+                                                    ComponentName.unflattenFromString(savedProvider),
+                                                    user);
+
+                                    final boolean isProviderReady = isValidProvider(provider);
+                                    if (!isSafeMode && !customWidget &&
+                                            wasProviderReady && !isProviderReady) {
+                                        String log = "Deleting widget that isn't installed anymore: "
+                                                + "id=" + id + " appWidgetId=" + appWidgetId;
+
+                                        Log.e(TAG, log);
+                                        Launcher.addDumpLog(TAG, log, false);
+                                        itemsToRemove.add(id);
+                                    } else {
+                                        if (isProviderReady) {
+                                            appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
+                                                    provider.provider);
+
+                                            int status = restoreStatus;
+                                            if (!wasProviderReady) {
+                                                // If provider was not previously ready, update the
+                                                // status and UI flag.
+
+                                                // Id would be valid only if the widget restore broadcast was received.
+                                                if (isIdValid) {
+                                                    status = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                                                } else {
+                                                    status &= ~LauncherAppWidgetInfo
+                                                            .FLAG_PROVIDER_NOT_READY;
+                                                }
+                                            }
+                                            appWidgetInfo.restoreStatus = status;
+                                        } else {
+                                            Log.v(TAG, "Widget restore pending id=" + id
+                                                    + " appWidgetId=" + appWidgetId
+                                                    + " status =" + restoreStatus);
+                                            appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
+                                                    component);
+                                            appWidgetInfo.restoreStatus = restoreStatus;
+                                            Integer installProgress = installingPkgs.get(component.getPackageName());
+
+                                            if ((restoreStatus & LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) != 0) {
+                                                // Restore has started once.
+                                            } else if (installProgress != null) {
+                                                // App restore has started. Update the flag
+                                                appWidgetInfo.restoreStatus |=
+                                                        LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+                                            } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
+                                                Launcher.addDumpLog(TAG,
+                                                        "Unrestored widget removed: " + component, true);
+                                                itemsToRemove.add(id);
+                                                continue;
+                                            }
+
+                                            appWidgetInfo.installProgress =
+                                                    installProgress == null ? 0 : installProgress;
                                         }
+
+                                        appWidgetInfo.id = id;
+                                        appWidgetInfo.screenId = c.getInt(screenIndex);
+                                        appWidgetInfo.cellX = c.getInt(cellXIndex);
+                                        appWidgetInfo.cellY = c.getInt(cellYIndex);
+                                        appWidgetInfo.spanX = c.getInt(spanXIndex);
+                                        appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                        appWidgetInfo.user = user;
+
+                                        if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                                                container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                                            Log.e(TAG, "Widget found where container != " +
+                                                    "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
+                                            continue;
+                                        }
+
+                                        appWidgetInfo.container = container;
+                                        // check & update map of what's occupied
+                                        if (!checkItemPlacement(occupied, appWidgetInfo)) {
+                                            itemsToRemove.add(id);
+                                            break;
+                                        }
+
+                                        if (!customWidget) {
+                                            String providerName =
+                                                    appWidgetInfo.providerName.flattenToString();
+                                            if (!providerName.equals(savedProvider) ||
+                                                    (appWidgetInfo.restoreStatus != restoreStatus)) {
+                                                ContentValues values = new ContentValues();
+                                                values.put(
+                                                        LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                        providerName);
+                                                values.put(LauncherSettings.Favorites.RESTORED,
+                                                        appWidgetInfo.restoreStatus);
+                                                updateItem(id, values);
+                                            }
+                                        }
+                                        sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
+                                        sBgAppWidgets.add(appWidgetInfo);
                                     }
-                                    sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
-                                    sBgAppWidgets.add(appWidgetInfo);
-                                }
-                                break;
+                                    break;
                             }
                         } catch (Exception e) {
                             Launcher.addDumpLog(TAG, "Desktop items loading interrupted", e, true);
@@ -2353,7 +2876,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 // Remove any empty screens
                 ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
-                for (ItemInfo item: sBgItemsIdMap) {
+                for (ItemInfo item : sBgItemsIdMap) {
                     long screenId = item.screenId;
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                             unusedScreens.contains(screenId)) {
@@ -2368,7 +2891,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 if (DEBUG_LOADERS) {
-                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis() - t) + "ms");
                     Log.d(TAG, "workspace layout: ");
                     int nScreens = occupied.size();
                     for (int y = 0; y < countY; y++) {
@@ -2405,12 +2928,14 @@ public class LauncherModel extends BroadcastReceiver
                     new String[]{Long.toString(itemId)});
         }
 
-        /** Filters the set of items who are directly or indirectly (via another container) on the
-         * specified screen. */
+        /**
+         * Filters the set of items who are directly or indirectly (via another container) on the
+         * specified screen.
+         */
         private void filterCurrentWorkspaceItems(long currentScreenId,
-                ArrayList<ItemInfo> allWorkspaceItems,
-                ArrayList<ItemInfo> currentScreenItems,
-                ArrayList<ItemInfo> otherScreenItems) {
+                                                 ArrayList<ItemInfo> allWorkspaceItems,
+                                                 ArrayList<ItemInfo> currentScreenItems,
+                                                 ArrayList<ItemInfo> otherScreenItems) {
             // Purge any null ItemInfos
             Iterator<ItemInfo> iter = allWorkspaceItems.iterator();
             while (iter.hasNext()) {
@@ -2452,11 +2977,13 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Filters the set of widgets which are on the specified screen. */
+        /**
+         * Filters the set of widgets which are on the specified screen.
+         */
         private void filterCurrentAppWidgets(long currentScreenId,
-                ArrayList<LauncherAppWidgetInfo> appWidgets,
-                ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
-                ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
+                                             ArrayList<LauncherAppWidgetInfo> appWidgets,
+                                             ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
+                                             ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
 
             for (LauncherAppWidgetInfo widget : appWidgets) {
                 if (widget == null) continue;
@@ -2469,12 +2996,14 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Filters the set of folders which are on the specified screen. */
+        /**
+         * Filters the set of folders which are on the specified screen.
+         */
         private void filterCurrentFolders(long currentScreenId,
-                LongArrayMap<ItemInfo> itemsIdMap,
-                LongArrayMap<FolderInfo> folders,
-                LongArrayMap<FolderInfo> currentScreenFolders,
-                LongArrayMap<FolderInfo> otherScreenFolders) {
+                                          LongArrayMap<ItemInfo> itemsIdMap,
+                                          LongArrayMap<FolderInfo> folders,
+                                          LongArrayMap<FolderInfo> currentScreenFolders,
+                                          LongArrayMap<FolderInfo> otherScreenFolders) {
 
             int total = folders.size();
             for (int i = 0; i < total; i++) {
@@ -2492,8 +3021,10 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
-         * right) */
+        /**
+         * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
+         * right)
+         */
         private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
             final LauncherAppState app = LauncherAppState.getInstance();
             final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
@@ -2515,7 +3046,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
-                final ArrayList<Long> orderedScreens) {
+                                          final ArrayList<Long> orderedScreens) {
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
@@ -2529,10 +3060,10 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void bindWorkspaceItems(final Callbacks oldCallbacks,
-                final ArrayList<ItemInfo> workspaceItems,
-                final ArrayList<LauncherAppWidgetInfo> appWidgets,
-                final LongArrayMap<FolderInfo> folders,
-                ArrayList<Runnable> deferredBindRunnables) {
+                                        final ArrayList<ItemInfo> workspaceItems,
+                                        final ArrayList<LauncherAppWidgetInfo> appWidgets,
+                                        final LongArrayMap<FolderInfo> folders,
+                                        ArrayList<Runnable> deferredBindRunnables) {
 
             final boolean postOnMainThread = (deferredBindRunnables != null);
 
@@ -2540,13 +3071,13 @@ public class LauncherModel extends BroadcastReceiver
             int N = workspaceItems.size();
             for (int i = 0; i < N; i += ITEMS_CHUNK) {
                 final int start = i;
-                final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
+                final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N - i);
                 final Runnable r = new Runnable() {
                     @Override
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.bindItems(workspaceItems, start, start+chunkSize,
+                            callbacks.bindItems(workspaceItems, start, start + chunkSize,
                                     false);
                         }
                     }
@@ -2636,7 +3167,7 @@ public class LauncherModel extends BroadcastReceiver
             final boolean isLoadingSynchronously =
                     synchronizeBindPage != PagedView.INVALID_RESTORE_PAGE;
             int currScreen = isLoadingSynchronously ? synchronizeBindPage :
-                oldCallbacks.getCurrentWorkspaceScreen();
+                    oldCallbacks.getCurrentWorkspaceScreen();
             if (currScreen >= orderedScreenIds.size()) {
                 // There may be no workspace screens (just hotseat items and an empty page).
                 currScreen = PagedView.INVALID_RESTORE_PAGE;
@@ -2715,7 +3246,7 @@ public class LauncherModel extends BroadcastReceiver
                     // If we're profiling, ensure this is the last thing in the queue.
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound workspace in "
-                            + (SystemClock.uptimeMillis()-t) + "ms");
+                                + (SystemClock.uptimeMillis() - t) + "ms");
                     }
 
                     mIsLoadingAndBindingWorkspace = false;
@@ -2797,7 +3328,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound all " + list.size() + " apps from cache in "
-                                + (SystemClock.uptimeMillis()-t) + "ms");
+                                + (SystemClock.uptimeMillis() - t) + "ms");
                     }
                 }
             };
@@ -2829,7 +3360,7 @@ public class LauncherModel extends BroadcastReceiver
                 final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "getActivityList took "
-                            + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
+                            + (SystemClock.uptimeMillis() - qiaTime) + "ms for user " + user);
                     Log.d(TAG, "getActivityList got " + apps.size() + " apps for user " + user);
                 }
                 // Fail if we don't have any apps
@@ -2870,7 +3401,7 @@ public class LauncherModel extends BroadcastReceiver
                         callbacks.bindAllApplications(added);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
-                                + (SystemClock.uptimeMillis() - bindTime) + "ms");
+                                    + (SystemClock.uptimeMillis() - bindTime) + "ms");
                         }
                     } else {
                         Log.i(TAG, "not binding apps: no Launcher activity");
@@ -2898,66 +3429,8 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /**
-     * Called when the icons for packages have been updated in the icon cache.
-     */
-    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandleCompat user) {
-        final Callbacks callbacks = getCallback();
-        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
-        final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-
-        // If any package icon has changed (app was updated while launcher was dead),
-        // update the corresponding shortcuts.
-        synchronized (sBgLock) {
-            for (ItemInfo info : sBgItemsIdMap) {
-                if (info instanceof ShortcutInfo && user.equals(info.user)
-                        && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                    ShortcutInfo si = (ShortcutInfo) info;
-                    ComponentName cn = si.getTargetComponent();
-                    if (cn != null && updatedPackages.contains(cn.getPackageName())) {
-                        si.updateIcon(mIconCache);
-                        updatedShortcuts.add(si);
-                    }
-                }
-            }
-            mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
-        }
-
-        if (!updatedShortcuts.isEmpty()) {
-            final UserHandleCompat userFinal = user;
-            mHandler.post(new Runnable() {
-
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindShortcutsChanged(updatedShortcuts,
-                                new ArrayList<ShortcutInfo>(), userFinal);
-                    }
-                }
-            });
-        }
-
-        if (!updatedApps.isEmpty()) {
-            mHandler.post(new Runnable() {
-
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindAppsUpdated(updatedApps);
-                    }
-                }
-            });
-        }
-
-        // Reload widget list. No need to refresh, as we only want to update the icons and labels.
-        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks, false);
-    }
-
-    void enqueuePackageUpdated(PackageUpdatedTask task) {
-        sWorker.post(task);
-    }
-
-    @Thunk class AppsAvailabilityCheck extends BroadcastReceiver {
+    @Thunk
+    class AppsAvailabilityCheck extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -2999,15 +3472,14 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     private class PackageUpdatedTask implements Runnable {
-        int mOp;
-        String[] mPackages;
-        UserHandleCompat mUser;
-
         public static final int OP_NONE = 0;
         public static final int OP_ADD = 1;
         public static final int OP_UPDATE = 2;
         public static final int OP_REMOVE = 3; // uninstlled
         public static final int OP_UNAVAILABLE = 4; // external media unmounted
+        int mOp;
+        String[] mPackages;
+        UserHandleCompat mUser;
 
 
         public PackageUpdatedTask(int op, String[] packages, UserHandleCompat user) {
@@ -3027,7 +3499,7 @@ public class LauncherModel extends BroadcastReceiver
             final int N = packages.length;
             switch (mOp) {
                 case OP_ADD: {
-                    for (int i=0; i<N; i++) {
+                    for (int i = 0; i < N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                         mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.addPackage(context, packages[i], mUser);
@@ -3040,7 +3512,7 @@ public class LauncherModel extends BroadcastReceiver
                     break;
                 }
                 case OP_UPDATE:
-                    for (int i=0; i<N; i++) {
+                    for (int i = 0; i < N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.updatePackage(context, packages[i], mUser);
@@ -3052,14 +3524,14 @@ public class LauncherModel extends BroadcastReceiver
                     if (heuristic != null) {
                         heuristic.processPackageRemoved(mPackages);
                     }
-                    for (int i=0; i<N; i++) {
+                    for (int i = 0; i < N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mIconCache.removeIconsForPkg(packages[i], mUser);
                     }
                     // Fall through
                 }
                 case OP_UNAVAILABLE:
-                    for (int i=0; i<N; i++) {
+                    for (int i = 0; i < N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i], mUser);
                         mApp.getWidgetCache().removePackage(packages[i], mUser);
@@ -3153,7 +3625,7 @@ public class LauncherModel extends BroadcastReceiver
                                         PackageManager pm = context.getPackageManager();
                                         ResolveInfo matched = pm.resolveActivity(
                                                 new Intent(Intent.ACTION_MAIN)
-                                                .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
+                                                        .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
                                                 PackageManager.MATCH_DEFAULT_ONLY);
                                         if (matched == null) {
                                             // Try to find the best match activity.
@@ -3252,7 +3724,7 @@ public class LauncherModel extends BroadcastReceiver
                 removedPackageNames.addAll(Arrays.asList(packages));
             } else if (mOp == OP_UPDATE) {
                 // Mark disabled packages in the broadcast to be removed
-                for (int i=0; i<N; i++) {
+                for (int i = 0; i < N; i++) {
                     if (isPackageDisabled(context, packages[i], mUser)) {
                         removedPackageNames.add(packages[i]);
                     }
@@ -3303,429 +3775,5 @@ public class LauncherModel extends BroadcastReceiver
                 }
             });
         }
-    }
-
-    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
-            boolean refresh) {
-        ArrayList<LauncherAppWidgetProviderInfo> results =
-                new ArrayList<LauncherAppWidgetProviderInfo>();
-        try {
-            synchronized (sBgLock) {
-                if (sBgWidgetProviders == null || refresh) {
-                    HashMap<ComponentKey, LauncherAppWidgetProviderInfo> tmpWidgetProviders
-                            = new HashMap<>();
-                    AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
-                    LauncherAppWidgetProviderInfo info;
-
-                    List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
-                    for (AppWidgetProviderInfo pInfo : widgets) {
-                        info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
-                        UserHandleCompat user = wm.getUser(info);
-                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
-                    }
-
-                    Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
-                    for (CustomAppWidget widget : customWidgets) {
-                        info = new LauncherAppWidgetProviderInfo(context, widget);
-                        UserHandleCompat user = wm.getUser(info);
-                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
-                    }
-                    // Replace the global list at the very end, so that if there is an exception,
-                    // previously loaded provider list is used.
-                    sBgWidgetProviders = tmpWidgetProviders;
-                }
-                results.addAll(sBgWidgetProviders.values());
-                return results;
-            }
-        } catch (Exception e) {
-            if (e.getCause() instanceof TransactionTooLargeException) {
-                // the returned value may be incomplete and will not be refreshed until the next
-                // time Launcher starts.
-                // TODO: after figuring out a repro step, introduce a dirty bit to check when
-                // onResume is called to refresh the widget provider list.
-                synchronized (sBgLock) {
-                    if (sBgWidgetProviders != null) {
-                        results.addAll(sBgWidgetProviders.values());
-                    }
-                    return results;
-                }
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name,
-            UserHandleCompat user) {
-        synchronized (sBgLock) {
-            if (sBgWidgetProviders == null) {
-                getWidgetProviders(ctx, false /* refresh */);
-            }
-            return sBgWidgetProviders.get(new ComponentKey(name, user));
-        }
-    }
-
-    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
-            final boolean refresh) {
-
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                updateWidgetsModel(context, refresh);
-                final WidgetsModel model = mBgWidgetsModel.clone();
-
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Callbacks cb = getCallback();
-                        if (callbacks == cb && cb != null) {
-                            callbacks.bindAllPackages(model);
-                        }
-                    }
-                });
-                // update the Widget entries inside DB on the worker thread.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
-                        model.getRawList());
-            }
-        });
-    }
-
-    /**
-     * Returns a list of ResolveInfos/AppWidgetInfos.
-     *
-     * @see #loadAndBindWidgetsAndShortcuts
-     */
-    @Thunk void updateWidgetsModel(Context context, boolean refresh) {
-        PackageManager packageManager = context.getPackageManager();
-        final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
-        Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
-        mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
-    }
-
-    @Thunk static boolean isPackageDisabled(Context context, String packageName,
-            UserHandleCompat user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        return !launcherApps.isPackageEnabledForProfile(packageName, user);
-    }
-
-    public static boolean isValidPackageActivity(Context context, ComponentName cn,
-            UserHandleCompat user) {
-        if (cn == null) {
-            return false;
-        }
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        if (!launcherApps.isPackageEnabledForProfile(cn.getPackageName(), user)) {
-            return false;
-        }
-        return launcherApps.isActivityEnabledForProfile(cn, user);
-    }
-
-    public static boolean isValidPackage(Context context, String packageName,
-            UserHandleCompat user) {
-        if (packageName == null) {
-            return false;
-        }
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        return launcherApps.isPackageEnabledForProfile(packageName, user);
-    }
-
-    /**
-     * Make an ShortcutInfo object for a restored application or shortcut item that points
-     * to a package that is not yet installed on the system.
-     */
-    public ShortcutInfo getRestoredItemInfo(Cursor c, int titleIndex, Intent intent,
-            int promiseType, int itemType, CursorIconInfo iconInfo, Context context) {
-        final ShortcutInfo info = new ShortcutInfo();
-        info.user = UserHandleCompat.myUserHandle();
-
-        Bitmap icon = iconInfo.loadIcon(c, info, context);
-        Bitmap customIcon = iconInfo.loadCustomIcon(c, context);
-        // the fallback icon
-        if (icon == null) {
-            mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
-        } else {
-            info.setIcon(icon);
-        }
-        if (customIcon != null) {
-            info.useCustomIcon = true;
-            info.setIcon(customIcon);
-        }
-
-        if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
-            String title = (c != null) ? c.getString(titleIndex) : null;
-            if (!TextUtils.isEmpty(title)) {
-                info.title = Utilities.trim(title);
-            }
-        } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
-            if (TextUtils.isEmpty(info.title)) {
-                info.title = (c != null) ? Utilities.trim(c.getString(titleIndex)) : "";
-            }
-        } else {
-            throw new InvalidParameterException("Invalid restoreType " + promiseType);
-        }
-
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        info.itemType = itemType;
-        info.promisedIntent = intent;
-        info.status = promiseType;
-        return info;
-    }
-
-    /**
-     * Make an Intent object for a restored application or shortcut item that points
-     * to the market page for the item.
-     */
-    @Thunk Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
-        ComponentName componentName = intent.getComponent();
-        return getMarketIntent(componentName.getPackageName());
-    }
-
-    static Intent getMarketIntent(String packageName) {
-        return new Intent(Intent.ACTION_VIEW)
-            .setData(new Uri.Builder()
-                .scheme("market")
-                .authority("details")
-                .appendQueryParameter("id", packageName)
-                .build());
-    }
-
-    public static void restoreCustomShortcutIcons(Context context, IconCache iconCache) {
-        for (ItemInfo info : sBgItemsIdMap) {
-            if (info instanceof ShortcutInfo) {
-                ShortcutInfo si = (ShortcutInfo) info;
-                if (si.useCustomIcon) {
-                    si.removeCustomIcon();
-                    updateItemInDatabase(context, si);
-                }
-            }
-        }
-    }
-
-    /**
-     * Make an ShortcutInfo object for a shortcut that is an application.
-     *
-     * If c is not null, then it will be used to fill in missing data like the title and icon.
-     */
-    public ShortcutInfo getAppShortcutInfo(PackageManager manager, Intent intent,
-            UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
-            boolean allowMissingTarget, boolean useLowResIcon) {
-        if (user == null) {
-            Log.d(TAG, "Null user found in getShortcutInfo");
-            return null;
-        }
-
-        ComponentName componentName = intent.getComponent();
-        if (componentName == null) {
-            Log.d(TAG, "Missing component found in getShortcutInfo: " + componentName);
-            return null;
-        }
-
-        Intent newIntent = new Intent(intent.getAction(), null);
-        newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        newIntent.setComponent(componentName);
-        LauncherActivityInfoCompat lai = mLauncherApps.resolveActivity(newIntent, user);
-        if ((lai == null) && !allowMissingTarget) {
-            Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
-            return null;
-        }
-
-        final ShortcutInfo info = new ShortcutInfo();
-        info.title = Utilities.trim(c.getString(titleIndex));
-        CursorIconInfo iconInfo = new CursorIconInfo(c);
-        Bitmap bitmap = iconInfo.loadIcon(c, info, context);
-        if (bitmap == null) {
-            mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
-        } else {
-            info.setIcon(bitmap);
-        }
-
-        // from the db
-        if (TextUtils.isEmpty(info.title)) {
-            info.title =  Utilities.trim(c.getString(titleIndex));
-        }
-
-        // fall back to the class name of the activity
-        if (info.title == null) {
-            info.title = componentName.getClassName();
-        }
-
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        info.user = user;
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        if (lai != null) {
-            info.flags = AppInfo.initFlags(lai);
-        }
-        return info;
-    }
-
-    static ArrayList<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos,
-            ItemInfoFilter f) {
-        HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
-        for (ItemInfo i : infos) {
-            if (i instanceof ShortcutInfo) {
-                ShortcutInfo info = (ShortcutInfo) i;
-                ComponentName cn = info.getTargetComponent();
-                if (cn != null && f.filterItem(null, info, cn)) {
-                    filtered.add(info);
-                }
-            } else if (i instanceof FolderInfo) {
-                FolderInfo info = (FolderInfo) i;
-                for (ShortcutInfo s : info.contents) {
-                    ComponentName cn = s.getTargetComponent();
-                    if (cn != null && f.filterItem(info, s, cn)) {
-                        filtered.add(s);
-                    }
-                }
-            } else if (i instanceof LauncherAppWidgetInfo) {
-                LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) i;
-                ComponentName cn = info.providerName;
-                if (cn != null && f.filterItem(null, info, cn)) {
-                    filtered.add(info);
-                }
-            }
-        }
-        return new ArrayList<ItemInfo>(filtered);
-    }
-
-    @Thunk ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
-            final UserHandleCompat user) {
-        ItemInfoFilter filter  = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                if (info.user == null) {
-                    return cn.equals(cname);
-                } else {
-                    return cn.equals(cname) && info.user.equals(user);
-                }
-            }
-        };
-        return filterItemInfos(sBgItemsIdMap, filter);
-    }
-
-    /**
-     * Make an ShortcutInfo object for a shortcut that isn't an application.
-     */
-    @Thunk ShortcutInfo getShortcutInfo(Cursor c, Context context,
-            int titleIndex, CursorIconInfo iconInfo) {
-        final ShortcutInfo info = new ShortcutInfo();
-        // Non-app shortcuts are only supported for current user.
-        info.user = UserHandleCompat.myUserHandle();
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-
-        // TODO: If there's an explicit component and we can't install that, delete it.
-
-        info.title = Utilities.trim(c.getString(titleIndex));
-
-        Bitmap icon = iconInfo.loadIcon(c, info, context);
-        // the fallback icon
-        if (icon == null) {
-            icon = mIconCache.getDefaultIcon(info.user);
-            info.usingFallbackIcon = true;
-        }
-        info.setIcon(icon);
-        return info;
-    }
-
-    ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
-        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-
-        if (intent == null) {
-            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
-            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
-            return null;
-        }
-
-        Bitmap icon = null;
-        boolean customIcon = false;
-        ShortcutIconResource iconResource = null;
-
-        if (bitmap instanceof Bitmap) {
-            icon = Utilities.createIconBitmap((Bitmap) bitmap, context);
-            customIcon = true;
-        } else {
-            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra instanceof ShortcutIconResource) {
-                iconResource = (ShortcutIconResource) extra;
-                icon = Utilities.createIconBitmap(iconResource.packageName,
-                        iconResource.resourceName, context);
-            }
-        }
-
-        final ShortcutInfo info = new ShortcutInfo();
-
-        // Only support intents for current user for now. Intents sent from other
-        // users wouldn't get here without intent forwarding anyway.
-        info.user = UserHandleCompat.myUserHandle();
-        if (icon == null) {
-            icon = mIconCache.getDefaultIcon(info.user);
-            info.usingFallbackIcon = true;
-        }
-        info.setIcon(icon);
-
-        info.title = Utilities.trim(name);
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        info.intent = intent;
-        info.customIcon = customIcon;
-        info.iconResource = iconResource;
-
-        return info;
-    }
-
-    /**
-     * Return an existing FolderInfo object if we have encountered this ID previously,
-     * or make a new one.
-     */
-    @Thunk static FolderInfo findOrMakeFolder(LongArrayMap<FolderInfo> folders, long id) {
-        // See if a placeholder was created for us already
-        FolderInfo folderInfo = folders.get(id);
-        if (folderInfo == null) {
-            // No placeholder -- create a new instance
-            folderInfo = new FolderInfo();
-            folders.put(id, folderInfo);
-        }
-        return folderInfo;
-    }
-
-
-    static boolean isValidProvider(AppWidgetProviderInfo provider) {
-        return (provider != null) && (provider.provider != null)
-                && (provider.provider.getPackageName() != null);
-    }
-
-    public void dumpState() {
-        Log.d(TAG, "mCallbacks=" + mCallbacks);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
-        if (mLoaderTask != null) {
-            mLoaderTask.dumpState();
-        } else {
-            Log.d(TAG, "mLoaderTask=null");
-        }
-    }
-
-    public Callbacks getCallback() {
-        return mCallbacks != null ? mCallbacks.get() : null;
-    }
-
-    /**
-     * @return {@link FolderInfo} if its already loaded.
-     */
-    public FolderInfo findFolderById(Long folderId) {
-        synchronized (sBgLock) {
-            return sBgFolders.get(folderId);
-        }
-    }
-
-    /**
-     * @return the looper for the worker thread which can be used to start background tasks.
-     */
-    public static Looper getWorkerLooper() {
-        return sWorkerThread.getLooper();
     }
 }

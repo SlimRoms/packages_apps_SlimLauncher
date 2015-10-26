@@ -27,18 +27,14 @@ import java.util.List;
 
 public class ShortcutPickHelper {
 
+    private static final int REQUEST_PICK_SHORTCUT = 100;
+    private static final int REQUEST_PICK_APPLICATION = 101;
+    private static final int REQUEST_CREATE_SHORTCUT = 102;
     private Activity mParent;
     private AlertDialog mAlertDialog;
     private OnPickListener mListener;
     private PackageManager mPackageManager;
-    private static final int REQUEST_PICK_SHORTCUT = 100;
-    private static final int REQUEST_PICK_APPLICATION = 101;
-    private static final int REQUEST_CREATE_SHORTCUT = 102;
     private int lastFragmentId;
-
-    public interface OnPickListener {
-        void shortcutPicked(String uri, String friendlyName, boolean isApplication);
-    }
 
     public ShortcutPickHelper(Activity parent, OnPickListener listener) {
         mParent = parent;
@@ -116,7 +112,7 @@ public class ShortcutPickHelper {
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
             startFragmentOrActivity(pickIntent, requestCodeApplication);
-        } else if (application2name != null && application2name.equals(shortcutName)){
+        } else if (application2name != null && application2name.equals(shortcutName)) {
             final List<PackageInfo> pInfos = mPackageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
             ExpandableListView appListView = new ExpandableListView(mParent);
             AppExpandableAdapter appAdapter = new AppExpandableAdapter(pInfos, mParent);
@@ -126,9 +122,9 @@ public class ShortcutPickHelper {
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
                     Intent shortIntent = new Intent(Intent.ACTION_MAIN);
-                    String pkgName = ((GroupInfo)parent.getExpandableListAdapter().getGroup(groupPosition))
+                    String pkgName = ((GroupInfo) parent.getExpandableListAdapter().getGroup(groupPosition))
                             .info.packageName;
-                    String actName = ((GroupInfo)parent.getExpandableListAdapter().getGroup(groupPosition))
+                    String actName = ((GroupInfo) parent.getExpandableListAdapter().getGroup(groupPosition))
                             .info.activities[childPosition].name;
                     shortIntent.setClassName(pkgName, actName);
                     completeSetCustomApp(shortIntent);
@@ -150,106 +146,6 @@ public class ShortcutPickHelper {
         } else {
             startFragmentOrActivity(intent, requestCodeShortcut);
         }
-    }
-
-    public class AppExpandableAdapter extends BaseExpandableListAdapter {
-
-        ArrayList<GroupInfo> allList = new ArrayList<GroupInfo>();
-        final int groupPadding;
-
-        public class LabelCompare implements Comparator<GroupInfo> {
-            @Override
-            public int compare(GroupInfo item1, GroupInfo item2) {
-                String rank1 = item1.label.toLowerCase();
-                String rank2 = item2.label.toLowerCase();
-                int result = rank1.compareTo(rank2);
-                if(result == 0) {
-                    return 0;
-                } else if(result < 0) {
-                    return -1;
-                } else {
-                    return +1;
-                }
-            }
-        }
-
-        class GroupInfo {
-            String label;
-            PackageInfo info;
-            GroupInfo (String l, PackageInfo p) {
-                label = l;
-                info = p;
-            }
-        }
-
-        public AppExpandableAdapter(List<PackageInfo> pInfos, Context context) {
-            for (PackageInfo i : pInfos) {
-                allList.add(new GroupInfo(i.applicationInfo.loadLabel(mPackageManager).toString(), i));
-            }
-            Collections.sort(allList, new LabelCompare());
-            groupPadding = context.getResources().getDimensionPixelSize(R.dimen.shortcut_picker_left_padding);
-        }
-
-        public String getChild(int groupPosition, int childPosition) {
-            return allList.get(groupPosition).info.activities[childPosition].name;
-        }
-
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-        public int getChildrenCount(int groupPosition) {
-            if (allList.get(groupPosition).info.activities != null) {
-                return allList.get(groupPosition).info.activities.length;
-            } else {
-                return 0;
-            }
-        }
-
-
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
-                                 View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(mParent, android.R.layout.simple_list_item_1, null);
-                convertView.setPadding(groupPadding, 0, 0, 0);
-
-            }
-            TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
-            textView.setText(getChild(groupPosition, childPosition).replaceFirst(allList.get(groupPosition).info.packageName + ".", ""));
-            return convertView;
-        }
-
-        public GroupInfo getGroup(int groupPosition) {
-            return allList.get(groupPosition);
-        }
-
-        public int getGroupCount() {
-            return allList.size();
-        }
-
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
-                                 ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(mParent, android.R.layout.simple_list_item_1, null);
-                convertView.setPadding(70, 0, 0, 0);
-            }
-            TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
-            textView.setText(getGroup(groupPosition).label.toString());
-            return convertView;
-        }
-
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
-        }
-
-        public boolean hasStableIds() {
-            return true;
-        }
-
     }
 
     private void completeSetCustomApp(Intent data) {
@@ -302,5 +198,109 @@ public class ShortcutPickHelper {
         }
 
         return uri;
+    }
+
+    public interface OnPickListener {
+        void shortcutPicked(String uri, String friendlyName, boolean isApplication);
+    }
+
+    public class AppExpandableAdapter extends BaseExpandableListAdapter {
+
+        final int groupPadding;
+        ArrayList<GroupInfo> allList = new ArrayList<GroupInfo>();
+
+        public AppExpandableAdapter(List<PackageInfo> pInfos, Context context) {
+            for (PackageInfo i : pInfos) {
+                allList.add(new GroupInfo(i.applicationInfo.loadLabel(mPackageManager).toString(), i));
+            }
+            Collections.sort(allList, new LabelCompare());
+            groupPadding = context.getResources().getDimensionPixelSize(R.dimen.shortcut_picker_left_padding);
+        }
+
+        public String getChild(int groupPosition, int childPosition) {
+            return allList.get(groupPosition).info.activities[childPosition].name;
+        }
+
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+        public int getChildrenCount(int groupPosition) {
+            if (allList.get(groupPosition).info.activities != null) {
+                return allList.get(groupPosition).info.activities.length;
+            } else {
+                return 0;
+            }
+        }
+
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
+                                 View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = View.inflate(mParent, android.R.layout.simple_list_item_1, null);
+                convertView.setPadding(groupPadding, 0, 0, 0);
+
+            }
+            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+            textView.setText(getChild(groupPosition, childPosition).replaceFirst(allList.get(groupPosition).info.packageName + ".", ""));
+            return convertView;
+        }
+
+        public GroupInfo getGroup(int groupPosition) {
+            return allList.get(groupPosition);
+        }
+
+        public int getGroupCount() {
+            return allList.size();
+        }
+
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
+                                 ViewGroup parent) {
+            if (convertView == null) {
+                convertView = View.inflate(mParent, android.R.layout.simple_list_item_1, null);
+                convertView.setPadding(70, 0, 0, 0);
+            }
+            TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+            textView.setText(getGroup(groupPosition).label.toString());
+            return convertView;
+        }
+
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        public class LabelCompare implements Comparator<GroupInfo> {
+            @Override
+            public int compare(GroupInfo item1, GroupInfo item2) {
+                String rank1 = item1.label.toLowerCase();
+                String rank2 = item2.label.toLowerCase();
+                int result = rank1.compareTo(rank2);
+                if (result == 0) {
+                    return 0;
+                } else if (result < 0) {
+                    return -1;
+                } else {
+                    return +1;
+                }
+            }
+        }
+
+        class GroupInfo {
+            String label;
+            PackageInfo info;
+
+            GroupInfo(String l, PackageInfo p) {
+                label = l;
+                info = p;
+            }
+        }
+
     }
 }

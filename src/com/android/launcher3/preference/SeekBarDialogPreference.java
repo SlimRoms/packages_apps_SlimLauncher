@@ -67,8 +67,11 @@ public class SeekBarDialogPreference extends DialogPreference
         mValueText.setText(mPrefix + (progress + mMin) + mSuffix);
     }
 
-    public void onStartTrackingTouch(SeekBar seekBar) {}
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {

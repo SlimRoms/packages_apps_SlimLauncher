@@ -31,21 +31,18 @@ import com.android.launcher3.util.Thunk;
  * interpolator in the same direction.
  */
 public class InterruptibleInOutAnimator {
+    private static final int STOPPED = 0;
+    private static final int IN = 1;
+    private static final int OUT = 2;
+    // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
+    @Thunk
+    int mDirection = STOPPED;
     private long mOriginalDuration;
     private float mOriginalFromValue;
     private float mOriginalToValue;
     private ValueAnimator mAnimator;
-
     private boolean mFirstRun = true;
-
     private Object mTag = null;
-
-    private static final int STOPPED = 0;
-    private static final int IN = 1;
-    private static final int OUT = 2;
-
-    // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
-    @Thunk int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
         mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);
@@ -119,12 +116,12 @@ public class InterruptibleInOutAnimator {
         animate(OUT);
     }
 
-    public void setTag(Object tag) {
-        mTag = tag;
-    }
-
     public Object getTag() {
         return mTag;
+    }
+
+    public void setTag(Object tag) {
+        mTag = tag;
     }
 
     public ValueAnimator getAnimator() {

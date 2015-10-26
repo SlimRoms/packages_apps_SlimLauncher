@@ -49,11 +49,6 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
         mAccessibilityEnabled = accessibilityEnabled;
     }
 
-    @Override
-    public void onAnimationUpdate(ValueAnimator arg0) {
-        updateVisibility(mView, mAccessibilityEnabled);
-    }
-
     public static void updateVisibility(View view, boolean accessibilityEnabled) {
         // We want to avoid the extra layout pass by setting the views to GONE unless
         // accessibility is on, in which case not setting them to GONE causes a glitch.
@@ -64,6 +59,11 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
                 && view.getVisibility() != View.VISIBLE) {
             view.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator arg0) {
+        updateVisibility(mView, mAccessibilityEnabled);
     }
 
     @Override
@@ -102,9 +102,11 @@ class ZInterpolator implements TimeInterpolator {
  */
 class InverseZInterpolator implements TimeInterpolator {
     private ZInterpolator zInterpolator;
+
     public InverseZInterpolator(float foc) {
         zInterpolator = new ZInterpolator(foc);
     }
+
     public float getInterpolation(float input) {
         return 1 - zInterpolator.getInterpolation(1 - input);
     }
@@ -176,30 +178,47 @@ public class WorkspaceStateTransitionAnimation {
     public static final String TAG = "WorkspaceStateTransitionAnimation";
 
     public static final int SCROLL_TO_CURRENT_PAGE = -1;
-    @Thunk static final int BACKGROUND_FADE_OUT_DURATION = 350;
+    @Thunk
+    static final int BACKGROUND_FADE_OUT_DURATION = 350;
 
-    final @Thunk Launcher mLauncher;
-    final @Thunk Workspace mWorkspace;
-
-    @Thunk AnimatorSet mStateAnimator;
-    @Thunk float[] mOldBackgroundAlphas;
-    @Thunk float[] mOldAlphas;
-    @Thunk float[] mNewBackgroundAlphas;
-    @Thunk float[] mNewAlphas;
-    @Thunk int mLastChildCount = -1;
-
-    @Thunk float mCurrentScale;
-    @Thunk float mNewScale;
-
-    @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
-
-    @Thunk float mSpringLoadedShrinkFactor;
-    @Thunk float mOverviewModeShrinkFactor;
-    @Thunk float mWorkspaceScrimAlpha;
-    @Thunk int mAllAppsTransitionTime;
-    @Thunk int mOverviewTransitionTime;
-    @Thunk int mOverlayTransitionTime;
-    @Thunk boolean mWorkspaceFadeInAdjacentScreens;
+    final
+    @Thunk
+    Launcher mLauncher;
+    final
+    @Thunk
+    Workspace mWorkspace;
+    @Thunk
+    final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
+    @Thunk
+    AnimatorSet mStateAnimator;
+    @Thunk
+    float[] mOldBackgroundAlphas;
+    @Thunk
+    float[] mOldAlphas;
+    @Thunk
+    float[] mNewBackgroundAlphas;
+    @Thunk
+    float[] mNewAlphas;
+    @Thunk
+    int mLastChildCount = -1;
+    @Thunk
+    float mCurrentScale;
+    @Thunk
+    float mNewScale;
+    @Thunk
+    float mSpringLoadedShrinkFactor;
+    @Thunk
+    float mOverviewModeShrinkFactor;
+    @Thunk
+    float mWorkspaceScrimAlpha;
+    @Thunk
+    int mAllAppsTransitionTime;
+    @Thunk
+    int mOverviewTransitionTime;
+    @Thunk
+    int mOverlayTransitionTime;
+    @Thunk
+    boolean mWorkspaceFadeInAdjacentScreens;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
@@ -218,8 +237,8 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            int toPage, boolean animated, boolean hasOverlaySearchBar,
-            HashMap<View, Integer> layerViews) {
+                                           int toPage, boolean animated, boolean hasOverlaySearchBar,
+                                           HashMap<View, Integer> layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
         final boolean accessibilityEnabled = am.isEnabled();
@@ -382,7 +401,7 @@ public class WorkspaceStateTransitionAnimation {
                             mNewBackgroundAlphas[i] != 0) {
                         ValueAnimator bgAnim = ObjectAnimator.ofFloat(cl, "backgroundAlpha",
                                 mOldBackgroundAlphas[i], mNewBackgroundAlphas[i]);
-                                LauncherAnimUtils.ofFloat(cl, 0f, 1f);
+                        LauncherAnimUtils.ofFloat(cl, 0f, 1f);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.setDuration(duration);
                         mStateAnimator.play(bgAnim);
@@ -475,14 +494,14 @@ public class WorkspaceStateTransitionAnimation {
 
     /**
      * Coordinates with the workspace animation to animate the search bar.
-     *
+     * <p/>
      * TODO: This should really be coordinated with the SearchDropTargetBar, otherwise the
-     *       bar has no idea that it is hidden, and this has no idea what state the bar is
-     *       actually in.
+     * bar has no idea that it is hidden, and this has no idea what state the bar is
+     * actually in.
      */
     private void animateSearchBar(TransitionStates states, boolean animated, int duration,
-            boolean hasOverlaySearchBar, final HashMap<View, Integer> layerViews,
-            final boolean accessibilityEnabled) {
+                                  boolean hasOverlaySearchBar, final HashMap<View, Integer> layerViews,
+                                  final boolean accessibilityEnabled) {
 
         // The search bar is only visible in the workspace
         final View searchBar = mLauncher.getOrCreateQsbBar();
@@ -544,11 +563,11 @@ public class WorkspaceStateTransitionAnimation {
      * Animates the background scrim. Add to the state animator to prevent jankiness.
      *
      * @param finalAlpha the final alpha for the background scrim
-     * @param animated whether or not to set the background alpha immediately
+     * @param animated   whether or not to set the background alpha immediately
      * @duration duration of the animation
      */
     private void animateBackgroundGradient(TransitionStates states,
-            boolean animated, int duration) {
+                                           boolean animated, int duration) {
 
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final float startAlpha = dragLayer.getBackgroundAlpha();
@@ -564,7 +583,7 @@ public class WorkspaceStateTransitionAnimation {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         dragLayer.setBackgroundAlpha(
-                                ((Float)animation.getAnimatedValue()).floatValue());
+                                ((Float) animation.getAnimatedValue()).floatValue());
                     }
                 });
                 bgFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));

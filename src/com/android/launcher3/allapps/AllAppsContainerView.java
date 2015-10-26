@@ -56,7 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * A merge algorithm that merges every section indiscriminately.
  */
@@ -64,8 +63,8 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-           AlphabeticalAppsList.SectionInfo withSection,
-           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
             return false;
@@ -96,8 +95,8 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-           AlphabeticalAppsList.SectionInfo withSection,
-           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
             return false;
@@ -132,30 +131,33 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
-
-    @Thunk Launcher mLauncher;
-    @Thunk AlphabeticalAppsList mApps;
-    private AllAppsGridAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.ItemDecoration mItemDecoration;
-
-    @Thunk View mContent;
-    @Thunk View mContainerView;
-    @Thunk View mRevealView;
-    @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    @Thunk AllAppsSearchBarController mSearchBarController;
-    private ViewGroup mSearchBarContainerView;
-    private View mSearchBarView;
-
-    private int mSectionNamesMargin;
-    private int mNumAppsPerRow;
-    private int mNumPredictedAppsPerRow;
-    private int mRecyclerViewTopBottomPadding;
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
     // This coordinate is relative to its parent
     private final Point mIconLastTouchPos = new Point();
-
+    @Thunk
+    Launcher mLauncher;
+    @Thunk
+    AlphabeticalAppsList mApps;
+    @Thunk
+    View mContent;
+    @Thunk
+    View mContainerView;
+    @Thunk
+    View mRevealView;
+    @Thunk
+    AllAppsRecyclerView mAppsRecyclerView;
+    @Thunk
+    AllAppsSearchBarController mSearchBarController;
+    private AllAppsGridAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.ItemDecoration mItemDecoration;
+    private ViewGroup mSearchBarContainerView;
+    private View mSearchBarView;
+    private int mSectionNamesMargin;
+    private int mNumAppsPerRow;
+    private int mNumPredictedAppsPerRow;
+    private int mRecyclerViewTopBottomPadding;
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
     public AllAppsContainerView(Context context) {
@@ -511,7 +513,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the

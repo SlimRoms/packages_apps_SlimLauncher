@@ -29,9 +29,9 @@ import java.util.HashMap;
  */
 public abstract class AbstractUserComparator<T extends ItemInfo> implements Comparator<T> {
 
-    private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
     private final UserManagerCompat mUserManager;
     private final UserHandleCompat mMyUser;
+    private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
 
     public AbstractUserComparator(Context context) {
         mUserManager = UserManagerCompat.getInstance(context);

@@ -25,13 +25,10 @@ class PreloadIconDrawable extends Drawable {
     private static final int DEFAULT_COLOR = 0xFF009688;
 
     private static final Rect sTempRect = new Rect();
-
-    private final RectF mIndicatorRect = new RectF();
-    private boolean mIndicatorRectDirty;
-
-    private final Paint mPaint;
     final Drawable mIcon;
-
+    private final RectF mIndicatorRect = new RectF();
+    private final Paint mPaint;
+    private boolean mIndicatorRectDirty;
     private Drawable mBgDrawable;
     private int mRingOutset;
 
@@ -202,15 +199,15 @@ class PreloadIconDrawable extends Drawable {
         mAnimator.start();
     }
 
+    public float getAnimationProgress() {
+        return mAnimationProgress;
+    }
+
     public void setAnimationProgress(float progress) {
         if (progress != mAnimationProgress) {
             mAnimationProgress = progress;
             invalidateSelf();
         }
-    }
-
-    public float getAnimationProgress() {
-        return mAnimationProgress;
     }
 
     @Override

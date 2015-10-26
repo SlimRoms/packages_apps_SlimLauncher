@@ -7,10 +7,6 @@ public class BuildInfo {
     private static final boolean DBG = false;
     private static final String TAG = "BuildInfo";
 
-    public boolean isDogfoodBuild() {
-        return false;
-    }
-
     public static BuildInfo loadByName(String className) {
         if (TextUtils.isEmpty(className)) return new BuildInfo();
 
@@ -28,5 +24,9 @@ public class BuildInfo {
             Log.e(TAG, "Bad BuildInfo class", e);
         }
         return new BuildInfo();
+    }
+
+    public boolean isDogfoodBuild() {
+        return false;
     }
 }

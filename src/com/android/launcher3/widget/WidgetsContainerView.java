@@ -52,7 +52,7 @@ import com.android.launcher3.util.Thunk;
  * The widgets list view container.
  */
 public class WidgetsContainerView extends BaseContainerView
-        implements View.OnLongClickListener, View.OnClickListener, DragSource{
+        implements View.OnLongClickListener, View.OnClickListener, DragSource {
 
     private static final String TAG = "WidgetsContainerView";
     private static final boolean DEBUG = false;
@@ -61,7 +61,8 @@ public class WidgetsContainerView extends BaseContainerView
     private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
 
     /* Global instances that are used inside this container. */
-    @Thunk Launcher mLauncher;
+    @Thunk
+    Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
 
@@ -148,7 +149,7 @@ public class WidgetsContainerView extends BaseContainerView
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
         }
-        mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
+        mWidgetInstructionToast = Toast.makeText(getContext(), R.string.long_press_widget_to_add,
                 Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
     }
@@ -299,7 +300,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the

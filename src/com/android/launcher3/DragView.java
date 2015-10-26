@@ -40,45 +40,47 @@ import java.util.Arrays;
 public class DragView extends View {
     public static int COLOR_CHANGE_DURATION = 120;
 
-    @Thunk static float sDragAlpha = 1f;
-
+    @Thunk
+    static float sDragAlpha = 1f;
+    @Thunk
+    Paint mPaint;
+    @Thunk
+    float mCrossFadeProgress = 0f;
+    ValueAnimator mAnim;
+    @Thunk
+    float mOffsetX = 0.0f;
+    @Thunk
+    float mOffsetY = 0.0f;
+    @Thunk
+    float[] mCurrentFilter;
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
-    @Thunk Paint mPaint;
     private int mRegistrationX;
     private int mRegistrationY;
-
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
     private boolean mHasDrawn = false;
-    @Thunk float mCrossFadeProgress = 0f;
-
-    ValueAnimator mAnim;
-    @Thunk float mOffsetX = 0.0f;
-    @Thunk float mOffsetY = 0.0f;
     private float mInitialScale = 1f;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
-
-    @Thunk float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
 
     /**
      * Construct the drag view.
-     * <p>
+     * <p/>
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
      *
-     * @param launcher The Launcher instance
-     * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
+     * @param launcher      The Launcher instance
+     * @param bitmap        The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-            int left, int top, int width, int height, final float initialScale) {
+                    int left, int top, int width, int height, final float initialScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mInitialScale = initialScale;
@@ -136,13 +138,20 @@ public class DragView extends View {
         }
     }
 
-    /** Sets the scale of the view over the normal workspace icon size. */
-    public void setIntrinsicIconScaleFactor(float scale) {
-        mIntrinsicIconScale = scale;
+    public static void setColorScale(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 
     public float getIntrinsicIconScaleFactor() {
         return mIntrinsicIconScale;
+    }
+
+    /**
+     * Sets the scale of the view over the normal workspace icon size.
+     */
+    public void setIntrinsicIconScaleFactor(float scale) {
+        mIntrinsicIconScale = scale;
     }
 
     public float getOffsetY() {
@@ -165,20 +174,20 @@ public class DragView extends View {
         return mDragRegion.height();
     }
 
-    public void setDragVisualizeOffset(Point p) {
-        mDragVisualizeOffset = p;
-    }
-
     public Point getDragVisualizeOffset() {
         return mDragVisualizeOffset;
     }
 
-    public void setDragRegion(Rect r) {
-        mDragRegion = r;
+    public void setDragVisualizeOffset(Point p) {
+        mDragVisualizeOffset = p;
     }
 
     public Rect getDragRegion() {
         return mDragRegion;
+    }
+
+    public void setDragRegion(Rect r) {
+        mDragRegion = r;
     }
 
     public float getInitialScale() {
@@ -305,8 +314,8 @@ public class DragView extends View {
      * Create a window containing this view and show it.
      *
      * @param windowToken obtained from v.getWindowToken() from one of your views
-     * @param touchX the x coordinate the user touched in DragLayer coordinates
-     * @param touchY the y coordinate the user touched in DragLayer coordinates
+     * @param touchX      the x coordinate the user touched in DragLayer coordinates
+     * @param touchY      the y coordinate the user touched in DragLayer coordinates
      */
     public void show(int touchX, int touchY) {
         mDragLayer.addView(this);
@@ -321,10 +330,10 @@ public class DragView extends View {
         setTranslationY(touchY - mRegistrationY);
         // Post the animation to skip other expensive work happening on the first frame
         post(new Runnable() {
-                public void run() {
-                    mAnim.start();
-                }
-            });
+            public void run() {
+                mAnim.start();
+            }
+        });
     }
 
     public void cancelAnimation() {
@@ -353,10 +362,5 @@ public class DragView extends View {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
         }
-    }
-
-    public static void setColorScale(int color, ColorMatrix target) {
-        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 }

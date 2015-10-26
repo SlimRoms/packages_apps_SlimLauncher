@@ -29,41 +29,25 @@ import com.android.launcher3.util.Thunk;
 /**
  * A base {@link RecyclerView}, which does the following:
  * <ul>
- *   <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
- *   <li> Enable fast scroller.
+ * <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
+ * <li> Enable fast scroller.
  * </ul>
  */
 public abstract class BaseRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
-
-    /** Keeps the last known scrolling delta/velocity along y-axis. */
-    @Thunk int mDy = 0;
-    private float mDeltaThreshold;
-
-    /**
-     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
-     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
-     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
-     * scroller.
-     */
-    public static class ScrollPositionState {
-        // The index of the first visible row
-        public int rowIndex;
-        // The offset of the first visible row
-        public int rowTopOffset;
-        // The height of a given row (they are currently all the same height)
-        public int rowHeight;
-    }
-
     protected BaseRecyclerViewFastScrollBar mScrollbar;
-
+    protected Rect mBackgroundPadding = new Rect();
+    /**
+     * Keeps the last known scrolling delta/velocity along y-axis.
+     */
+    @Thunk
+    int mDy = 0;
+    private float mDeltaThreshold;
     private int mDownX;
     private int mDownY;
     private int mLastY;
-    protected Rect mBackgroundPadding = new Rect();
-
     public BaseRecyclerView(Context context) {
         this(context, null);
     }
@@ -79,21 +63,6 @@ public abstract class BaseRecyclerView extends RecyclerView
 
         ScrollListener listener = new ScrollListener();
         setOnScrollListener(listener);
-    }
-
-    private class ScrollListener extends OnScrollListener {
-        public ScrollListener() {
-            // Do nothing
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            mDy = dy;
-
-            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
-            //                initiate that here if the recycler view scroll state is not
-            //                RecyclerView.SCROLL_STATE_IDLE.
-        }
     }
 
     @Override
@@ -183,8 +152,8 @@ public abstract class BaseRecyclerView extends RecyclerView
 
     /**
      * Returns the available scroll height:
-     *   AvailableScrollHeight = Total height of the all items - last page height
-     *
+     * AvailableScrollHeight = Total height of the all items - last page height
+     * <p/>
      * This assumes that all rows are the same height.
      *
      * @param yOffset the offset from the top of the recycler view to start tracking.
@@ -198,7 +167,7 @@ public abstract class BaseRecyclerView extends RecyclerView
 
     /**
      * Returns the available scroll bar height:
-     *   AvailableScrollBarHeight = Total height of the visible view - thumb height
+     * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
         int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
@@ -233,12 +202,12 @@ public abstract class BaseRecyclerView extends RecyclerView
      * scroll bar.
      *
      * @param scrollPosState the current scroll position
-     * @param rowCount the number of rows, used to calculate the total scroll height (assumes that
-     *                 all rows are the same height)
-     * @param yOffset the offset to start tracking in the recycler view (only used for all apps)
+     * @param rowCount       the number of rows, used to calculate the total scroll height (assumes that
+     *                       all rows are the same height)
+     * @param yOffset        the offset to start tracking in the recycler view (only used for all apps)
      */
     protected void synchronizeScrollBarThumbOffsetToViewScroll(ScrollPositionState scrollPosState,
-            int rowCount, int yOffset) {
+                                                               int rowCount, int yOffset) {
         int availableScrollHeight = getAvailableScrollHeight(rowCount, scrollPosState.rowHeight,
                 yOffset);
         int availableScrollBarHeight = getAvailableScrollBarHeight();
@@ -282,5 +251,36 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * <p>Override in each subclass of this base class.
      */
-    public void onFastScrollCompleted() {}
+    public void onFastScrollCompleted() {
+    }
+
+    /**
+     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
+     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
+     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
+     * scroller.
+     */
+    public static class ScrollPositionState {
+        // The index of the first visible row
+        public int rowIndex;
+        // The offset of the first visible row
+        public int rowTopOffset;
+        // The height of a given row (they are currently all the same height)
+        public int rowHeight;
+    }
+
+    private class ScrollListener extends OnScrollListener {
+        public ScrollListener() {
+            // Do nothing
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            mDy = dy;
+
+            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
+            //                initiate that here if the recycler view scroll state is not
+            //                RecyclerView.SCROLL_STATE_IDLE.
+        }
+    }
 }

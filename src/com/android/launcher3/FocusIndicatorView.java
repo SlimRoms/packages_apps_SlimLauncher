@@ -54,6 +54,37 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
         setBackgroundColor(getResources().getColor(R.color.focused_background));
     }
 
+    /**
+     * Computes the location of a view relative to {@param parent}, off-setting
+     * any shift due to page view scroll.
+     *
+     * @param pos an array of two integers in which to hold the coordinates
+     */
+    private static void computeLocationRelativeToParent(View v, View parent, int[] pos) {
+        pos[0] = pos[1] = 0;
+        computeLocationRelativeToParentHelper(v, parent, pos);
+
+        // If a view is scaled, its position will also shift accordingly. For optimization, only
+        // consider this for the last node.
+        pos[0] += (1 - v.getScaleX()) * v.getWidth() / 2;
+        pos[1] += (1 - v.getScaleY()) * v.getHeight() / 2;
+    }
+
+    private static void computeLocationRelativeToParentHelper(View child,
+                                                              View commonParent, int[] shift) {
+        View parent = (View) child.getParent();
+        shift[0] += child.getLeft();
+        shift[1] += child.getTop();
+        if (parent instanceof PagedView) {
+            PagedView page = (PagedView) parent;
+            shift[0] -= page.getScrollForPage(page.indexOfChild(child));
+        }
+
+        if (parent != commonParent) {
+            computeLocationRelativeToParentHelper(parent, commonParent, shift);
+        }
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -148,37 +179,8 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
         }
     }
 
-    /**
-     * Computes the location of a view relative to {@param parent}, off-setting
-     * any shift due to page view scroll.
-     * @param pos an array of two integers in which to hold the coordinates
-     */
-    private static void computeLocationRelativeToParent(View v, View parent, int[] pos) {
-        pos[0] = pos[1] = 0;
-        computeLocationRelativeToParentHelper(v, parent, pos);
-
-        // If a view is scaled, its position will also shift accordingly. For optimization, only
-        // consider this for the last node.
-        pos[0] += (1 - v.getScaleX()) * v.getWidth() / 2;
-        pos[1] += (1 - v.getScaleY()) * v.getHeight() / 2;
-    }
-
-    private static void computeLocationRelativeToParentHelper(View child,
-            View commonParent, int[] shift) {
-        View parent = (View) child.getParent();
-        shift[0] += child.getLeft();
-        shift[1] += child.getTop();
-        if (parent instanceof PagedView) {
-            PagedView page = (PagedView) parent;
-            shift[0] -= page.getScrollForPage(page.indexOfChild(child));
-        }
-
-        if (parent != commonParent) {
-            computeLocationRelativeToParentHelper(parent, commonParent, shift);
-        }
-    }
-
-    @Thunk static final class ViewAnimState {
+    @Thunk
+    static final class ViewAnimState {
         float x, y, scaleX, scaleY;
     }
 }

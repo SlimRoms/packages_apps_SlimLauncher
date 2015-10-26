@@ -46,16 +46,16 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
         boolean isRtl = Utilities.isRtl(context.getResources());
         mActions.put(MOVE_BACKWARD, new AccessibilityAction(MOVE_BACKWARD,
                 context.getText(isRtl ? R.string.action_move_screen_right :
-                    R.string.action_move_screen_left)));
+                        R.string.action_move_screen_left)));
         mActions.put(MOVE_FORWARD, new AccessibilityAction(MOVE_FORWARD,
                 context.getText(isRtl ? R.string.action_move_screen_left :
-                    R.string.action_move_screen_right)));
+                        R.string.action_move_screen_right)));
     }
 
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         if (host != null) {
-            if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS ) {
+            if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
                 int index = mWorkspace.indexOfChild(host);
                 mWorkspace.setCurrentPage(index);
             } else if (action == MOVE_FORWARD) {

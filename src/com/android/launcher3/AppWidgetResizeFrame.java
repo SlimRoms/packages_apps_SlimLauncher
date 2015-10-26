@@ -64,7 +64,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mBottomTouchRegionAdjustment = 0;
 
     public AppWidgetResizeFrame(Context context,
-            LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
+                                LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
         mLauncher = (Launcher) context;
@@ -139,6 +139,40 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mCellLayout.markCellsAsUnoccupiedForView(mWidgetView);
     }
 
+    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
+                                       int spanX, int spanY) {
+        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
+        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
+                sTmpRect.right, sTmpRect.bottom);
+    }
+
+    public static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+        if (rect == null) {
+            rect = new Rect();
+        }
+        Rect landMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.LANDSCAPE);
+        Rect portMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.PORTRAIT);
+        final float density = launcher.getResources().getDisplayMetrics().density;
+
+        // Compute landscape size
+        int cellWidth = landMetrics.left;
+        int cellHeight = landMetrics.top;
+        int widthGap = landMetrics.right;
+        int heightGap = landMetrics.bottom;
+        int landWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
+        int landHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
+
+        // Compute portrait size
+        cellWidth = portMetrics.left;
+        cellHeight = portMetrics.top;
+        widthGap = portMetrics.right;
+        heightGap = portMetrics.bottom;
+        int portWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
+        int portHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
+        rect.set(portWidth, landHeight, landWidth, portHeight);
+        return rect;
+    }
+
     public boolean beginResizeIfPointInRegion(int x, int y) {
         boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
         boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
@@ -159,7 +193,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
         if (anyBordersActive) {
             mLeftHandle.setAlpha(mLeftBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
-            mRightHandle.setAlpha(mRightBorderActive ? 1.0f :DIMMED_HANDLE_ALPHA);
+            mRightHandle.setAlpha(mRightBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mTopHandle.setAlpha(mTopBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mBottomHandle.setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
@@ -167,12 +201,12 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Here we bound the deltas such that the frame cannot be stretched beyond the extents
-     *  of the CellLayout, and such that the frame's borders can't cross.
+     * Here we bound the deltas such that the frame cannot be stretched beyond the extents
+     * of the CellLayout, and such that the frame's borders can't cross.
      */
     public void updateDeltas(int deltaX, int deltaY) {
         if (mLeftBorderActive) {
-            mDeltaX = Math.max(-mBaselineX, deltaX); 
+            mDeltaX = Math.max(-mBaselineX, deltaX);
             mDeltaX = Math.min(mBaselineWidth - 2 * mTouchTargetWidth, mDeltaX);
         } else if (mRightBorderActive) {
             mDeltaX = Math.min(mDragLayer.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
@@ -193,7 +227,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Based on the deltas, we resize the frame, and, if needed, we resize the widget.
+     * Based on the deltas, we resize the frame, and, if needed, we resize the widget.
      */
     private void visualizeResizeForDelta(int deltaX, int deltaY, boolean onDismiss) {
         updateDeltas(deltaX, deltaY);
@@ -218,7 +252,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     /**
-     *  Based on the current deltas, we determine if and how to resize the widget.
+     * Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
@@ -333,40 +367,6 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWidgetView.requestLayout();
     }
 
-    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-            int spanX, int spanY) {
-        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
-        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
-                sTmpRect.right, sTmpRect.bottom);
-    }
-
-    public static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
-        if (rect == null) {
-            rect = new Rect();
-        }
-        Rect landMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.LANDSCAPE);
-        Rect portMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.PORTRAIT);
-        final float density = launcher.getResources().getDisplayMetrics().density;
-
-        // Compute landscape size
-        int cellWidth = landMetrics.left;
-        int cellHeight = landMetrics.top;
-        int widthGap = landMetrics.right;
-        int heightGap = landMetrics.bottom;
-        int landWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
-        int landHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
-
-        // Compute portrait size
-        cellWidth = portMetrics.left;
-        cellHeight = portMetrics.top;
-        widthGap = portMetrics.right;
-        heightGap = portMetrics.bottom;
-        int portWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
-        int portHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
-        rect.set(portWidth, landHeight, landWidth, portHeight);
-        return rect;
-    }
-
     /**
      * This is the final step of the resize. Here we save the new widget size and position
      * to LauncherModel and animate the resize frame.
@@ -380,8 +380,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
-        mDeltaXAddOn = mRunningHInc * xThreshold; 
-        mDeltaYAddOn = mRunningVInc * yThreshold; 
+        mDeltaXAddOn = mRunningHInc * xThreshold;
+        mDeltaYAddOn = mRunningVInc * yThreshold;
         mDeltaX = 0;
         mDeltaY = 0;
 

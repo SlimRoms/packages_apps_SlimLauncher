@@ -26,22 +26,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class LauncherViewPropertyAnimator extends Animator implements AnimatorListener {
-    enum Properties {
-            TRANSLATION_X,
-            TRANSLATION_Y,
-            SCALE_X,
-            SCALE_Y,
-            ROTATION_Y,
-            ALPHA,
-            START_DELAY,
-            DURATION,
-            INTERPOLATOR,
-            WITH_LAYER
-    }
     EnumSet<Properties> mPropertiesToSet = EnumSet.noneOf(Properties.class);
     ViewPropertyAnimator mViewPropertyAnimator;
     View mTarget;
-
     float mTranslationX;
     float mTranslationY;
     float mScaleX;
@@ -54,7 +41,6 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     ArrayList<Animator.AnimatorListener> mListeners;
     boolean mRunning = false;
     FirstFrameAnimatorHelper mFirstFrameHelper;
-
     public LauncherViewPropertyAnimator(View target) {
         mTarget = target;
         mListeners = new ArrayList<Animator.AnimatorListener>();
@@ -95,6 +81,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     @Override
     public long getStartDelay() {
         return mStartDelay;
+    }
+
+    @Override
+    public void setStartDelay(long startDelay) {
+        mPropertiesToSet.add(Properties.START_DELAY);
+        mStartDelay = startDelay;
     }
 
     @Override
@@ -167,12 +159,6 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     public void setInterpolator(TimeInterpolator value) {
         mPropertiesToSet.add(Properties.INTERPOLATOR);
         mInterpolator = value;
-    }
-
-    @Override
-    public void setStartDelay(long startDelay) {
-        mPropertiesToSet.add(Properties.START_DELAY);
-        mStartDelay = startDelay;
     }
 
     @Override
@@ -271,5 +257,18 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     public LauncherViewPropertyAnimator withLayer() {
         mPropertiesToSet.add(Properties.WITH_LAYER);
         return this;
+    }
+
+    enum Properties {
+        TRANSLATION_X,
+        TRANSLATION_Y,
+        SCALE_X,
+        SCALE_Y,
+        ROTATION_Y,
+        ALPHA,
+        START_DELAY,
+        DURATION,
+        INTERPOLATOR,
+        WITH_LAYER
     }
 }

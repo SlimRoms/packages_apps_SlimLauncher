@@ -29,6 +29,14 @@ public class DrawerFragment extends SettingsPreferenceFragment {
     private DoubleNumberPickerPreference mPortraitDrawerGrid;
     private DoubleNumberPickerPreference mLandscapeDrawerGrid;
     private ListPreference mDrawerType;
+    Preference.OnPreferenceChangeListener mPreferenceChangeListener =
+            new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    updatePrefs();
+                    return true;
+                }
+            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +55,8 @@ public class DrawerFragment extends SettingsPreferenceFragment {
 
         if (mProfile != null) {
 
-            String[] settingsKeys = { SettingsProvider.KEY_PORTRAIT_DRAWER_GRID,
-                    SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID };
+            String[] settingsKeys = {SettingsProvider.KEY_PORTRAIT_DRAWER_GRID,
+                    SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID};
 
             for (String key : settingsKeys) {
                 if (SettingsProvider.getCellCountX(getActivity(), key, 0) < 1) {
@@ -91,13 +99,4 @@ public class DrawerFragment extends SettingsPreferenceFragment {
             mLandscapeDrawerGrid.setEnabled(true);
         }
     }
-
-    Preference.OnPreferenceChangeListener mPreferenceChangeListener =
-            new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object o) {
-            updatePrefs();
-            return true;
-        }
-    };
 }

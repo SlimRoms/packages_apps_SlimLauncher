@@ -27,29 +27,27 @@ import java.util.List;
  * Implements the layout parser with rules for internal layouts and partner layouts.
  */
 public class DefaultLayoutParser extends AutoInstallsLayout {
-    private static final String TAG = "DefaultLayoutParser";
-
     protected static final String TAG_RESOLVE = "resolve";
-    private static final String TAG_FAVORITES = "favorites";
     protected static final String TAG_FAVORITE = "favorite";
+    protected static final String ATTR_URI = "uri";
+    private static final String TAG = "DefaultLayoutParser";
+    private static final String TAG_FAVORITES = "favorites";
     private static final String TAG_APPWIDGET = "appwidget";
     private static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
-
-    protected static final String ATTR_URI = "uri";
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId) {
+                               LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
     }
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag,
-            int hotseatAllAppsRank) {
+                               LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag,
+                               int hotseatAllAppsRank) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag, hotseatAllAppsRank);
     }
 
@@ -58,7 +56,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         return getFolderElementsMap(mSourceRes);
     }
 
-    @Thunk HashMap<String, TagParser> getFolderElementsMap(Resources res) {
+    @Thunk
+    HashMap<String, TagParser> getFolderElementsMap(Resources res) {
         HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(res));
@@ -90,7 +89,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * AppShortcutParser which also supports adding URI based intents
      */
-    @Thunk class AppShortcutWithUriParser extends AppShortcutParser {
+    @Thunk
+    class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
         protected long invalidPackageOrClass(XmlResourceParser parser) {
@@ -162,7 +162,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
 
         private boolean wouldLaunchResolverActivity(ResolveInfo resolved,
-                List<ResolveInfo> appList) {
+                                                    List<ResolveInfo> appList) {
             // If the list contains the above resolved activity, then it can't be
             // ResolverActivity itself.
             for (int i = 0; i < appList.size(); ++i) {
@@ -232,7 +232,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * A parser which adds a folder whose contents come from partner apk.
      */
-    @Thunk class PartnerFolderParser implements TagParser {
+    @Thunk
+    class PartnerFolderParser implements TagParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
@@ -258,7 +259,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * An extension of FolderParser which allows adding items from a different xml.
      */
-    @Thunk class MyFolderParser extends FolderParser {
+    @Thunk
+    class MyFolderParser extends FolderParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,

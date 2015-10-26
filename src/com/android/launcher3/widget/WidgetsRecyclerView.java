@@ -51,7 +51,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     }
 
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         this(context, attrs, defStyleAttr);
     }
 
@@ -75,7 +75,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     public void setWidgets(WidgetsModel widgets) {
         mWidgets = widgets;
     }
-    
+
     /**
      * We need to override the draw to ensure that we don't draw the overscroll effect beyond the
      * background bounds.
@@ -107,7 +107,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
-        int posInt = (int) ((touchFraction == 1)? pos -1 : pos);
+        int posInt = (int) ((touchFraction == 1) ? pos - 1 : pos);
         PackageItemInfo p = mWidgets.getPackageItemInfo(posInt);
         return p.titleSectionName;
     }

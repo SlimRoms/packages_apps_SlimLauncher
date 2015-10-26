@@ -48,6 +48,7 @@ public abstract class AllAppsSearchBarController {
 
     /**
      * Returns the search bar view.
+     *
      * @param parent the parent to attach the search bar view to.
      */
     public abstract View getView(ViewGroup parent);

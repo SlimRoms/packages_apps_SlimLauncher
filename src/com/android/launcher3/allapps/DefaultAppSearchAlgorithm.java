@@ -30,9 +30,8 @@ import java.util.regex.Pattern;
 public class DefaultAppSearchAlgorithm {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
-
-    private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
+    private final List<AppInfo> mApps;
 
     public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
         mApps = apps;
@@ -46,7 +45,7 @@ public class DefaultAppSearchAlgorithm {
     }
 
     public void doSearch(final String query,
-            final AllAppsSearchBarController.Callbacks callback) {
+                         final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
         mResultHandler.post(new Runnable() {
 

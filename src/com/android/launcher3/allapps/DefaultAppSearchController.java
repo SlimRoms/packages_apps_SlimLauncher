@@ -44,28 +44,30 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
     private static final int FADE_IN_DURATION = 175;
     private static final int FADE_OUT_DURATION = 100;
     private static final int SEARCH_TRANSLATION_X_DP = 18;
-
+    @Thunk
+    final InputMethodManager mInputMethodManager;
     private final Context mContext;
-    @Thunk final InputMethodManager mInputMethodManager;
-
-    private DefaultAppSearchAlgorithm mSearchManager;
-
-    private ViewGroup mContainerView;
-    private View mSearchView;
-    @Thunk View mSearchBarContainerView;
-    private View mSearchButtonView;
-    private View mDismissSearchButtonView;
-    @Thunk AllAppsSearchEditView mSearchBarEditView;
-    @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    @Thunk Runnable mFocusRecyclerViewRunnable = new Runnable() {
+    @Thunk
+    View mSearchBarContainerView;
+    @Thunk
+    AllAppsSearchEditView mSearchBarEditView;
+    @Thunk
+    AllAppsRecyclerView mAppsRecyclerView;
+    @Thunk
+    Runnable mFocusRecyclerViewRunnable = new Runnable() {
         @Override
         public void run() {
             mAppsRecyclerView.requestFocus();
         }
     };
+    private DefaultAppSearchAlgorithm mSearchManager;
+    private ViewGroup mContainerView;
+    private View mSearchView;
+    private View mSearchButtonView;
+    private View mDismissSearchButtonView;
 
     public DefaultAppSearchController(Context context, ViewGroup containerView,
-            AllAppsRecyclerView appsRecyclerView) {
+                                      AllAppsRecyclerView appsRecyclerView) {
         mContext = context;
         mInputMethodManager = (InputMethodManager)
                 mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -221,7 +223,8 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
     /**
      * Unfocuses the search field.
      */
-    @Thunk void hideSearchField(boolean animated, final Runnable postAnimationRunnable) {
+    @Thunk
+    void hideSearchField(boolean animated, final Runnable postAnimationRunnable) {
         mSearchManager.cancel(true);
 
         final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;

@@ -49,27 +49,6 @@ final class ColorHistogram {
         countFrequencies(pixels);
     }
 
-    /**
-     * @return number of distinct colors in the image.
-     */
-    int getNumberOfColors() {
-        return mNumberColors;
-    }
-
-    /**
-     * @return an array containing all of the distinct colors in the image.
-     */
-    int[] getColors() {
-        return mColors;
-    }
-
-    /**
-     * @return an array containing the frequency of a distinct colors within the image.
-     */
-    int[] getColorCounts() {
-        return mColorCounts;
-    }
-
     private static int countDistinctColors(final int[] pixels) {
         if (pixels.length < 2) {
             // If we have less than 2 pixels we can stop here
@@ -90,6 +69,27 @@ final class ColorHistogram {
         }
 
         return colorCount;
+    }
+
+    /**
+     * @return number of distinct colors in the image.
+     */
+    int getNumberOfColors() {
+        return mNumberColors;
+    }
+
+    /**
+     * @return an array containing all of the distinct colors in the image.
+     */
+    int[] getColors() {
+        return mColors;
+    }
+
+    /**
+     * @return an array containing the frequency of a distinct colors within the image.
+     */
+    int[] getColorCounts() {
+        return mColorCounts;
     }
 
     private void countFrequencies(final int[] pixels) {

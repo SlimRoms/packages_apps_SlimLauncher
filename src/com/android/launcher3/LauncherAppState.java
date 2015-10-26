@@ -25,54 +25,27 @@ import android.util.Log;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
 
 public class LauncherAppState {
 
-    private final AppFilter mAppFilter;
-    private final BuildInfo mBuildInfo;
-    @Thunk final LauncherModel mModel;
-    private final IconCache mIconCache;
-    private final WidgetPreviewLoader mWidgetCache;
-
     private static boolean mSettingsChanged;
-
-    private boolean mWallpaperChangedSinceLastCheck;
-
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
-
     private static LauncherAppState INSTANCE;
-
+    @Thunk
+    final LauncherModel mModel;
+    private final AppFilter mAppFilter;
+    private final BuildInfo mBuildInfo;
+    private final IconCache mIconCache;
+    private final WidgetPreviewLoader mWidgetCache;
+    private boolean mWallpaperChangedSinceLastCheck;
     private InvariantDeviceProfile mInvariantDeviceProfile;
 
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
 
-
-    public static LauncherAppState getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new LauncherAppState();
-        }
-        return INSTANCE;
-    }
-
-    public static LauncherAppState getInstanceNoCreate() {
-        return INSTANCE;
-    }
-
-    public Context getContext() {
-        return sContext;
-    }
-
-    public static void setApplicationContext(Context context) {
-        if (sContext != null) {
-            Log.w(Launcher.TAG, "setApplicationContext called twice! old=" + sContext + " new=" + context);
-        }
-        sContext = context.getApplicationContext();
-    }
 
     private LauncherAppState() {
         if (sContext == null) {
@@ -107,12 +80,50 @@ public class LauncherAppState {
         sContext.registerReceiver(mModel, filter);
     }
 
+    public static LauncherAppState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LauncherAppState();
+        }
+        return INSTANCE;
+    }
+
+    public static LauncherAppState getInstanceNoCreate() {
+        return INSTANCE;
+    }
+
+    public static void setApplicationContext(Context context) {
+        if (sContext != null) {
+            Log.w(Launcher.TAG, "setApplicationContext called twice! old=" + sContext + " new=" + context);
+        }
+        sContext = context.getApplicationContext();
+    }
+
     public static boolean getSettingsChanged() {
         return mSettingsChanged;
     }
 
     public static void setSettingsChanged(boolean b) {
         mSettingsChanged = b;
+    }
+
+    static LauncherProvider getLauncherProvider() {
+        return sLauncherProvider.get();
+    }
+
+    static void setLauncherProvider(LauncherProvider provider) {
+        sLauncherProvider = new WeakReference<LauncherProvider>(provider);
+    }
+
+    public static String getSharedPreferencesKey() {
+        return LauncherFiles.SHARED_PREFERENCES_KEY;
+    }
+
+    public static boolean isDogfoodBuild() {
+        return getInstance().mBuildInfo.isDogfoodBuild();
+    }
+
+    public Context getContext() {
+        return sContext;
     }
 
     /**
@@ -138,7 +149,7 @@ public class LauncherAppState {
         getLauncherProvider().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         mAccessibilityDelegate = ((launcher != null) && Utilities.isLmpOrAbove()) ?
-            new LauncherAccessibilityDelegate(launcher) : null;
+                new LauncherAccessibilityDelegate(launcher) : null;
         return mModel;
     }
 
@@ -154,22 +165,10 @@ public class LauncherAppState {
         return mModel;
     }
 
-    static void setLauncherProvider(LauncherProvider provider) {
-        sLauncherProvider = new WeakReference<LauncherProvider>(provider);
-    }
-
-    static LauncherProvider getLauncherProvider() {
-        return sLauncherProvider.get();
-    }
-
-    public static String getSharedPreferencesKey() {
-        return LauncherFiles.SHARED_PREFERENCES_KEY;
-    }
-
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
-    
+
     public void onWallpaperChanged() {
         mWallpaperChangedSinceLastCheck = true;
     }
@@ -182,9 +181,5 @@ public class LauncherAppState {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
-    }
-
-    public static boolean isDogfoodBuild() {
-        return getInstance().mBuildInfo.isDogfoodBuild();
     }
 }

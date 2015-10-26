@@ -26,13 +26,6 @@ import android.widget.EditText;
  */
 public class AllAppsSearchEditView extends EditText {
 
-    /**
-     * Implemented by listeners of the back key.
-     */
-    public interface OnBackKeyListener {
-        public void onBackKey();
-    }
-
     private OnBackKeyListener mBackKeyListener;
 
     public AllAppsSearchEditView(Context context) {
@@ -61,5 +54,12 @@ public class AllAppsSearchEditView extends EditText {
             return false;
         }
         return super.onKeyPreIme(keyCode, event);
+    }
+
+    /**
+     * Implemented by listeners of the back key.
+     */
+    public interface OnBackKeyListener {
+        public void onBackKey();
     }
 }

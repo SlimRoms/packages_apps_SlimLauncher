@@ -81,14 +81,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Indicates the installation progress of the widget provider
      */
     int installProgress = -1;
-
-    private boolean mHasNotifiedInitialWidgetSizeChanged;
-
     /**
      * View that holds this widget after it's been created.  This view isn't created
      * until Launcher knows it's needed.
      */
     AppWidgetHostView hostView = null;
+    private boolean mHasNotifiedInitialWidgetSizeChanged;
 
     LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         if (appWidgetId == CUSTOM_WIDGET_ID) {

@@ -18,10 +18,10 @@ package com.android.launcher3;
 
 /**
  * Handles scrolling while dragging
- *
  */
 public interface DragScroller {
     void scrollLeft();
+
     void scrollRight();
 
     /**

@@ -53,53 +53,42 @@ public class BubbleTextView extends TextView
         implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView,
         ShortcutInfo.ShortcutListener {
 
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
-
     private static final float SHADOW_LARGE_RADIUS = 4.0f;
     private static final float SHADOW_SMALL_RADIUS = 1.75f;
     private static final float SHADOW_Y_OFFSET = 2.0f;
     private static final int SHADOW_LARGE_COLOUR = 0xDD000000;
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
-
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
-
     private static final float FAST_SCROLL_FOCUS_MAX_SCALE = 1.15f;
     private static final int FAST_SCROLL_FOCUS_MODE_NONE = 0;
     private static final int FAST_SCROLL_FOCUS_MODE_SCALE_ICON = 1;
     private static final int FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG = 2;
     private static final int FAST_SCROLL_FOCUS_FADE_IN_DURATION = 175;
     private static final int FAST_SCROLL_FOCUS_FADE_OUT_DURATION = 125;
-
+    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
     private final Launcher mLauncher;
-    private Drawable mIcon;
     private final Drawable mBackground;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
-
-    private boolean mBackgroundSizeChanged;
-
-    private Bitmap mPressedBackground;
-
-    private float mSlop;
-
     private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
+    private final int mFastScrollMode = FAST_SCROLL_FOCUS_MODE_SCALE_ICON;
+    private Drawable mIcon;
+    private boolean mBackgroundSizeChanged;
+    private Bitmap mPressedBackground;
+    private float mSlop;
     private int mTextColor;
-
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
     private boolean mDisableRelayout = false;
-
     private ObjectAnimator mFastScrollFocusAnimator;
     private Paint mFastScrollFocusBgPaint;
     private float mFastScrollFocusFraction;
     private boolean mFastScrollFocused;
-    private final int mFastScrollMode = FAST_SCROLL_FOCUS_MODE_SCALE_ICON;
-
     private IconLoadRequest mIconLoadRequest;
 
     public BubbleTextView(Context context) {
@@ -167,7 +156,7 @@ public class BubbleTextView extends TextView
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean promiseStateChanged) {
+                                      boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
 
         FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
@@ -251,12 +240,16 @@ public class BubbleTextView extends TextView
         }
     }
 
-    /** Returns the icon for this view. */
+    /**
+     * Returns the icon for this view.
+     */
     public Drawable getIcon() {
         return mIcon;
     }
 
-    /** Returns whether the layout is horizontal. */
+    /**
+     * Returns whether the layout is horizontal.
+     */
     public boolean isLayoutHorizontal() {
         return mLayoutHorizontal;
     }
@@ -387,7 +380,7 @@ public class BubbleTextView extends TextView
             final int scrollY = getScrollY();
 
             if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
+                background.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
                 mBackgroundSizeChanged = false;
             }
 
@@ -494,7 +487,7 @@ public class BubbleTextView extends TextView
         Object tag = getTag();
         int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
                 (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
+                : R.style.PreloadIcon;
         Theme theme = sPreloaderThemes.get(style);
         if (theme == null) {
             theme = getResources().newTheme();
@@ -580,6 +573,10 @@ public class BubbleTextView extends TextView
         }
     }
 
+    public float getFastScrollFocus() {
+        return mFastScrollFocusFraction;
+    }
+
     // Setters & getters for the animation
     public void setFastScrollFocus(float fraction) {
         mFastScrollFocusFraction = fraction;
@@ -589,10 +586,6 @@ public class BubbleTextView extends TextView
         } else {
             invalidate();
         }
-    }
-
-    public float getFastScrollFocus() {
-        return mFastScrollFocusFraction;
     }
 
     @Override

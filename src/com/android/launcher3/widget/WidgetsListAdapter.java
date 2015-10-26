@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * List view adapter for the widget tray.
- *
+ * <p/>
  * <p>Memory vs. Performance:
  * The less number of types of views are inserted into a {@link RecyclerView}, the more recycling
  * happens and less memory is consumed. {@link #getItemViewType} was not overridden as there is
@@ -54,23 +54,19 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private static final String TAG = "WidgetsListAdapter";
     private static final boolean DEBUG = false;
-
+    private static final int PRESET_INDENT_SIZE_TABLET = 56;
     private Launcher mLauncher;
     private LayoutInflater mLayoutInflater;
-
     private WidgetsModel mWidgetsModel;
     private WidgetPreviewLoader mWidgetPreviewLoader;
-
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
-
-    private static final int PRESET_INDENT_SIZE_TABLET = 56;
     private int mIndent = 0;
 
     public WidgetsListAdapter(Context context,
-            View.OnClickListener iconClickListener,
-            View.OnLongClickListener iconLongClickListener,
-            Launcher launcher) {
+                              View.OnClickListener iconClickListener,
+                              View.OnLongClickListener iconLongClickListener,
+                              Launcher launcher) {
         mLayoutInflater = LayoutInflater.from(context);
 
         mIconClickListener = iconClickListener;
@@ -120,7 +116,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 row.addView(widget);
             }
         } else if (diff < 0) {
-            for (int i=infoList.size() ; i < row.getChildCount(); i++) {
+            for (int i = infoList.size(); i < row.getChildCount(); i++) {
                 row.getChildAt(i).setVisibility(View.GONE);
             }
         }
@@ -134,7 +130,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         if (getWidgetPreviewLoader() == null) {
             return;
         }
-        for (int i=0; i < infoList.size(); i++) {
+        for (int i = 0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
             if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);

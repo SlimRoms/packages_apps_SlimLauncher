@@ -30,6 +30,10 @@ public class EditDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
+    public static boolean supportsDrop(Object info) {
+        return info instanceof AppInfo;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -46,10 +50,6 @@ public class EditDropTarget extends ButtonDropTarget {
     @Override
     protected boolean supportsDrop(DragSource source, Object info) {
         return supportsDrop(info);
-    }
-
-    public static boolean supportsDrop(Object info) {
-        return info instanceof AppInfo;
     }
 
     @Override

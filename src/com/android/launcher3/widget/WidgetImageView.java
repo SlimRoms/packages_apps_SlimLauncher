@@ -47,13 +47,13 @@ public class WidgetImageView extends View {
         super(context, attrs, defStyle);
     }
 
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
+
     public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
         invalidate();
-    }
-
-    public Bitmap getBitmap() {
-        return mBitmap;
     }
 
     @Override

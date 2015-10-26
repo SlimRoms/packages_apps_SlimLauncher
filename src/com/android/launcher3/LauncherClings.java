@@ -53,13 +53,24 @@ class LauncherClings implements OnClickListener {
     // New Secure Setting in L
     private static final String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
 
-    @Thunk Launcher mLauncher;
+    @Thunk
+    Launcher mLauncher;
     private LayoutInflater mInflater;
 
-    /** Ctor */
+    /**
+     * Ctor
+     */
     public LauncherClings(Launcher launcher) {
         mLauncher = launcher;
         mInflater = LayoutInflater.from(mLauncher);
+    }
+
+    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
+        SharedPreferences prefs = ctx.getSharedPreferences(
+                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true);
+        editor.commit();
     }
 
     @Override
@@ -90,7 +101,7 @@ class LauncherClings implements OnClickListener {
 
     /**
      * Shows the migration cling.
-     *
+     * <p/>
      * This flow is mutually exclusive with showFirstRunCling, and only runs if this Launcher
      * package was not preinstalled and there exists a db to migrate from.
      */
@@ -178,7 +189,8 @@ class LauncherClings implements OnClickListener {
         });
     }
 
-    @Thunk void dismissLongPressCling() {
+    @Thunk
+    void dismissLongPressCling() {
         Runnable dismissCb = new Runnable() {
             public void run() {
                 dismissCling(mLauncher.findViewById(R.id.longpress_cling), null,
@@ -188,9 +200,12 @@ class LauncherClings implements OnClickListener {
         mLauncher.getWorkspace().post(dismissCb);
     }
 
-    /** Hides the specified Cling */
-    @Thunk void dismissCling(final View cling, final Runnable postAnimationCb,
-                              final String flag, int duration) {
+    /**
+     * Hides the specified Cling
+     */
+    @Thunk
+    void dismissCling(final View cling, final Runnable postAnimationCb,
+                      final String flag, int duration) {
         // To catch cases where siblings of top-level views are made invisible, just check whether
         // the cling is directly set to GONE before dismissing it.
         if (cling != null && cling.getVisibility() != View.GONE) {
@@ -198,8 +213,8 @@ class LauncherClings implements OnClickListener {
                 public void run() {
                     cling.setVisibility(View.GONE);
                     mLauncher.getSharedPrefs().edit()
-                        .putBoolean(flag, true)
-                        .apply();
+                            .putBoolean(flag, true)
+                            .apply();
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -213,7 +228,9 @@ class LauncherClings implements OnClickListener {
         }
     }
 
-    /** Returns whether the clings are enabled or should be shown */
+    /**
+     * Returns whether the clings are enabled or should be shown
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private boolean areClingsEnabled() {
         if (DISABLE_CLINGS) {
@@ -221,7 +238,7 @@ class LauncherClings implements OnClickListener {
         }
 
         // disable clings when running in a test harness
-        if(ActivityManager.isRunningInTestHarness()) return false;
+        if (ActivityManager.isRunningInTestHarness()) return false;
 
         // Disable clings for accessibility when explore by touch is enabled
         final AccessibilityManager a11yManager = (AccessibilityManager) mLauncher.getSystemService(
@@ -252,15 +269,7 @@ class LauncherClings implements OnClickListener {
     public boolean shouldShowFirstRunOrMigrationClings() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         return areClingsEnabled() &&
-            !sharedPrefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false) &&
-            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
-    }
-
-    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
-        SharedPreferences prefs = ctx.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true);
-        editor.commit();
+                !sharedPrefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false) &&
+                !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
 }

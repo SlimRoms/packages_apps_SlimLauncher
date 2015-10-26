@@ -41,31 +41,14 @@ public class MemoryTracker extends Service {
     private static final int MSG_START = 1;
     private static final int MSG_STOP = 2;
     private static final int MSG_UPDATE = 3;
-
-    public static class ProcessMemInfo {
-        public int pid;
-        public String name;
-        public long startTime;
-        public long currentPss, currentUss;
-        public long[] pss = new long[256];
-        public long[] uss = new long[256];
-            //= new Meminfo[(int) (30 * 60 / (UPDATE_RATE / 1000))]; // 30 minutes
-        public long max = 1;
-        public int head = 0;
-        public ProcessMemInfo(int pid, String name, long start) {
-            this.pid = pid;
-            this.name = name;
-            this.startTime = start;
-        }
-        public long getUptime() {
-            return System.currentTimeMillis() - startTime;
-        }
-    };
     public final LongSparseArray<ProcessMemInfo> mData = new LongSparseArray<ProcessMemInfo>();
-    public final ArrayList<Long> mPids = new ArrayList<Long>();
-    private int[] mPidsArray = new int[0];
-    private final Object mLock = new Object();
 
+    ;
+    public final ArrayList<Long> mPids = new ArrayList<Long>();
+    private final Object mLock = new Object();
+    private final IBinder mBinder = new MemoryTrackerInterface();
+    ActivityManager mAm;
+    private int[] mPidsArray = new int[0];
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message m) {
@@ -86,13 +69,11 @@ public class MemoryTracker extends Service {
         }
     };
 
-    ActivityManager mAm;
-
     public static void startTrackingMe(Context context, String name) {
         context.startService(new Intent(context, MemoryTracker.class)
-                .setAction(MemoryTracker.ACTION_START_TRACKING)
-                .putExtra("pid", android.os.Process.myPid())
-                .putExtra("name", name)
+                        .setAction(MemoryTracker.ACTION_START_TRACKING)
+                        .putExtra("pid", android.os.Process.myPid())
+                        .putExtra("name", name)
         );
     }
 
@@ -121,10 +102,11 @@ public class MemoryTracker extends Service {
         final int N = mPids.size();
         mPidsArray = new int[N];
         StringBuffer sb = new StringBuffer("Now tracking processes: ");
-        for (int i=0; i<N; i++) {
+        for (int i = 0; i < N; i++) {
             final int p = mPids.get(i).intValue();
             mPidsArray[i] = p;
-            sb.append(p); sb.append(" ");
+            sb.append(p);
+            sb.append(" ");
         }
         Log.v(TAG, sb.toString());
     }
@@ -132,7 +114,7 @@ public class MemoryTracker extends Service {
     void update() {
         synchronized (mLock) {
             Debug.MemoryInfo[] dinfos = mAm.getProcessMemoryInfo(mPidsArray);
-            for (int i=0; i<dinfos.length; i++) {
+            for (int i = 0; i < dinfos.length; i++) {
                 Debug.MemoryInfo dinfo = dinfos[i];
                 if (i > mPids.size()) {
                     Log.e(TAG, "update: unknown process info received: " + dinfo);
@@ -140,7 +122,7 @@ public class MemoryTracker extends Service {
                 }
                 final long pid = mPids.get(i).intValue();
                 final ProcessMemInfo info = mData.get(pid);
-                info.head = (info.head+1) % info.pss.length;
+                info.head = (info.head + 1) % info.pss.length;
                 info.pss[info.head] = info.currentPss = dinfo.getTotalPss();
                 info.uss[info.head] = info.currentUss = dinfo.getTotalPrivateDirty();
                 if (info.currentPss > info.max) info.max = info.currentPss;
@@ -151,7 +133,7 @@ public class MemoryTracker extends Service {
                     mData.remove(pid);
                 }
             }
-            for (int i=mPids.size()-1; i>=0; i--) {
+            for (int i = mPids.size() - 1; i >= 0; i--) {
                 final long pid = mPids.get(i).intValue();
                 if (mData.get(pid) == null) {
                     mPids.remove(i);
@@ -208,17 +190,37 @@ public class MemoryTracker extends Service {
         return START_STICKY;
     }
 
-    public class MemoryTrackerInterface extends Binder {
-        MemoryTracker getService() {
-            return MemoryTracker.this;
-        }
-    }
-
-    private final IBinder mBinder = new MemoryTrackerInterface();
-
     public IBinder onBind(Intent intent) {
         mHandler.sendEmptyMessage(MSG_START);
 
         return mBinder;
+    }
+
+    public static class ProcessMemInfo {
+        public int pid;
+        public String name;
+        public long startTime;
+        public long currentPss, currentUss;
+        public long[] pss = new long[256];
+        public long[] uss = new long[256];
+        //= new Meminfo[(int) (30 * 60 / (UPDATE_RATE / 1000))]; // 30 minutes
+        public long max = 1;
+        public int head = 0;
+
+        public ProcessMemInfo(int pid, String name, long start) {
+            this.pid = pid;
+            this.name = name;
+            this.startTime = start;
+        }
+
+        public long getUptime() {
+            return System.currentTimeMillis() - startTime;
+        }
+    }
+
+    public class MemoryTrackerInterface extends Binder {
+        MemoryTracker getService() {
+            return MemoryTracker.this;
+        }
     }
 }

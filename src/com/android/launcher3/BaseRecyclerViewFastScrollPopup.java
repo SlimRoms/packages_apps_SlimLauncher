@@ -75,6 +75,7 @@ public class BaseRecyclerViewFastScrollPopup {
 
     /**
      * Updates the bounds for the fast scroller.
+     *
      * @return the invalidation rect for this update.
      */
     public Rect updateFastScrollerBounds(BaseRecyclerView rv, int lastTouchY) {
@@ -122,14 +123,14 @@ public class BaseRecyclerViewFastScrollPopup {
         }
     }
 
+    public float getAlpha() {
+        return mAlpha;
+    }
+
     // Setter/getter for the popup alpha for animations
     public void setAlpha(float alpha) {
         mAlpha = alpha;
         mRv.invalidate(mBgBounds);
-    }
-
-    public float getAlpha() {
-        return mAlpha;
     }
 
     public int getHeight() {

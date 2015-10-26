@@ -110,7 +110,7 @@ public class GestureFragment extends SettingsPreferenceFragment
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == mGestureLeftUp || preference == mGestureMiddleUp ||
-                preference == mGestureRightUp || preference == mGestureLeftDown||
+                preference == mGestureRightUp || preference == mGestureLeftDown ||
                 preference == mGestureMiddleDown || preference == mGestureRightDown ||
                 preference == mGesturePinch || preference == mGestureSpread ||
                 preference == mGestureDoubleTap) {

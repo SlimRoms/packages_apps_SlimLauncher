@@ -19,7 +19,7 @@ public class UiThreadCircularReveal {
     }
 
     public static ValueAnimator createCircularReveal(View v, int x, int y, float r0, float r1,
-            final ViewOutlineProvider originalProvider) {
+                                                     final ViewOutlineProvider originalProvider) {
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
 
         final View revealView = v;

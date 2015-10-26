@@ -49,20 +49,21 @@ public abstract class ButtonDropTarget extends TextView
     private static int DRAG_VIEW_DROP_DURATION = 285;
 
     protected Launcher mLauncher;
-    private int mBottomDragPadding;
     protected SearchDropTargetBar mSearchDropTargetBar;
-
-    /** Whether this drop target is active for the current drag */
+    /**
+     * Whether this drop target is active for the current drag
+     */
     protected boolean mActive;
-
-    /** The paint applied to the drag view on hover */
+    /**
+     * The paint applied to the drag view on hover
+     */
     protected int mHoverColor = 0;
-
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
-
+    @Thunk
+    ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
+    private int mBottomDragPadding;
     private AnimatorSet mCurrentColorAnim;
-    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
@@ -108,7 +109,8 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onFlingToDelete(DragObject d, PointF vec) { }
+    public void onFlingToDelete(DragObject d, PointF vec) {
+    }
 
     @Override
     public final void onDragEnter(DragObject d) {
@@ -130,7 +132,7 @@ public abstract class ButtonDropTarget extends TextView
         // Do nothing
     }
 
-	protected void resetHoverColor() {
+    protected void resetHoverColor() {
         if (Utilities.isLmpOrAbove()) {
             animateTextColor(mOriginalTextColor.getDefaultColor());
         } else {
@@ -184,7 +186,7 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-	@Override
+    @Override
     public final void onDragStart(DragSource source, Object info, int dragAction) {
         mActive = supportsDrop(source, info);
         mDrawable.setColorFilter(null);
@@ -244,9 +246,11 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void prepareAccessibilityDrop() { }
+    public void prepareAccessibilityDrop() {
+    }
 
-    @Thunk abstract void completeDrop(DragObject d);
+    @Thunk
+    abstract void completeDrop(DragObject d);
 
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
@@ -280,7 +284,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         final int top = to.top + (getMeasuredHeight() - height) / 2;
-        final int bottom = top +  height;
+        final int bottom = top + height;
 
         to.set(left, top, right, bottom);
 
@@ -308,7 +312,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void onClick(View v) {
         LauncherAppState.getInstance().getAccessibilityDelegate()
-            .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
+                .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
     }
 
     public int getTextColor() {

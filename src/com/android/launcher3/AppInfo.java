@@ -34,33 +34,26 @@ import java.util.Arrays;
  * Represents an app in AllAppsView.
  */
 public class AppInfo extends ItemInfo {
+    static final int DOWNLOADED_FLAG = 1;
+    static final int UPDATED_SYSTEM_APP_FLAG = 2;
     private static final String TAG = "Launcher3.AppInfo";
-
     /**
      * The intent used to start the application.
      */
     public Intent intent;
-
     /**
      * A bitmap version of the application icon.
      */
     public Bitmap iconBitmap;
-
-    /**
-     * Indicates whether we're using a low res icon
-     */
-    boolean usingLowResIcon;
-
     /**
      * The time at which the app was first installed.
      */
     public long firstInstallTime;
-
     public ComponentName componentName;
-
-    static final int DOWNLOADED_FLAG = 1;
-    static final int UPDATED_SYSTEM_APP_FLAG = 2;
-
+    /**
+     * Indicates whether we're using a low res icon
+     */
+    boolean usingLowResIcon;
     int flags = 0;
 
     private ArrayList<ShortcutInfo.ShortcutListener> mListeners = new ArrayList<>();
@@ -69,19 +62,11 @@ public class AppInfo extends ItemInfo {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
-    public Intent getIntent() {
-        return intent;
-    }
-
-    protected Intent getRestoredIntent() {
-        return null;
-    }
-
     /**
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
-            IconCache iconCache) {
+                   IconCache iconCache) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
 
@@ -90,6 +75,16 @@ public class AppInfo extends ItemInfo {
         iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;
+    }
+
+    public AppInfo(AppInfo info) {
+        super(info);
+        componentName = info.componentName;
+        title = Utilities.trim(info.title);
+        intent = new Intent(info.intent);
+        flags = info.flags;
+        firstInstallTime = info.firstInstallTime;
+        iconBitmap = info.iconBitmap;
     }
 
     public static int initFlags(LauncherActivityInfoCompat info) {
@@ -105,14 +100,34 @@ public class AppInfo extends ItemInfo {
         return flags;
     }
 
-    public AppInfo(AppInfo info) {
-        super(info);
-        componentName = info.componentName;
-        title = Utilities.trim(info.title);
-        intent = new Intent(info.intent);
-        flags = info.flags;
-        firstInstallTime = info.firstInstallTime;
-        iconBitmap = info.iconBitmap;
+    /**
+     * Helper method used for debugging.
+     */
+    public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
+        Log.d(tag, label + " size=" + list.size());
+        for (AppInfo info : list) {
+            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
+                    + " firstInstallTime=" + info.firstInstallTime
+                    + " componentName=" + info.componentName.getPackageName());
+        }
+    }
+
+    public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
+                                          UserHandleCompat user) {
+        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+        return new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(info.getComponentName())
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                .putExtra(EXTRA_PROFILE, serialNumber);
+    }
+
+    public Intent getIntent() {
+        return intent;
+    }
+
+    protected Intent getRestoredIntent() {
+        return null;
     }
 
     public void setIcon(Bitmap b) {
@@ -144,33 +159,11 @@ public class AppInfo extends ItemInfo {
                 + " user=" + user + ")";
     }
 
-    /**
-     * Helper method used for debugging.
-     */
-    public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
-        Log.d(tag, label + " size=" + list.size());
-        for (AppInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap 
-                    + " firstInstallTime=" + info.firstInstallTime
-                    + " componentName=" + info.componentName.getPackageName());
-        }
-    }
-
     public ShortcutInfo makeShortcut() {
         return new ShortcutInfo(this);
     }
 
     public ComponentKey toComponentKey() {
         return new ComponentKey(componentName, user);
-    }
-
-    public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
-            UserHandleCompat user) {
-        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
-        return new Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setComponent(info.getComponentName())
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            .putExtra(EXTRA_PROFILE, serialNumber);
     }
 }

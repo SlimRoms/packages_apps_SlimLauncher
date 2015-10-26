@@ -24,21 +24,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     private int mMinSpanX = -1;
     private int mMinSpanY = -1;
 
-    public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
-            AppWidgetProviderInfo info) {
-
-        // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
-        // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
-        // associated super parcel constructor. This allows us to copy non-public members without
-        // using reflection.
-        Parcel p = Parcel.obtain();
-        info.writeToParcel(p, 0);
-        p.setDataPosition(0);
-        LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
-        p.recycle();
-        return lawpi;
-    }
-
     public LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
     }
@@ -52,6 +37,21 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         previewImage = widget.getPreviewImage();
         initialLayout = widget.getWidgetLayout();
         resizeMode = widget.getResizeMode();
+    }
+
+    public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
+                                                                 AppWidgetProviderInfo info) {
+
+        // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
+        // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
+        // associated super parcel constructor. This allows us to copy non-public members without
+        // using reflection.
+        Parcel p = Parcel.obtain();
+        info.writeToParcel(p, 0);
+        p.setDataPosition(0);
+        LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
+        p.recycle();
+        return lawpi;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -110,4 +110,4 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
             mMinSpanY = minResizeSpan[1];
         }
     }
- }
+}

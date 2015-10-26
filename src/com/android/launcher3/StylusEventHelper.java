@@ -19,6 +19,18 @@ public class StylusEventHelper {
     }
 
     /**
+     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
+     * pressed.
+     *
+     * @param event The event to check.
+     * @return Whether a stylus button press occurred.
+     */
+    public static boolean isStylusButtonPressed(MotionEvent event) {
+        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
+                && event.isButtonPressed(MotionEvent.BUTTON_SECONDARY);
+    }
+
+    /**
      * Call this in onTouchEvent method of a view to identify a stylus button press and perform a
      * long click (if the view is long clickable).
      *
@@ -65,17 +77,5 @@ public class StylusEventHelper {
      */
     public boolean inStylusButtonPressed() {
         return mIsButtonPressed;
-    }
-
-    /**
-     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
-     * pressed.
-     *
-     * @param event The event to check.
-     * @return Whether a stylus button press occurred.
-     */
-    public static boolean isStylusButtonPressed(MotionEvent event) {
-        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
-                && event.isButtonPressed(MotionEvent.BUTTON_SECONDARY);
     }
 }

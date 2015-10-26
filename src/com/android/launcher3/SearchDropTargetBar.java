@@ -35,12 +35,10 @@ import android.widget.FrameLayout;
 public class SearchDropTargetBar extends FrameLayout implements DragController.DragListener {
 
     private static final int TRANSITION_DURATION = 200;
-
-    private ObjectAnimator mShowDropTargetBarAnim;
-    private ValueAnimator mHideSearchBarAnim;
     private static final AccelerateInterpolator sAccelerateInterpolator =
             new AccelerateInterpolator();
-
+    private ObjectAnimator mShowDropTargetBarAnim;
+    private ValueAnimator mHideSearchBarAnim;
     private boolean mIsSearchBarHidden;
     private View mQSBSearchBar;
     private View mDropTargetBar;

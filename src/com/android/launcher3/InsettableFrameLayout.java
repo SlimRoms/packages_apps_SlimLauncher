@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 public class InsettableFrameLayout extends FrameLayout implements
-    ViewGroup.OnHierarchyChangeListener, Insettable {
+        ViewGroup.OnHierarchyChangeListener, Insettable {
 
     protected Rect mInsets = new Rect();
 
@@ -63,6 +63,15 @@ public class InsettableFrameLayout extends FrameLayout implements
         return new LayoutParams(p);
     }
 
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+        setFrameLayoutChildInsets(child, mInsets, new Rect());
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
+    }
+
     public static class LayoutParams extends FrameLayout.LayoutParams {
         boolean ignoreInsets = false;
 
@@ -82,15 +91,6 @@ public class InsettableFrameLayout extends FrameLayout implements
         public LayoutParams(ViewGroup.LayoutParams lp) {
             super(lp);
         }
-    }
-
-    @Override
-    public void onChildViewAdded(View parent, View child) {
-        setFrameLayoutChildInsets(child, mInsets, new Rect());
-    }
-
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
     }
 
 }

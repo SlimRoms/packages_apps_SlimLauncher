@@ -22,20 +22,6 @@ public class UninstallDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
-
-        setDrawable(R.drawable.ic_uninstall_launcher);
-    }
-
-    @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
-        return supportsDrop(getContext(), info);
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -69,6 +55,27 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return null;
     }
 
+    public static boolean startUninstallActivity(Launcher launcher, Object info) {
+        final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
+        final UserHandleCompat user = ((ItemInfo) info).user;
+        return launcher.startApplicationUninstallActivity(
+                componentInfo.first, componentInfo.second, user);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Get the hover color
+        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
+
+        setDrawable(R.drawable.ic_uninstall_launcher);
+    }
+
+    @Override
+    protected boolean supportsDrop(DragSource source, Object info) {
+        return supportsDrop(getContext(), info);
+    }
+
     @Override
     public void onDrop(DragObject d) {
         // Differ item deletion
@@ -99,14 +106,8 @@ public class UninstallDropTarget extends ButtonDropTarget {
         }
     }
 
-    public static boolean startUninstallActivity(Launcher launcher, Object info) {
-        final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
-        final UserHandleCompat user = ((ItemInfo) info).user;
-        return launcher.startApplicationUninstallActivity(
-                componentInfo.first, componentInfo.second, user);
-    }
-
-    @Thunk void sendUninstallResult(DragSource target, boolean result) {
+    @Thunk
+    void sendUninstallResult(DragSource target, boolean result) {
         if (target instanceof UninstallSource) {
             ((UninstallSource) target).onUninstallActivityReturned(result);
         }
@@ -119,6 +120,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
         /**
          * A pending uninstall operation was complete.
+         *
          * @param result true if uninstall was successful, false otherwise.
          */
         void onUninstallActivityReturned(boolean result);

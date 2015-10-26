@@ -28,16 +28,15 @@ import android.widget.LinearLayout;
 public abstract class BaseContainerView extends LinearLayout implements Insettable {
 
     private final static String TAG = "BaseContainerView";
-
+    // The bounds of the container
+    protected Rect mContentBounds = new Rect();
+    // The padding to apply to the container to achieve the bounds
+    protected Rect mContentPadding = new Rect();
     // The window insets
     private Rect mInsets = new Rect();
     // The bounds of the search bar.  Only the left, top, right are used to inset the
     // search bar and the height is determined by the measurement of the layout
     private Rect mFixedSearchBarBounds = new Rect();
-    // The bounds of the container
-    protected Rect mContentBounds = new Rect();
-    // The padding to apply to the container to achieve the bounds
-    protected Rect mContentPadding = new Rect();
     // The inset to apply to the edges and between the search bar and the container
     private int mContainerBoundsInset;
     private boolean mHasSearchBar;

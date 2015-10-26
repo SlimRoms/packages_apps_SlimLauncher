@@ -18,7 +18,7 @@ package com.android.launcher3;
 
 import android.os.Handler;
 
-public class Alarm implements Runnable{
+public class Alarm implements Runnable {
     // if we reach this time and the alarm hasn't been cancelled, call the listener
     private long mAlarmTriggerTime;
 

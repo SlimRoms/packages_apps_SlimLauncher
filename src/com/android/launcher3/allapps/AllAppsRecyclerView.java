@@ -42,18 +42,43 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
     private static final int FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_ROW = 0;
     private static final int FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_SECTIONS = 1;
-
-    private AlphabeticalAppsList mApps;
-    private int mNumAppsPerRow;
-
-    @Thunk BaseRecyclerViewFastScrollBar.FastScrollFocusableView mLastFastScrollFocusedView;
-    @Thunk int mPrevFastScrollFocusedPosition;
-    @Thunk int mFastScrollFrameIndex;
-    @Thunk final int[] mFastScrollFrames = new int[10];
-
+    @Thunk
+    final int[] mFastScrollFrames = new int[10];
     private final int mFastScrollMode = FAST_SCROLL_MODE_JUMP_TO_FIRST_ICON;
     private final int mScrollBarMode = FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_ROW;
-
+    @Thunk
+    BaseRecyclerViewFastScrollBar.FastScrollFocusableView mLastFastScrollFocusedView;
+    @Thunk
+    int mPrevFastScrollFocusedPosition;
+    @Thunk
+    int mFastScrollFrameIndex;
+    /**
+     * This runnable runs a single frame of the smooth scroll animation and posts the next frame
+     * if necessary.
+     */
+    @Thunk
+    Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mFastScrollFrameIndex < mFastScrollFrames.length) {
+                scrollBy(0, mFastScrollFrames[mFastScrollFrameIndex]);
+                mFastScrollFrameIndex++;
+                postOnAnimation(mSmoothSnapNextFrameRunnable);
+            } else {
+                // Animation completed, set the fast scroll state on the target view
+                final ViewHolder vh = findViewHolderForPosition(mPrevFastScrollFocusedPosition);
+                if (vh != null &&
+                        vh.itemView instanceof BaseRecyclerViewFastScrollBar.FastScrollFocusableView &&
+                        mLastFastScrollFocusedView != vh.itemView) {
+                    mLastFastScrollFocusedView =
+                            (BaseRecyclerViewFastScrollBar.FastScrollFocusableView) vh.itemView;
+                    mLastFastScrollFocusedView.setFastScrollFocused(true, true);
+                }
+            }
+        }
+    };
+    private AlphabeticalAppsList mApps;
+    private int mNumAppsPerRow;
     private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
     public AllAppsRecyclerView(Context context) {
@@ -69,7 +94,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -158,7 +183,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                 }
                 lastInfo = info;
             }
-        } else if (mScrollBarMode == FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_SECTIONS){
+        } else if (mScrollBarMode == FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_SECTIONS) {
             lastInfo = fastScrollSections.get((int) (touchFraction * (fastScrollSections.size() - 1)));
         } else {
             throw new RuntimeException("Unexpected scroll bar mode");
@@ -234,31 +259,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     /**
-     * This runnable runs a single frame of the smooth scroll animation and posts the next frame
-     * if necessary.
-     */
-    @Thunk Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mFastScrollFrameIndex < mFastScrollFrames.length) {
-                scrollBy(0, mFastScrollFrames[mFastScrollFrameIndex]);
-                mFastScrollFrameIndex++;
-                postOnAnimation(mSmoothSnapNextFrameRunnable);
-            } else {
-                // Animation completed, set the fast scroll state on the target view
-                final ViewHolder vh = findViewHolderForPosition(mPrevFastScrollFocusedPosition);
-                if (vh != null &&
-                        vh.itemView instanceof BaseRecyclerViewFastScrollBar.FastScrollFocusableView &&
-                        mLastFastScrollFocusedView != vh.itemView) {
-                    mLastFastScrollFocusedView =
-                            (BaseRecyclerViewFastScrollBar.FastScrollFocusableView) vh.itemView;
-                    mLastFastScrollFocusedView.setFastScrollFocused(true, true);
-                }
-            }
-        }
-    };
-
-    /**
      * Smoothly snaps to a given position.  We do this manually by calculating the keyframes
      * ourselves and animating the scroll on the recycler view.
      */
@@ -283,7 +283,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      * Returns the current scroll state of the apps rows.
      */
     private void getCurScrollState(ScrollPositionState stateOut,
-            List<AlphabeticalAppsList.AdapterItem> items) {
+                                   List<AlphabeticalAppsList.AdapterItem> items) {
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;

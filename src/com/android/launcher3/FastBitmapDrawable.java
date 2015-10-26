@@ -40,7 +40,7 @@ public class FastBitmapDrawable extends Drawable {
         public float getInterpolation(float input) {
             if (input < 0.05f) {
                 return input / 0.05f;
-            } else if (input < 0.3f){
+            } else if (input < 0.3f) {
                 return 1;
             } else {
                 return (1 - input) / 0.7f;
@@ -50,18 +50,15 @@ public class FastBitmapDrawable extends Drawable {
     static final long CLICK_FEEDBACK_DURATION = 2000;
 
     private static final int PRESSED_BRIGHTNESS = 100;
-    private static ColorMatrix sGhostModeMatrix;
     private static final ColorMatrix sTempMatrix = new ColorMatrix();
-
     /**
      * Store the brightness colors filters to optimize animations during icon press. This
      * only works for non-ghost-mode icons.
      */
     private static final SparseArray<ColorFilter> sCachedBrightnessFilter =
             new SparseArray<ColorFilter>();
-
     private static final int GHOST_MODE_MIN_COLOR_RANGE = 130;
-
+    private static ColorMatrix sGhostModeMatrix;
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Bitmap mBitmap;
     private int mAlpha;
@@ -76,6 +73,20 @@ public class FastBitmapDrawable extends Drawable {
         mAlpha = 255;
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());
+    }
+
+    private static void setBrightnessMatrix(ColorMatrix matrix, int brightness) {
+        // Brightness: C-new = C-old*(1-amount) + amount
+        float scale = 1 - brightness / 255.0f;
+        matrix.setScale(scale, scale, scale, 1);
+        float[] array = matrix.getArray();
+
+        // Add the amount to RGB components of the matrix, as per the above formula.
+        // Fifth elements in the array correspond to the constant being added to
+        // red, blue, green, and alpha channel respectively.
+        array[4] = brightness;
+        array[9] = brightness;
+        array[14] = brightness;
     }
 
     @Override
@@ -96,12 +107,6 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        mPaint.setAlpha(alpha);
-    }
-
-    @Override
     public void setFilterBitmap(boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
         mPaint.setAntiAlias(filterBitmap);
@@ -109,6 +114,12 @@ public class FastBitmapDrawable extends Drawable {
 
     public int getAlpha() {
         return mAlpha;
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+        mAlpha = alpha;
+        mPaint.setAlpha(alpha);
     }
 
     @Override
@@ -135,17 +146,6 @@ public class FastBitmapDrawable extends Drawable {
         return mBitmap;
     }
 
-    /**
-     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost'
-     * appearance.
-     */
-    public void setGhostModeEnabled(boolean enabled) {
-        if (mGhostModeEnabled != enabled) {
-            mGhostModeEnabled = enabled;
-            updateFilter();
-        }
-    }
-
     public void setPressed(boolean pressed) {
         if (mPressed != pressed) {
             mPressed = pressed;
@@ -165,6 +165,17 @@ public class FastBitmapDrawable extends Drawable {
 
     public boolean isGhostModeEnabled() {
         return mGhostModeEnabled;
+    }
+
+    /**
+     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost'
+     * appearance.
+     */
+    public void setGhostModeEnabled(boolean enabled) {
+        if (mGhostModeEnabled != enabled) {
+            mGhostModeEnabled = enabled;
+            updateFilter();
+        }
     }
 
     public int getBrightness() {
@@ -187,11 +198,11 @@ public class FastBitmapDrawable extends Drawable {
 
                 // For ghost mode, set the color range to [GHOST_MODE_MIN_COLOR_RANGE, 255]
                 float range = (255 - GHOST_MODE_MIN_COLOR_RANGE) / 255.0f;
-                sTempMatrix.set(new float[] {
+                sTempMatrix.set(new float[]{
                         range, 0, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
                         0, range, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
                         0, 0, range, 0, GHOST_MODE_MIN_COLOR_RANGE,
-                        0, 0, 0, 1, 0 });
+                        0, 0, 0, 1, 0});
                 sGhostModeMatrix.preConcat(sTempMatrix);
             }
 
@@ -213,19 +224,5 @@ public class FastBitmapDrawable extends Drawable {
         } else {
             mPaint.setColorFilter(null);
         }
-    }
-
-    private static void setBrightnessMatrix(ColorMatrix matrix, int brightness) {
-        // Brightness: C-new = C-old*(1-amount) + amount
-        float scale = 1 - brightness / 255.0f;
-        matrix.setScale(scale, scale, scale, 1);
-        float[] array = matrix.getArray();
-
-        // Add the amount to RGB components of the matrix, as per the above formula.
-        // Fifth elements in the array correspond to the constant being added to
-        // red, blue, green, and alpha channel respectively.
-        array[4] = brightness;
-        array[9] = brightness;
-        array[14] = brightness;
     }
 }

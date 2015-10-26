@@ -66,26 +66,15 @@ public class ManagedProfileHeuristic {
      * Duration (in milliseconds) for which app shortcuts will be added to work folder.
      */
     private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
-
-    public static ManagedProfileHeuristic get(Context context, UserHandleCompat user) {
-        if (Utilities.isLmpOrAbove() && !UserHandleCompat.myUserHandle().equals(user)) {
-            return new ManagedProfileHeuristic(context, user);
-        }
-        return null;
-    }
-
     private final Context mContext;
     private final UserHandleCompat mUser;
     private final LauncherModel mModel;
-
     private final SharedPreferences mPrefs;
     private final long mUserSerial;
     private final long mUserCreationTime;
     private final String mPackageSetKey;
-
     private ArrayList<ShortcutInfo> mHomescreenApps;
     private ArrayList<ShortcutInfo> mWorkFolderApps;
-
     private ManagedProfileHeuristic(Context context, UserHandleCompat user) {
         mContext = context;
         mUser = user;
@@ -98,6 +87,69 @@ public class ManagedProfileHeuristic {
 
         mPrefs = mContext.getSharedPreferences(LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
                 Context.MODE_PRIVATE);
+    }
+
+    public static ManagedProfileHeuristic get(Context context, UserHandleCompat user) {
+        if (Utilities.isLmpOrAbove() && !UserHandleCompat.myUserHandle().equals(user)) {
+            return new ManagedProfileHeuristic(context, user);
+        }
+        return null;
+    }
+
+    /**
+     * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
+     */
+    public static void processAllUsers(List<UserHandleCompat> users, Context context) {
+        if (!Utilities.isLmpOrAbove()) {
+            return;
+        }
+        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
+        HashSet<String> validKeys = new HashSet<String>();
+        for (UserHandleCompat user : users) {
+            addAllUserKeys(userManager.getSerialNumberForUser(user), validKeys);
+        }
+
+        SharedPreferences prefs = context.getSharedPreferences(
+                LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        for (String key : prefs.getAll().keySet()) {
+            if (!validKeys.contains(key)) {
+                editor.remove(key);
+            }
+        }
+        editor.apply();
+    }
+
+    private static void addAllUserKeys(long userSerial, HashSet<String> keysOut) {
+        keysOut.add(INSTALLED_PACKAGES_PREFIX + userSerial);
+        keysOut.add(USER_FOLDER_ID_PREFIX + userSerial);
+    }
+
+    /**
+     * For each user, if a work folder has not been created, mark it such that the folder will
+     * never get created.
+     */
+    public static void markExistingUsersForNoFolderCreation(Context context) {
+        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
+        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+
+        SharedPreferences prefs = null;
+        for (UserHandleCompat user : userManager.getUserProfiles()) {
+            if (myUser.equals(user)) {
+                continue;
+            }
+
+            if (prefs == null) {
+                prefs = context.getSharedPreferences(
+                        LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
+                        Context.MODE_PRIVATE);
+            }
+            String folderIdKey = USER_FOLDER_ID_PREFIX + userManager.getSerialNumberForUser(user);
+            if (!prefs.contains(folderIdKey)) {
+                prefs.edit().putLong(folderIdKey, ItemInfo.NO_ID).apply();
+            }
+        }
     }
 
     /**
@@ -280,6 +332,7 @@ public class ManagedProfileHeuristic {
 
     /**
      * Reads the list of user apps which have already been processed.
+     *
      * @return false if the list didn't exist, true otherwise
      */
     private boolean getUserApps(HashSet<String> outExistingApps) {
@@ -289,62 +342,6 @@ public class ManagedProfileHeuristic {
         } else {
             outExistingApps.addAll(userApps);
             return true;
-        }
-    }
-
-    /**
-     * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
-     */
-    public static void processAllUsers(List<UserHandleCompat> users, Context context) {
-        if (!Utilities.isLmpOrAbove()) {
-            return;
-        }
-        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-        HashSet<String> validKeys = new HashSet<String>();
-        for (UserHandleCompat user : users) {
-            addAllUserKeys(userManager.getSerialNumberForUser(user), validKeys);
-        }
-
-        SharedPreferences prefs = context.getSharedPreferences(
-                LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        for (String key : prefs.getAll().keySet()) {
-            if (!validKeys.contains(key)) {
-                editor.remove(key);
-            }
-        }
-        editor.apply();
-    }
-
-    private static void addAllUserKeys(long userSerial, HashSet<String> keysOut) {
-        keysOut.add(INSTALLED_PACKAGES_PREFIX + userSerial);
-        keysOut.add(USER_FOLDER_ID_PREFIX + userSerial);
-    }
-
-    /**
-     * For each user, if a work folder has not been created, mark it such that the folder will
-     * never get created.
-     */
-    public static void markExistingUsersForNoFolderCreation(Context context) {
-        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
-
-        SharedPreferences prefs = null;
-        for (UserHandleCompat user : userManager.getUserProfiles()) {
-            if (myUser.equals(user)) {
-                continue;
-            }
-
-            if (prefs == null) {
-                prefs = context.getSharedPreferences(
-                        LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
-                        Context.MODE_PRIVATE);
-            }
-            String folderIdKey = USER_FOLDER_ID_PREFIX + userManager.getSerialNumberForUser(user);
-            if (!prefs.contains(folderIdKey)) {
-                prefs.edit().putLong(folderIdKey, ItemInfo.NO_ID).apply();
-            }
         }
     }
 }

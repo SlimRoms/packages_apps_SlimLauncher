@@ -1,4 +1,3 @@
-
 package com.android.launcher3.model;
 
 import android.content.ComponentName;
@@ -22,30 +21,26 @@ import java.util.List;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
- *
+ * <p/>
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
-
-    /* List of packages that is tracked by this model. */
-    private ArrayList<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
-
-    /* Map of widgets and shortcuts that are tracked per package. */
-    private HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
-
-    private ArrayList<Object> mRawList;
-
     private final AppWidgetManagerCompat mAppWidgetMgr;
     private final Comparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
+    /* List of packages that is tracked by this model. */
+    private ArrayList<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
+    /* Map of widgets and shortcuts that are tracked per package. */
+    private HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
+    private ArrayList<Object> mRawList;
     private AlphabeticIndexCompat mIndexer;
 
-    public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
+    public WidgetsModel(Context context, IconCache iconCache, AppFilter appFilter) {
         mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
@@ -105,7 +100,7 @@ public class WidgetsModel {
         mPackageItemInfos.clear();
 
         // add and update.
-        for (Object o: rawWidgetsShortcuts) {
+        for (Object o : rawWidgetsShortcuts) {
             String packageName = "";
             UserHandleCompat userHandle = null;
             ComponentName componentName = null;
@@ -129,7 +124,7 @@ public class WidgetsModel {
             if (mAppFilter != null && !mAppFilter.shouldShowApp(componentName)) {
                 if (DEBUG) {
                     Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
-                        packageName));
+                            packageName));
                 }
                 continue;
             }
@@ -146,25 +141,25 @@ public class WidgetsModel {
                         true /* userLowResIcon */, pInfo);
                 pInfo.titleSectionName = mIndexer.computeSectionName(pInfo.title);
                 mWidgetsList.put(pInfo, widgetsShortcutsList);
-                tmpPackageItemInfos.put(packageName,  pInfo);
+                tmpPackageItemInfos.put(packageName, pInfo);
                 mPackageItemInfos.add(pInfo);
             }
         }
 
         // sort.
         Collections.sort(mPackageItemInfos, mAppNameComparator);
-        for (PackageItemInfo p: mPackageItemInfos) {
+        for (PackageItemInfo p : mPackageItemInfos) {
             Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
         }
     }
 
     /**
      * Create a snapshot of the widgets model.
-     * <p>
+     * <p/>
      * Usage case: view binding without being modified from package updates.
      */
     @Override
-    public WidgetsModel clone(){
+    public WidgetsModel clone() {
         return new WidgetsModel(this);
     }
 }

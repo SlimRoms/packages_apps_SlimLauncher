@@ -23,15 +23,12 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 public class Hotseat extends FrameLayout
-        implements Stats.LaunchSourceProvider{
-
-    private CellLayout mContent;
-
-    private Launcher mLauncher;
-
-    private int mAllAppsButtonRank;
+        implements Stats.LaunchSourceProvider {
 
     private final boolean mHasVerticalHotseat;
+    private CellLayout mContent;
+    private Launcher mLauncher;
+    private int mAllAppsButtonRank;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -65,7 +62,7 @@ public class Hotseat extends FrameLayout
     public void setOnLongClickListener(OnLongClickListener l) {
         mContent.setOnLongClickListener(l);
     }
-  
+
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
         return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;

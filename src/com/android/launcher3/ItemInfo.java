@@ -31,18 +31,16 @@ import java.util.Arrays;
  */
 public class ItemInfo {
 
+    public static final int NO_ID = -1;
     /**
      * Intent extra to store the profile. Format: UserHandle
      */
     static final String EXTRA_PROFILE = "profile";
-    
-    public static final int NO_ID = -1;
-    
     /**
      * The id in the settings database for this item
      */
     public long id = NO_ID;
-    
+
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
@@ -50,20 +48,20 @@ public class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
     public int itemType;
-    
+
     /**
-     * The id of the container that holds this item. For the desktop, this will be 
+     * The id of the container that holds this item. For the desktop, this will be
      * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
     public long container = NO_ID;
-    
+
     /**
      * Iindicates the screen in which the shortcut appears.
      */
     public long screenId = -1;
-    
+
     /**
      * Indicates the X position of the associated cell.
      */
@@ -131,6 +129,17 @@ public class ItemInfo {
         LauncherModel.checkItemInfo(this);
     }
 
+    static void writeBitmap(ContentValues values, Bitmap bitmap, boolean customIcon) {
+        if (bitmap != null) {
+            byte[] data = Utilities.flattenBitmap(bitmap);
+            if (customIcon) {
+                values.put(LauncherSettings.Favorites.CUSTOM_ICON, data);
+            } else {
+                values.put(LauncherSettings.Favorites.ICON, data);
+            }
+        }
+    }
+
     public void copyFrom(ItemInfo info) {
         id = info.id;
         cellX = info.cellX;
@@ -151,7 +160,7 @@ public class ItemInfo {
 
     /**
      * Write the fields of this item to the DB
-     * 
+     *
      * @param context A context object to use for getting UserManagerCompat
      * @param values
      */
@@ -174,17 +183,6 @@ public class ItemInfo {
         }
     }
 
-    static void writeBitmap(ContentValues values, Bitmap bitmap, boolean customIcon) {
-        if (bitmap != null) {
-            byte[] data = Utilities.flattenBitmap(bitmap);
-            if (customIcon) {
-                values.put(LauncherSettings.Favorites.CUSTOM_ICON, data);
-            } else {
-                values.put(LauncherSettings.Favorites.ICON, data);
-            }
-        }
-    }
-
     /**
      * It is very important that sub-classes implement this if they contain any references
      * to the activity (anything in the view hierarchy etc.). If not, leaks can result since
@@ -197,8 +195,8 @@ public class ItemInfo {
     @Override
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
-            + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
-            + " user=" + user + ")";
+                + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
+                + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
+                + " user=" + user + ")";
     }
 }

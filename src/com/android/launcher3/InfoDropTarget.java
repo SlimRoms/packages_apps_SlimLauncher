@@ -32,15 +32,6 @@ public class InfoDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.info_target_hover_tint);
-
-        setDrawable(R.drawable.ic_info_launcher);
-    }
-
     public static void startDetailsActivityForInfo(Object info, Launcher launcher) {
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
@@ -62,13 +53,22 @@ public class InfoDropTarget extends ButtonDropTarget {
         }
     }
 
+    public static boolean supportsDrop(Context context, Object info) {
+        return info instanceof AppInfo || info instanceof PendingAddItemInfo;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Get the hover color
+        mHoverColor = getResources().getColor(R.color.info_target_hover_tint);
+
+        setDrawable(R.drawable.ic_info_launcher);
+    }
+
     @Override
     protected boolean supportsDrop(DragSource source, Object info) {
         return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
-    }
-
-    public static boolean supportsDrop(Context context, Object info) {
-        return info instanceof AppInfo || info instanceof PendingAddItemInfo;
     }
 
     @Override

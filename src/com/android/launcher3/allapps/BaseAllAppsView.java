@@ -4,7 +4,10 @@ import android.view.View;
 
 public interface BaseAllAppsView {
     View getView();
+
     View getContentView();
+
     View getRevealView();
+
     View getExtraView();
 }
