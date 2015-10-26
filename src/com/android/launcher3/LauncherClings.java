@@ -36,6 +36,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
+
 import com.android.launcher3.util.Thunk;
 
 class LauncherClings implements OnClickListener {

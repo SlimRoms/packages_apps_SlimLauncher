@@ -30,8 +30,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.allapps.BaseAllAppsView;
-import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.util.HashMap;

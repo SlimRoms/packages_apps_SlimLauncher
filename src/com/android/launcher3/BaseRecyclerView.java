@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
 import com.android.launcher3.util.Thunk;
 
 

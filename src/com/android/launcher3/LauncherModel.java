@@ -1827,8 +1827,8 @@ public class LauncherModel extends BroadcastReceiver
                 final HashMap<String, Integer> installingPkgs = PackageInstallerCompat
                         .getInstance(mContext).updateAndGetActiveSessionCache();
 
-                final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
-                final ArrayList<Long> restoredRows = new ArrayList<Long>();
+                final ArrayList<Long> itemsToRemove = new ArrayList<>();
+                final ArrayList<Long> restoredRows = new ArrayList<>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
@@ -2064,7 +2064,6 @@ public class LauncherModel extends BroadcastReceiver
                                             allowMissingTarget, useLowResIcon);
                                 } else {
                                     info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
-                                    Log.d("TEST", "here : " + info.toString());
 
                                     // App shortcuts that used to be automatically added to Launcher
                                     // didn't always have the correct intent flags set, so do that
@@ -3441,8 +3440,6 @@ public class LauncherModel extends BroadcastReceiver
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
 
-        Log.d("TEST", "getRestoredItemInfo");
-
         Bitmap icon = iconInfo.loadIcon(c, info, context);
         Bitmap customIcon = iconInfo.loadCustomIcon(c, context);
         // the fallback icon
@@ -3539,7 +3536,6 @@ public class LauncherModel extends BroadcastReceiver
         CursorIconInfo iconInfo = new CursorIconInfo(c);
         Bitmap bitmap = iconInfo.loadIcon(c, info, context);
         if (bitmap == null) {
-            Log.d("TEST", "bitmap is null");
             mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
         } else {
             info.setIcon(bitmap);

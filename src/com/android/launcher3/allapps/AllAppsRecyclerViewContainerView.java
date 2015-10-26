@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.ClickShadowView;

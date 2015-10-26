@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,6 +25,7 @@ import android.util.Log;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
@@ -50,6 +50,7 @@ public class LauncherAppState {
     private InvariantDeviceProfile mInvariantDeviceProfile;
 
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
+
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {

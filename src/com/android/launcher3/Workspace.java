@@ -77,15 +77,15 @@ import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.metalev.multitouch.controller.MultiTouchController;
 import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
 import org.metalev.multitouch.controller.MultiTouchController.PointInfo;
 import org.metalev.multitouch.controller.MultiTouchController.PositionAndScale;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1113,30 +1113,33 @@ public class Workspace extends PagedView
 
         if (!(child instanceof Folder)) {
             child.setHapticFeedbackEnabled(false);
-            //child.setOnLongClickListener(mLongClickListener);
-            child.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch(motionEvent.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            mLastTouch = System.currentTimeMillis();
-                            return false;
-                        case MotionEvent.ACTION_MOVE:
-                            if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
-                                mLongClickListener.onLongClick(view);
-                                return true;
-                            }
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
-                                mLauncher.constructShortcutMenu(view, (ShortcutInfo) info);
-                                return true;
-                            }
-                            break;
+            if (child instanceof BubbleTextView) {
+                child.setOnTouchListener(new OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        switch (motionEvent.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                mLastTouch = System.currentTimeMillis();
+                                return false;
+                            case MotionEvent.ACTION_MOVE:
+                                if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
+                                    mLongClickListener.onLongClick(view);
+                                    return true;
+                                }
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
+                                    mLauncher.constructShortcutMenu(view, (ShortcutInfo) info);
+                                    return true;
+                                }
+                                break;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
+                });
+            } else {
+                child.setOnLongClickListener(mLongClickListener);
+            }
         }
         if (child instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) child);

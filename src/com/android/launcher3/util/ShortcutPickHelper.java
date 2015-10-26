@@ -16,14 +16,14 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.android.launcher3.R;
+import com.android.launcher3.util.ShortcutPickHelper.AppExpandableAdapter.GroupInfo;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import com.android.launcher3.R;
-import com.android.launcher3.util.ShortcutPickHelper.AppExpandableAdapter.GroupInfo;
 
 public class ShortcutPickHelper {
 

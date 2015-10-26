@@ -21,16 +21,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Stats;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.GestureHelper;
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;

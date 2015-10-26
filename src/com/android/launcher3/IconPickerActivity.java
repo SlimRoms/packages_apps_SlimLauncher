@@ -1,8 +1,5 @@
 package com.android.launcher3;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -23,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class IconPickerActivity extends Activity {
 

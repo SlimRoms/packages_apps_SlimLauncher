@@ -389,7 +389,7 @@ public class DeviceProfile {
                         hotseatBarHeightPx, edgeMarginPx);
             }
         } else {
-            if (isTablet) {
+            /*if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
                 float gapScale = 1f + (dragViewScale - 1f) / 2f;
@@ -403,13 +403,13 @@ public class DeviceProfile {
                         - (int) (2 * inv.numRows * cellHeightPx));
                 padding.set(availableWidth / 2, paddingTop + availableHeight / 2,
                         availableWidth / 2, paddingBottom + availableHeight / 2);
-            } else {
+            } else {*/
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
                 padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
                         searchBarBounds.bottom,
                         desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
                         hotseatBarHeightPx + pageIndicatorHeightPx);
-            }
+            //}
         }
         return padding;
     }

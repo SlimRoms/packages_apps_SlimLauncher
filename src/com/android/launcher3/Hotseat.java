@@ -17,16 +17,10 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 public class Hotseat extends FrameLayout
         implements Stats.LaunchSourceProvider{

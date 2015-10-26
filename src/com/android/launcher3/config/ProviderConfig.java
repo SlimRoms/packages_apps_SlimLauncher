@@ -16,7 +16,9 @@
 
 package com.android.launcher3.config;
 
+import com.android.launcher3.BuildConfig;
+
 public class ProviderConfig {
 
-    public static final String AUTHORITY = "com.android.launcher3.settings".intern();
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
 }

@@ -73,10 +73,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextThemeWrapper;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -1346,7 +1343,7 @@ public class Launcher extends Activity
         return mWorkspace.getPaddingTop();
     }
 
-    @Override
+    /*@Override
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
         if (mModel.isCurrentCallbacks(this)) {
@@ -1355,6 +1352,15 @@ public class Launcher extends Activity
         //TODO(hyunyoungs): stop the widgets loader when there is a rotation.
 
         return Boolean.TRUE;
+    }*/
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (getResources().getConfiguration().orientation != newConfig.orientation) {
+            if (mModel.isCurrentCallbacks(this)) {
+                mModel.stopLoader();
+            }
+        }
     }
 
     // We can't hide the IME if it was forced open.  So don't bother

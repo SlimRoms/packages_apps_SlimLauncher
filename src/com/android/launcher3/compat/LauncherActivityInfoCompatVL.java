@@ -18,7 +18,6 @@ package com.android.launcher3.compat;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
