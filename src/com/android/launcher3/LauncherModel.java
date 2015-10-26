@@ -1453,41 +1453,43 @@ public class LauncherModel extends BroadcastReceiver
      * Add an all apps shortcut to the database if there aren't any already
      */
     private ItemInfo addAllAppsShortcutIfNecessary() {
-        if (hasAllAppsShortcut()) return null;
-
-        // check if first run
         if (!SettingsProvider.getBoolean(mApp.getContext(), "all_apps_first_run", false)) {
             SettingsProvider.putBoolean(mApp.getContext(), "all_apps_first_run", true);
-            return null;
+
+            if (hasAllAppsShortcut()) return null;
+
+            int allAppsIndex = mApp.getInvariantDeviceProfile().hotseatAllAppsRank;
+
+            // create all apps shortcut info
+            ShortcutInfo allAppsShortcut = new ShortcutInfo();
+            allAppsShortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+            allAppsShortcut.title =
+                    mApp.getContext().getResources().getString(R.string.all_apps_button_label);
+            allAppsShortcut.container = ItemInfo.NO_ID;
+
+            // create and set all apps icon
+            Drawable d =
+                    mApp.getContext().getResources().getDrawable(R.drawable.all_apps_button_icon);
+            allAppsShortcut.setIcon(Utilities.createIconBitmap(d, mApp.getContext()));
+
+            // set span
+            allAppsShortcut.spanX = 1;
+            allAppsShortcut.spanY = 1;
+
+            // create and set shortcut intent
+            Intent shortcutIntent = new Intent(
+                    mApp.getContext(), Launcher.class);
+            shortcutIntent.setAction(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT);
+            shortcutIntent.putExtra(
+                    ShortcutHelper.SHORTCUT_VALUE, ShortcutHelper.SHORTCUT_ALL_APPS);
+
+            allAppsShortcut.intent = shortcutIntent;
+
+            LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
+                    LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
+            return allAppsShortcut;
         }
-
-        int allAppsIndex = mApp.getInvariantDeviceProfile().hotseatAllAppsRank;
-
-        // create all apps shortcut info
-        ShortcutInfo allAppsShortcut = new ShortcutInfo();
-        allAppsShortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-        allAppsShortcut.title = mApp.getContext().getResources().getString(R.string.all_apps_button_label);
-        allAppsShortcut.container = ItemInfo.NO_ID;
-
-        // create and set all apps icon
-        Drawable d = mApp.getContext().getResources().getDrawable(R.drawable.all_apps_button_icon);
-        allAppsShortcut.setIcon(Utilities.createIconBitmap(d, mApp.getContext()));
-
-        // set span
-        allAppsShortcut.spanX = 1;
-        allAppsShortcut.spanY = 1;
-
-        // create and set shortcut intent
-        Intent shortcutIntent = new Intent(
-                mApp.getContext(), Launcher.class);
-        shortcutIntent.setAction(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT);
-        shortcutIntent.putExtra(ShortcutHelper.SHORTCUT_VALUE, ShortcutHelper.SHORTCUT_ALL_APPS);
-
-        allAppsShortcut.intent = shortcutIntent;
-
-        LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
-                LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
-        return allAppsShortcut;
+        return null;
     }
 
     public boolean isAllAppsLoaded() {
