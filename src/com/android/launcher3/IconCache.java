@@ -452,7 +452,7 @@ public class IconCache {
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
-        return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+        return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor, false);
     }
 
     public void putCustomIconInDB(Drawable d, ItemInfo info) {
@@ -474,11 +474,16 @@ public class IconCache {
         }
         entry.icon = Utilities.createIconBitmap(d, mContext);
         mCache.put(key, entry);
-        ContentValues vals = newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+        ContentValues vals = newContentValues(entry.icon,
+                entry.title.toString(), mActivityBgColor, true);
         if (packageInfo != null) {
             addIconToDB(vals, app.getComponentName(), packageInfo,
                     mUserManager.getSerialNumberForUser(app.getUser()));
         }
+    }
+
+    public void clearCustomIconsInDB() {
+        mIconDb.clearDB(mIconDb.getWritableDatabase());
     }
 
     /**
@@ -573,7 +578,7 @@ public class IconCache {
         // we should still look in the cache for restored app icons.
         if (component == null) {
             shortcutInfo.setIcon(getDefaultIcon(user));
-            shortcutInfo.title = "";
+            shortcutInfo.setTitle("");
             shortcutInfo.usingFallbackIcon = true;
             shortcutInfo.usingLowResIcon = false;
         } else {
@@ -591,7 +596,7 @@ public class IconCache {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
         if (TextUtils.isEmpty(shortcutInfo.title)) {
-            shortcutInfo.title = Utilities.trim(entry.title);
+            shortcutInfo.setTitle(Utilities.trim(entry.title));
         }
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
@@ -770,7 +775,7 @@ public class IconCache {
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            newContentValues(entry.icon, entry.title.toString(), mPackageBgColor);
+                            newContentValues(entry.icon, entry.title.toString(), mPackageBgColor, false);
                     addIconToDB(values, cn, info, mUserManager.getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
@@ -809,7 +814,7 @@ public class IconCache {
             // pass
         }
 
-        ContentValues values = newContentValues(icon, label, Color.TRANSPARENT);
+        ContentValues values = newContentValues(icon, label, Color.TRANSPARENT, false);
         values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
@@ -923,7 +928,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 6;
+        private final static int DB_VERSION = 7;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
@@ -935,6 +940,7 @@ public class IconCache {
         private final static String COLUMN_ICON_LOW_RES = "icon_low_res";
         private final static String COLUMN_LABEL = "label";
         private final static String COLUMN_SYSTEM_STATE = "system_state";
+        private final static String COLUMN_CUSTOM_ICON = "custom_icon";
 
         public IconDB(Context context) {
             super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
@@ -951,6 +957,7 @@ public class IconCache {
                     COLUMN_ICON_LOW_RES + " BLOB, " +
                     COLUMN_LABEL + " TEXT, " +
                     COLUMN_SYSTEM_STATE + " TEXT, " +
+                    COLUMN_CUSTOM_ICON + " INTEGER NOT NULL DEFAULT 0, " +
                     "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ") " +
                     ");");
         }
@@ -975,7 +982,7 @@ public class IconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, String label, int lowResBackgroundColor) {
+    private ContentValues newContentValues(Bitmap icon, String label, int lowResBackgroundColor, boolean customIcon) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
 
@@ -1002,6 +1009,7 @@ public class IconCache {
                 values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(mLowResBitmap));
             }
         }
+        values.put(IconDB.COLUMN_CUSTOM_ICON, customIcon ? 1 : 0);
         return values;
     }
 

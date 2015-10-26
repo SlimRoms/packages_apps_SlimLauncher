@@ -54,6 +54,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -847,10 +848,14 @@ public class Launcher extends Activity
             if (resultCode == RESULT_OK) {
                 if (data == null) {
                     // Set default icon
-                    Bitmap b = null;
+                    Bitmap b;
                     if (mEditItemInfo != null) {
-                        b = Utilities.createIconBitmap(
-                                mIconCache.getDefaultIconForItemInfo(mEditItemInfo), this);
+                        if (mEditItemInfo instanceof ShortcutInfo) {
+                            b = ((ShortcutInfo) mEditItemInfo).getDefaultIcon(mIconCache);
+                        } else {
+                            b = Utilities.createIconBitmap(
+                                    mIconCache.getDefaultIconForItemInfo(mEditItemInfo), this);
+                        }
                         if (b != null) {
                             mDialogIcon.setImageBitmap(b);
                             mDialogIcon.setTag("default");
@@ -1327,9 +1332,7 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.hasSettings();
         } else {
-            // On devices with a locked orientation, we will at least have the allow rotation
-            // setting.
-            return !Utilities.isRotationAllowedForDevice(this);
+            return true;
         }
     }
 
@@ -1621,7 +1624,6 @@ public class Launcher extends Activity
             mDialogIcon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mDialogIcon.setTag(info);
                     IconPackHelper.pickIconPack(Launcher.this, true);
                 }
             });
@@ -1641,15 +1643,17 @@ public class Launcher extends Activity
                                     String dRes = (String) mDialogIcon.getTag();
                                     Drawable d;
                                     if (dRes.equals("default")) {
-                                        d = mIconCache.getDefaultIconForItemInfo(info);
+                                        sInfo.removeCustomIcon();
+                                        d = new BitmapDrawable(
+                                                getResources(), sInfo.getIcon(mIconCache));
                                     } else {
                                         d = mIconCache.getDrawableForCustomIcon(
                                                 Launcher.this, dRes);
                                     }
                                     if (d != null) {
                                         Bitmap b = Utilities.createIconBitmap(d, Launcher.this);
+                                        sInfo.useCustomIcon = true;
                                         sInfo.setIcon(b);
-                                        sInfo.customIcon = true;
                                         LauncherModel.updateItemInDatabase(Launcher.this, sInfo);
                                     }
                                 }

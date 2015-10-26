@@ -70,7 +70,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 26;
+    private static final int DATABASE_VERSION = 27;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -514,6 +514,7 @@ public class LauncherProvider extends ContentProvider {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
+                    "customIcon BLOB," +
                     "uri TEXT," +
                     "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
@@ -701,7 +702,9 @@ public class LauncherProvider extends ContentProvider {
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
                 case 25:
                     convertShortcutsToLauncherActivities(db);
-                case 26: {
+                case 26:
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN customIcon BLOB;");
+                case 27: {
                     // DB Upgraded successfully
                     return;
                 }

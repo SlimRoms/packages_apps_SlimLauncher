@@ -174,10 +174,14 @@ public class ItemInfo {
         }
     }
 
-    static void writeBitmap(ContentValues values, Bitmap bitmap) {
+    static void writeBitmap(ContentValues values, Bitmap bitmap, boolean customIcon) {
         if (bitmap != null) {
             byte[] data = Utilities.flattenBitmap(bitmap);
-            values.put(LauncherSettings.Favorites.ICON, data);
+            if (customIcon) {
+                values.put(LauncherSettings.Favorites.CUSTOM_ICON, data);
+            } else {
+                values.put(LauncherSettings.Favorites.ICON, data);
+            }
         }
     }
 

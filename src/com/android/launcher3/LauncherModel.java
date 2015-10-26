@@ -3444,12 +3444,16 @@ public class LauncherModel extends BroadcastReceiver
         Log.d("TEST", "getRestoredItemInfo");
 
         Bitmap icon = iconInfo.loadIcon(c, info, context);
+        Bitmap customIcon = iconInfo.loadCustomIcon(c, context);
         // the fallback icon
         if (icon == null) {
             mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
         } else {
-            Log.d("TEST", "HERE");
             info.setIcon(icon);
+        }
+        if (customIcon != null) {
+            info.useCustomIcon = true;
+            info.setIcon(customIcon);
         }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
@@ -3488,6 +3492,18 @@ public class LauncherModel extends BroadcastReceiver
                 .authority("details")
                 .appendQueryParameter("id", packageName)
                 .build());
+    }
+
+    public static void restoreCustomShortcutIcons(Context context, IconCache iconCache) {
+        for (ItemInfo info : sBgItemsIdMap) {
+            if (info instanceof ShortcutInfo) {
+                ShortcutInfo si = (ShortcutInfo) info;
+                if (si.useCustomIcon) {
+                    si.removeCustomIcon();
+                    updateItemInDatabase(context, si);
+                }
+            }
+        }
     }
 
     /**

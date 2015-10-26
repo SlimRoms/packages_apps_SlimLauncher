@@ -29,7 +29,9 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.preference.DialogPreference;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -716,6 +718,18 @@ public class IconPackHelper {
                         i.putExtra("package", selectedPackage);
                         launcherActivity.startActivityForResult(i, Launcher.REQUEST_PICK_ICON);
                     }
+                    dialog.dismiss();
+                }
+            });
+            builder.setNeutralButton("TEST", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    LauncherModel.restoreCustomShortcutIcons(context,
+                            LauncherAppState.getInstance().getIconCache());
+                    LauncherAppState.getInstance().getIconCache().clearCustomIconsInDB();
+                    LauncherAppState.getInstance().getModel().forceReload();
+                    ((Launcher) context).onActivityResult(
+                            Launcher.REQUEST_PICK_ICON, Activity.RESULT_OK, null);
                     dialog.dismiss();
                 }
             });

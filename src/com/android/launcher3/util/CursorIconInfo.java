@@ -35,10 +35,12 @@ public class CursorIconInfo {
     public final int iconPackageIndex;
     public final int iconResourceIndex;
     public final int iconIndex;
+    public final int customIconIndex;
 
     public CursorIconInfo(Cursor c) {
         iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
         iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+        customIconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CUSTOM_ICON);
         iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
     }
@@ -67,5 +69,9 @@ public class CursorIconInfo {
             break;
         }
         return icon;
+    }
+
+    public Bitmap loadCustomIcon(Cursor c, Context context) {
+        return Utilities.createIconBitmap(c, customIconIndex, context);
     }
 }

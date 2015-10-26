@@ -102,6 +102,9 @@ public class ShortcutInfo extends ItemInfo {
      */
     private Bitmap mIcon;
 
+    private Bitmap mCustomIcon;
+    public boolean useCustomIcon;
+
     /**
      * Title change listener
      */
@@ -198,13 +201,32 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void setIcon(Bitmap b) {
-        mIcon = b;
+        if (useCustomIcon) {
+            mCustomIcon = b;
+        } else {
+            mIcon = b;
+        }
         for (ShortcutListener i : mListeners) {
             i.onIconChanged(this);
         }
     }
 
+    public void removeCustomIcon() {
+        useCustomIcon = false;
+        mCustomIcon = null;
+    }
+
     public Bitmap getIcon(IconCache iconCache) {
+        if (mIcon == null) {
+            updateIcon(iconCache);
+        }
+        if (mCustomIcon == null) {
+            return mIcon;
+        }
+        return mCustomIcon;
+    }
+
+    public Bitmap getDefaultIcon(IconCache iconCache) {
         if (mIcon == null) {
             updateIcon(iconCache);
         }
@@ -243,13 +265,17 @@ public class ShortcutInfo extends ItemInfo {
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
         values.put(LauncherSettings.Favorites.RESTORED, status);
 
+        if (useCustomIcon) {
+            writeBitmap(values, mCustomIcon, true);
+        }
+
         if (customIcon) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
                     LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
-            writeBitmap(values, mIcon);
+            writeBitmap(values, mIcon, false);
         } else {
             if (!usingFallbackIcon) {
-                writeBitmap(values, mIcon);
+                writeBitmap(values, mIcon, false);
             }
             if (iconResource != null) {
                 values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
