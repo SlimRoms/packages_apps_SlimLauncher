@@ -93,6 +93,11 @@ public class LauncherModel extends BroadcastReceiver
     static final String TAG = "Launcher.Model";
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+
+    static {
+        sWorkerThread.start();
+    }
+
     @Thunk
     static final Handler sWorker = new Handler(sWorkerThread.getLooper());
     // When we are loading pages synchronously, we can't just post the binding of items on the side
@@ -134,10 +139,6 @@ public class LauncherModel extends BroadcastReceiver
     private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
     // sBgWidgetProviders is the set of widget providers including custom internal widgets
     public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
-
-    static {
-        sWorkerThread.start();
-    }
 
     @Thunk
     final boolean mAppsCanBeOnRemoveableStorage;
