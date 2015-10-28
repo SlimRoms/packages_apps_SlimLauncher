@@ -336,6 +336,7 @@ public class Launcher extends Activity
     private View mPageIndicators;
     private DragController mDragController;
     private View mWeightWatcher;
+    private AlertDialog.Builder mCustomizeShortcutDialog;
     private ImageButton mDialogIcon;
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -922,15 +923,23 @@ public class Launcher extends Activity
         } else if (requestCode == REQUEST_PICK_ICON) {
             mWaitingForResult = false;
             if (resultCode == RESULT_OK) {
+                if (data != null && !TextUtils.isEmpty(data.getAction())
+                && data.getAction().equals("RESET")) {
+                    mCustomizeShortcutDialog.create().dismiss();
+                    return;
+                }
                 if (data == null) {
                     // Set default icon
-                    Bitmap b;
+                    Bitmap b = null;
                     if (mEditItemInfo != null) {
                         if (mEditItemInfo instanceof ShortcutInfo) {
                             b = ((ShortcutInfo) mEditItemInfo).getDefaultIcon(mIconCache);
-                        } else {
+                        } else if (mEditItemInfo instanceof AppInfo) {
                             b = Utilities.createIconBitmap(
                                     mIconCache.getDefaultIconForItemInfo(mEditItemInfo), this);
+                        } else if (mEditItemInfo instanceof FolderInfo) {
+                            b = Utilities.createIconBitmap(
+                                    getResources().getDrawable(R.drawable.portal_ring_inner), this);
                         }
                         if (b != null) {
                             mDialogIcon.setImageBitmap(b);
@@ -1575,16 +1584,23 @@ public class Launcher extends Activity
     }
 
     public void updateShortcut(final ItemInfo info) {
-        if (info instanceof ShortcutInfo || info instanceof AppInfo) {
+        if (info instanceof ShortcutInfo || info instanceof AppInfo
+                || info instanceof FolderInfo) {
             mEditItemInfo = info;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            mCustomizeShortcutDialog = new AlertDialog.Builder(this);
             View layout = View.inflate(this, R.layout.dialog_edit, null);
             mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
             mDialogIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             if (info instanceof ShortcutInfo) {
                 mDialogIcon.setImageBitmap(((ShortcutInfo) info).getIcon(mIconCache));
-            } else {
+            } else if (info instanceof AppInfo) {
                 mDialogIcon.setImageBitmap(((AppInfo) info).iconBitmap);
+            } else if (info instanceof FolderInfo) {
+                if (((FolderInfo) info).getCustomIcon() != null) {
+                    mDialogIcon.setImageBitmap(((FolderInfo) info).getCustomIcon());
+                } else {
+                    mDialogIcon.setImageResource(R.drawable.portal_ring_inner);
+                }
             }
             mDialogIcon.setOnClickListener(new OnClickListener() {
                 @Override
@@ -1594,8 +1610,12 @@ public class Launcher extends Activity
             });
             final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
             title.setText(info.title);
-            builder.setView(layout)
-                    .setTitle(mIconCache.getTitleFromItemInfo(info))
+            if (info instanceof FolderInfo) {
+                mCustomizeShortcutDialog.setTitle(info.title);
+            } else {
+                mCustomizeShortcutDialog.setTitle(mIconCache.getTitleFromItemInfo(info));
+            }
+            mCustomizeShortcutDialog.setView(layout)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -1622,25 +1642,44 @@ public class Launcher extends Activity
                                         LauncherModel.updateItemInDatabase(Launcher.this, sInfo);
                                     }
                                 }
-                            } else {
+                            } else if (info instanceof AppInfo) {
                                 AppInfo aInfo = (AppInfo) info;
                                 if (!info.title.equals(title.getText().toString())) {
                                     aInfo.title = title.getText().toString();
                                 }
                                 if (mDialogIcon.getTag() != null) {
                                     String dRes = (String) mDialogIcon.getTag();
-                                    Drawable d = mIconCache.getDrawableForCustomIcon(Launcher.this, dRes);
+                                    Drawable d;
+                                    if (dRes.equals("default")) {
+                                        d = mIconCache.getDefaultIconForItemInfo(mEditItemInfo);
+                                    } else {
+                                        d = mIconCache.getDrawableForCustomIcon(Launcher.this, dRes);
+                                    }
                                     if (d != null) {
-                                        aInfo.iconBitmap = Utilities.createIconBitmap(d, Launcher.this);
+                                        aInfo.setIcon(Utilities.createIconBitmap(d, Launcher.this));
                                         mIconCache.putCustomIconInDB(d, info);
                                     }
+                                }
+                            } else if (info instanceof FolderInfo) {
+                                FolderInfo fInfo = (FolderInfo) info;
+                                if (mDialogIcon.getTag() != null) {
+                                    String dRes = (String) mDialogIcon.getTag();
+                                    if (dRes.equals("default")) {
+                                        fInfo.setCustomIcon(null);
+                                    } else {
+                                        Drawable d = mIconCache.getDrawableForCustomIcon(
+                                                Launcher.this, dRes);
+                                        fInfo.setCustomIcon(
+                                                Utilities.createIconBitmap(d, Launcher.this));
+                                    }
+                                    LauncherModel.updateItemInDatabase(Launcher.this, fInfo);
                                 }
                             }
                             mEditItemInfo = null;
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null);
-            builder.show();
+            mCustomizeShortcutDialog.show();
         }
     }
 
@@ -1677,7 +1716,7 @@ public class Launcher extends Activity
         return favorite;
     }
 
-    public void constructShortcutMenu(View view, final ShortcutInfo info) {
+    public void constructShortcutMenu(View view, final ItemInfo info) {
         if (view == null) return;
 
         PopupMenu menu = new PopupMenu(this, view);

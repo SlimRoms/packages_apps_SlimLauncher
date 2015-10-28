@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -1316,6 +1317,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onTitleChanged(CharSequence title) {
+    }
+
+    public void onCustomIconChanged(Bitmap b) {
     }
 
     public ArrayList<View> getItemsInReadingOrder() {

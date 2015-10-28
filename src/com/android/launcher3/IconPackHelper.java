@@ -304,9 +304,10 @@ public class IconPackHelper {
                             LauncherModel.restoreCustomShortcutIcons(context,
                                     LauncherAppState.getInstance().getIconCache());
                             LauncherAppState.getInstance().getIconCache().clearCustomIconsInDB();
-                            LauncherAppState.getInstance().getModel().forceReload();
+                            Intent intent = new Intent();
+                            intent.setAction("RESET");
                             ((Launcher) context).onActivityResult(
-                                    Launcher.REQUEST_PICK_ICON, Activity.RESULT_OK, null);
+                                    Launcher.REQUEST_PICK_ICON, Activity.RESULT_OK, intent);
                             dialog.dismiss();
                         }
                     });

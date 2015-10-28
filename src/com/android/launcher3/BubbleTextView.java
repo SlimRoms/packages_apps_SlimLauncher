@@ -619,8 +619,13 @@ public class BubbleTextView extends TextView
     }
 
     @Override
-    public void onTitleChanged(ItemInfo item) {
-        setText(item.title);
+    public void onTitleChanged(final ItemInfo item) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                setText(item.title);
+            }
+        });
     }
 
     @Override
@@ -631,8 +636,14 @@ public class BubbleTextView extends TextView
         } else if (item instanceof AppInfo) {
             b = ((AppInfo) item).iconBitmap;
         }
-        if (b != null) {
-            setIcon(new BitmapDrawable(getResources(), b), mIconSize);
+        final Bitmap bitmap = b;
+        if (bitmap != null) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    setIcon(new BitmapDrawable(getResources(), bitmap), mIconSize);
+                }
+            });
         }
     }
 

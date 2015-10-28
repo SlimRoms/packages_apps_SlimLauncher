@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.launcher3.compat.UserHandleCompat;
 
@@ -55,6 +56,8 @@ public class FolderInfo extends ItemInfo {
      */
     boolean opened;
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+
+    Bitmap customIcon;
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -99,7 +102,7 @@ public class FolderInfo extends ItemInfo {
         super.onAddToDatabase(context, values);
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
         values.put(LauncherSettings.Favorites.OPTIONS, options);
-
+        writeBitmap(values, customIcon, true);
     }
 
     void addListener(FolderListener listener) {
@@ -122,6 +125,17 @@ public class FolderInfo extends ItemInfo {
     void unbind() {
         super.unbind();
         listeners.clear();
+    }
+
+    public Bitmap getCustomIcon() {
+        return customIcon;
+    }
+
+    public void setCustomIcon(Bitmap b) {
+        customIcon = b;
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onCustomIconChanged(b);
+        }
     }
 
     @Override
@@ -154,12 +168,14 @@ public class FolderInfo extends ItemInfo {
     }
 
     interface FolderListener {
-        public void onAdd(ShortcutInfo item);
+        void onAdd(ShortcutInfo item);
 
-        public void onRemove(ShortcutInfo item);
+        void onRemove(ShortcutInfo item);
 
-        public void onTitleChanged(CharSequence title);
+        void onTitleChanged(CharSequence title);
 
-        public void onItemsChanged();
+        void onCustomIconChanged(Bitmap bitmap);
+
+        void onItemsChanged();
     }
 }

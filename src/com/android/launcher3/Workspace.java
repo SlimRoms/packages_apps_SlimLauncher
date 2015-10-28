@@ -1219,7 +1219,7 @@ public class Workspace extends PagedView
 
         if (!(child instanceof Folder)) {
             child.setHapticFeedbackEnabled(false);
-            if (child instanceof BubbleTextView) {
+            if (child instanceof BubbleTextView || child instanceof FolderIcon) {
                 child.setOnTouchListener(new OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -1235,7 +1235,7 @@ public class Workspace extends PagedView
                                 break;
                             case MotionEvent.ACTION_UP:
                                 if (System.currentTimeMillis() - mLastTouch >= LONG_PRESS_TIME) {
-                                    mLauncher.constructShortcutMenu(view, (ShortcutInfo) info);
+                                    mLauncher.constructShortcutMenu(view, info);
                                     return true;
                                 }
                                 break;

@@ -283,6 +283,12 @@ public class LauncherModel extends BroadcastReceiver
                     // For all intents and purposes, this is the same object
                     return;
                 }
+            } else if (modelItem instanceof FolderInfo && item instanceof FolderInfo) {
+                FolderInfo modelFolder = (FolderInfo) modelItem;
+                FolderInfo folder = (FolderInfo) item;
+                if (modelFolder.toString().equals(folder.toString())) {
+                    return;
+                }
             }
 
             // the modelItem needs to match up perfectly with item if our model is
@@ -827,6 +833,12 @@ public class LauncherModel extends BroadcastReceiver
                     si.removeCustomIcon();
                     updateItemInDatabase(context, si);
                 }
+            } else if (info instanceof FolderInfo) {
+                FolderInfo fi = (FolderInfo) info;
+                if (fi.getCustomIcon() != null) {
+                    fi.setCustomIcon(null);
+                    updateItemInDatabase(context, info);
+                }
             }
         }
     }
@@ -1321,6 +1333,12 @@ public class LauncherModel extends BroadcastReceiver
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                         folderInfo = findOrMakeFolder(folderList, id);
                         break;
+                }
+
+                CursorIconInfo iconInfo = new CursorIconInfo(c);
+                Bitmap bitmap = iconInfo.loadCustomIcon(c, context);
+                if (bitmap != null) {
+                    folderInfo.setCustomIcon(bitmap);
                 }
 
                 // Do not trim the folder label, as is was set by the user.
@@ -2675,6 +2693,12 @@ public class LauncherModel extends BroadcastReceiver
                                     folderInfo.spanX = 1;
                                     folderInfo.spanY = 1;
                                     folderInfo.options = c.getInt(optionsIndex);
+
+                                    CursorIconInfo iconInfo = new CursorIconInfo(c);
+                                    Bitmap bitmap = iconInfo.loadCustomIcon(c, context);
+                                    if (bitmap != null) {
+                                        folderInfo.setCustomIcon(bitmap);
+                                    }
 
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, folderInfo)) {

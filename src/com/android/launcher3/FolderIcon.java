@@ -22,6 +22,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -30,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,7 +51,7 @@ import com.android.launcher3.util.Thunk;
 import java.util.ArrayList;
 
 /**
- * An icon that can appear on in the workspace representing an {@link UserFolder}.
+ * An icon that can appear on in the workspace representing an {@link Folder}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
     // The number of icons to display in the
@@ -163,11 +165,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         lp.width = grid.folderIconSizePx;
         lp.height = grid.folderIconSizePx;
 
-        final int previewColor = SettingsProvider.getInt(launcher,
-                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
-        Drawable drawable = icon.mPreviewBackground.getDrawable().mutate();
-        drawable.setColorFilter(previewColor, PorterDuff.Mode.MULTIPLY);
-        icon.mPreviewBackground.setImageDrawable(drawable);
+        if (folderInfo.getCustomIcon() == null) {
+            updatePreviewBackground(launcher, icon);
+        } else {
+            icon.mPreviewBackground.setImageBitmap(folderInfo.getCustomIcon());
+        }
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
@@ -193,6 +195,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return icon;
     }
 
+    public static void updatePreviewBackground(Context context, FolderIcon icon) {
+        final int previewColor = SettingsProvider.getInt(context,
+                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
+        Drawable drawable = context.getResources()
+                .getDrawable(R.drawable.portal_ring_inner).mutate();
+        drawable.setColorFilter(previewColor, PorterDuff.Mode.MULTIPLY);
+        icon.mPreviewBackground.setImageDrawable(drawable);
+    }
+
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(this);
@@ -204,6 +215,19 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         final ViewGroup cellLayout = (ViewGroup) cellLayoutChildren.getParent();
         final Workspace workspace = (Workspace) cellLayout.getParent();
         return !workspace.workspaceInModalState();
+    }
+
+    @Override
+    public void onCustomIconChanged(Bitmap bitmap) {
+        Log.d("TEST", "onCustomIconChanged");
+        if (bitmap == null) {
+            Log.d("TEST", "bitmap is null");
+            mPreviewBackground.setImageBitmap(null);
+            updatePreviewBackground(mLauncher, this);
+            invalidate();
+        } else {
+            mPreviewBackground.setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -469,6 +493,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+
+        if (mInfo.getCustomIcon() != null) {
+            return;
+        }
 
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
