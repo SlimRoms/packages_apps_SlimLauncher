@@ -53,5 +53,6 @@
     <color name="widgets_cell_color">#263238</color>
 
     <color name="folder_items_text_color">#FF333333</color>
+    <color name="wallpaper_picker_text_color">#FF000000</color>
 
 </resources>
