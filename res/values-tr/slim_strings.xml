@@ -18,7 +18,7 @@
   <string name="slim_application_name">SlimLauncher</string>
   <string name="google_title">Google</string>
   <string name="default_string">Varsayılan</string>
-  <string name="reset_string">Reset</string>
+  <string name="reset_string">Sıfırla</string>
   <string name="set_string">Ayarla</string>
   <string name="off_string">Kapat</string>
   <string name="default_screen_button_text">Varsayılan Ekran</string>
