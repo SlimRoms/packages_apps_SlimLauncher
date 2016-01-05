@@ -16,10 +16,12 @@
 
 package com.android.launcher3;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -120,6 +122,15 @@ public class IconCache {
 
         mIconPackHelper = new IconPackHelper(context);
         loadIconPack();
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                flush();
+            }
+        };
+        IntentFilter filter = new IntentFilter("com.android.launcher.CLEAR_ICON_CACHE");
+        mContext.registerReceiver(receiver, filter);
     }
 
     private static Bitmap loadIconNoResize(Cursor c, int iconIndex, BitmapFactory.Options options) {
