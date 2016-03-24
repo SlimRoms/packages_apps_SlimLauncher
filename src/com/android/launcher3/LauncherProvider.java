@@ -37,6 +37,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
@@ -106,7 +107,7 @@ public class LauncherProvider extends ContentProvider {
      * @return the max _id in the provided table.
      */
     @Thunk
-    static long getMaxId(SQLiteDatabase db, String table) {
+    static long getMaxId(SQLiteDatabase db, String table) throws SQLiteException {
         Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
         // get the result
         long id = -1;
@@ -949,7 +950,12 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private long initializeMaxItemId(SQLiteDatabase db) {
-            return getMaxId(db, TABLE_FAVORITES);
+            try {
+                return getMaxId(db, TABLE_FAVORITES);
+            } catch (SQLiteException e) {
+                onCreate(db);
+                return getMaxId(db, TABLE_FAVORITES);
+            }
         }
 
         // Generates a new ID to use for an workspace screen in your database. This method
@@ -966,7 +972,12 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private long initializeMaxScreenId(SQLiteDatabase db) {
-            return getMaxId(db, TABLE_WORKSPACE_SCREENS);
+            try {
+                return getMaxId(db, TABLE_WORKSPACE_SCREENS);
+            } catch (SQLiteException e) {
+                onCreate(db);
+                return getMaxId(db, TABLE_WORKSPACE_SCREENS);
+            }
         }
 
         @Thunk
