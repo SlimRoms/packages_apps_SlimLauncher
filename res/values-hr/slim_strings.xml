@@ -10,44 +10,56 @@
   <string name="off_string">Isklj.</string>
   <string name="error_message_title">Greška</string>
   <string name="icon_size_title">Veličina ikone</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Zadani zaslon</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Aplikacije</string>
   <string name="profile_choose_app">Odaberite aplikaciju</string>
   <string name="profiles_add">Dodaj</string>
   <string name="picker_activities">Aktivnosti</string>
   <string name="select_custom_app_title">Odaberite prilagođenu aplikaciju</string>
   <string name="select_custom_activity_title">Odaberite prilagođene aktivnosti</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Veličina rešetke</string>
   <string name="grid_size_summary">Odaberite broj redaka/stupaca</string>
   <string name="grid_size_rows_title">Redovi</string>
   <string name="grid_size_columns_title">Stupci</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">SlimLauncher kratice</string>
   <string name="shortcut_action_launcher_apps">Sve aplikacije</string>
   <string name="shortcut_action_launcher_overview">Modus pregledavanja</string>
   <string name="shortcut_action_launcher_settings">Postavke pokretača</string>
   <string name="shortcut_action_launcher_homescreen">Zadani početni zaslon</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Birač Boja</string>
   <string name="press_color_to_apply">Pritisnite na boju ispod za primjenu</string>
   <string name="hex">Hex:</string>
   <string name="set">Postavi</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Način probiranja</string>
   <string name="sort_mode_title">Naslov</string>
   <string name="sort_mode_launch_count">Broj pokretanja</string>
   <string name="sort_mode_install_time">Datum instalacije</string>
+  <!-- General Settings -->
   <string name="general_title">Općenito</string>
   <string name="notification_badges_title">Obavijesti kao značke</string>
   <string name="notification_badges_summary">Prikaz broja novih poruka na ikoni aplikacije</string>
   <string name="notification_badge_warning_message">Molimo aktivirajte pri slijedećem zaslonu SlimLauncher da kao Slušač Poruka može omogućiti obavijesti kao značke.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Početni Zaslon</string>
   <string name="show_search_bar_title">Pokaži polje za pretraživanje</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Sakrij nazive ikona</string>
   <string name="hide_icon_labels_drawer_summary">Sakrij nazive ikona u Ladici</string>
   <string name="hide_icon_labels_homescreen_summary">Sakrij nazive ikona na Početnom Zaslonu</string>
   <string name="hide_icon_labels_dock_summary">Sakrij nazive ikona u doku</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">Ladica</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikone na Doku</string>
   <string name="dock_icons_summary">Broj ikona na Doku</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Mape</string>
   <string name="folder_background_color_title">Pozadinska Boja</string>
   <string name="folder_icon_text_color_title">Boja slova od ikona</string>
@@ -57,6 +69,7 @@
   <string name="smart_folder_title">Inteligentne mape</string>
   <string name="smart_folder_summary_one">Prevucite - pokrenite prvu aplikaciju \nDodirnite - otvorite mapu</string>
   <string name="smart_folder_summart_two">Prevucite - otvorite mapu \nDodirnite - pokrenite prvu aplikaciju</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_title">Geste</string>
   <string name="gesture_default">ništa</string>
   <string name="gestures_left_up_gesture_title">Prevucite gore ulijevo</string>
@@ -76,6 +89,8 @@
   <string name="gesture_target_settings">Otvorite postavke Pokretača</string>
   <string name="gesture_target_last_app">Zadnja korišćena aplikacija</string>
   <string name="gesture_target_custom">Prilagođeno</string>
+  <!-- Icon Pack  -->
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Skrivene aplikacije</string>
   <string name="hidden_apps_summary">Skrivanje aplikacije iz ladice</string>
   <string name="hidden_apps_shortcuts_title">Ukloni kratice</string>

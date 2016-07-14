@@ -10,30 +10,37 @@
   <string name="off_string">Off</string>
   <string name="error_message_title">Errore</string>
   <string name="icon_size_title">Dimensione icone</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Schermata predefinita</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Applicazioni</string>
   <string name="profile_choose_app">Scegli applicazione</string>
   <string name="profiles_add">Aggiungi</string>
   <string name="picker_activities">Attività</string>
   <string name="select_custom_app_title">Seleziona app personalizzata</string>
   <string name="select_custom_activity_title">Seleziona attività personalizzata</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Dimensione griglia</string>
   <string name="grid_size_summary">Numero di righe e colonne</string>
   <string name="grid_size_rows_title">Righe</string>
   <string name="grid_size_columns_title">Colonne</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">Collegamenti SlimLauncher</string>
   <string name="shortcut_action_launcher_apps">Tutte le apps</string>
   <string name="shortcut_action_launcher_overview">Modalità revisione</string>
   <string name="shortcut_action_launcher_settings">Impostazioni Launcher</string>
   <string name="shortcut_action_launcher_homescreen">Schermata home predefinita</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Cattura colore</string>
   <string name="press_color_to_apply">Premere sul colore sottostante per applicare</string>
   <string name="hex">Hex:</string>
   <string name="set">Imposta</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Ordina per</string>
   <string name="sort_mode_title">Titolo</string>
   <string name="sort_mode_launch_count">Numero avvii</string>
   <string name="sort_mode_install_time">Data di installazione</string>
+  <!-- General Settings -->
   <string name="general_title">Generali</string>
   <string name="notification_badges_title">Badge di notifica</string>
   <string name="notification_badges_summary">Mostra il conteggio delle notifiche sull\'icona delle app</string>
@@ -41,20 +48,25 @@
   <string name="lock_workspace_title">Blocco Schermata Home</string>
   <string name="lock_workspace_summary">Bloccare i collegamenti e cartelle posizioni nel cassetto homescreen, dock, applicazioni e widget.</string>
   <string name="workspace_locked">Homescreen è bloccato, sbloccare nelle impostazioni e riorganizzare.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Schermata Home</string>
   <string name="show_search_bar_title">Mostra barra di ricerca</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Nascondi etichette icona</string>
   <string name="hide_icon_labels_drawer_summary">Le etichette delle icone nel drawer non saranno visibili</string>
   <string name="hide_icon_labels_homescreen_summary">Nascondi etichette schermate home</string>
   <string name="hide_icon_labels_dock_summary">Nascondi etichette dock</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">Drawer</string>
   <string name="drawer_style_title">Stile Drawer</string>
   <string name="drawer_style_paged">Paging</string>
   <string name="drawer_style_vertical">Verticale</string>
   <string name="drawer_style_vertical_folder">Cartelle verticali</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Icone Dock</string>
   <string name="dock_icons_summary">Numero di icone nella dock</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Cartelle</string>
   <string name="folder_background_color_title">Colore sfondo</string>
   <string name="folder_icon_text_color_title">Colore testo icona</string>
@@ -65,6 +77,7 @@
   <string name="smart_folder_summary_one">Swipe - lancia la prima app \nTocco - apri la cartella</string>
   <string name="smart_folder_summart_two">Swipe - apri la cartella \nTocco - lancia la prima app</string>
   <string name="scrolling_folders_title">Scorrimento di cartelle</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_buttons_title">Gestures e Pulsanti</string>
   <string name="gestures_title">Gestures</string>
   <string name="buttons_title">Pulsanti</string>
@@ -92,11 +105,13 @@
   <string name="gesture_target_settings">Apri impostazioni launcher</string>
   <string name="gesture_target_last_app">Ultima app</string>
   <string name="gesture_target_custom">Personalizzato</string>
+  <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
   <string name="default_iconpack_title">Icone predefinite</string>
   <string name="icon_packs_title">Pacchetti icone</string>
   <string name="no_iconpacks_summary">Nessun pacchetto icone installato</string>
   <string name="pref_icon_pack_title">Pacchetto icone</string>
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Applicazioni nascoste</string>
   <string name="hidden_apps_summary">Nascondi applicazioni nel drawer</string>
   <string name="hidden_apps_shortcuts_title">Rimuovi collegamenti</string>

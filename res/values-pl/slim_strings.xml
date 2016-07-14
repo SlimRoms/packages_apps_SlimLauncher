@@ -10,30 +10,37 @@
   <string name="off_string">Wyłączone</string>
   <string name="error_message_title">Błąd</string>
   <string name="icon_size_title">Rozmiar ikon</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Pulpit domyślny</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Aplikacje</string>
   <string name="profile_choose_app">Wybierz aplikację</string>
   <string name="profiles_add">Dodaj</string>
   <string name="picker_activities">Aktywności</string>
   <string name="select_custom_app_title">Wybierz własną aplikację</string>
   <string name="select_custom_activity_title">Wybierz aktywność</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Rozmiar siatki</string>
   <string name="grid_size_summary">Wybierz liczbę rzędów/kolumn</string>
   <string name="grid_size_rows_title">Rzędy</string>
   <string name="grid_size_columns_title">Kolumny</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">Skróty SlimLauncher</string>
   <string name="shortcut_action_launcher_apps">Wszystkie aplikacje</string>
   <string name="shortcut_action_launcher_overview">Tryb podglądu</string>
   <string name="shortcut_action_launcher_settings">Ustawienia Launchera</string>
   <string name="shortcut_action_launcher_homescreen">Domyślny ekran główny</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Selektor koloru</string>
   <string name="press_color_to_apply">Dotknij koloru, aby ustawić</string>
   <string name="hex">Hex:</string>
   <string name="set">Ustaw</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Tryb sortowania</string>
   <string name="sort_mode_title">Nazwa</string>
   <string name="sort_mode_launch_count">Liczba uruchomień</string>
   <string name="sort_mode_install_time">Czas instalacji</string>
+  <!-- General Settings -->
   <string name="general_title">Ogólne</string>
   <string name="notification_badges_title">Etykiety powiadomień</string>
   <string name="notification_badges_summary">Wyświetl liczbę powiadomień na ikonce aplikacji</string>
@@ -41,20 +48,25 @@
   <string name="lock_workspace_title">Zablokuj ekran główny</string>
   <string name="lock_workspace_summary">Zablokuj pozycję skrótów i folderów na ekranie głównym, doku i szufladzie widżetów oraz aplikacji.</string>
   <string name="workspace_locked">Ekran główny jest zablokowany, odblokuj w ustawieniach by móc edytować.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Pulpit domowy</string>
   <string name="show_search_bar_title">Pokaż pasek wyszukiwania</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Ukryj etykiety ikon</string>
   <string name="hide_icon_labels_drawer_summary">Ukryj etykiety ikon w szufladzie aplikacji</string>
   <string name="hide_icon_labels_homescreen_summary">Ukryj etykiety ikon na pulpicie</string>
   <string name="hide_icon_labels_dock_summary">Ukryj etykiety ikon w doku</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">Szuflada aplikacji</string>
   <string name="drawer_style_title">Styl szuflady aplikacji</string>
   <string name="drawer_style_paged">Strony</string>
   <string name="drawer_style_vertical">Pionowa</string>
   <string name="drawer_style_vertical_folder">Foldery pionowo</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony w doku</string>
   <string name="dock_icons_summary">Ilość ikon w doku</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Foldery</string>
   <string name="folder_background_color_title">Kolor Tła</string>
   <string name="folder_icon_text_color_title">Kolor tekstu ikon</string>
@@ -65,6 +77,7 @@
   <string name="smart_folder_summary_one">Przesuń - uruchom pierwszą aplikację \nDotknij - otwórz folder</string>
   <string name="smart_folder_summart_two">Przesuń - otwórz folder \nDotknij - uruchom pierwszą aplikację</string>
   <string name="scrolling_folders_title">Przewijane foldery</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_buttons_title">Gesty &amp; przyciski</string>
   <string name="gestures_title">Gesty</string>
   <string name="buttons_title">Przyciski</string>
@@ -92,11 +105,13 @@
   <string name="gesture_target_settings">Otwórz ustawienia launchera</string>
   <string name="gesture_target_last_app">Ostatnia aplikacja</string>
   <string name="gesture_target_custom">Własny</string>
+  <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Wybierz zestaw ikon</string>
   <string name="default_iconpack_title">Ikony domyślne</string>
   <string name="icon_packs_title">Zestawy ikon</string>
   <string name="no_iconpacks_summary">Nie zainstalowano zestawów ikon</string>
   <string name="pref_icon_pack_title">Zestaw ikon</string>
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Ukryte aplikacje</string>
   <string name="hidden_apps_summary">Ukryj aplikacje w szufladzie aplikacji</string>
   <string name="hidden_apps_shortcuts_title">Usuń skróty</string>

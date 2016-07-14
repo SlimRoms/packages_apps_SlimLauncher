@@ -10,30 +10,37 @@
   <string name="off_string">Κλειστό</string>
   <string name="error_message_title">Σφάλμα</string>
   <string name="icon_size_title">Μέγεθος εικονιδίου</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Προεπιλεγμένη οθόνη</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Εφαρμογές</string>
   <string name="profile_choose_app">Επιλέξτε εφαρμογή</string>
   <string name="profiles_add">Προσθήκη</string>
   <string name="picker_activities">Δραστηριότητες</string>
   <string name="select_custom_app_title">Επιλέξτε προσαρμοσμένη εφαρμογή</string>
   <string name="select_custom_activity_title">Επιλέξτε προσαρμοσμένη δραστηριότητα</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Μέγεθος πλέγματος</string>
   <string name="grid_size_summary">Επιλέξτε τον αριθμό των γραμμών/στηλών</string>
   <string name="grid_size_rows_title">Σειρές</string>
   <string name="grid_size_columns_title">Στήλες</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">Συντομεύσεις SlimLauncher</string>
   <string name="shortcut_action_launcher_apps">Όλες οι εφαρμογές</string>
   <string name="shortcut_action_launcher_overview">Λειτουργία επισκόπησης</string>
   <string name="shortcut_action_launcher_settings">Ρυθμίσεις Launcher</string>
   <string name="shortcut_action_launcher_homescreen">Προεπιλεγμένη αρχική οθόνη</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Επιλογέας χρώματος</string>
   <string name="press_color_to_apply">Πατήστε στο χρώμα από κάτω για να εφαρμοστεί</string>
   <string name="hex">Hex:</string>
   <string name="set">Ορισμός</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Επιλογές ταξινόμησης</string>
   <string name="sort_mode_title">Τίτλος</string>
   <string name="sort_mode_launch_count">Αριθμός εκκινήσεων</string>
   <string name="sort_mode_install_time">Χρόνος εγκατάστασης</string>
+  <!-- General Settings -->
   <string name="general_title">Γενικά</string>
   <string name="notification_badges_title">Ταμπέλα ειδοποίησης</string>
   <string name="notification_badges_summary">Εμφάνιση αριθμού ειδοποιήσεων στο εικονίδιο της εφαρμογής</string>
@@ -41,20 +48,25 @@
   <string name="lock_workspace_title">Οθόνη κλειδώματος</string>
   <string name="lock_workspace_summary">Θέσεις εφαρμογών σε οθόνη κλειδώματος.</string>
   <string name="workspace_locked">Ξεκλειδώστε την οθόνη για να αλλάξετε.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Αρχική οθόνη</string>
   <string name="show_search_bar_title">Εμφάνιση μπάρας αναζήτησης</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Απόκρυψη ετικέτας εικονιδίου</string>
   <string name="hide_icon_labels_drawer_summary">Απόκρυψη ετικέτας εικονιδίου στο συρτάρι εφαρμογών</string>
   <string name="hide_icon_labels_homescreen_summary">Απόκρυψη ετικέτας εικονιδίου στην αρχική οθόνη</string>
   <string name="hide_icon_labels_dock_summary">Απόκρυψη ετικέτας εικονιδίου στην μπάρα εφαρμογών</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">Συρτάρι εφαρμογών</string>
   <string name="drawer_style_title">Εμφάνιση εφαρμογών στο μενού</string>
   <string name="drawer_style_paged">Μένου σελίδας</string>
   <string name="drawer_style_vertical">Κατακόρυφα</string>
   <string name="drawer_style_vertical_folder">Κάθετη φακέλους</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Μπάρα εφαρμογών</string>
   <string name="dock_icons_title">Εικονίδια μπάρας εφαρμογών</string>
   <string name="dock_icons_summary">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Φάκελοι</string>
   <string name="folder_background_color_title">Χρώμα Φόντου</string>
   <string name="folder_icon_text_color_title">Χρώμα κειμένου εικονιδίου</string>
@@ -65,6 +77,7 @@
   <string name="smart_folder_summary_one">Γλίστρημα - ξεκίνημα της πρώτης εφαρμογής \nΑγγίγμα - άνοιγμα φακέλου</string>
   <string name="smart_folder_summart_two">Γλίστρημα - άνοιγμα φακέλου \nΑγγίγμα - ξεκίνημα της πρώτης εφαρμογής</string>
   <string name="scrolling_folders_title">Κύλιση φακέλους</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_title">Χειρονομίες</string>
   <string name="gesture_default">τίποτα</string>
   <string name="gestures_left_up_gesture_title">Γλίστρημα από τα αριστερά &amp; πάνω</string>
@@ -84,6 +97,8 @@
   <string name="gesture_target_settings">Άνοιγμα ρυθμίσεων του Launcher</string>
   <string name="gesture_target_last_app">Τελευταία εφαρμογή</string>
   <string name="gesture_target_custom">Προσαρμοσμένη</string>
+  <!-- Icon Pack  -->
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
   <string name="hidden_apps_summary">Απόκρυψη εφαρμογών στο συρτάρι εφαρμογών</string>
   <string name="hidden_apps_shortcuts_title">Αφαίρεση συντομεύσεων</string>

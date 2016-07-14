@@ -10,30 +10,37 @@
   <string name="off_string">Vypnuto</string>
   <string name="error_message_title">Chyba</string>
   <string name="icon_size_title">Velikost ikon</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Výchozí obrazovka</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Aplikace</string>
   <string name="profile_choose_app">Zvolte aplikaci</string>
   <string name="profiles_add">Přidat</string>
   <string name="picker_activities">Aktivity</string>
   <string name="select_custom_app_title">Zvolte vlastní aplikaci</string>
   <string name="select_custom_activity_title">Zvolte vlastní aktivitu</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Velikost mřížky</string>
   <string name="grid_size_summary">Zvolte počet řádků/sloupců</string>
   <string name="grid_size_rows_title">Řádky</string>
   <string name="grid_size_columns_title">Sloupce</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">SlimLauncher zástupci</string>
   <string name="shortcut_action_launcher_apps">Všechny aplikace</string>
   <string name="shortcut_action_launcher_overview">Režim přehledu</string>
   <string name="shortcut_action_launcher_settings">Nastavení launcheru</string>
   <string name="shortcut_action_launcher_homescreen">Výchozí domovská obrazovka</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Kapátko</string>
   <string name="press_color_to_apply">Níže klikněte na barvu, kterou chcete použít</string>
   <string name="hex">Hex:</string>
   <string name="set">Nastavit</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Řadit podle</string>
   <string name="sort_mode_title">Název</string>
   <string name="sort_mode_launch_count">Počet spuštění</string>
   <string name="sort_mode_install_time">Čas instalace</string>
+  <!-- General Settings -->
   <string name="general_title">Obecný</string>
   <string name="notification_badges_title">Počet upozornění</string>
   <string name="notification_badges_summary">Zobrazovat počet upozornění nad ikonou aplikace</string>
@@ -41,20 +48,25 @@
   <string name="lock_workspace_title">Zamknout výchozí obrazovku</string>
   <string name="lock_workspace_summary">Zamknout pozice zástupců a složek na domovské obrazovce, doku a seznamu aplikací a widgetů.</string>
   <string name="workspace_locked">Domovská stránka je uzamčena, pro přeuspořádání ji odemkněte v nastavení.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Domovská obrazovka</string>
   <string name="show_search_bar_title">Zobrazit vyhledávací lištu</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Skrýt popisky ikon</string>
   <string name="hide_icon_labels_drawer_summary">Skrýt popisky ikon v seznamu aplikací</string>
   <string name="hide_icon_labels_homescreen_summary">Skrýt popisky ikon na domovské obrazovce</string>
   <string name="hide_icon_labels_dock_summary">Skrýt popisky ikon v doku</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">Seznam aplikací</string>
   <string name="drawer_style_title">Styl seznamu aplikací</string>
   <string name="drawer_style_paged">Stránkovaný</string>
   <string name="drawer_style_vertical">Vertikální</string>
   <string name="drawer_style_vertical_folder">Vertikální složky</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony v doku</string>
   <string name="dock_icons_summary">Počet zástupců v doku</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Složky</string>
   <string name="folder_background_color_title">Barva pozadí</string>
   <string name="folder_icon_text_color_title">Barva textu ikon</string>
@@ -65,6 +77,7 @@
   <string name="smart_folder_summary_one">Švihem spustit první aplikaci\nKlepnutím otevřít složku</string>
   <string name="smart_folder_summart_two">Švihem otevřít složku\nKlepnutím spustit první aplikaci</string>
   <string name="scrolling_folders_title">Procházení složek</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_buttons_title">Gesta &amp; tlačítka</string>
   <string name="gestures_title">Gesta</string>
   <string name="buttons_title">Tlačítka</string>
@@ -92,11 +105,13 @@
   <string name="gesture_target_settings">Otevřít nastavení launcheru</string>
   <string name="gesture_target_last_app">Poslední aplikace</string>
   <string name="gesture_target_custom">Vlastní</string>
+  <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Zvolit balíček ikon</string>
   <string name="default_iconpack_title">Výchozí ikony</string>
   <string name="icon_packs_title">Balíčky ikon</string>
   <string name="no_iconpacks_summary">Není nainstalován žádný balíček ikon</string>
   <string name="pref_icon_pack_title">Balíček ikon</string>
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Skryté aplikace</string>
   <string name="hidden_apps_summary">Skrýt aplikace v seznamu aplikací</string>
   <string name="hidden_apps_shortcuts_title">Odebrat zástupce</string>

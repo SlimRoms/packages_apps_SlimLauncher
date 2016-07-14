@@ -10,30 +10,37 @@
   <string name="off_string">Aus</string>
   <string name="error_message_title">Fehler</string>
   <string name="icon_size_title">Symbol-Größe</string>
+  <!-- Text for default screen button -->
   <string name="default_screen_button_text">Standardseite</string>
+  <!-- App picker -->
   <string name="profile_applist_title">Apps</string>
   <string name="profile_choose_app">App auswählen</string>
   <string name="profiles_add">Hinzufügen</string>
   <string name="picker_activities">Aktivititäten</string>
   <string name="select_custom_app_title">Benutzerdefinierte App wählen</string>
   <string name="select_custom_activity_title">Benutzerdefinierte Aktivität auswählen</string>
+  <!-- Grid Size -->
   <string name="grid_size_title">Rastergröße</string>
   <string name="grid_size_summary">Anzahl der Zeilen/Spalten auswählen</string>
   <string name="grid_size_rows_title">Zeilen</string>
   <string name="grid_size_columns_title">Spalten</string>
+  <!-- SlimLauncher actions -->
   <string name="shortcut_picker_title">SlimLauncher-Verknüpfungen</string>
   <string name="shortcut_action_launcher_apps">Alle Apps</string>
   <string name="shortcut_action_launcher_overview">Übersichtsmodus</string>
   <string name="shortcut_action_launcher_settings">Launcher-Einstellungen</string>
   <string name="shortcut_action_launcher_homescreen">Standard-Startseite</string>
+  <!-- Color Picker -->
   <string name="dialog_color_picker">Farbauswahl</string>
   <string name="press_color_to_apply">Farbe unten antippen, um sie anzuwenden</string>
   <string name="hex">Hex:</string>
   <string name="set">Einstellen</string>
+  <!-- Sort mode -->
   <string name="drawer_sort_mode_title">Sortiermodus</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Aufrufanzahl</string>
   <string name="sort_mode_install_time">Installationsdatum</string>
+  <!-- General Settings -->
   <string name="general_title">Allgemein</string>
   <string name="notification_badges_title">Ungelesen-Zähler</string>
   <string name="notification_badges_summary">Anzahl der ungelesenen Benachrichtigungen auf App-Symbol anzeigen</string>
@@ -41,20 +48,25 @@
   <string name="lock_workspace_title">Startseite sperren</string>
   <string name="lock_workspace_summary">Das Positionieren von Verknüpfungen und Ordnern auf den Startseiten, im Dock, sowie in der App- und Widget-Übersicht sperren.</string>
   <string name="workspace_locked">Startseite ist gesperrt, zum neu anordnen in den Einstellungen freischalten.</string>
+  <!-- Homescreen Settings -->
   <string name="homescreen_title">Startbildschirm</string>
   <string name="show_search_bar_title">Suchleiste anzeigen</string>
+  <!-- Hide icon labels -->
   <string name="hide_icon_labels_title">Symbolbezeichnung ausblenden</string>
   <string name="hide_icon_labels_drawer_summary">Symbolbeschriftungen in der App-Übersicht ausblenden</string>
   <string name="hide_icon_labels_homescreen_summary">Symbolbeschriftungen auf den Startseiten ausblenden</string>
   <string name="hide_icon_labels_dock_summary">Beschriftung unter App-Symbolen in der Dockleiste ausblenden</string>
+  <!-- Drawer Settings -->
   <string name="drawer_title">App-Übersicht</string>
   <string name="drawer_style_title">Übersichts-Stil</string>
   <string name="drawer_style_paged">Einzelseiten</string>
   <string name="drawer_style_vertical">Vertikal</string>
   <string name="drawer_style_vertical_folder">Vertikale Ordner</string>
+  <!-- Dock Settings -->
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Dock-Symbole</string>
   <string name="dock_icons_summary">Anzahl der Symbole im Dock</string>
+  <!-- Folder Settings -->
   <string name="folder_title">Ordner</string>
   <string name="folder_background_color_title">Hintergrundfarbe</string>
   <string name="folder_icon_text_color_title">Symboltextfarbe</string>
@@ -65,6 +77,7 @@
   <string name="smart_folder_summary_one">Wischen - erste App starten \nTippen - Ordner öffnen</string>
   <string name="smart_folder_summart_two">Wischen - Ordner öffnen \nTippen - erste App starten</string>
   <string name="scrolling_folders_title">Ordner scrollen</string>
+  <!-- Gestures & Buttons -->
   <string name="gestures_buttons_title">Gesten &amp; Tasten</string>
   <string name="gestures_title">Gesten</string>
   <string name="buttons_title">Tasten</string>
@@ -92,11 +105,13 @@
   <string name="gesture_target_settings">Launcher-Einstellungen öffnen</string>
   <string name="gesture_target_last_app">Letzte App</string>
   <string name="gesture_target_custom">Benutzerdefiniert</string>
+  <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Symbolpaket auswählen</string>
   <string name="default_iconpack_title">Standardsymbole</string>
   <string name="icon_packs_title">Symbolpakete</string>
   <string name="no_iconpacks_summary">Keine Symbolpakete installiert</string>
   <string name="pref_icon_pack_title">Symbolpaket</string>
+  <!-- Hidden apps -->
   <string name="hidden_apps_title">Versteckte Apps</string>
   <string name="hidden_apps_summary">Apps in der App-Übersicht ausblenden</string>
   <string name="hidden_apps_shortcuts_title">Verknüpfungen entfernen</string>
