@@ -17,5 +17,11 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
+        <item>SLIM_02</item>
+        <item>SLIM_03</item>
+        <item>SLIM_04</item>
+        <item>SLIM_05</item>
+        <item>SLIM_06</item>
+        <item>SLIM_07</item>
     </string-array>
 </resources>
