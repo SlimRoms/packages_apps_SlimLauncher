@@ -464,7 +464,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         ArrayList<WallpaperTileInfo> wallpapers = findBundledWallpapers();
         mWallpapersView = (LinearLayout) findViewById(R.id.wallpaper_list);
         SimpleWallpapersAdapter ia = new SimpleWallpapersAdapter(getContext(), wallpapers);
-        populateWallpapersFromAdapter(mWallpapersView, ia, false);
+        populateWallpapersFromAdapter(mWallpapersView, ia, true);
 
         // Populate the saved wallpapers
         mSavedImages = new SavedWallpaperImages(getContext());
