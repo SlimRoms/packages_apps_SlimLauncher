@@ -24,19 +24,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.preference.DoubleNumberPickerPreference;
 
-public class DrawerFragment extends SettingsPreferenceFragment {
+public class DrawerFragment extends SettingsPreferenceFragment
+        implements Preference.OnPreferenceChangeListener {
 
     private DoubleNumberPickerPreference mPortraitDrawerGrid;
     private DoubleNumberPickerPreference mLandscapeDrawerGrid;
     private ListPreference mDrawerType;
-    Preference.OnPreferenceChangeListener mPreferenceChangeListener =
-            new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    updatePrefs();
-                    return true;
-                }
-            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +39,7 @@ public class DrawerFragment extends SettingsPreferenceFragment {
 
         mDrawerType = (ListPreference)
                 findPreference(SettingsProvider.KEY_DRAWER_TYPE);
-        mDrawerType.setOnPreferenceChangeListener(mPreferenceChangeListener);
+        mDrawerType.setOnPreferenceChangeListener(this);
 
         mPortraitDrawerGrid = (DoubleNumberPickerPreference)
                 findPreference(SettingsProvider.KEY_PORTRAIT_DRAWER_GRID);
@@ -87,16 +80,25 @@ public class DrawerFragment extends SettingsPreferenceFragment {
                 }
             }
         }
-        updatePrefs();
+
+        updateGridPrefs(Integer.parseInt(SettingsProvider.getString(mContext,
+                SettingsProvider.KEY_DRAWER_TYPE, "0")));
     }
 
-    public void updatePrefs() {
-        if (Integer.parseInt(mDrawerType.getValue()) == Launcher.DRAWER_TYPE_VERTICAL) {
-            mPortraitDrawerGrid.setEnabled(false);
-            mLandscapeDrawerGrid.setEnabled(false);
-        } else {
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        if (!preference.getKey().equals(SettingsProvider.KEY_DRAWER_TYPE)) return false;
+        updateGridPrefs(Integer.parseInt((String)o));
+        return true;
+    }
+
+    private void updateGridPrefs(int drawerType) {
+        if (drawerType == Launcher.DRAWER_TYPE_PAGED) {
             mPortraitDrawerGrid.setEnabled(true);
             mLandscapeDrawerGrid.setEnabled(true);
+        } else {
+            mPortraitDrawerGrid.setEnabled(false);
+            mLandscapeDrawerGrid.setEnabled(false);
         }
     }
 }
