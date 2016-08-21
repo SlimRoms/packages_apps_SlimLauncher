@@ -3514,14 +3514,15 @@ public class Launcher extends Activity
 
     private void setWorkspaceBackground(int background) {
         switch (background) {
-            case WORKSPACE_BACKGROUND_TRANSPARENT:
+            //case WORKSPACE_BACKGROUND_TRANSPARENT:
+              //  getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                //break;
+            //case WORKSPACE_BACKGROUND_BLACK:
+              //  getWindow().setBackgroundDrawable(null);
+               // break;
+            default:
                 getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 break;
-            case WORKSPACE_BACKGROUND_BLACK:
-                getWindow().setBackgroundDrawable(null);
-                break;
-            default:
-                getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
         }
     }
 

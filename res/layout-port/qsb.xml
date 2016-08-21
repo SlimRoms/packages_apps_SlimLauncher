@@ -35,14 +35,16 @@
         android:clickable="true"
         android:contentDescription="@string/accessibility_search_button">
        <ImageView
-            android:paddingStart="8dp"
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_searchbox_google"
-            android:adjustViewBounds="true" />
+           android:paddingStart="16dp"
+           android:paddingEnd="16dp"
+           android:id="@+id/search_button"
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:layout_gravity="center_vertical"
+           android:scaleType="center"
+           android:src="@drawable/ic_searchbox_google"
+           android:adjustViewBounds="true"
+           android:contentDescription="@string/accessibility_search_button"/>
     </com.android.launcher3.HolographicLinearLayout>
 
     <!-- Voice search icon -->
@@ -55,8 +57,8 @@
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
         android:onClick="onClickVoiceButton"
         android:focusable="true"
         android:clickable="true"
@@ -64,11 +66,12 @@
         <ImageView
             android:id="@+id/voice_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_mic_hotword"
             android:tint="#616161"
+            android:contentDescription="@string/accessibility_voice_search_button"
             android:adjustViewBounds="true" />
     </com.android.launcher3.HolographicLinearLayout>
 </RelativeLayout>
