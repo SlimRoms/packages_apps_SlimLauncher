@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -197,9 +198,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public static void updatePreviewBackground(Context context, FolderIcon icon) {
         final int previewColor = SettingsProvider.getInt(context,
-                SettingsProvider.FOLDER_PREVIEW_COLOR, 0x71ffffff);
-        Drawable drawable = context.getResources()
-                .getDrawable(R.drawable.portal_ring_inner).mutate();
+                SettingsProvider.FOLDER_PREVIEW_COLOR, ContextCompat.getColor(context,
+                        R.color.folder_preview_background_tint_color));
+        Drawable drawable =
+                ContextCompat.getDrawable(context, R.drawable.portal_ring_inner).mutate();
         drawable.setColorFilter(previewColor, PorterDuff.Mode.MULTIPLY);
         icon.mPreviewBackground.setImageDrawable(drawable);
     }
