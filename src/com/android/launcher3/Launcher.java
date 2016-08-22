@@ -112,6 +112,8 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -3316,7 +3318,12 @@ public class Launcher extends Activity
                 getWindow().setBackgroundDrawable(null);
                 break;
             default:
-                getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+                if (SettingsProvider.getBoolean(this, SettingsProvider.KEY_SHOW_SHADOW, true)) {
+                    getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+                } else {
+                    getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                break;
         }
     }
 
