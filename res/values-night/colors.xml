@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="search_bg_color">#ff212121</color>
+    <color name="quantum_panel_text_color">@color/workspace_icon_text_color</color>
+    <color name="quantum_panel_bg_color">#ff212121</color>
+    <color name="folder_items_text_color">@color/workspace_icon_text_color</color>
+    <color name="folder_preview_background_tint_color">#ff212121</color>
+
+</resources>

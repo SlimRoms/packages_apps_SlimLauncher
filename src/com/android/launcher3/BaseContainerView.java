@@ -60,7 +60,7 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
         updateBackgroundAndPaddings();
     }
 
-    protected void setHasSearchBar() {
+    public void setHasSearchBar() {
         mHasSearchBar = true;
     }
 

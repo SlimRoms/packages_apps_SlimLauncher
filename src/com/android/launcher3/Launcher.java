@@ -29,6 +29,7 @@ import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.app.UiModeManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -323,6 +324,9 @@ public class Launcher extends Activity
         }
     };
     FocusIndicatorView mFocusHandler;
+
+    private int mUiMode;
+
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
      * multiple calls to bind the same list.)
@@ -2063,6 +2067,17 @@ public class Launcher extends Activity
         setWaitingForResult(false);
     }
 
+    private void checkUiMode() {
+        UiModeManager manager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        if (mUiMode != manager.getCurrentModeType()) {
+            mUiMode = manager.getCurrentModeType();
+            mSearchDropTargetBar.updateColors();
+            ArrayList<ShortcutInfo> infos = new ArrayList<>();
+            infos.add(mModel.updateAllAppsIcon());
+            mWorkspace.updateShortcuts(infos);
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         long startTime = 0;
@@ -2077,6 +2092,8 @@ public class Launcher extends Activity
         }
 
         super.onNewIntent(intent);
+
+        checkUiMode();
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
@@ -3522,6 +3539,7 @@ public class Launcher extends Activity
                 break;
             default:
                 getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+                break;
         }
     }
 
@@ -3864,7 +3882,7 @@ public class Launcher extends Activity
 
     private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
         ImageView button = (ImageView) findViewById(buttonId);
-        button.setImageDrawable(d.newDrawable(getResources()));
+        //button.setImageDrawable(d.newDrawable(getResources()));
     }
 
     private void invalidatePressedFocusedStates(View container, View button) {
@@ -3972,7 +3990,7 @@ public class Launcher extends Activity
 
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
-        updateButtonWithDrawable(R.id.voice_button, d);
+        //updateButtonWithDrawable(R.id.voice_button, d);
         invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
     }
 

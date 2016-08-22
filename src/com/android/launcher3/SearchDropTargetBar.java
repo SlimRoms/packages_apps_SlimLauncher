@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -91,6 +92,15 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             mHideSearchBarAnim = ValueAnimator.ofFloat(0, 0);
             mHideSearchBarAnim.setDuration(TRANSITION_DURATION);
         }
+    }
+
+    public void updateColors() {
+        if (mQSBSearchBar == null) return;
+        Drawable background = mQSBSearchBar.getBackground();
+        if (background == null) return;
+        background.setTintMode(PorterDuff.Mode.MULTIPLY);
+        background.setTint(getResources().getColor(R.color.search_bg_color));
+        mQSBSearchBar.setBackground(background);
     }
 
     private void prepareStartAnimation(View v) {
