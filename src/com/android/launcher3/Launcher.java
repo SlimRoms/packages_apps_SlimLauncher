@@ -697,6 +697,7 @@ public class Launcher extends Activity
         mAppsCustomizeContent.filterContent();
         mAppsCustomizeContent.updateGridSize();
         mAppsCustomizeContent.invalidateOnDataChange();
+        updateSearchBar();
 
         mHotseat.updateHotseat();
 
@@ -716,6 +717,14 @@ public class Launcher extends Activity
         mIconCache.flush();
         mModel.forceReload();
         mModel.startLoader(mWorkspace.getCurrentPage());
+    }
+
+    private void updateSearchBar() {
+        boolean searchEnabled = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
+        mAppsView.setHasSearchBar(searchEnabled);
+        mAppsView.setSearchBarContainerViewVisibility(searchEnabled ?
+                View.VISIBLE : View.GONE);
     }
 
     public void updatePreferences() {
@@ -1569,6 +1578,7 @@ public class Launcher extends Activity
             mSearchDropTargetBar.setup(this, dragController);
             mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
             if (!mShowSearchBar) mSearchDropTargetBar.hideSearchBar(false);
+            mSearchDropTargetBar.updateColors();
         }
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
