@@ -3548,7 +3548,11 @@ public class Launcher extends Activity
                 getWindow().setBackgroundDrawable(null);
                 break;
             default:
-                getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+                if (SettingsProvider.getBoolean(this, SettingsProvider.KEY_SHOW_SHADOW, true)) {
+                    getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+                } else {
+                    getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
                 break;
         }
     }
