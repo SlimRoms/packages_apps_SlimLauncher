@@ -57,6 +57,7 @@
     <string name="drawer_style_title">Drawer style</string>
     <string name="drawer_style_paged">Paged</string>
     <string name="drawer_style_vertical">Vertical</string>
+    <string name="drawer_search_bar_title">Enable search bar</string>
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>
