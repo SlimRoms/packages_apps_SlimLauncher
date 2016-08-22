@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:key="drawer_search_bar"
+        android:title="@string/drawer_search_bar_title"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

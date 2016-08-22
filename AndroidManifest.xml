@@ -129,6 +129,7 @@
             android:name="org.slim.launcher.settings.SettingsActivity"
             android:icon="@mipmap/ic_launcher_settings"
             android:label="@string/settings_button_text"
+            android:theme="@android:style/Theme.Material.Settings"
             android:autoRemoveFromRecents="true" />
 
         <!-- Launcher shortcuts -->

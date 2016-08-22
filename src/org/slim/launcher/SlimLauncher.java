@@ -83,7 +83,15 @@ public class SlimLauncher extends Launcher {
             case SettingsProvider.KEY_SHOW_SEARCH_BAR:
                 updateSearchBarVisibility();
                 break;
+            case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
+                updateAppDrawerSearchBar();
         }
+    }
+
+    private void updateAppDrawerSearchBar() {
+        boolean searchEnabled = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
+        getAppsView().setSearchBarContainerViewVisibility(searchEnabled ? View.VISIBLE :View.GONE);
     }
 
     private void updateWorkspaceGridSize() {
