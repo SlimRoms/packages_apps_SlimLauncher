@@ -42,6 +42,7 @@
 
     <!-- Drawer Settings -->
     <string name="drawer_title">Drawer</string>
+    <string name="drawer_search_bar_title">Enable search bar</string>
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>

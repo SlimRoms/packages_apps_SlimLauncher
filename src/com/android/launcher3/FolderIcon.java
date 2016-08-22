@@ -48,7 +48,7 @@ import com.android.launcher3.util.Thunk;
 import java.util.ArrayList;
 
 /**
- * An icon that can appear on in the workspace representing an {@link UserFolder}.
+ * An icon that can appear on in the workspace representing an {@link FolderIcon}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk Launcher mLauncher;
@@ -489,7 +489,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 onDrop(fItem, d.dragView, null, 1.0f,
                         mInfo.contents.size(), d.postAnimationRunnable, d);
             }
-            mLauncher.removeFolder(folder);
+            mLauncher.removeItem(d.dragView, folder, true);
             LauncherModel.deleteItemFromDatabase(mLauncher, folder);
             return;
         } else {

@@ -11,12 +11,12 @@
         android:id="@+id/pref_dock"
         android:title="@string/dock_title" />
 
-    <!--<header
-        android:fragment="com.slim.slimlauncher.settings.DrawerFragment"
+    <header
+        android:fragment="org.slim.launcher.settings.DrawerFragment"
         android:id="@+id/pref_drawer"
         android:title="@string/drawer_title" />
 
-    <header
+    <!--<header
         android:fragment="com.slim.slimlauncher.settings.FolderFragment"
         android:id="@+id/pref_folder"
         android:title="@string/folder_title" /> -->

@@ -259,6 +259,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.reset();
     }
 
+    public void setSearchBarContainerViewVisibility(int visibility) {
+        mSearchContainer.setVisibility(visibility);
+        updateBackgroundAndPaddings();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
