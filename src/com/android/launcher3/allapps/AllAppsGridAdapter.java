@@ -18,9 +18,11 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.settings.SettingsProvider;
+import com.android.launcher3.util.ColorUtils;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
@@ -73,6 +77,9 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     Paint mSectionTextPaint;
     @Thunk
     Paint mPredictedAppsDividerPaint;
+
+    private Context mContext;
+
     private LayoutInflater mLayoutInflater;
     private GridLayoutManager mGridLayoutMgr;
     private GridSpanSizer mGridSizer;
@@ -85,6 +92,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
                               View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
                               View.OnLongClickListener iconLongClickListener) {
         Resources res = context.getResources();
+        mContext = context;
         mApps = apps;
         mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
@@ -174,6 +182,14 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+
+                if (ColorUtils.darkTextColor(SettingsProvider.getInt(mContext,
+                        SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                        ContextCompat.getColor(mContext, R.color.quantum_panel_bg_color)))) {
+                    icon.setTextColor(Color.BLACK);
+                } else {
+                    icon.setTextColor(Color.WHITE);
+                }
                 return new ViewHolder(icon);
             }
             case PREDICTION_ICON_VIEW_TYPE: {
@@ -185,6 +201,15 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+
+                if (ColorUtils.darkTextColor(SettingsProvider.getInt(mContext,
+                        SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                        ContextCompat.getColor(mContext, R.color.quantum_panel_bg_color)))) {
+                    icon.setTextColor(Color.BLACK);
+                } else {
+                    icon.setTextColor(Color.WHITE);
+                }
+
                 return new ViewHolder(icon);
             }
             default:

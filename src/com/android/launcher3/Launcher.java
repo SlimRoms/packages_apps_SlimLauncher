@@ -606,6 +606,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
+        updateSearchBar();
         mDeviceProfile.layout(this);
 
         //registerContentObservers();
@@ -698,6 +699,8 @@ public class Launcher extends Activity
         mAppsCustomizeContent.updateGridSize();
         mAppsCustomizeContent.invalidateOnDataChange();
         updateSearchBar();
+
+        mAppsView.updateBackgroundAndPaddings(true);
 
         mHotseat.updateHotseat();
 
@@ -2094,6 +2097,8 @@ public class Launcher extends Activity
         if (DEBUG_RESUME_TIME) {
             startTime = System.currentTimeMillis();
         }
+        Log.d("TEST", "onNewIntent");
+
 
         if (ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT.equals(intent.getAction())) {
             onClickLauncherAction(null, intent);
@@ -2864,7 +2869,7 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton() {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            showAppsView(true /* animated */, false /* resetListToTop */,
+            showAppsView(getAllAppsButton() != null /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
         }
     }
@@ -3608,6 +3613,7 @@ public class Launcher extends Activity
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
+            getWindow().setNavigationBarColor(Color.TRANSPARENT);
             boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
             mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.NORMAL,
@@ -3658,6 +3664,7 @@ public class Launcher extends Activity
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
+        getWindow().setNavigationBarColor(0x33000000);
         showAppsOrWidgets(State.APPS, animated, focusSearchBar);
     }
 

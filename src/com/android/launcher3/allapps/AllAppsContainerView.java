@@ -18,9 +18,14 @@ package com.android.launcher3.allapps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -31,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
@@ -43,10 +49,13 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.Folder;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.settings.SettingsProvider;
+import com.android.launcher3.util.ColorUtils;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 
@@ -248,6 +257,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         updateBackgroundAndPaddings();
     }
 
+    public void updateBackground() {
+        int color = SettingsProvider.getInt(mLauncher,
+                SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                ContextCompat.getColor(mLauncher, R.color.quantum_panel_bg_color));
+        if (SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_DRAWER_DISABLE_CARD, false)) {
+            setBackground(null);
+            setBackgroundColor(color);
+        } else {
+            Drawable d = ContextCompat.getDrawable(mLauncher, R.drawable.quantum_panel);
+            if (d != null) {
+                d = d.mutate();
+                d.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+                setBackground(d);
+            }
+        }
+    }
+
     /**
      * Scrolls this list view to the top.
      */
@@ -381,21 +408,54 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
         boolean isRtl = Utilities.isRtl(getResources());
 
+        if (Integer.parseInt(
+                SettingsProvider.getString(mLauncher, SettingsProvider.KEY_DRAWER_TYPE, "0")) ==
+                Launcher.DRAWER_TYPE_PAGED) {
+            setBackgroundColor(Color.TRANSPARENT);
+            return;
+        }
+
         // TODO: Use quantum_panel instead of quantum_panel_shape
         InsetDrawable background = new InsetDrawable(
-                getResources().getDrawable(R.drawable.quantum_panel_shape), padding.left, 0,
+                getResources().getDrawable(R.drawable.quantum_panel), padding.left, 0,
                 padding.right, 0);
         Rect bgPadding = new Rect();
         background.getPadding(bgPadding);
-        mContainerView.setBackground(background);
-        mRevealView.setBackground(background.getConstantState().newDrawable());
+
+        int color = SettingsProvider.getInt(mLauncher,
+                SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                ContextCompat.getColor(mLauncher, R.color.quantum_panel_bg_color));
+        boolean useCard = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.KEY_DRAWER_DISABLE_CARD, true);
+        if (!useCard) {
+            setBackgroundColor(color);
+            bgPadding = new Rect(0, 0, 0, 0);
+        } else {
+            setBackgroundColor(Color.TRANSPARENT);
+            background.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        }
+        boolean lightStatusBar = ColorUtils.darkTextColor(color);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (lightStatusBar && !useCard) {
+                mAppsRecyclerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                mAppsRecyclerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            }
+        }
+
+        mContainerView.setBackground(useCard ? background : null);
+        mRevealView.setBackground(useCard ? background.getConstantState().newDrawable() : null);
         mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
 
         // Hack: We are going to let the recycler view take the full width, so reset the padding on
         // the container to zero after setting the background and apply the top-bottom padding to
         // the content view instead so that the launcher transition clips correctly.
-        mContent.setPadding(0, padding.top, 0, padding.bottom);
+        if (useCard) {
+            mContent.setPadding(0, padding.top, 0, padding.bottom);
+        } else {
+            mContent.setPadding(0, 0, 0, 0);
+        }
         mContainerView.setPadding(0, 0, 0, 0);
 
         // Pad the recycler view by the background padding plus the start margin (for the section
@@ -408,6 +468,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         } else {
             mAppsRecyclerView.setPadding(padding.left + startInset, topBottomPadding,
                     padding.right + mAppsRecyclerView.getMaxScrollbarWidth(), topBottomPadding);
+        }
+        if (!useCard) {
+            mAppsRecyclerView.setClipChildren(false);
+            mAppsRecyclerView.setClipToPadding(false);
+            mAppsRecyclerView.setPadding(mAppsRecyclerView.getPaddingLeft(),
+                    (padding.top - mContainerBoundsInset),
+                    mAppsRecyclerView.getPaddingRight(),
+                    (padding.bottom - mContainerBoundsInset));
         }
 
         // Inset the search bar to fit its bounds above the container

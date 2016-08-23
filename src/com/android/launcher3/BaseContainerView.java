@@ -38,7 +38,7 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
     // search bar and the height is determined by the measurement of the layout
     private Rect mFixedSearchBarBounds = new Rect();
     // The inset to apply to the edges and between the search bar and the container
-    private int mContainerBoundsInset;
+    protected int mContainerBoundsInset;
     private boolean mHasSearchBar;
 
     public BaseContainerView(Context context) {
@@ -88,6 +88,10 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      * Update the backgrounds and padding in response to a change in the bounds or insets.
      */
     protected void updateBackgroundAndPaddings() {
+        updateBackgroundAndPaddings(false);
+    }
+
+    protected void updateBackgroundAndPaddings(boolean force) {
         Rect padding;
         Rect searchBarBounds = new Rect(mFixedSearchBarBounds);
         if (!isValidSearchBarBounds(mFixedSearchBarBounds)) {
@@ -110,7 +114,8 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
                     getMeasuredWidth() - mFixedSearchBarBounds.right,
                     mInsets.bottom + mContainerBoundsInset);
         }
-        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mFixedSearchBarBounds)) {
+        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mFixedSearchBarBounds)
+                || force) {
             mContentPadding.set(padding);
             mContentBounds.set(padding.left, padding.top,
                     getMeasuredWidth() - padding.right,
