@@ -67,11 +67,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.UserHandle;
-<<<<<<< HEAD
-=======
 import android.provider.Settings;
-import android.speech.RecognizerIntent;
->>>>>>> 801eaf0... Add longpress settings icon to go to system settings
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
