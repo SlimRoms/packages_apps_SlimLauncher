@@ -60,6 +60,8 @@
     <string name="drawer_style_paged">Paged</string>
     <string name="drawer_style_vertical">Vertical</string>
     <string name="drawer_search_bar_title">Enable search bar</string>
+    <string name="drawer_disable_card_title">Card background</string>
+    <string name="drawer_background_color_title">Drawer background color</string>
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>

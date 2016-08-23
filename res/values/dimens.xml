@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,8 +58,8 @@
     <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
     <dimen name="container_bounds_minus_quantum_panel_padding_inset">4dp</dimen>
 
-    <dimen name="container_fastscroll_thumb_min_width">4dp</dimen>
-    <dimen name="container_fastscroll_thumb_max_width">8dp</dimen>
+    <dimen name="container_fastscroll_thumb_min_width">6dp</dimen>
+    <dimen name="container_fastscroll_thumb_max_width">10dp</dimen>
     <dimen name="container_fastscroll_thumb_height">64dp</dimen>
     <dimen name="container_fastscroll_thumb_touch_inset">-24dp</dimen>
     <dimen name="container_fastscroll_popup_size">72dp</dimen>

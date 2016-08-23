@@ -21,8 +21,11 @@ import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -53,6 +56,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.settings.SettingsProvider;
+import com.android.launcher3.util.ColorUtils;
 import com.android.launcher3.util.GestureHelper;
 
 import java.util.ArrayList;
@@ -532,12 +536,12 @@ public class AppsCustomizePagedView extends PagedView implements
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
         layout.measure(widthSpec, heightSpec);
 
-        Drawable bg = getContext().getResources().getDrawable(R.drawable.quantum_panel);
-        //int color = SettingsProvider.getInt(mLauncher, SettingsProvider.KEY_DRAWER_BACKGROUND,
-        //      Color.WHITE);
+        Drawable bg = ContextCompat.getDrawable(mLauncher, R.drawable.quantum_panel);
+        int color = SettingsProvider.getInt(mLauncher, SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+              ContextCompat.getColor(mLauncher, R.color.quantum_panel_bg_color));
         if (bg != null) {
             bg.setAlpha(mPageBackgroundsVisible ? 255 : 0);
-            //bg.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+            bg.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
             layout.setBackground(bg);
         }
 
@@ -558,12 +562,13 @@ public class AppsCustomizePagedView extends PagedView implements
             AppInfo info = mFilteredApps.get(i);
             BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
-            /*if (!ColorUtils.darkTextColor(SettingsProvider.getInt(mLauncher,
-                    SettingsProvider.KEY_DRAWER_BACKGROUND, Color.WHITE))) {
+            if (!ColorUtils.darkTextColor(SettingsProvider.getInt(mLauncher,
+                    SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                    ContextCompat.getColor(mLauncher, R.color.quantum_panel_bg_color)))) {
                 icon.setTextColor(Color.WHITE);
             } else {
                 icon.setTextColor(Color.BLACK);
-            }*/
+            }
             icon.applyFromApplicationInfo(info);
             //icon.setTextVisibility(!hideIconLabels);
             icon.setOnClickListener(mLauncher);

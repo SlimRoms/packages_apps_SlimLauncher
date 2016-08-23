@@ -96,9 +96,11 @@ public class DrawerFragment extends SettingsPreferenceFragment
         if (drawerType == Launcher.DRAWER_TYPE_PAGED) {
             mPortraitDrawerGrid.setEnabled(true);
             mLandscapeDrawerGrid.setEnabled(true);
+            findPreference(SettingsProvider.KEY_DRAWER_DISABLE_CARD).setEnabled(true);
         } else {
             mPortraitDrawerGrid.setEnabled(false);
             mLandscapeDrawerGrid.setEnabled(false);
+            findPreference(SettingsProvider.KEY_DRAWER_DISABLE_CARD).setEnabled(false);
         }
     }
 }
