@@ -285,7 +285,7 @@ public class LauncherProvider extends ContentProvider {
                     mListener.onSettingsChanged(arg, value);
                 }
                 if (extras.getBoolean(LauncherSettings.Settings.NOTIFY_BACKUP)) {
-                    LauncherBackupAgentHelper.dataChanged(getContext());
+                    //LauncherBackupAgentHelper.dataChanged(getContext());
                 }
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
@@ -336,7 +336,7 @@ public class LauncherProvider extends ContentProvider {
      */
     protected void notifyListeners() {
         // always notify the backup agent
-        LauncherBackupAgentHelper.dataChanged(getContext());
+        //LauncherBackupAgentHelper.dataChanged(getContext());
         if (mListener != null) {
             mListener.onLauncherProviderChange();
         }

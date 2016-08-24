@@ -33,6 +33,8 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import org.slim.launcher.SlimLauncher;
+
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
@@ -340,7 +342,7 @@ public class DeviceProfile {
                         normalHotseatBarHeightPx, edgeMarginPx);
             }
         } else {
-            int paddingTop = searchBarBounds.bottom;
+            int paddingTop = SlimLauncher.getInstance().getSlimDeviceProfile().workspacePaddingTop;
             int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -455,7 +457,7 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = searchBarBounds.width();
         lp.height = searchBarBounds.height();
-        lp.topMargin = searchBarTopExtraPaddingPx;
+        lp.topMargin = Math.max(searchBarTopExtraPaddingPx, lp.topMargin);
         if (hasVerticalBarLayout) {
             // Vertical search bar space -- The search bar is fixed in the layout to be on the left
             //                              of the screen regardless of RTL
@@ -531,7 +533,7 @@ public class DeviceProfile {
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
                 lp.width = LayoutParams.WRAP_CONTENT;
                 lp.height = LayoutParams.WRAP_CONTENT;
-                lp.bottomMargin = hotseatBarHeightPx;
+                lp.bottomMargin = Math.max(hotseatBarHeightPx, lp.bottomMargin);
                 pageIndicator.setLayoutParams(lp);
             }
         }

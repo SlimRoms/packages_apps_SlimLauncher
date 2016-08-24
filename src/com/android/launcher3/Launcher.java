@@ -209,7 +209,7 @@ public class Launcher extends Activity
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
     /** The different states that Launcher can be in. */
-    enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
+    protected enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
 
     @Thunk State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
@@ -270,7 +270,7 @@ public class Launcher extends Activity
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
     // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
-    private State mOnResumeState = State.NONE;
+    protected State mOnResumeState = State.NONE;
 
     private SpannableStringBuilder mDefaultKeySsb = null;
 
@@ -3403,7 +3403,7 @@ public class Launcher extends Activity
     /**
      * Shows the overview button.
      */
-    void showOverviewMode(boolean animated) {
+    public void showOverviewMode(boolean animated) {
         showOverviewMode(animated, false);
     }
 
@@ -3435,7 +3435,7 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
+    public void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
             boolean focusSearchBar) {
         if (resetListToTop) {
             mAppsView.scrollToTop();

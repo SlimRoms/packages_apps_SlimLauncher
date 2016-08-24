@@ -25,7 +25,7 @@ import android.util.Log;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.backup.nano.BackupProtos.Favorite;
+//import com.android.launcher3.backup.nano.BackupProtos.Favorite;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -148,6 +148,16 @@ public class CommonAppTypeParser implements LayoutParserCallback {
 
     public static int decodeItemTypeFromFlag(int flag) {
         return (flag & ShortcutInfo.FLAG_RESTORED_APP_TYPE) >> RESTORE_FLAG_BIT_SHIFT;
+    }
+
+    public static class Favorite {
+        static final int TARGET_NONE = 0;
+        static final int TARGET_PHONE = 1;
+        static final int TARGET_MESSENGER = 2;
+        static final int TARGET_EMAIL = 3;
+        static final int TARGET_BROWSER = 4;
+        static final int TARGET_GALLERY = 5;
+        static final int TARGET_CAMERA = 6;
     }
 
 }
