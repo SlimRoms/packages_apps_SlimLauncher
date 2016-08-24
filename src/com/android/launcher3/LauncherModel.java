@@ -32,6 +32,7 @@ import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -62,6 +63,9 @@ import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
+
+import org.slim.launcher.ShortcutHelper;
+import org.slim.launcher.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -1421,6 +1425,57 @@ public class LauncherModel extends BroadcastReceiver
         return screenIds;
     }
 
+    /**
+     * Checks whether there is an all apps shortcut in the database
+     */
+    static boolean hasAllAppsShortcut() {
+        for (ItemInfo info : sBgWorkspaceItems) {
+            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Add an all apps shortcut to the database if there aren't any already
+     */
+    private ItemInfo addAllAppsShortcutIfNecessary() {
+        if (hasAllAppsShortcut()) return null;
+        // check if first run
+        if (!SettingsProvider.getBoolean(mApp.getContext(), "all_apps_first_run", false)) {
+            SettingsProvider.putBoolean(mApp.getContext(), "all_apps_first_run", true);
+            return null;
+        }
+
+        int allAppsIndex = mApp.getInvariantDeviceProfile().hotseatAllAppsRank;
+
+        // create all apps shortcut info
+        ShortcutInfo allAppsShortcut = new ShortcutInfo();
+        allAppsShortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        allAppsShortcut.title = mApp.getContext().getResources().getString(R.string.all_apps_button_label);
+        allAppsShortcut.container = ItemInfo.NO_ID;
+
+        // create and set all apps icon
+        Drawable d = mApp.getContext().getResources().getDrawable(R.drawable.all_apps_button_icon);
+        allAppsShortcut.setIcon(Utilities.createIconBitmap(d, mApp.getContext()));
+
+        // set span
+        allAppsShortcut.spanX = 1;
+        allAppsShortcut.spanY = 1;
+
+        // create and set shortcut intent
+        Intent shortcutIntent = new Intent(mApp.getContext(), Launcher.class);
+        shortcutIntent.setAction(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT);
+        shortcutIntent.putExtra(ShortcutHelper.SHORTCUT_VALUE, ShortcutHelper.SHORTCUT_ALL_APPS);
+
+        allAppsShortcut.intent = shortcutIntent;
+
+        LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
+                LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
+        return allAppsShortcut;
+    }
+
     public boolean isAllAppsLoaded() {
         return mAllAppsLoaded;
     }
@@ -1755,6 +1810,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Make sure the default workspace is loaded
                 Launcher.addDumpLog(TAG, "loadWorkspace: loading default favorites", false);
                 LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary();
+                addAllAppsShortcutIfNecessary();
             }
 
             synchronized (sBgLock) {
@@ -2047,6 +2103,11 @@ public class LauncherModel extends BroadcastReceiver
                                     info.isDisabled |= disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
+                                    }
+
+                                    if (intent.getAction().equals(
+                                            ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                                        info.launcherAction = true;
                                     }
 
                                     // check & update map of what's occupied

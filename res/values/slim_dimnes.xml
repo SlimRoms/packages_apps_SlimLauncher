@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="shortcut_picker_left_padding">70dip</dimen>
+
+</resources>

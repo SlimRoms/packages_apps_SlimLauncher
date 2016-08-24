@@ -111,6 +111,8 @@ public class Workspace extends PagedView
     @Thunk final WallpaperManager mWallpaperManager;
     @Thunk IBinder mWindowToken;
 
+    private WorkspaceCallbacks mWorkspaceCallbacks;
+
     private int mOriginalDefaultPage;
     private int mDefaultPage;
 
@@ -458,6 +460,10 @@ public class Workspace extends PagedView
         setWallpaperDimension();
 
         setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
+    }
+
+    public void setWorkspaceCallbacks(WorkspaceCallbacks callbacks) {
+        mWorkspaceCallbacks = callbacks;
     }
 
     private void setupLayoutTransition() {
@@ -1099,6 +1105,9 @@ public class Workspace extends PagedView
                     onWallpaperTap(ev);
                 }
             }
+        }
+        if (mWorkspaceCallbacks != null && mWorkspaceCallbacks.onInterceptTouchEvent(ev)) {
+            return true;
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -4511,7 +4520,7 @@ public class Workspace extends PagedView
         }
     }
 
-    void moveToDefaultScreen(boolean animate) {
+    public void moveToDefaultScreen(boolean animate) {
         moveToScreen(mDefaultPage, animate);
     }
 
