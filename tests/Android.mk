@@ -26,8 +26,8 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_SDK_VERSION := 23
 
-LOCAL_PACKAGE_NAME := Launcher3Tests
+LOCAL_PACKAGE_NAME := SlimLauncherTests
 
-LOCAL_INSTRUMENTATION_FOR := Launcher3
+LOCAL_INSTRUMENTATION_FOR := SlimLauncher
 
 include $(BUILD_PACKAGE)

@@ -41,10 +41,11 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 LOCAL_AAPT_FLAGS := \
     --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview
+    --extra-packages android.support.v7.recyclerview \
+    --rename-manifest-package com.slim.slimlauncher
 
 LOCAL_SDK_VERSION := current
-LOCAL_PACKAGE_NAME := Launcher3
+LOCAL_PACKAGE_NAME := SlimLauncher
 LOCAL_PRIVILEGED_MODULE := true
 #LOCAL_CERTIFICATE := shared
 
@@ -64,7 +65,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := launcher_proto_lib
+LOCAL_MODULE := slim_launcher_proto_lib
 LOCAL_IS_HOST_MODULE := true
 LOCAL_STATIC_JAVA_LIBRARIES := host-libprotobuf-java-nano
 
