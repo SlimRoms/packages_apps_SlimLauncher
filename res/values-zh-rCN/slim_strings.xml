@@ -47,6 +47,7 @@
   <!-- Dock Settings -->
   <string name="dock_title">停靠栏</string>
   <string name="dock_icons_title">停靠图标</string>
+  <string name="dock_icons_summary">Dock栏中的图标数</string>
   <!-- General Settings -->
   <string name="general_title">常规设置</string>
   <!-- Folder Settings -->
