@@ -20,6 +20,8 @@
   <string name="select_custom_activity_title">Επιλέξτε προσαρμοσμένη δραστηριότητα</string>
   <!-- Grid Size -->
   <string name="grid_size_title">Μέγεθος πλέγματος</string>
+  <string name="portrait_grid_size_title">Μέγεθος πλέγματος κάθετης οθόνης</string>
+  <string name="landscape_grid_size_title">Μέγεθος πλέγματος οριζόντιας οθόνης</string>
   <string name="grid_size_summary">Επιλέξτε τον αριθμό των γραμμών/στηλών</string>
   <string name="grid_size_rows_title">Σειρές</string>
   <string name="grid_size_columns_title">Στήλες</string>
@@ -76,5 +78,12 @@
   <string name="gesture_target_last_app">Τελευταία εφαρμογή</string>
   <string name="gesture_target_custom">Προσαρμοσμένη</string>
   <!-- Icon Pack  -->
+  <string name="dialog_pick_iconpack_title">Διαλέξτε πακέτο εικονιδίων</string>
+  <string name="default_iconpack_title">Προεπιλογή</string>
+  <string name="icon_packs_title">Πακέτα εικονιδίων</string>
+  <string name="no_iconpacks_summary">Δεν έχουν εγκατασταθεί πακέτα εικονιδίων</string>
+  <string name="pref_icon_pack_title">Πακέτα εικονιδίων</string>
   <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
+  <string name="edit_target_label">Επεξεργασία</string>
+  <string name="reset_custom_icons">Επαναφορά προσαρμοσμένων εικονιδίων</string>
 </resources>

@@ -20,6 +20,8 @@
   <string name="select_custom_activity_title">Válasszon egyéni tevékenységet</string>
   <!-- Grid Size -->
   <string name="grid_size_title">Rácsméret</string>
+  <string name="portrait_grid_size_title">Portré Rácsméret</string>
+  <string name="landscape_grid_size_title">Táj Rácsméret</string>
   <string name="grid_size_summary">Sorok/oszlopok számának kiválasztása</string>
   <string name="grid_size_rows_title">Sorok</string>
   <string name="grid_size_columns_title">Oszlopok</string>
@@ -77,8 +79,11 @@
   <string name="gesture_target_custom">Egyéni</string>
   <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Ikoncsomag választása</string>
+  <string name="default_iconpack_title">Alapértelmezett</string>
   <string name="icon_packs_title">Ikon csomagok</string>
   <string name="no_iconpacks_summary">Nincs ikon csomag telepítve</string>
   <string name="pref_icon_pack_title">Ikon csomag</string>
   <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
+  <string name="edit_target_label">Szerkesztés</string>
+  <string name="reset_custom_icons">Egyedi Ikonok Visszaállítása</string>
 </resources>
