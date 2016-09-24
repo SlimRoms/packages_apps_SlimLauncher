@@ -20,6 +20,8 @@
   <string name="select_custom_activity_title">Actividad personalizada</string>
   <!-- Grid Size -->
   <string name="grid_size_title">Tamaño de la rejilla</string>
+  <string name="portrait_grid_size_title">Tamaño de cuadrícula en vertical</string>
+  <string name="landscape_grid_size_title">Tamaño de cuadrícula en horizontal</string>
   <string name="grid_size_summary">Determinar el número de filas y columnas</string>
   <string name="grid_size_rows_title">Filas</string>
   <string name="grid_size_columns_title">Columnas</string>
@@ -77,8 +79,11 @@
   <string name="gesture_target_custom">Personalizado</string>
   <!-- Icon Pack  -->
   <string name="dialog_pick_iconpack_title">Escoger paquete de iconos</string>
+  <string name="default_iconpack_title">Predeterminados</string>
   <string name="icon_packs_title">Paquete de iconos</string>
   <string name="no_iconpacks_summary">No se han instalado paquetes de iconos</string>
   <string name="pref_icon_pack_title">Paquete de iconos</string>
   <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
+  <string name="edit_target_label">Editar</string>
+  <string name="reset_custom_icons">Restablecer Iconos personalizados</string>
 </resources>
