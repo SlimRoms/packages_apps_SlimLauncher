@@ -65,6 +65,7 @@ import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
 
 import org.slim.launcher.ShortcutHelper;
+import org.slim.launcher.SlimLauncher;
 import org.slim.launcher.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
@@ -1430,7 +1431,10 @@ public class LauncherModel extends BroadcastReceiver
      */
     static boolean hasAllAppsShortcut() {
         for (ItemInfo info : sBgWorkspaceItems) {
-            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+            if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)
+                    && info.getIntent().getStringExtra(ShortcutHelper.SHORTCUT_VALUE) != null
+                    && info.getIntent().getStringExtra(ShortcutHelper.SHORTCUT_VALUE).equals(
+                            ShortcutHelper.SHORTCUT_ALL_APPS)) {
                 return true;
             }
         }
@@ -1441,12 +1445,13 @@ public class LauncherModel extends BroadcastReceiver
      * Add an all apps shortcut to the database if there aren't any already
      */
     private ItemInfo addAllAppsShortcutIfNecessary() {
-        if (hasAllAppsShortcut()) return null;
         // check if first run
-        if (!SettingsProvider.getBoolean(mApp.getContext(), "all_apps_first_run", false)) {
-            SettingsProvider.putBoolean(mApp.getContext(), "all_apps_first_run", true);
+        if (SettingsProvider.getBoolean(mApp.getContext(), "all_apps_first_run", false)) {
             return null;
+        } else {
+            SettingsProvider.putBoolean(mApp.getContext(), "all_apps_first_run", true);
         }
+        if (hasAllAppsShortcut()) return null;
 
         int allAppsIndex = mApp.getInvariantDeviceProfile().hotseatAllAppsRank;
 
@@ -1465,13 +1470,13 @@ public class LauncherModel extends BroadcastReceiver
         allAppsShortcut.spanY = 1;
 
         // create and set shortcut intent
-        Intent shortcutIntent = new Intent(mApp.getContext(), Launcher.class);
+        Intent shortcutIntent = new Intent(mApp.getContext(), SlimLauncher.class);
         shortcutIntent.setAction(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT);
         shortcutIntent.putExtra(ShortcutHelper.SHORTCUT_VALUE, ShortcutHelper.SHORTCUT_ALL_APPS);
 
         allAppsShortcut.intent = shortcutIntent;
 
-        LauncherModel.addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
+        addOrMoveItemInDatabase(mApp.getContext(), allAppsShortcut,
                 LauncherSettings.Favorites.CONTAINER_HOTSEAT, allAppsIndex, allAppsIndex, 0);
         return allAppsShortcut;
     }
