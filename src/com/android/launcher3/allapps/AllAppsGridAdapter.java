@@ -21,9 +21,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
@@ -47,6 +49,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+
+import org.slim.launcher.settings.SettingsProvider;
+import org.slim.launcher.util.ColorUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -524,6 +529,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+
+                if (ColorUtils.darkTextColor(SettingsProvider.getInt(parent.getContext(),
+                        SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                        ContextCompat.getColor(parent.getContext(),
+                                R.color.quantum_panel_bg_color)))) {
+                    icon.setTextColor(Color.BLACK);
+                } else {
+                    icon.setTextColor(Color.WHITE);
+                }
                 return new ViewHolder(icon);
             }
             case PREDICTION_ICON_VIEW_TYPE: {
@@ -535,6 +549,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+
+                if (ColorUtils.darkTextColor(SettingsProvider.getInt(parent.getContext(),
+                        SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                        ContextCompat.getColor(parent.getContext(),
+                                R.color.quantum_panel_bg_color)))) {
+                    icon.setTextColor(Color.BLACK);
+                } else {
+                    icon.setTextColor(Color.WHITE);
+                }
                 return new ViewHolder(icon);
             }
             case EMPTY_SEARCH_VIEW_TYPE:

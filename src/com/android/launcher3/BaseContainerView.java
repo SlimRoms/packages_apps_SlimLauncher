@@ -106,7 +106,7 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
     /**
      * Update the backgrounds and padding in response to a change in the bounds or insets.
      */
-    protected void updateBackgroundAndPaddings() {
+    public void updateBackgroundAndPaddings() {
         Rect padding;
         padding = new Rect(
                 mHorizontalPadding,
@@ -149,5 +149,9 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
 
     public final View getRevealView() {
         return mRevealView;
+    }
+
+    public final Rect getContentPadding() {
+        return mContentPadding;
     }
 }
