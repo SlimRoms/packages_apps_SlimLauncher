@@ -93,7 +93,7 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
     private int normalHotseatBarHeightPx, shortHotseatBarHeightPx;
-    private int hotseatBarHeightPx; // One of the above.
+    public int hotseatBarHeightPx; // One of the above.
 
     // All apps
     public int allAppsNumCols;
@@ -458,6 +458,7 @@ public class DeviceProfile {
         lp.width = searchBarBounds.width();
         lp.height = searchBarBounds.height();
         lp.topMargin = Math.max(searchBarTopExtraPaddingPx, lp.topMargin);
+        lp.setMarginStart(0);
         if (hasVerticalBarLayout) {
             // Vertical search bar space -- The search bar is fixed in the layout to be on the left
             //                              of the screen regardless of RTL
@@ -531,8 +532,8 @@ public class DeviceProfile {
                 // Put the page indicators above the hotseat
                 lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.width = LayoutParams.WRAP_CONTENT;
-                lp.height = LayoutParams.WRAP_CONTENT;
+                lp.width = LayoutParams.MATCH_PARENT;
+                lp.height = (int) (4 * launcher.getResources().getDisplayMetrics().density);
                 lp.bottomMargin = Math.max(hotseatBarHeightPx, lp.bottomMargin);
                 pageIndicator.setLayoutParams(lp);
             }

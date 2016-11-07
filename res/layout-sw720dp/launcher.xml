@@ -45,15 +45,15 @@
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
 
+        <include
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
+
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/search_drop_target_bar"
-            layout="@layout/search_drop_target_bar" />
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
@@ -63,8 +63,8 @@
              we go into AllApps -->
         <include android:id="@+id/page_indicator"
             layout="@layout/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
             android:layout_gravity="center_horizontal" />
 
         <include layout="@layout/widgets_view"
