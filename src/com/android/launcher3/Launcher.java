@@ -293,7 +293,7 @@ public class Launcher extends Activity
     private IconCache mIconCache;
     @Thunk boolean mUserPresent = true;
     private boolean mVisible = false;
-    private boolean mHasFocus = false;
+    protected boolean mHasFocus = false;
     private boolean mAttached = false;
 
     private LauncherClings mClings;
