@@ -27,9 +27,12 @@ public interface SettingsKeys {
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
+    String KEY_DRAWER_DISABLE_CARD = "drawer_disable_card";
+    String KEY_DRAWER_BACKGROUND_COLOR = "drawer_background_color";
 
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";
+    String KEY_HOTSEAT_BACKGROUND = "hotseat_background";
 
     // Gestures
     String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";

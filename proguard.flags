@@ -73,3 +73,5 @@
   *;
 }
 
+-keep class org.slim.**
+

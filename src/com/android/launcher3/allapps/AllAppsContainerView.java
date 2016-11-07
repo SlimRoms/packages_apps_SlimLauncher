@@ -20,16 +20,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
@@ -48,6 +51,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.util.ComponentKey;
+
+import org.slim.launcher.SlimLauncher;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -261,6 +266,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public void setSearchBarContainerViewVisibility(int visibility) {
         mSearchContainer.setVisibility(visibility);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)
+                mAppsRecyclerView.getLayoutParams();
+        lp.topMargin = visibility == GONE ? 0 :
+                getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+        mAppsRecyclerView.setLayoutParams(lp);
         updateBackgroundAndPaddings();
     }
 
@@ -393,6 +403,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         lp.leftMargin = padding.left;
         lp.rightMargin = padding.right;
         mSearchContainer.setLayoutParams(lp);
+
+        SlimLauncher.getInstance().updateAppDrawerBackground();
     }
 
     @Override
@@ -441,9 +453,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public boolean onLongClick(View v) {
+        Log.d("TEST", "onLongClick");
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // When we have exited all apps or are in transition, disregard long clicks
+        Log.d("TEST", "apps visible=" + mLauncher.isAppsViewVisible());
         if (!mLauncher.isAppsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
@@ -611,5 +625,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
+    }
+
+    public AllAppsRecyclerView getAppsRecyclerView() {
+        return mAppsRecyclerView;
     }
 }
