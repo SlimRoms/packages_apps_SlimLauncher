@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -30,6 +31,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
+
+import org.slim.launcher.SlimLauncher;
 
 import java.util.List;
 
@@ -395,5 +398,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         mEmptySearchBackground.setBounds(x, y,
                 x + mEmptySearchBackground.getIntrinsicWidth(),
                 y + mEmptySearchBackground.getIntrinsicHeight());
+    }
+
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        SlimLauncher.getInstance().allAppsEvent(event);
+        return super.onInterceptTouchEvent(event);
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        return SlimLauncher.getInstance().allAppsEvent(event) || super.onTouchEvent(event);
     }
 }

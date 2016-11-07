@@ -17,15 +17,13 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+
+import org.slim.launcher.SlimLauncher;
 
 public class Hotseat extends FrameLayout
         implements Stats.LaunchSourceProvider{
@@ -54,13 +52,6 @@ public class Hotseat extends FrameLayout
 
     CellLayout getLayout() {
         return mContent;
-    }
-
-    /**
-     * Returns whether there are other icons than the all apps button in the hotseat.
-     */
-    public boolean hasIcons() {
-        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
     }
 
     /**
@@ -97,11 +88,18 @@ public class Hotseat extends FrameLayout
         mAllAppsButtonRank = grid.inv.hotseatAllAppsRank;
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet) {
-            mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
         mContent.setIsHotseat(true);
+
+        /*mContent.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return SlimLauncher.getInstance().hotseatEvent(motionEvent);
+            }
+        });*/
 
         resetLayout();
     }
@@ -114,14 +112,21 @@ public class Hotseat extends FrameLayout
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state.
-        if (mLauncher.getWorkspace().workspaceInModalState()) {
-            return true;
-        }
-        return false;
+        return mLauncher.getWorkspace().workspaceInModalState()
+                || SlimLauncher.getInstance().hotseatEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        return SlimLauncher.getInstance().hotseatEvent(e) || super.onTouchEvent(e);
     }
 
     @Override
     public void fillInLaunchSourceData(View v, Bundle sourceData) {
         sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOTSEAT);
+    }
+
+    public CellLayout getContent() {
+        return mContent;
     }
 }

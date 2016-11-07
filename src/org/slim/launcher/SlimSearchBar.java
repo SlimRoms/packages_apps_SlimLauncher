@@ -19,7 +19,6 @@ import org.slim.launcher.settings.SettingsProvider;
 public class SlimSearchBar extends RelativeLayout implements View.OnClickListener {
 
     private SlimLauncher mSlimLauncher;
-    private View mSearchBar;
 
     private boolean mShowSearchBar;
 
@@ -35,18 +34,18 @@ public class SlimSearchBar extends RelativeLayout implements View.OnClickListene
         mSlimLauncher = slimLauncher;
     }
 
-    public void updateSetting(String key) {
-        if (key.equals(SettingsProvider.KEY_SHOW_SEARCH_BAR)) {
-            updateSearchBarVisibility();
-        }
-    }
-
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
 
-        findViewById(R.id.search_button_container).setOnClickListener(this);
-        findViewById(R.id.voice_button_container).setOnClickListener(this);
+        View search = findViewById(R.id.search_button_container);
+        if (search != null) {
+            search.setOnClickListener(this);
+        }
+        View voice = findViewById(R.id.voice_button_container);
+        if (voice != null) {
+            voice.setOnClickListener(this);
+        }
         setOnClickListener(this);
     }
 
