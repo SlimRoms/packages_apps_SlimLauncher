@@ -13,9 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.PageIndicator
+<org.slim.launcher.widget.SlimPageIndicator
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_height="10dp"
+    android:layout_width="match_parent"
     android:animateLayoutChanges="true"
     launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow">
-</com.android.launcher3.PageIndicator>
+</org.slim.launcher.widget.SlimPageIndicator>

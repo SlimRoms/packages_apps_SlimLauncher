@@ -45,11 +45,15 @@
     <!-- Drawer Settings -->
     <string name="drawer_title">Drawer</string>
     <string name="drawer_search_bar_title">Enable search bar</string>
+    <string name="drawer_disable_card_title">Card background</string>
+    <string name="drawer_background_color_title">Drawer background color</string>
+    <string name="drawer_swipe_to_open_title">Swipe to open</string>
 
     <!-- Dock Settings -->
     <string name="dock_title">Dock</string>
     <string name="dock_icons_title">Dock icons</string>
     <string name="dock_icons_summary">Number of icons in the dock</string>
+    <string name="hotseat_background_title">Dock background color</string>
 
     <!-- Gestures -->
     <string name="gestures_title">Gestures</string>

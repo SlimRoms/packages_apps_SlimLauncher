@@ -8,4 +8,18 @@
         android:title="@string/drawer_search_bar_title"
         android:defaultValue="true" />
 
+    <SwitchPreference
+        android:key="drawer_disable_card"
+        android:title="@string/drawer_disable_card_title"
+        android:defaultValue="true"/>
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="drawer_background_color"
+        android:title="@string/drawer_background_color_title"
+        android:defaultValue="@color/quantum_panel_bg_color" />
+
+    <SwitchPreference
+        android:key="drawer_swipe_to_open"
+        android:title="@string/drawer_swipe_to_open_title" />
+
 </PreferenceScreen>

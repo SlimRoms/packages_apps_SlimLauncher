@@ -136,7 +136,7 @@ public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener {
     static final String TAG = "Launcher";
-    static final boolean LOGD = false;
+    static final boolean LOGD = true;
 
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
@@ -212,9 +212,9 @@ public class Launcher extends Activity
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
     /** The different states that Launcher can be in. */
-    protected enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
+    public enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
 
-    @Thunk State mState = State.WORKSPACE;
+    @Thunk protected State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
 
     private boolean mIsSafeModeEnabled;
@@ -293,7 +293,7 @@ public class Launcher extends Activity
     private IconCache mIconCache;
     @Thunk boolean mUserPresent = true;
     private boolean mVisible = false;
-    private boolean mHasFocus = false;
+    protected boolean mHasFocus = false;
     private boolean mAttached = false;
 
     private LauncherClings mClings;
@@ -3385,7 +3385,7 @@ public class Launcher extends Activity
     /**
      * @return whether or not the Launcher state changed.
      */
-    boolean showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
+    protected boolean showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
@@ -3531,6 +3531,7 @@ public class Launcher extends Activity
         if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
         if (mState == State.WORKSPACE || mState == State.APPS_SPRING_LOADED ||
                 mState == State.WIDGETS_SPRING_LOADED) {
+            Log.d(TAG, "return here");
             return;
         }
 
@@ -3548,6 +3549,7 @@ public class Launcher extends Activity
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.d("TEST", "here");
                 if (successfulDrop) {
                     // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
                     //

@@ -184,7 +184,7 @@ public class Workspace extends PagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State {
+    public enum State {
         NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false),
         NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false),
         SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false),

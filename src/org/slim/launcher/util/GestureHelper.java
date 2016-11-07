@@ -261,7 +261,7 @@ public class GestureHelper {
                 SettingsProvider.RIGHT_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER));
     }
 
-    public boolean isSwipeDOWN(float upY, float downY) {
+    public static boolean isSwipeDOWN(float upY, float downY) {
         return (upY - downY) > MIN_UP_DOWN_GESTURE_DISTANCE;
     }
 

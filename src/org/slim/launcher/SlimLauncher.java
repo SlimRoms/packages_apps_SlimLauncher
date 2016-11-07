@@ -1,8 +1,16 @@
 package org.slim.launcher;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -15,22 +23,28 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceCallbacks;
+import com.android.launcher3.WorkspaceStateTransitionAnimation;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import org.slim.launcher.settings.SettingsActivity;
 import org.slim.launcher.settings.SettingsProvider;
 import com.android.launcher3.util.ComponentKey;
 
+import org.slim.launcher.util.AllAppsAnimation;
+import org.slim.launcher.util.ColorUtils;
 import org.slim.launcher.util.GestureHelper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SlimLauncher extends Launcher {
@@ -39,18 +53,42 @@ public class SlimLauncher extends Launcher {
 
     private SlimDeviceProfile mSlimProfile;
     private GestureHelper mGestureHelper;
+    private AllAppsAnimation mAllAppsAnimation;
 
     private SlimSearchBar mSearchBar;
+
+    private boolean mDrawerSwipeToOpen = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         sLauncher = this;
         setLauncherCallbacks(new SlimLauncherCallbacks());
         super.onCreate(savedInstanceState);
+
+        mAllAppsAnimation = new AllAppsAnimation(this, getAppsView());
+
         setInitialPreferences();
 
         mGestureHelper = new GestureHelper(this);
         getWorkspace().setWorkspaceCallbacks(new SlimWorkspaceCallbacks());
+
+        /*getHotseat().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                getAppsView().setVisibility(View.VISIBLE);
+                getAppsView().getContentView().setVisibility(View.VISIBLE);
+                getAppsView().setY(motionEvent.getRawY());
+                return true;
+            }
+        });*/
+    }
+
+    public boolean hotseatEvent(MotionEvent event) {
+        return mAllAppsAnimation.hotseatTouchEvent(event);
+    }
+
+    public boolean allAppsEvent(MotionEvent event) {
+        return mAllAppsAnimation.appDrawerTouchEvent(event);
     }
 
     public SlimDeviceProfile getSlimDeviceProfile() {
@@ -67,6 +105,9 @@ public class SlimLauncher extends Launcher {
         updateWorkspaceGridSize();
         updateHotseatCellCount();
         updateSearchBarVisibility();
+        updateAppDrawerSearchBar();
+        getAppsView().updateBackgroundAndPaddings();
+        updateDrawerSwipeToOpen();
     }
 
     public void preferenceChanged(String key) {
@@ -85,6 +126,137 @@ public class SlimLauncher extends Launcher {
                 break;
             case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
                 updateAppDrawerSearchBar();
+                break;
+            case SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR:
+            case SettingsProvider.KEY_DRAWER_DISABLE_CARD:
+                getAppsView().updateBackgroundAndPaddings();
+                mAllAppsAnimation.updateBackgroundColor();
+                break;
+            case SettingsProvider.KEY_HOTSEAT_BACKGROUND:
+                mAllAppsAnimation.updateBackgroundColor();
+                break;
+            case SettingsProvider.KEY_DRAWER_SWIPE_TO_OPEN:
+                updateDrawerSwipeToOpen();
+        }
+    }
+
+    public void updateDrawerSwipeToOpen() {
+        mDrawerSwipeToOpen = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_DRAWER_SWIPE_TO_OPEN, false);
+        mAllAppsAnimation.updateSwipeToOpen(mDrawerSwipeToOpen);
+    }
+
+    public void updateAppDrawerBackground() {
+        if (getAppsView() == null) return;
+
+        Drawable reveal = getAppsView().getRevealView().getBackground();
+        Drawable content = getAppsView().getContentView().getBackground();
+
+        if (reveal == null || content == null) {
+            InsetDrawable background = new InsetDrawable(ContextCompat.getDrawable(this,
+                    R.drawable.quantum_panel),
+                    getAppsView().getContentPadding().left, 0,
+                    getAppsView().getContentPadding().right, 0);
+            reveal = background.getConstantState() != null ?
+                    background.getConstantState().newDrawable() : background;
+            content = background;
+        }
+
+        int color = SettingsProvider.getInt(this,
+                SettingsProvider.KEY_DRAWER_BACKGROUND_COLOR,
+                ContextCompat.getColor(this, R.color.quantum_panel_bg_color));
+        boolean useCard = SettingsProvider.getBoolean(this,
+                SettingsProvider.KEY_DRAWER_DISABLE_CARD, false);
+
+        if (!useCard) {
+            getAppsView().setBackgroundColor(color);
+        } else {
+            getAppsView().setBackgroundColor(Color.TRANSPARENT);
+            reveal.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+            content.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        }
+        boolean lightStatusBar = ColorUtils.darkTextColor(color);
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (lightStatusBar && !useCard) {
+                getAppsView().getContentView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                getAppsView().getContentView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            }
+        }*/
+
+        getAppsView().getContentView().setBackground(useCard ? content : null);
+        getAppsView().getRevealView().setBackground(useCard ? reveal : null);
+
+        if (!useCard) {
+            getAppsView().getAppsRecyclerView().setClipChildren(false);
+            getAppsView().getAppsRecyclerView().setClipToPadding(false);
+            getAppsView().getAppsRecyclerView().setPadding(
+                    getAppsView().getAppsRecyclerView().getPaddingLeft(),
+                    (getAppsView().getContentView().getPaddingTop() +
+                            getAppsView().getPaddingTop()),
+                    getAppsView().getAppsRecyclerView().getPaddingRight(),
+                    (getAppsView().getContentView().getPaddingBottom() +
+                            getAppsView().getPaddingBottom()));
+            getAppsView().setPadding(0, 0, 0, 0);
+        }
+
+        mAllAppsAnimation.updateBackgroundColor();
+    }
+
+    @Override
+    public boolean isAppsViewVisible() {
+        Log.d("TEST", "appsView.y=" + getAppsView().getY());
+        if (mDrawerSwipeToOpen) {
+            return getAppsView().getY() < 4 && getAppsView().getY() > -4;
+        } else {
+            return super.isAppsViewVisible();
+        }
+    }
+
+    @Override
+    public void enterSpringLoadedDragMode() {
+        //super.enterSpringLoadedDragMode();
+        if (isAppsViewVisible() && mDrawerSwipeToOpen) {
+            mAllAppsAnimation.hideAllApps(State.APPS_SPRING_LOADED);
+            startWorkspaceStateChangeAnimation(Workspace.State.SPRING_LOADED,
+                    WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true,
+                    new HashMap<View, Integer>()).start();
+        }
+    }
+
+    @Override
+    protected boolean showWorkspace(int snapToPage, boolean animated, final Runnable onCompleteRunnable) {
+        if (mDrawerSwipeToOpen) {
+            final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+            Animator a = startWorkspaceStateChangeAnimation(Workspace.State.NORMAL,
+                    WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true,
+                    new HashMap<View, Integer>());
+            animation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (onCompleteRunnable != null) {
+                        onCompleteRunnable.run();
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+                }
+            });
+            animation.play(a);
+            animation.start();
+            Log.d("TEST", "SlimLauncher showWorkspace");
+            return true;
+        } else {
+            return super.showWorkspace(snapToPage, animated, onCompleteRunnable);
         }
     }
 
@@ -136,13 +308,43 @@ public class SlimLauncher extends Launcher {
     }
 
     @Override
+    public boolean onLongClick(View view) {
+        return super.onLongClick(view);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         if (ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT.equals(intent.getAction())) {
             onClickLauncherAction(null, intent);
             mOnResumeState = State.NONE;
             return;
         }
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
+                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        if (alreadyOnHome && mDrawerSwipeToOpen) {
+            mAllAppsAnimation.hideAllApps();
+            mState = State.WORKSPACE;
+        }
         super.onNewIntent(intent);
+    }
+
+    @Override
+    public void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
+                             boolean focusSearchBar) {
+        if (mDrawerSwipeToOpen) {
+            mAllAppsAnimation.showAllApps();
+            mState = State.APPS;
+            closeFolder();
+            Log.d("TEST", "mState=" + mState.name());
+        } else {
+            super.showAppsView(animated, resetListToTop, updatePredictedApps, focusSearchBar);
+        }
+    }
+
+    public void setLauncherState(State state) {
+        mState = state;
     }
 
     public void onClickLauncherAction(View view, Intent intent) {
@@ -150,6 +352,7 @@ public class SlimLauncher extends Launcher {
         switch (value) {
             case ShortcutHelper.SHORTCUT_ALL_APPS:
                 setAllAppsButton(view);
+                Log.d("TEST", "all apps button");
                 if (isAppsViewVisible()) {
                     showWorkspace(true);
                 } else {
@@ -377,7 +580,7 @@ public class SlimLauncher extends Launcher {
             Log.d("TEST", "getQsbBar");
             if (mSearchBar == null) {
                 mSearchBar = (SlimSearchBar)
-                        getLayoutInflater().inflate(R.layout.qsb, getSearchDropTargetBar(), false);
+                        getLayoutInflater().inflate(R.layout.search_bar_pixel, getSearchDropTargetBar(), false);
                 mSearchBar.setLauncher(SlimLauncher.this);
                 getSearchDropTargetBar().addView(mSearchBar);
             }
@@ -463,6 +666,9 @@ public class SlimLauncher extends Launcher {
         @Override
         public boolean onInterceptTouchEvent(MotionEvent event) {
             //Log.d("TEST", "pointers=" + event.getPointerCount());
+            if (getHotseat().getHeight() > event.getRawY()) {
+                Log.d("TEST", "hotseat");
+            }
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (event.getPointerCount() > 1) {

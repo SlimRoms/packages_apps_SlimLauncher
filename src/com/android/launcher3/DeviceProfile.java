@@ -25,6 +25,7 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +94,7 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
     private int normalHotseatBarHeightPx, shortHotseatBarHeightPx;
-    private int hotseatBarHeightPx; // One of the above.
+    public int hotseatBarHeightPx; // One of the above.
 
     // All apps
     public int allAppsNumCols;
@@ -316,13 +317,11 @@ public class DeviceProfile {
                 //      that into account here too.
                 int gap = (int) ((width - 2 * edgeMarginPx -
                         (inv.numColumns * cellWidthPx)) / (2 * (inv.numColumns + 1)));
-                bounds.set(edgeMarginPx + gap, 0,
-                        availableWidthPx - (edgeMarginPx + gap), searchBarSpaceHeightPx + (3 * edgeMarginPx));
+                bounds.set(0, 0,
+                        availableWidthPx - edgeMarginPx, searchBarSpaceHeightPx + (3 * edgeMarginPx));
             } else {
-                bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
-                        0,
-                        availableWidthPx - (desiredWorkspaceLeftRightMarginPx -
-                        defaultWidgetPadding.right), boundsBottom);
+                bounds.set(0,
+                        0, 0, boundsBottom);
             }
         }
         return bounds;
@@ -458,6 +457,8 @@ public class DeviceProfile {
         lp.width = searchBarBounds.width();
         lp.height = searchBarBounds.height();
         lp.topMargin = Math.max(searchBarTopExtraPaddingPx, lp.topMargin);
+        //lp.setMarginStart(-(getWorkspacePadding(isLayoutRtl).left * 2));
+        //lp.setMarginEnd();
         if (hasVerticalBarLayout) {
             // Vertical search bar space -- The search bar is fixed in the layout to be on the left
             //                              of the screen regardless of RTL
@@ -471,7 +472,7 @@ public class DeviceProfile {
 
         } else {
             // Horizontal search bar space
-            lp.gravity = Gravity.TOP|Gravity.CENTER_HORIZONTAL;
+            lp.gravity = Gravity.TOP|Gravity.START;
         }
         searchBar.setLayoutParams(lp);
 
@@ -481,7 +482,7 @@ public class DeviceProfile {
         lp.gravity = Gravity.CENTER;
         Rect padding = getWorkspacePadding(isLayoutRtl);
         workspace.setLayoutParams(lp);
-        workspace.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        workspace.setPadding(0, padding.top, 0, padding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing(isLayoutRtl));
 
         // Layout the hotseat
@@ -531,8 +532,8 @@ public class DeviceProfile {
                 // Put the page indicators above the hotseat
                 lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.width = LayoutParams.WRAP_CONTENT;
-                lp.height = LayoutParams.WRAP_CONTENT;
+                lp.width = LayoutParams.MATCH_PARENT;
+                lp.height = (int) (4 * launcher.getResources().getDisplayMetrics().density);
                 lp.bottomMargin = Math.max(hotseatBarHeightPx, lp.bottomMargin);
                 pageIndicator.setLayoutParams(lp);
             }
