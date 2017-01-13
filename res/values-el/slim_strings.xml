@@ -82,8 +82,8 @@
   <string name="default_iconpack_title">Προεπιλογή</string>
   <string name="icon_packs_title">Πακέτα εικονιδίων</string>
   <string name="no_iconpacks_summary">Δεν έχουν εγκατασταθεί πακέτα εικονιδίων</string>
-  <string name="pref_icon_pack_title">Πακέτα εικονιδίων</string>
+  <string name="pref_icon_pack_title">Πακέτο εικονιδίων</string>
   <!-- Label for edit drop target. [CHAR_LIMIT=20]-->
   <string name="edit_target_label">Επεξεργασία</string>
-  <string name="reset_custom_icons">Επαναφορά προσαρμοσμένων εικονιδίων</string>
+  <string name="reset_custom_icons">Επαναφορά Προσαρμοσμένων Εικονιδίων</string>
 </resources>
