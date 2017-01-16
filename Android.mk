@@ -27,14 +27,15 @@ LOCAL_MANIFEST_FILE := source/AndroidManifest.xml
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4 \
-    android-support-v7-recyclerview
+    android-support-v7-recyclerview \
+    android-support-v7-palette
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src) \
     $(call all-java-files-under, source/src) \
-    $(call all-java-files-under, WallpaperPicker/src) \
+    $(call all-java-files-under, src_config) \
     $(call all-proto-files-under, protos)
 
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/WallpaperPicker/res \
+LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/res \
     frameworks/support/v7/recyclerview/res
 
@@ -48,14 +49,18 @@ LOCAL_AAPT_FLAGS := \
     --rename-manifest-package com.slim.slimlauncher
 
 LOCAL_SDK_VERSION := current
+LOCAL_MIN_SDK_VERSION := 21
 LOCAL_PACKAGE_NAME := SlimLauncher
 LOCAL_PRIVILEGED_MODULE := true
 #LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2
 
-include $(BUILD_PACKAGE)
+LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
+LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
+
+include $(BUILD_PACKAGE)
 
 #
 # Launcher proto buffer jar used for development
@@ -74,4 +79,5 @@ LOCAL_STATIC_JAVA_LIBRARIES := host-libprotobuf-java-nano
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 
+# ==================================================
 include $(call all-makefiles-under,$(LOCAL_PATH))

@@ -24,6 +24,8 @@ import com.android.launcher3.WorkspaceCallbacks;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import org.slim.launcher.settings.SettingsActivity;
 import org.slim.launcher.settings.SettingsProvider;
+
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
 
 import org.slim.launcher.util.GestureHelper;
@@ -59,7 +61,7 @@ public class SlimLauncher extends Launcher {
 
     public void updateDynamicGrid() {
         mSlimProfile.updateFromPreferences();
-        getDeviceProfile().layout(this);
+        getDeviceProfile().layout(this, true);
     }
 
     void setInitialPreferences() {
@@ -108,7 +110,7 @@ public class SlimLauncher extends Launcher {
         }
     }
 
-    @Override
+    //@Override
     public boolean isAllAppsButtonRank(int rank) {
         return false;
     }
@@ -167,13 +169,14 @@ public class SlimLauncher extends Launcher {
                 onClickSettingsButton(view);
                 break;
             case ShortcutHelper.SHORTCUT_DEFAULT_PAGE:
-                getWorkspace().moveToDefaultScreen(true);
+                //getWorkspace().moveToDefaultScreen(true);
                 break;
         }
     }
 
     private void updateSearchBarVisibility() {
-        mSearchBar.updateSearchBarVisibility();
+        if (mSearchBar != null)
+            mSearchBar.updateSearchBarVisibility();
     }
 
     private void updateHotseatCellCount() {
@@ -187,6 +190,12 @@ public class SlimLauncher extends Launcher {
             ((CellLayout) findViewById(R.id.layout))
                     .setGridSize(grid.inv.numHotseatIcons, 1);
         }
+    }
+
+    @Override
+    public void onClickSettingsButton(View v) {
+        Intent i = new Intent(SlimLauncher.this, SettingsActivity.class);
+        startActivity(i);
     }
 
     public static SlimLauncher getInstance() {
@@ -292,41 +301,35 @@ public class SlimLauncher extends Launcher {
         public void finishBindingItems(boolean upgradePath) {
         }
 
-        @Override
+        //@Override
         public void onClickAllAppsButton(View v) {
         }
 
-        @Override
+        //@Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
         }
 
-        @Override
+        //@Override
         public void onClickFolderIcon(View v) {
         }
 
-        @Override
+        //@Override
         public void onClickAppShortcut(View v) {
         }
 
-        @Override
+        //@Override
         public void onClickPagedViewIcon(View v) {
         }
 
-        @Override
+        //@Override
         public void onClickWallpaperPicker(View v) {
         }
 
-        @Override
-        public void onClickSettingsButton(View v) {
-            Intent i = new Intent(SlimLauncher.this, SettingsActivity.class);
-            startActivity(i);
-        }
-
-        @Override
+        //@Override
         public void onClickAddWidgetButton(View v) {
         }
 
-        @Override
+        //@Override
         public void onPageSwitch(View newPage, int newPageIndex) {
         }
 
@@ -335,6 +338,11 @@ public class SlimLauncher extends Launcher {
         }
 
         @Override
+        public boolean startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData) {
+            return false;
+        }
+
+        //@Override
         public void onDragStarted(View view) {
         }
 
@@ -346,19 +354,19 @@ public class SlimLauncher extends Launcher {
         public void onInteractionEnd() {
         }
 
-        @Override
+        //@Override
         public boolean providesSearch() {
-            return true;
+            return false;
         }
 
-        @Override
+        //@Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
             startGlobalSearch(initialQuery, selectInitialQuery,
                     appSearchData, sourceBounds);
             return false;
         }
 
-        @Override
+       // @Override
         public boolean startSearchFromAllApps(String query) {
             return false;
         }
@@ -375,12 +383,12 @@ public class SlimLauncher extends Launcher {
         @Override
         public View getQsbBar() {
             Log.d("TEST", "getQsbBar");
-            if (mSearchBar == null) {
+            /*if (mSearchBar == null) {
                 mSearchBar = (SlimSearchBar)
                         getLayoutInflater().inflate(R.layout.qsb, getSearchDropTargetBar(), false);
                 mSearchBar.setLauncher(SlimLauncher.this);
-                getSearchDropTargetBar().addView(mSearchBar);
-            }
+               / getSearchDropTargetBar().addView(mSearchBar);
+            }*/
             return mSearchBar;
         }
 
@@ -390,21 +398,26 @@ public class SlimLauncher extends Launcher {
         }
 
         @Override
+        public UserEventDispatcher getUserEventDispatcher() {
+            return null;
+        }
+
+        //@Override
         public Intent getFirstRunActivity() {
             return null;
         }
 
-        @Override
+        //@Override
         public boolean hasFirstRunActivity() {
             return false;
         }
 
-        @Override
+        //@Override
         public boolean hasDismissableIntroScreen() {
             return false;
         }
 
-        @Override
+        //@Override
         public View getIntroScreen() {
             return null;
         }
@@ -419,14 +432,9 @@ public class SlimLauncher extends Launcher {
             return true;
         }
 
-        @Override
+        //@Override
         public boolean overrideWallpaperDimensions() {
             return false;
-        }
-
-        @Override
-        public boolean isLauncherPreinstalled() {
-            return SlimLauncher.this.isLauncherPreinstalled();
         }
 
         @Override
@@ -446,6 +454,11 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public void setLauncherSearchCallback(Object callbacks) {
+        }
+
+        @Override
+        public boolean shouldShowDiscoveryBounce() {
+            return false;
         }
     }
 

@@ -73,8 +73,7 @@ public class Partner {
      */
     public static synchronized List<Partner> getAllPartners(PackageManager pm) {
         if (!sSearched) {
-            List<Pair<String, Resources>> apkInfos =
-                    Utilities.findSystemApks(ACTION_PARTNER_CUSTOMIZATION, pm);
+            List<Pair<String, Resources>> apkInfos = new ArrayList<>();
             for (Pair<String, Resources> apkInfo : apkInfos) {
                 sPartners.add(new Partner(apkInfo.first, apkInfo.second));
             }
