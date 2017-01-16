@@ -1,3 +1,7 @@
+-keep,allowshrinking,allowoptimization class com.android.launcher3.** {
+  *;
+}
+
 -keep class com.android.launcher3.allapps.AllAppsBackgroundDrawable {
   public void setAlpha(int);
   public int getAlpha();
@@ -35,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.DragLayer$LayoutParams {
+-keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -60,6 +64,11 @@
 -keep class com.android.launcher3.PreloadIconDrawable {
   public float getAnimationProgress();
   public void setAnimationProgress(float);
+}
+
+-keep class com.android.launcher3.pageindicators.CaretDrawable {
+  public float getCaretProgress();
+  public void setCaretProgress(float);
 }
 
 -keep class com.android.launcher3.Workspace {

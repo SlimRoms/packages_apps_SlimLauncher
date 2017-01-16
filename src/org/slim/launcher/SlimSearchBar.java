@@ -87,11 +87,11 @@ public class SlimSearchBar extends RelativeLayout implements View.OnClickListene
             if (activityName != null) {
                 intent.setPackage(activityName.getPackageName());
             }
-            mSlimLauncher.startActivity(v, intent, "onClickVoiceButton");
+           // mSlimLauncher.startActivity(intent, "onClickVoiceButton");
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mSlimLauncher.startActivitySafely(v, intent, "onClickVoiceButton");
+           // mSlimLauncher.startActivitySafely(v, intent, "onClickVoiceButton");
         }
     }
 }
