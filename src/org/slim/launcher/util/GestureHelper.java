@@ -128,7 +128,7 @@ public class GestureHelper {
                 workspace.setCurrentPage(workspace.getPageIndexForScreenId(-1));
                 break;
             case ACTION_OPEN_APP_DRAWER:
-                mLauncher.showAppsView(false /* animated */, false /* resetListToTop */,
+                mLauncher.showAppsView(false /* animated */,
                         true /* updatePredictedApps */, false /* focusSearchBar */);
                 break;
             case ACTION_OVERVIEW_MODE:

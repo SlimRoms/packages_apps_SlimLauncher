@@ -20,8 +20,8 @@ public class SlimDeviceProfile {
 
         DeviceProfile profile = SlimLauncher.getInstance().getDeviceProfile();
 
-        Rect searchBarBounds = profile.getSearchBarBounds(false);
+        //Rect searchBarBounds = profile.getSearchBarBounds(false);
 
-        workspacePaddingTop = showSearchBar ? searchBarBounds.bottom : 0;
+        workspacePaddingTop = 0;
     }
 }
