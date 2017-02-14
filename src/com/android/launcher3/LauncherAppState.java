@@ -106,6 +106,16 @@ public class LauncherAppState {
         mSettingsChanged = b;
     }
 
+       public static boolean getabcChanged() {
+        return mabc;
+    }
+
+    public static void setabcChanged(boolean d) {
+        mabc = d;
+    }
+    
+     private static boolean mabc;
+    
     static LauncherProvider getLauncherProvider() {
         return sLauncherProvider.get();
     }
