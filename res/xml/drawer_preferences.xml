@@ -40,4 +40,9 @@
         launcher:min="70"
         launcher:defaultValue="100" />
 
+	<net.margaritov.preference.colorpicker.ColorPickerPreference
+		android:key="abc"
+		android:title="@string/abc"
+		android:summary="@string/abc_s"
+		android:defaultValue="0xffffffff" />
 </PreferenceScreen>
