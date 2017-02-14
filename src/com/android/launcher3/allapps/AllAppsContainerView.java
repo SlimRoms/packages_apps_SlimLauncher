@@ -380,10 +380,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         InsetDrawable background = new InsetDrawable(
                 getResources().getDrawable(R.drawable.quantum_panel_shape), padding.left, 0,
                 padding.right, 0);
+        int color = SettingsProvider.getInt(mLauncher,
+                SettingsProvider.APP_BGD_COLOR, 0xffffffff);
+        background.setColorFilter(new
+                        PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         Rect bgPadding = new Rect();
         background.getPadding(bgPadding);
         mContainerView.setBackground(background);
-        mRevealView.setBackground(background.getConstantState().newDrawable());
+        mRevealView.setBackground(background);
         mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
 
