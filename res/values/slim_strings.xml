@@ -107,5 +107,7 @@
     <string name="edit_target_label">Edit</string>
 
     <string name="reset_custom_icons">Reset Custom Icons</string>
+    <string name="abc">Background</string>
+    <string name="abc_s">Color and Opacity</string>
 
 </resources>
