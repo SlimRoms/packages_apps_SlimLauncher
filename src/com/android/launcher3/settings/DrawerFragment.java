@@ -24,8 +24,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.preference.DoubleNumberPickerPreference;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
 public class DrawerFragment extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener {
+        
+    private ColorPickerPreference mBackground;
 
     private DoubleNumberPickerPreference mPortraitDrawerGrid;
     private DoubleNumberPickerPreference mLandscapeDrawerGrid;
@@ -45,6 +49,21 @@ public class DrawerFragment extends SettingsPreferenceFragment
                 findPreference(SettingsProvider.KEY_PORTRAIT_DRAWER_GRID);
         mLandscapeDrawerGrid = (DoubleNumberPickerPreference)
                 findPreference(SettingsProvider.KEY_LANDSCAPE_DRAWER_GRID);
+
+ mBackground = (ColorPickerPreference)
+                findPreference(SettingsProvider.APP_BGD_COLOR);
+        mBackground.setAlphaSliderEnabled(true);
+        mBackground.setOnPreferenceChangeListener(this);
+        intColor = SettingsProvider.getInt(getActivity(),
+                SettingsProvider.APP_BGD_COLOR, -2);
+        if (intColor == -2) {
+            intColor = 0xffffffff;
+            mBackground.setSummary(getResources().getString(R.string.default_string));
+        } else {
+            hexColor = String.format("#%08x", (intColor));
+            mBackground.setSummary(hexColor);
+        }
+
 
         if (mProfile != null) {
 
@@ -88,6 +107,14 @@ public class DrawerFragment extends SettingsPreferenceFragment
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
         if (!preference.getKey().equals(SettingsProvider.KEY_DRAWER_TYPE)) return false;
+         if (preference == mBackground) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            SettingsProvider.putInt(getActivity(),
+                    SettingsProvider.APP_BGD_COLOR, intHex);
+        }
         updateGridPrefs(Integer.parseInt((String)o));
         return true;
     }
