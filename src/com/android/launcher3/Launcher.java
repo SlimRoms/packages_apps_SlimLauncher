@@ -717,6 +717,19 @@ public class Launcher extends Activity
         mModel.forceReload();
         mModel.startLoader(mWorkspace.getCurrentPage());
     }
+            
+              public void reloadAppDrawer() {
+        List<AppInfo> addedApps = mAppsView.getApps();
+        mDragLayer.removeView(mAppsView);
+        mAppsView = (AllAppsContainerView)LayoutInflater
+                .from(this).inflate(R.layout.all_apps, mDragLayer, false);
+        mDragLayer.addView(mAppsView, mDragLayer.getChildCount() - 1);
+        mAppsView.setVisibility(View.INVISIBLE);
+        setupSearchBar(this);
+        mAppsView.addApps(addedApps);
+        tryAndUpdatePredictedApps();
+        mAppsView.onReloadAppDrawer();
+    }
 
     public void updatePreferences() {
         mDrawerType = Integer.parseInt(
@@ -1189,6 +1202,11 @@ public class Launcher extends Activity
         if (LauncherAppState.getSettingsChanged()) {
             LauncherAppState.setSettingsChanged(false);
             updateDynamicGrid();
+        }
+        
+         if (LauncherAppState.getabcChanged()) {
+            LauncherAppState.setabcChanged(false);
+            reloadAppDrawer();
         }
 
         // Restore the previous launcher state

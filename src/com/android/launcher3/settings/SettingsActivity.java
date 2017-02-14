@@ -76,6 +76,11 @@ public class SettingsActivity extends PreferenceActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+             if ( key.equals("abc"){
+            LauncherAppState.setabcChanged(true);
+        }
+            else{
         LauncherAppState.setSettingsChanged(true);
+            }
     }
 }

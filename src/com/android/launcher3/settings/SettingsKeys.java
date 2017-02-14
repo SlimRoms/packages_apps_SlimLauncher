@@ -31,6 +31,7 @@ public interface SettingsKeys {
     String KEY_PORTRAIT_DRAWER_GRID = "portrait_drawer_grid";
     String KEY_LANDSCAPE_DRAWER_GRID = "landscape_drawer_grid";
     String KEY_DRAWER_ICON_SIZE = "drawer_icon_size";
+    String APP_BGD_COLOR = "abc";
 
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";

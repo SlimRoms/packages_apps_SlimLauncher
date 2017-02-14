@@ -682,7 +682,7 @@ public class AppsCustomizePagedView extends PagedView implements
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
 
-        return !mLauncher.isDraggingEnabled() && beginDragging(v);
+         return beginDragging(v);
     }
 
     /*
