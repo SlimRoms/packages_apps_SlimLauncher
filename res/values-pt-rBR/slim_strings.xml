@@ -8,6 +8,7 @@
   <string name="set_string">Definir</string>
   <string name="off_string">Desligado</string>
   <string name="error_message_title">Erro</string>
+  <string name="storage_permission_denied">Não é possível acessar o armazenamento</string>
   <!-- App picker -->
   <string name="profile_applist_title">Aplicativos</string>
   <string name="profile_choose_app">Escolha o aplicativo</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Tela inicial</string>
   <string name="show_search_bar_title">Mostrar barra de pesquisa</string>
+  <string name="show_shadow_title">Mostrar a sombra</string>
+  <string name="show_shadow_summary">Sombra na parte superior e inferior da tela.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Gaveta</string>
+  <string name="drawer_search_bar_title">Ativar a barra de pesquisa</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Ícones da dock</string>

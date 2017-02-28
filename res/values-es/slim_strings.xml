@@ -8,6 +8,7 @@
   <string name="set_string">Establecer</string>
   <string name="off_string">Deshabilitado</string>
   <string name="error_message_title">Error</string>
+  <string name="storage_permission_denied">No se puede acceder al almacenamiento</string>
   <!-- App picker -->
   <string name="profile_applist_title">Aplicaciones</string>
   <string name="profile_choose_app">Elegir aplicación</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Escritorio</string>
   <string name="show_search_bar_title">Mostrar la barra de búsqueda</string>
+  <string name="show_shadow_title">Mostrar sombra</string>
+  <string name="show_shadow_summary">Sombra en la parte superior e inferior de la pantalla.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Cajón de aplicaciones</string>
+  <string name="drawer_search_bar_title">Activar la barra de búsqueda</string>
   <!-- Dock Settings -->
   <string name="dock_title">Barra de aplicaciones</string>
   <string name="dock_icons_title">Iconos en la barra de aplicaciones</string>

@@ -8,6 +8,7 @@
   <string name="set_string">Nastaviť</string>
   <string name="off_string">Vypnúť</string>
   <string name="error_message_title">Chyba</string>
+  <string name="storage_permission_denied">Nemožno získať prístup k úložisku</string>
   <!-- App picker -->
   <string name="profile_applist_title">Aplikácie</string>
   <string name="profile_choose_app">Vyberte aplikáciu</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Domovská obrazovka</string>
   <string name="show_search_bar_title">Zobraziť vyhľadávací panel</string>
+  <string name="show_shadow_title">Zobraziť tieň</string>
+  <string name="show_shadow_summary">Tieň v hornej a dolnej časti obrazovky.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Zoznam aplikácií</string>
+  <string name="drawer_search_bar_title">Povoliť vyhľadávací panel</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony v doku</string>

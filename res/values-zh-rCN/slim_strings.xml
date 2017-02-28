@@ -8,6 +8,7 @@
   <string name="set_string">设置</string>
   <string name="off_string">关闭</string>
   <string name="error_message_title">出错</string>
+  <string name="storage_permission_denied">无法访问存储</string>
   <!-- App picker -->
   <string name="profile_applist_title">应用程序</string>
   <string name="profile_choose_app">选择应用</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">主屏</string>
   <string name="show_search_bar_title">显示搜索栏</string>
+  <string name="show_shadow_title">显示阴影</string>
+  <string name="show_shadow_summary">在屏幕的顶部和底部的阴影。</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">抽屉</string>
+  <string name="drawer_search_bar_title">启用搜索栏</string>
   <!-- Dock Settings -->
   <string name="dock_title">停靠栏</string>
   <string name="dock_icons_title">停靠图标</string>

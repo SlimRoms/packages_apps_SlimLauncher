@@ -8,6 +8,7 @@
   <string name="set_string">Ορισμός</string>
   <string name="off_string">Κλειστό</string>
   <string name="error_message_title">Σφάλμα</string>
+  <string name="storage_permission_denied">Δεν είναι δυνατή η πρόσβαση στο χώρο αποθήκευσης</string>
   <!-- App picker -->
   <string name="profile_applist_title">Εφαρμογές</string>
   <string name="profile_choose_app">Επιλέξτε εφαρμογή</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Αρχική οθόνη</string>
   <string name="show_search_bar_title">Εμφάνιση μπάρας αναζήτησης</string>
+  <string name="show_shadow_title">Εμφάνιση σκιάς</string>
+  <string name="show_shadow_summary">Σκιά στο πάνω και κάτω μέρος της οθόνης.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Συρτάρι εφαρμογών</string>
+  <string name="drawer_search_bar_title">Ενεργοποίηση της γραμμής αναζήτησης</string>
   <!-- Dock Settings -->
   <string name="dock_title">Μπάρα εφαρμογών</string>
   <string name="dock_icons_title">Εικονίδια μπάρας εφαρμογών</string>

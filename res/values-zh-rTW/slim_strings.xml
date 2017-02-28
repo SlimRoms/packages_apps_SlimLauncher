@@ -8,6 +8,7 @@
   <string name="set_string">設定</string>
   <string name="off_string">關閉</string>
   <string name="error_message_title">錯誤</string>
+  <string name="storage_permission_denied">無法存取儲存空間。</string>
   <!-- App picker -->
   <string name="profile_applist_title">應用程式</string>
   <string name="profile_choose_app">選擇應用程式</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">主畫面</string>
   <string name="show_search_bar_title">顯示搜尋列</string>
+  <string name="show_shadow_title">顯示陰影</string>
+  <string name="show_shadow_summary">在螢幕頂部和底部的陰影。</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">清單</string>
+  <string name="drawer_search_bar_title">啟用搜尋列</string>
   <!-- Dock Settings -->
   <string name="dock_title">我的最愛匣</string>
   <string name="dock_icons_title">我的最愛匣圖示</string>

@@ -8,6 +8,7 @@
   <string name="set_string">Beállítás</string>
   <string name="off_string">Ki</string>
   <string name="error_message_title">Hiba</string>
+  <string name="storage_permission_denied">Tárhelyhez való hozzáférés sikertelen</string>
   <!-- App picker -->
   <string name="profile_applist_title">Alkalmazások</string>
   <string name="profile_choose_app">Válasszon alkalmazást</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Kezdőképernyő</string>
   <string name="show_search_bar_title">Keresés eszköztár megjelenítése</string>
+  <string name="show_shadow_title">Árnyék megjelenítése</string>
+  <string name="show_shadow_summary">Árnyék a képernyő alján és tetején.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Alkalmazásképernyő</string>
+  <string name="drawer_search_bar_title">Keresősáv engedélyezése</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dokk</string>
   <string name="dock_icons_title">Dock ikonok</string>

@@ -8,6 +8,7 @@
   <string name="set_string">Imposta</string>
   <string name="off_string">Off</string>
   <string name="error_message_title">Errore</string>
+  <string name="storage_permission_denied">Impossibile accedere alla memoria</string>
   <!-- App picker -->
   <string name="profile_applist_title">Applicazioni</string>
   <string name="profile_choose_app">Scegli applicazione</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Schermata Home</string>
   <string name="show_search_bar_title">Mostra barra di ricerca</string>
+  <string name="show_shadow_title">Mostra ombreggiatura</string>
+  <string name="show_shadow_summary">Ombra in alto e in basso dello schermo.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Drawer</string>
+  <string name="drawer_search_bar_title">Attiva barra di ricerca</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Icone Dock</string>

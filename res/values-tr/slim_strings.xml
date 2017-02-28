@@ -8,6 +8,7 @@
   <string name="set_string">Ayarla</string>
   <string name="off_string">Kapat</string>
   <string name="error_message_title">Hata</string>
+  <string name="storage_permission_denied">Depolamaya erişilemiyor</string>
   <!-- App picker -->
   <string name="profile_applist_title">Uygulamalar</string>
   <string name="profile_choose_app">Uygulama Seç</string>
@@ -28,8 +29,11 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Masaüstü</string>
   <string name="show_search_bar_title">Arama çubuğnu Göster</string>
+  <string name="show_shadow_title">Gölgeyi göster</string>
+  <string name="show_shadow_summary">Ekranın üstünü ve altını gölgelendir.</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Uygulama Menüsü</string>
+  <string name="drawer_search_bar_title">Arama çubuğunu etkinleştir</string>
   <!-- Dock Settings -->
   <string name="dock_title">Alt Panel</string>
   <string name="dock_icons_title">Alt Panel Simge Sayısı</string>

@@ -8,6 +8,7 @@
   <string name="set_string">Задать</string>
   <string name="off_string">Выкл</string>
   <string name="error_message_title">Ошибка</string>
+  <string name="storage_permission_denied">Не удается получить доступ к памяти</string>
   <!-- App picker -->
   <string name="profile_applist_title">Приложения</string>
   <string name="profile_choose_app">Выбрать приложение</string>
