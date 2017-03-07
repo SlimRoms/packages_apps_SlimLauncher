@@ -23,7 +23,6 @@ public interface SettingsKeys {
     // Homescreen
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     String KEY_HOMESCREEN_GRID = "homescreen_grid";
-    String KEY_SHOW_SHADOW = "show_shadow";
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
