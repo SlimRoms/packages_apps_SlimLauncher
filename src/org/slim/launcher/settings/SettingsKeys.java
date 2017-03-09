@@ -16,7 +16,7 @@
 
 package org.slim.launcher.settings;
 
-public interface SettingsKeys {
+interface SettingsKeys {
 
     String DEFAULT_HOMESCREEN = "default_homescreen";
 
