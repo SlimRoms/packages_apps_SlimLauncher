@@ -107,7 +107,9 @@ public class SlimLauncher extends Launcher {
     @Override
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
         View favorite = super.createShortcut(parent, info);
-        if (info.getIntent().getAction().equals(ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+        if (info.getIntent().getAction() != null
+                && info.getIntent().getAction().equals(
+                        ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
             info.launcherAction = true;
         }
         return favorite;
