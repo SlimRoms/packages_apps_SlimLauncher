@@ -209,7 +209,9 @@ public class GestureHelper {
         }
         if (intentPackage != null) {
             Intent intent1 = launcher.getPackageManager().getLaunchIntentForPackage(intentPackage);
-            launcher.startActivity(intent1);
+            if (intent1 != null) {
+                launcher.startActivity(intent1);
+            }
         } else {
             Toast.makeText(launcher, launcher.getString(R.string.no_last_app), Toast.LENGTH_SHORT)
                     .show();
