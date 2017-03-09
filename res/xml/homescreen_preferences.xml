@@ -4,12 +4,6 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:title="@string/homescreen_title">
 
-    <SwitchPreference
-        android:key="show_shadow"
-        android:title="@string/show_shadow_title"
-        android:summary="@string/show_shadow_summary"
-        android:defaultValue="true" />
-
     <org.slim.launcher.preference.DoubleNumberPickerPreference
         android:key="homescreen_grid"
         android:summary="@string/grid_size_summary"

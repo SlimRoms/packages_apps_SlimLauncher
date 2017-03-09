@@ -1,9 +1,7 @@
 package org.slim.launcher;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -42,8 +40,6 @@ public class SlimLauncher extends Launcher {
     private SlimDeviceProfile mSlimProfile;
     private GestureHelper mGestureHelper;
 
-    private SlimSearchBar mSearchBar;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         sLauncher = this;
@@ -68,7 +64,6 @@ public class SlimLauncher extends Launcher {
         updateDynamicGrid();
         updateWorkspaceGridSize();
         updateHotseatCellCount();
-        updateSearchBarVisibility();
     }
 
     public void preferenceChanged(String key) {
@@ -83,7 +78,6 @@ public class SlimLauncher extends Launcher {
                 updateHotseatCellCount();
                 break;
             case SettingsProvider.KEY_SHOW_SEARCH_BAR:
-                updateSearchBarVisibility();
                 break;
             case SettingsProvider.KEY_DRAWER_SEARCH_ENABLED:
                 updateAppDrawerSearchBar();
@@ -108,11 +102,6 @@ public class SlimLauncher extends Launcher {
         for (int i = 0; i < w.getChildCount(); i++) {
             ((CellLayout) w.getChildAt(i)).setGridSize(cols, rows);
         }
-    }
-
-    //@Override
-    public boolean isAllAppsButtonRank(int rank) {
-        return false;
     }
 
     @Override
@@ -172,11 +161,6 @@ public class SlimLauncher extends Launcher {
                 //getWorkspace().moveToDefaultScreen(true);
                 break;
         }
-    }
-
-    private void updateSearchBarVisibility() {
-        if (mSearchBar != null)
-            mSearchBar.updateSearchBarVisibility();
     }
 
     private void updateHotseatCellCount() {
@@ -301,36 +285,8 @@ public class SlimLauncher extends Launcher {
         public void finishBindingItems(boolean upgradePath) {
         }
 
-        //@Override
-        public void onClickAllAppsButton(View v) {
-        }
-
-        //@Override
+        @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
-        }
-
-        //@Override
-        public void onClickFolderIcon(View v) {
-        }
-
-        //@Override
-        public void onClickAppShortcut(View v) {
-        }
-
-        //@Override
-        public void onClickPagedViewIcon(View v) {
-        }
-
-        //@Override
-        public void onClickWallpaperPicker(View v) {
-        }
-
-        //@Override
-        public void onClickAddWidgetButton(View v) {
-        }
-
-        //@Override
-        public void onPageSwitch(View newPage, int newPageIndex) {
         }
 
         @Override
@@ -342,33 +298,12 @@ public class SlimLauncher extends Launcher {
             return false;
         }
 
-        //@Override
-        public void onDragStarted(View view) {
-        }
-
         @Override
         public void onInteractionBegin() {
         }
 
         @Override
         public void onInteractionEnd() {
-        }
-
-        //@Override
-        public boolean providesSearch() {
-            return false;
-        }
-
-        //@Override
-        public boolean startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
-            startGlobalSearch(initialQuery, selectInitialQuery,
-                    appSearchData, sourceBounds);
-            return false;
-        }
-
-       // @Override
-        public boolean startSearchFromAllApps(String query) {
-            return false;
         }
 
         @Override
@@ -382,14 +317,7 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public View getQsbBar() {
-            Log.d("TEST", "getQsbBar");
-            /*if (mSearchBar == null) {
-                mSearchBar = (SlimSearchBar)
-                        getLayoutInflater().inflate(R.layout.qsb, getSearchDropTargetBar(), false);
-                mSearchBar.setLauncher(SlimLauncher.this);
-               / getSearchDropTargetBar().addView(mSearchBar);
-            }*/
-            return mSearchBar;
+            return null;
         }
 
         @Override
@@ -402,26 +330,6 @@ public class SlimLauncher extends Launcher {
             return null;
         }
 
-        //@Override
-        public Intent getFirstRunActivity() {
-            return null;
-        }
-
-        //@Override
-        public boolean hasFirstRunActivity() {
-            return false;
-        }
-
-        //@Override
-        public boolean hasDismissableIntroScreen() {
-            return false;
-        }
-
-        //@Override
-        public View getIntroScreen() {
-            return null;
-        }
-
         @Override
         public boolean shouldMoveToDefaultScreenOnHomeIntent() {
             return false;
@@ -430,11 +338,6 @@ public class SlimLauncher extends Launcher {
         @Override
         public boolean hasSettings() {
             return true;
-        }
-
-        //@Override
-        public boolean overrideWallpaperDimensions() {
-            return false;
         }
 
         @Override
@@ -462,13 +365,13 @@ public class SlimLauncher extends Launcher {
         }
     }
 
-    public class SlimWorkspaceCallbacks implements WorkspaceCallbacks {
+    private class SlimWorkspaceCallbacks implements WorkspaceCallbacks {
 
-        public GestureDetector mGestureDetector;
+        private GestureDetector mGestureDetector;
 
         private float mInitialDistance;
 
-        public SlimWorkspaceCallbacks() {
+        private SlimWorkspaceCallbacks() {
             mGestureDetector = new GestureDetector(SlimLauncher.this,
                     new WorkspaceGestureListener());
         }
