@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -62,20 +63,13 @@ public class Hotseat extends FrameLayout
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+                ContextCompat.getColor(context, R.color.all_apps_container_color), (int) (0.25f * 255));
         mBackground = new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }
 
     public CellLayout getLayout() {
         return mContent;
-    }
-
-    /**
-     * Returns whether there are other icons than the all apps button in the hotseat.
-     */
-    public boolean hasIcons() {
-        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
     }
 
     /**
@@ -106,9 +100,9 @@ public class Hotseat extends FrameLayout
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet) {
-            mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
         mContent.setIsHotseat(true);
 
@@ -170,6 +164,7 @@ public class Hotseat extends FrameLayout
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) return;
         if (!mHasVerticalHotseat) {
             int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
             if (mBackgroundColorAnimator != null) {
