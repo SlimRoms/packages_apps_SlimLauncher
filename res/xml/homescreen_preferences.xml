@@ -5,11 +5,6 @@
     android:title="@string/homescreen_title">
 
     <SwitchPreference
-        android:key="show_search_bar"
-        android:title="@string/show_search_bar_title"
-        android:defaultValue="true" />
-
-    <SwitchPreference
         android:key="show_shadow"
         android:title="@string/show_shadow_title"
         android:summary="@string/show_shadow_summary"
