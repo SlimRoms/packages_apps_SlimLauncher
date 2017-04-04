@@ -9,36 +9,19 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.config.FeatureFlags;
-
 public class InsettableFrameLayout extends FrameLayout implements
-    ViewGroup.OnHierarchyChangeListener, Insettable {
+        ViewGroup.OnHierarchyChangeListener, Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected Rect mInsets = new Rect();
-
-    public Rect getInsets() {
-        return mInsets;
-    }
 
     public InsettableFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOnHierarchyChangeListener(this);
     }
 
-    public void setFrameLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
-        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-        if (child instanceof Insettable) {
-            ((Insettable) child).setInsets(newInsets);
-        } else if (!lp.ignoreInsets) {
-            lp.topMargin += (newInsets.top - oldInsets.top);
-            lp.leftMargin += (newInsets.left - oldInsets.left);
-            lp.rightMargin += (newInsets.right - oldInsets.right);
-            lp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
-        }
-        child.setLayoutParams(lp);
+    public Rect getInsets() {
+        return mInsets;
     }
 
     @Override
@@ -53,6 +36,20 @@ public class InsettableFrameLayout extends FrameLayout implements
             setFrameLayoutChildInsets(child, insets, mInsets);
         }
         mInsets.set(insets);
+    }
+
+    public void setFrameLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
+        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+        if (child instanceof Insettable) {
+            ((Insettable) child).setInsets(newInsets);
+        } else if (!lp.ignoreInsets) {
+            lp.topMargin += (newInsets.top - oldInsets.top);
+            lp.leftMargin += (newInsets.left - oldInsets.left);
+            lp.rightMargin += (newInsets.right - oldInsets.right);
+            lp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
+        }
+        child.setLayoutParams(lp);
     }
 
     @Override
@@ -76,6 +73,15 @@ public class InsettableFrameLayout extends FrameLayout implements
         return new LayoutParams(p);
     }
 
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+        setFrameLayoutChildInsets(child, mInsets, new Rect());
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
+    }
+
     public static class LayoutParams extends FrameLayout.LayoutParams {
         boolean ignoreInsets = false;
 
@@ -95,15 +101,6 @@ public class InsettableFrameLayout extends FrameLayout implements
         public LayoutParams(ViewGroup.LayoutParams lp) {
             super(lp);
         }
-    }
-
-    @Override
-    public void onChildViewAdded(View parent, View child) {
-        setFrameLayoutChildInsets(child, mInsets, new Rect());
-    }
-
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
     }
 
 }

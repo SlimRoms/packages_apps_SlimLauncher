@@ -71,7 +71,24 @@ public class PageIndicatorDots extends PageIndicator {
             obj.invalidateOutline();
         }
     };
-
+    private final Paint mCirclePaint;
+    private final float mDotRadius;
+    private final int mActiveColor;
+    private final int mInActiveColor;
+    private final boolean mIsRtl;
+    private int mActivePage;
+    /**
+     * The current position of the active dot including the animation progress.
+     * For ex:
+     * 0.0  => Active dot is at position 0
+     * 0.33 => Active dot is at position 0 and is moving towards 1
+     * 0.50 => Active dot is at position [0, 1]
+     * 0.77 => Active dot has left position 0 and is collapsing towards position 1
+     * 1.0  => Active dot is at position 1
+     */
+    private float mCurrentPosition;
+    private float mFinalPosition;
+    private ObjectAnimator mAnimator;
     /**
      * Listener for keep running the animation until the final state is reached.
      */
@@ -83,28 +100,6 @@ public class PageIndicatorDots extends PageIndicator {
             animateToPostion(mFinalPosition);
         }
     };
-
-    private final Paint mCirclePaint;
-    private final float mDotRadius;
-    private final int mActiveColor;
-    private final int mInActiveColor;
-    private final boolean mIsRtl;
-
-    private int mActivePage;
-
-    /**
-     * The current position of the active dot including the animation progress.
-     * For ex:
-     *   0.0  => Active dot is at position 0
-     *   0.33 => Active dot is at position 0 and is moving towards 1
-     *   0.50 => Active dot is at position [0, 1]
-     *   0.77 => Active dot has left position 0 and is collapsing towards position 1
-     *   1.0  => Active dot is at position 1
-     */
-    private float mCurrentPosition;
-    private float mFinalPosition;
-    private ObjectAnimator mAnimator;
-
     private float[] mEntryAnimationRadiusFactors;
 
     public PageIndicatorDots(Context context) {
@@ -186,7 +181,7 @@ public class PageIndicatorDots extends PageIndicator {
     }
 
     public void playEntryAnimation() {
-        int count  = mEntryAnimationRadiusFactors.length;
+        int count = mEntryAnimationRadiusFactors.length;
         if (count == 0) {
             mEntryAnimationRadiusFactors = null;
             invalidate();
@@ -239,7 +234,7 @@ public class PageIndicatorDots extends PageIndicator {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
                 MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
-        int height= MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
+        int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
                 MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }

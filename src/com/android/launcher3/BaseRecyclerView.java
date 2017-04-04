@@ -22,31 +22,32 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
 import com.android.launcher3.util.Thunk;
 
 
 /**
  * A base {@link RecyclerView}, which does the following:
  * <ul>
- *   <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
- *   <li> Enable fast scroller.
+ * <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
+ * <li> Enable fast scroller.
  * </ul>
  */
 public abstract class BaseRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
-
-    /** Keeps the last known scrolling delta/velocity along y-axis. */
-    @Thunk int mDy = 0;
-    private float mDeltaThreshold;
-
     protected BaseRecyclerViewFastScrollBar mScrollbar;
-
+    protected Rect mBackgroundPadding = new Rect();
+    /**
+     * Keeps the last known scrolling delta/velocity along y-axis.
+     */
+    @Thunk
+    int mDy = 0;
+    private float mDeltaThreshold;
     private int mDownX;
     private int mDownY;
     private int mLastY;
-    protected Rect mBackgroundPadding = new Rect();
 
     public BaseRecyclerView(Context context) {
         this(context, null);
@@ -63,23 +64,6 @@ public abstract class BaseRecyclerView extends RecyclerView
 
         ScrollListener listener = new ScrollListener();
         setOnScrollListener(listener);
-    }
-
-    private class ScrollListener extends OnScrollListener {
-        public ScrollListener() {
-            // Do nothing
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            mDy = dy;
-
-            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
-            //                initiate that here if the recycler view scroll state is not
-            //                RecyclerView.SCROLL_STATE_IDLE.
-
-            onUpdateScrollbar(dy);
-        }
     }
 
     public void reset() {
@@ -173,7 +157,7 @@ public abstract class BaseRecyclerView extends RecyclerView
 
     /**
      * Returns the visible height of the recycler view:
-     *   VisibleHeight = View height - top padding - bottom padding
+     * VisibleHeight = View height - top padding - bottom padding
      */
     protected int getVisibleHeight() {
         int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
@@ -182,13 +166,13 @@ public abstract class BaseRecyclerView extends RecyclerView
 
     /**
      * Returns the available scroll height:
-     *   AvailableScrollHeight = Total height of the all items - last page height
+     * AvailableScrollHeight = Total height of the all items - last page height
      */
     protected abstract int getAvailableScrollHeight();
 
     /**
      * Returns the available scroll bar height:
-     *   AvailableScrollBarHeight = Total height of the visible view - thumb height
+     * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
         int availableScrollBarHeight = getVisibleHeight() - mScrollbar.getThumbHeight();
@@ -231,7 +215,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * @param scrollY the current scroll y
      */
     protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
-            int availableScrollHeight) {
+                                                               int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
         int availableScrollBarHeight = getAvailableScrollBarHeight();
         if (availableScrollHeight <= 0) {
@@ -290,5 +274,23 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * <p>Override in each subclass of this base class.
      */
-    protected void onFastScrollCompleted() {}
+    protected void onFastScrollCompleted() {
+    }
+
+    private class ScrollListener extends OnScrollListener {
+        public ScrollListener() {
+            // Do nothing
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            mDy = dy;
+
+            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
+            //                initiate that here if the recycler view scroll state is not
+            //                RecyclerView.SCROLL_STATE_IDLE.
+
+            onUpdateScrollbar(dy);
+        }
+    }
 }

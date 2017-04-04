@@ -35,7 +35,7 @@ import java.util.ArrayList;
  */
 public class PackageManagerHelper {
 
-    private static final int FLAG_SUSPENDED = 1<<30;
+    private static final int FLAG_SUSPENDED = 1 << 30;
     private static final String LIVE_WALLPAPER_PICKER_PKG = "com.android.wallpaper.livepicker";
 
     /**
@@ -80,8 +80,11 @@ public class PackageManagerHelper {
     }
 
     /**
-<<<<<<< HEAD
-=======
+     * <<<<<<< HEAD
+     * <<<<<<< HEAD
+     * =======
+     * =======
+     * >>>>>>> android-7.1.2_r2
      * Returns the package for a wallpaper picker system app giving preference to a app which
      * is not as image picker.
      */
@@ -105,13 +108,16 @@ public class PackageManagerHelper {
     }
 
     /**
->>>>>>> android-7.1.1_r13
+     * <<<<<<< HEAD
+     * >>>>>>> android-7.1.1_r13
+     * =======
+     * >>>>>>> android-7.1.2_r2
      * Returns true if {@param srcPackage} has the permission required to start the activity from
      * {@param intent}. If {@param srcPackage} is null, then the activity should not need
      * any permissions
      */
     public static boolean hasPermissionForActivity(Context context, Intent intent,
-            String srcPackage) {
+                                                   String srcPackage) {
         PackageManager pm = context.getPackageManager();
         ResolveInfo target = pm.resolveActivity(intent, 0);
         if (target == null) {
@@ -128,7 +134,7 @@ public class PackageManagerHelper {
         }
 
         // Source does not have sufficient permissions.
-        if(pm.checkPermission(target.activityInfo.permission, srcPackage) !=
+        if (pm.checkPermission(target.activityInfo.permission, srcPackage) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
         }
@@ -149,7 +155,8 @@ public class PackageManagerHelper {
 
         try {
             return pm.getApplicationInfo(srcPackage, 0).targetSdkVersion >= Build.VERSION_CODES.M;
-        } catch (NameNotFoundException e) { }
+        } catch (NameNotFoundException e) {
+        }
 
         return false;
     }

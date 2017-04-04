@@ -2,7 +2,6 @@ package com.android.launcher3.testing;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -34,6 +33,29 @@ public class LauncherExtension extends Launcher {
     }
 
     public class LauncherExtensionCallbacks implements LauncherCallbacks {
+
+        CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
+
+            // Custom content is completely shown. {@code fromResume} indicates whether this was caused
+            // by a onResume or by scrolling otherwise.
+            public void onShow(boolean fromResume) {
+            }
+
+            // Custom content is completely hidden
+            public void onHide() {
+            }
+
+            // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
+            public void onScrollProgressChanged(float progress) {
+
+            }
+
+            // Indicates whether the user is allowed to scroll away from the custom content.
+            public boolean isScrollingAllowed() {
+                return true;
+            }
+
+        };
 
         @Override
         public void preOnCreate() {
@@ -85,7 +107,7 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                int[] grantResults) {
+                                               int[] grantResults) {
         }
 
         @Override
@@ -140,32 +162,9 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery,
-                Bundle appSearchData) {
+                                   Bundle appSearchData) {
             return false;
         }
-
-        CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
-
-            // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-            // by a onResume or by scrolling otherwise.
-            public void onShow(boolean fromResume) {
-            }
-
-            // Custom content is completely hidden
-            public void onHide() {
-            }
-
-            // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-            public void onScrollProgressChanged(float progress) {
-
-            }
-
-            // Indicates whether the user is allowed to scroll away from the custom content.
-            public boolean isScrollingAllowed() {
-                return true;
-            }
-
-        };
 
         @Override
         public boolean hasCustomContentToLeft() {
@@ -180,7 +179,9 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public UserEventDispatcher getUserEventDispatcher() { return null; }
+        public UserEventDispatcher getUserEventDispatcher() {
+            return null;
+        }
 
         @Override
         public View getQsbBar() {

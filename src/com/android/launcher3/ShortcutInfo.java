@@ -69,64 +69,52 @@ public class ShortcutInfo extends ItemInfo {
      * Upto 15 different types supported.
      */
     public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
-
+    /**
+     * Indicates that the icon is disabled due to safe mode restrictions.
+     */
+    public static final int FLAG_DISABLED_SAFEMODE = 1 << 0;
+    /**
+     * Indicates that the icon is disabled as the app is not available.
+     */
+    public static final int FLAG_DISABLED_NOT_AVAILABLE = 1 << 1;
+    /**
+     * Indicates that the icon is disabled as the app is suspended
+     */
+    public static final int FLAG_DISABLED_SUSPENDED = 1 << 2;
+    /**
+     * Indicates that the icon is disabled as the user is in quiet mode.
+     */
+    public static final int FLAG_DISABLED_QUIET_USER = 1 << 3;
+    /**
+     * Indicates that the icon is disabled as the publisher has disabled the actual shortcut.
+     */
+    public static final int FLAG_DISABLED_BY_PUBLISHER = 1 << 4;
+    /**
+     * Indicates that the icon is disabled as the user partition is currently locked.
+     */
+    public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
     /**
      * The intent used to start the application.
      */
     public Intent intent;
-
-    /**
-     * Indicates whether we're using the default fallback icon instead of something from the
-     * app.
-     */
-    boolean usingFallbackIcon;
-
-    /**
-     * Indicates whether we're using a low res icon
-     */
-    boolean usingLowResIcon;
-
     /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
     public Intent.ShortcutIconResource iconResource;
-
     /**
-     * The application icon.
+     * Whether this shortcut holds a launcher action
      */
-    private Bitmap mIcon;
-
+    public boolean launcherAction = false;
     /**
-     * Indicates that the icon is disabled due to safe mode restrictions.
+     * Indicates whether we're using the default fallback icon instead of something from the
+     * app.
      */
-    public static final int FLAG_DISABLED_SAFEMODE = 1 << 0;
-
+    boolean usingFallbackIcon;
     /**
-     * Indicates that the icon is disabled as the app is not available.
+     * Indicates whether we're using a low res icon
      */
-    public static final int FLAG_DISABLED_NOT_AVAILABLE = 1 << 1;
-
-    /**
-     * Indicates that the icon is disabled as the app is suspended
-     */
-    public static final int FLAG_DISABLED_SUSPENDED = 1 << 2;
-
-    /**
-     * Indicates that the icon is disabled as the user is in quiet mode.
-     */
-    public static final int FLAG_DISABLED_QUIET_USER = 1 << 3;
-
-    /**
-     * Indicates that the icon is disabled as the publisher has disabled the actual shortcut.
-     */
-    public static final int FLAG_DISABLED_BY_PUBLISHER = 1 << 4;
-
-    /**
-     * Indicates that the icon is disabled as the user partition is currently locked.
-     */
-    public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
-
+    boolean usingLowResIcon;
     /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
      * sd-card is not available).
@@ -140,45 +128,31 @@ public class ShortcutInfo extends ItemInfo {
     CharSequence disabledMessage;
 
     int status;
-
-    /**
-     * The installation progress [0-100] of the package that this shortcut represents.
-     */
-    private int mInstallProgress;
-
     /**
      * TODO move this to {@link #status}
      */
     int flags = 0;
-
     /**
      * If this shortcut is a placeholder, then intent will be a market intent for the package, and
      * this will hold the original intent from the database.  Otherwise, null.
      * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
      */
     Intent promisedIntent;
-
     /**
-     * Whether this shortcut holds a launcher action
+     * The application icon.
      */
-    public boolean launcherAction = false;
+    private Bitmap mIcon;
+    /**
+     * The installation progress [0-100] of the package that this shortcut represents.
+     */
+    private int mInstallProgress;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
-    @Override
-    public Intent getIntent() {
-        return intent;
-    }
-
-    /** Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null. */
-    public Intent getPromisedIntent() {
-        return promisedIntent != null ? promisedIntent : intent;
-    }
-
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
-            Bitmap icon, UserHandleCompat user) {
+                 Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
         this.title = Utilities.trim(title);
@@ -200,7 +174,9 @@ public class ShortcutInfo extends ItemInfo {
         usingFallbackIcon = info.usingFallbackIcon;
     }
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
+    /**
+     * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
+     */
     public ShortcutInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
@@ -228,6 +204,18 @@ public class ShortcutInfo extends ItemInfo {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         flags = 0;
         updateFromDeepShortcutInfo(shortcutInfo, context);
+    }
+
+    @Override
+    public Intent getIntent() {
+        return intent;
+    }
+
+    /**
+     * Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null.
+     */
+    public Intent getPromisedIntent() {
+        return promisedIntent != null ? promisedIntent : intent;
     }
 
     public void setIcon(Bitmap b) {
@@ -333,7 +321,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
-            IconCache cache, Context context) {
+                                   IconCache cache, Context context) {
         unbadgedBitmap = Utilities.addShadowToIcon(unbadgedBitmap);
         // Get the app info for the source activity.
         AppInfo appInfo = new AppInfo();
@@ -348,7 +336,9 @@ public class ShortcutInfo extends ItemInfo {
         return Utilities.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
 
-    /** Returns the ShortcutInfo id associated with the deep shortcut. */
+    /**
+     * Returns the ShortcutInfo id associated with the deep shortcut.
+     */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;

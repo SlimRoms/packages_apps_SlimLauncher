@@ -27,17 +27,22 @@ public abstract class LauncherActivityInfoCompat {
     LauncherActivityInfoCompat() {
     }
 
-    public abstract ComponentName getComponentName();
-    public abstract UserHandleCompat getUser();
-    public abstract CharSequence getLabel();
-    public abstract Drawable getIcon(int density);
-    public abstract ApplicationInfo getApplicationInfo();
-    public abstract long getFirstInstallTime();
-
     /**
      * Creates a LauncherActivityInfoCompat for the primary user.
      */
     public static LauncherActivityInfoCompat fromResolveInfo(ResolveInfo info, Context context) {
         return new LauncherActivityInfoCompatV16(context, info);
     }
+
+    public abstract ComponentName getComponentName();
+
+    public abstract UserHandleCompat getUser();
+
+    public abstract CharSequence getLabel();
+
+    public abstract Drawable getIcon(int density);
+
+    public abstract ApplicationInfo getApplicationInfo();
+
+    public abstract long getFirstInstallTime();
 }

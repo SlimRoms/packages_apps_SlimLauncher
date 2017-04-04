@@ -17,8 +17,8 @@
 package com.android.launcher3.accessibility;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.folder.FolderPagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.folder.FolderPagedView;
 
 /**
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD in a folder.
@@ -39,6 +39,7 @@ public class FolderAccessibilityHelper extends DragAndDropAccessibilityDelegate 
         int index = mParent.indexOfChild(layout);
         mStartPosition = index * layout.getCountX() * layout.getCountY();
     }
+
     @Override
     protected int intersectsValidDropTarget(int id) {
         return Math.min(id, mParent.getAllocatedContentSize() - mStartPosition - 1);

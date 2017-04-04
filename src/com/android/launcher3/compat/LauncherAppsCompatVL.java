@@ -50,7 +50,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
     }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
                 user.getUser());
         if (list.size() == 0) {
@@ -74,7 +74,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
     }
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+                                        Rect sourceBounds, Bundle opts) {
         mLauncherApps.startMainActivity(component, user.getUser(), sourceBounds, opts);
     }
 
@@ -137,7 +137,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
         }
 
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
-                boolean replacing) {
+                                          boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, UserHandleCompat.fromUser(user),
                     replacing);
         }
@@ -152,7 +152,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
 
         @Override
         public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                UserHandle user) {
+                                       UserHandle user) {
             List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
             for (ShortcutInfo shortcutInfo : shortcuts) {
                 shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));

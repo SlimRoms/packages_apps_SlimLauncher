@@ -46,14 +46,14 @@ public abstract class AllAppsSearchBarController
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
-    private String mQuery;
-
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
+    private String mQuery;
 
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
     }
+
     /**
      * Sets the references to the apps model and the search result callback.
      */

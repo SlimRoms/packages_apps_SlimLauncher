@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -40,40 +39,66 @@ import java.util.List;
  */
 public interface LauncherCallbacks {
 
+    public static final int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
+
     /*
      * Activity life-cycle methods. These methods are triggered after
      * the code in the corresponding Launcher method is executed.
      */
     public void preOnCreate();
+
     public void onCreate(Bundle savedInstanceState);
+
     public void preOnResume();
+
     public void onResume();
+
     public void onStart();
+
     public void onStop();
+
     public void onPause();
+
     public void onDestroy();
+
     public void onSaveInstanceState(Bundle outState);
+
     public void onPostCreate(Bundle savedInstanceState);
+
     public void onNewIntent(Intent intent);
+
     public void onActivityResult(int requestCode, int resultCode, Intent data);
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults);
+                                           int[] grantResults);
+
     public void onWindowFocusChanged(boolean hasFocus);
+
     public void onAttachedToWindow();
+
     public void onDetachedFromWindow();
+
     public boolean onPrepareOptionsMenu(Menu menu);
+
     public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
+
     public void onHomeIntent();
+
     public boolean handleBackPressed();
+
     public void onTrimMemory(int level);
 
     /*
      * Extension points for providing custom behavior on certain user interactions.
      */
     public void onLauncherProviderChange();
+
     public void finishBindingItems(final boolean upgradePath);
+
     public void bindAllApplications(ArrayList<AppInfo> apps);
+
     public void onInteractionBegin();
+
     public void onInteractionEnd();
 
     @Deprecated
@@ -84,21 +109,31 @@ public interface LauncherCallbacks {
      */
     public boolean startSearch(
             String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
+
     public boolean hasCustomContentToLeft();
+
     public void populateCustomContentContainer();
+
     public View getQsbBar();
+
     public Bundle getAdditionalSearchWidgetOptions();
 
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     public UserEventDispatcher getUserEventDispatcher();
+
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
+
     public boolean hasSettings();
+
     public AllAppsSearchBarController getAllAppsSearchBarController();
+
     public List<ComponentKey> getPredictedApps();
-    public static final int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
-    /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
+
+    /**
+     * Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL}
+     */
     public int getSearchBarHeight();
 
     /**

@@ -23,7 +23,6 @@ import android.content.Context;
 import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
-            AppWidgetProviderInfo appWidget) {
+                                             AppWidgetProviderInfo appWidget) {
         return new LauncherAppWidgetHostView(context);
     }
 
@@ -88,7 +87,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     public AppWidgetHostView createView(Context context, int appWidgetId,
-            LauncherAppWidgetProviderInfo appWidget) {
+                                        LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget) {
             LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
             LayoutInflater inflater = (LayoutInflater)

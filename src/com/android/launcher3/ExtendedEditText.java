@@ -29,14 +29,6 @@ import android.widget.EditText;
 public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
-
-    /**
-     * Implemented by listeners of the back key.
-     */
-    public interface OnBackKeyListener {
-        public boolean onBackKey();
-    }
-
     private OnBackKeyListener mBackKeyListener;
 
     public ExtendedEditText(Context context) {
@@ -97,6 +89,13 @@ public class ExtendedEditText extends EditText {
     private boolean showSoftInput() {
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+                        .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    /**
+     * Implemented by listeners of the back key.
+     */
+    public interface OnBackKeyListener {
+        public boolean onBackKey();
     }
 }

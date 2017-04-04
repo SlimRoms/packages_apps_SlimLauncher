@@ -33,14 +33,14 @@ import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 
-import org.slim.launcher.SlimLauncher;
-
 public class DeviceProfile {
 
-    public interface LauncherLayoutChangeListener {
-        void onLauncherLayoutChanged();
-    }
-
+    /**
+     * The maximum amount of left/right workspace padding as a percentage of the screen width.
+     * To be clear, this means that up to 7% of the screen width can be used as left padding, and
+     * 7% of the screen width can be used as right padding.
+     */
+    private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -55,45 +55,33 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
-    /**
-     * The maximum amount of left/right workspace padding as a percentage of the screen width.
-     * To be clear, this means that up to 7% of the screen width can be used as left padding, and
-     * 7% of the screen width can be used as right padding.
-     */
-    private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
-
+    public final int edgeMarginPx;
+    public final Rect defaultWidgetPadding;
+    public final int workspaceSpringLoadedBottomSpace;
     // Overview mode
     private final int overviewModeMinIconZoneHeightPx;
     private final int overviewModeMaxIconZoneHeightPx;
     private final int overviewModeBarItemWidthPx;
     private final int overviewModeBarSpacerWidthPx;
     private final float overviewModeIconZoneRatio;
-
-    // Workspace
-    private int desiredWorkspaceLeftRightMarginPx;
-    public final int edgeMarginPx;
-    public final Rect defaultWidgetPadding;
     private final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
-    private float dragViewScale;
-    public float workspaceSpringLoadShrinkFactor;
-    public final int workspaceSpringLoadedBottomSpace;
-
     // Page indicator
     private final int pageIndicatorHeightPx;
     private final int pageIndicatorLandGutterLeftNavBarPx;
     private final int pageIndicatorLandGutterRightNavBarPx;
     private final int pageIndicatorLandWorkspaceOffsetPx;
-
+    // Containers
+    private final int containerLeftPaddingPx;
+    private final int containerRightPaddingPx;
+    public float workspaceSpringLoadShrinkFactor;
     // Workspace icons
     public int iconSizePx;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
-
     public int cellWidthPx;
     public int cellHeightPx;
-
     // Folder
     public int folderBackgroundOffset;
     public int folderIconSizePx;
@@ -101,15 +89,10 @@ public class DeviceProfile {
     public int folderCellWidthPx;
     public int folderCellHeightPx;
     public int folderChildDrawablePaddingPx;
-
     // Hotseat
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
-    private int hotseatBarHeightPx;
-    private int hotseatBarTopPaddingPx;
-    private int hotseatLandGutterPx;
-
     // All apps
     public int allAppsNumCols;
     public int allAppsNumPredictiveCols;
@@ -117,23 +100,22 @@ public class DeviceProfile {
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
-
-    // Containers
-    private final int containerLeftPaddingPx;
-    private final int containerRightPaddingPx;
-
     // Drop Target
     public int dropTargetBarSizePx;
-
+    // Workspace
+    private int desiredWorkspaceLeftRightMarginPx;
+    private float dragViewScale;
+    private int hotseatBarHeightPx;
+    private int hotseatBarTopPaddingPx;
+    private int hotseatLandGutterPx;
     // Insets
     private Rect mInsets = new Rect();
-
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
-            Point minSize, Point maxSize,
-            int width, int height, boolean isLandscape) {
+                         Point minSize, Point maxSize,
+                         int width, int height, boolean isLandscape) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -207,6 +189,14 @@ public class DeviceProfile {
         computeAllAppsButtonSize(context);
     }
 
+    public static int calculateCellWidth(int width, int countX) {
+        return width / countX;
+    }
+
+    public static int calculateCellHeight(int height, int countY) {
+        return height / countY;
+    }
+
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
         if (!mListeners.contains(listener)) {
             mListeners.add(listener);
@@ -227,7 +217,7 @@ public class DeviceProfile {
         Resources res = context.getResources();
         float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
         allAppsButtonVisualSize = (int) (hotseatIconSizePx * (1 - padding)) - context.getResources()
-                        .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+                .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
     }
 
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
@@ -287,8 +277,8 @@ public class DeviceProfile {
 
         final int folderBottomPanelSize =
                 res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
-                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
-                + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
+                        + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
+                        + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
 
         // Don't let the folder get too close to the edges of the screen.
         folderCellWidthPx = Math.min(iconSizePx + 2 * cellPaddingX,
@@ -312,7 +302,9 @@ public class DeviceProfile {
         allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
     }
 
-    /** Returns the width and height of the search bar, ignoring any padding. */
+    /**
+     * Returns the width and height of the search bar, ignoring any padding.
+     */
     public Point getSearchBarDimensForWidgetOpts() {
         if (isVerticalBarLayout()) {
             return new Point(dropTargetBarSizePx, availableHeightPx - 2 * edgeMarginPx);
@@ -366,7 +358,6 @@ public class DeviceProfile {
                         hotseatBarHeightPx + hotseatLandGutterPx, 2 * edgeMarginPx);
             }
         } else {
-            int paddingTop = SlimLauncher.getInstance().getSlimDeviceProfile().workspacePaddingTop;
             int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -378,7 +369,7 @@ public class DeviceProfile {
                 int availablePaddingX = Math.max(0, width - (int) ((inv.numColumns * cellWidthPx) +
                         ((inv.numColumns - 1) * gapScale * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
-                            width * MAX_HORIZONTAL_PADDING_PERCENT);
+                        width * MAX_HORIZONTAL_PADDING_PERCENT);
                 int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
                         - (int) (2 * inv.numRows * cellHeightPx));
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
@@ -431,13 +422,6 @@ public class DeviceProfile {
         zoneHeight = Math.min(overviewModeMaxIconZoneHeightPx,
                 Math.max(overviewModeMinIconZoneHeightPx, zoneHeight));
         return zoneHeight;
-    }
-
-    public static int calculateCellWidth(int width, int countX) {
-        return width / countX;
-    }
-    public static int calculateCellHeight(int height, int countY) {
-        return height / countY;
     }
 
     /**
@@ -557,7 +541,7 @@ public class DeviceProfile {
 
             int visibleChildCount = getVisibleChildCount(overviewMode);
             int totalItemWidth = visibleChildCount * overviewModeBarItemWidthPx;
-            int maxWidth = totalItemWidth + (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
+            int maxWidth = totalItemWidth + (visibleChildCount - 1) * overviewModeBarSpacerWidthPx;
 
             lp.width = Math.min(availableWidthPx, maxWidth);
             lp.height = getOverviewModeButtonBarHeight();
@@ -586,7 +570,6 @@ public class DeviceProfile {
                 : Math.max(widthPx, heightPx);
     }
 
-
     /**
      * @return the left/right paddings for all containers.
      */
@@ -595,12 +578,17 @@ public class DeviceProfile {
 
         // No paddings for portrait phone
         if (isPhone && !isVerticalBarLayout()) {
-            return new int[] {0, 0};
+            return new int[]{0, 0};
         }
 
         // In landscape, we match the width of the workspace
         int padding = (pageIndicatorLandGutterRightNavBarPx +
                 hotseatBarHeightPx + hotseatLandGutterPx + mInsets.left) / 2;
-        return new int[]{ padding, padding };
+        return new int[]{padding, padding};
+    }
+
+
+    public interface LauncherLayoutChangeListener {
+        void onLauncherLayoutChanged();
     }
 }

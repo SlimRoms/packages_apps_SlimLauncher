@@ -17,19 +17,6 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
     private static final String TAG = "AWRestoredReceiver";
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (AppWidgetManager.ACTION_APPWIDGET_HOST_RESTORED.equals(intent.getAction())) {
-            int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
-            int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            if (oldIds.length == newIds.length) {
-                restoreAppWidgetIds(context, oldIds, newIds);
-            } else {
-                Log.e(TAG, "Invalid host restored received");
-            }
-        }
-    }
-
     /**
      * Updates the app widgets whose id has changed during the restore process.
      */
@@ -54,13 +41,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             values.put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i]);
             values.put(LauncherSettings.Favorites.RESTORED, state);
 
-            String[] widgetIdParams = new String[] { Integer.toString(oldWidgetIds[i]) };
+            String[] widgetIdParams = new String[]{Integer.toString(oldWidgetIds[i])};
 
             int result = cr.update(Favorites.CONTENT_URI, values,
                     "appWidgetId=? and (restored & 1) = 1", widgetIdParams);
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
-                        new String[] {Favorites.APPWIDGET_ID},
+                        new String[]{Favorites.APPWIDGET_ID},
                         "appWidgetId=?", widgetIdParams, null);
                 try {
                     if (!cursor.moveToFirst()) {
@@ -76,6 +63,19 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
             app.reloadWorkspace();
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (AppWidgetManager.ACTION_APPWIDGET_HOST_RESTORED.equals(intent.getAction())) {
+            int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
+            int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+            if (oldIds.length == newIds.length) {
+                restoreAppWidgetIds(context, oldIds, newIds);
+            } else {
+                Log.e(TAG, "Invalid host restored received");
+            }
         }
     }
 }

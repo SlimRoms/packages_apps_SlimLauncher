@@ -31,9 +31,8 @@ import android.widget.TextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.R;
+import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
@@ -42,7 +41,7 @@ import com.android.launcher3.model.WidgetItem;
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
  * horizontally centered, and scaled down if needed.
- *
+ * <p>
  * This view does not support padding. Since the image is scaled down to fit the view, padding will
  * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
  * transition from the view to drag view, so when adding padding support, DnD would need to
@@ -55,26 +54,25 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private static final int FADE_IN_DURATION_MS = 90;
 
-    /** Widget cell width is calculated by multiplying this factor to grid cell width. */
+    /**
+     * Widget cell width is calculated by multiplying this factor to grid cell width.
+     */
     private static final float WIDTH_SCALE = 2.6f;
 
-    /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
+    /**
+     * Widget preview width is calculated by multiplying this factor to the widget cell width.
+     */
     private static final float PREVIEW_SCALE = 0.8f;
-
-    private int mPresetPreviewSize;
+    private final Launcher mLauncher;
     int cellSize;
-
+    private int mPresetPreviewSize;
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
-
     private WidgetItem mItem;
-
     private WidgetPreviewLoader mWidgetPreviewLoader;
     private PreviewLoadRequest mActiveRequest;
     private StylusEventHelper mStylusEventHelper;
-
-    private final Launcher mLauncher;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -177,7 +175,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-            int oldTop, int oldRight, int oldBottom) {
+                               int oldTop, int oldRight, int oldBottom) {
         removeOnLayoutChangeListener(this);
         ensurePreview();
     }

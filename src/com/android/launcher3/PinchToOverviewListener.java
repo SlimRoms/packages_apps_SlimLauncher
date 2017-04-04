@@ -25,7 +25,7 @@ import com.android.launcher3.util.TouchController;
 
 /**
  * Detects pinches and animates the Workspace to/from overview mode.
- *
+ * <p>
  * Usage: Pass MotionEvents to onInterceptTouchEvent() and onTouchEvent(). This class will handle
  * the pinch detection, and use {@link PinchAnimationManager} to handle the animations.
  *

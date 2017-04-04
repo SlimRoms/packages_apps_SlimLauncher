@@ -3,20 +3,12 @@
 
     <string name="slim_application_name">SlimLauncher</string>
 
-    <string name="google_title">Google</string>
-
-    <string name="default_string">Default</string>
     <string name="reset_string">Reset</string>
     <string name="set_string">Set</string>
-    <string name="off_string">Off</string>
     <string name="error_message_title">Error</string>
-
-    <string name="storage_permission_denied">Can\'t access storage</string>
 
     <!-- App picker -->
     <string name="profile_applist_title">Apps</string>
-    <string name="profile_choose_app">Choose app</string>
-    <string name="profiles_add">Add</string>
     <string name="picker_activities">Activities</string>
     <string name="select_custom_app_title">Select custom app</string>
     <string name="select_custom_activity_title">Select custom activity</string>
@@ -31,14 +23,11 @@
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on color below to apply</string>
     <string name="arrow_right" translatable="false">→</string>
-    <string name="arrow_down" translatable="false">↓</string>
     <string name="hex">Hex:</string>
     <string name="hex_hint" translatable="false">#ff000000</string>
-    <string name="set">Set</string>
 
     <!-- Homescreen Settings -->
     <string name="homescreen_title">Homescreen</string>
-    <string name="show_search_bar_title">Show search bar</string>
 
     <!-- Drawer Settings -->
     <string name="drawer_title">Drawer</string>

@@ -23,11 +23,10 @@ import com.android.launcher3.Utilities;
 import java.util.List;
 
 public abstract class UserManagerCompat {
-    protected UserManagerCompat() {
-    }
-
     private static final Object sInstanceLock = new Object();
     private static UserManagerCompat sInstance;
+    protected UserManagerCompat() {
+    }
 
     public static UserManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
@@ -56,11 +55,17 @@ public abstract class UserManagerCompat {
     public abstract void enableAndResetCache();
 
     public abstract List<UserHandleCompat> getUserProfiles();
+
     public abstract long getSerialNumberForUser(UserHandleCompat user);
+
     public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
+
     public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
+
     public abstract long getUserCreationTime(UserHandleCompat user);
+
     public abstract boolean isQuietModeEnabled(UserHandleCompat user);
+
     public abstract boolean isUserUnlocked(UserHandleCompat user);
 
     public abstract boolean isDemoUser();

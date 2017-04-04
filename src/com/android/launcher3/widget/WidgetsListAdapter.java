@@ -27,12 +27,10 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 
@@ -40,7 +38,7 @@ import java.util.List;
 
 /**
  * List view adapter for the widget tray.
- *
+ * <p>
  * <p>Memory vs. Performance:
  * The less number of types of views are inserted into a {@link RecyclerView}, the more recycling
  * happens and less memory is consumed. {@link #getItemViewType} was not overridden as there is
@@ -56,14 +54,12 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
-
+    private final int mIndent;
     private WidgetsModel mWidgetsModel;
 
-    private final int mIndent;
-
     public WidgetsListAdapter(View.OnClickListener iconClickListener,
-            View.OnLongClickListener iconLongClickListener,
-            Context context) {
+                              View.OnLongClickListener iconLongClickListener,
+                              Context context) {
         mLayoutInflater = LayoutInflater.from(context);
         mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
 
@@ -115,7 +111,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 row.addView(widget);
             }
         } else if (diff < 0) {
-            for (int i=infoList.size() ; i < row.getChildCount(); i++) {
+            for (int i = infoList.size(); i < row.getChildCount(); i++) {
                 row.getChildAt(i).setVisibility(View.GONE);
             }
         }
@@ -124,7 +120,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         holder.title.applyFromPackageItemInfo(mWidgetsModel.getPackageItemInfo(pos));
 
         // Bind the view in the widget horizontal tray region.
-        for (int i=0; i < infoList.size(); i++) {
+        for (int i = 0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
             widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
             widget.ensurePreview();

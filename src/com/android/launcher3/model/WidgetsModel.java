@@ -1,4 +1,3 @@
-
 package com.android.launcher3.model;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -29,7 +28,7 @@ import java.util.List;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
- *
+ * <p>
  * <p> The widgets and shortcuts are organized using package name as its index.
  */
 public class WidgetsModel {
@@ -51,7 +50,7 @@ public class WidgetsModel {
 
     private ArrayList<WidgetItem> mRawList;
 
-    public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
+    public WidgetsModel(Context context, IconCache iconCache, AppFilter appFilter) {
         mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = iconCache;
@@ -152,7 +151,7 @@ public class WidgetsModel {
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         // add and update.
-        for (WidgetItem item: rawWidgetsShortcuts) {
+        for (WidgetItem item : rawWidgetsShortcuts) {
             if (item.widgetInfo != null) {
                 // Ensure that all widgets we show can be added on a workspace of this size
                 int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
@@ -183,7 +182,7 @@ public class WidgetsModel {
                 widgetsShortcutsList = new ArrayList<>();
 
                 pInfo = new PackageItemInfo(packageName);
-                tmpPackageItemInfos.put(packageName,  pInfo);
+                tmpPackageItemInfos.put(packageName, pInfo);
 
                 mPackageItemInfos.add(pInfo);
                 mWidgetsList.put(pInfo, widgetsShortcutsList);
@@ -213,7 +212,7 @@ public class WidgetsModel {
      * Usage case: view binding without being modified from package updates.
      */
     @Override
-    public WidgetsModel clone(){
+    public WidgetsModel clone() {
         return new WidgetsModel(this);
     }
 }

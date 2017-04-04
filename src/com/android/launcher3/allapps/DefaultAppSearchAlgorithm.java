@@ -28,8 +28,8 @@ import java.util.List;
  */
 public class DefaultAppSearchAlgorithm {
 
-    private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
+    private final List<AppInfo> mApps;
 
     public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
         mApps = apps;
@@ -43,7 +43,7 @@ public class DefaultAppSearchAlgorithm {
     }
 
     public void doSearch(final String query,
-            final AllAppsSearchBarController.Callbacks callback) {
+                         final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
         mResultHandler.post(new Runnable() {
 
@@ -98,10 +98,10 @@ public class DefaultAppSearchAlgorithm {
     /**
      * Returns true if the current point should be a break point. Following cases
      * are considered as break points:
-     *      1) Any non space character after a space character
-     *      2) Any digit after a non-digit character
-     *      3) Any capital character after a digit or small character
-     *      4) Any capital character before a small character
+     * 1) Any non space character after a space character
+     * 2) Any digit after a non-digit character
+     * 3) Any capital character after a digit or small character
+     * 4) Any capital character before a small character
      */
     protected boolean isBreak(int thisType, int prevType, int nextType) {
         switch (thisType) {

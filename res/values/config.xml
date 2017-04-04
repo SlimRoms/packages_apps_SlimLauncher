@@ -39,9 +39,8 @@
     <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
     <!-- The duration of the animation from search hint to text entry -->
-    <integer name="config_searchHintAnimationDuration">50</integer>
 
-<!-- Workspace -->
+    <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -74,13 +73,11 @@
 
     <!-- List of package names that com.android.launcher3.action.LAUNCH
      should be targeting. Can be empty. -->
-    <array name="launch_broadcast_targets" translatable="false"></array>
 
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />

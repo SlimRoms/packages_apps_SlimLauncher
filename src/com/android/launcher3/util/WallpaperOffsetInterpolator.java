@@ -25,21 +25,18 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     private final WallpaperManager mWallpaperManager;
     private final Workspace mWorkspace;
     private final boolean mIsRtl;
-
+    int mNumScreens;
+    int mNumPagesForWallpaperParallax;
     private IBinder mWindowToken;
     private boolean mWallpaperIsLiveWallpaper;
     private float mLastSetWallpaperOffsetSteps = 0;
-
     private float mFinalOffset = 0.0f;
     private float mCurrentOffset = 0.5f; // to force an initial update
     private boolean mWaitingForUpdate;
     private boolean mLockedToDefaultPage;
-
     private boolean mAnimating;
     private long mAnimationStartTime;
     private float mAnimationStartOffset;
-    int mNumScreens;
-    int mNumPagesForWallpaperParallax;
 
     public WallpaperOffsetInterpolator(Workspace workspace) {
         mChoreographer = Choreographer.getInstance();
@@ -189,6 +186,19 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         return mFinalOffset;
     }
 
+    public void setFinalX(float x) {
+        scheduleUpdate();
+        mFinalOffset = Math.max(0f, Math.min(x, 1f));
+        if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
+            if (mNumScreens > 0 && Float.compare(mCurrentOffset, mFinalOffset) != 0) {
+                // Don't animate if we're going from 0 screens, or if the final offset is the same
+                // as the current offset
+                animateToFinal();
+            }
+            mNumScreens = getNumScreensExcludingEmptyAndCustom();
+        }
+    }
+
     private void animateToFinal() {
         mAnimating = true;
         mAnimationStartOffset = mCurrentOffset;
@@ -201,19 +211,6 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         if (xOffset != mLastSetWallpaperOffsetSteps) {
             mWallpaperManager.setWallpaperOffsetSteps(xOffset, 1.0f);
             mLastSetWallpaperOffsetSteps = xOffset;
-        }
-    }
-
-    public void setFinalX(float x) {
-        scheduleUpdate();
-        mFinalOffset = Math.max(0f, Math.min(x, 1f));
-        if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
-            if (mNumScreens > 0 && Float.compare(mCurrentOffset, mFinalOffset) != 0) {
-                // Don't animate if we're going from 0 screens, or if the final offset is the same
-                // as the current offset
-                animateToFinal();
-            }
-            mNumScreens = getNumScreensExcludingEmptyAndCustom();
         }
     }
 

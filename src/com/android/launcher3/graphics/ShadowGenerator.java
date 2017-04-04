@@ -34,10 +34,10 @@ public class ShadowGenerator {
 
     // Percent of actual icon size
     private static final float HALF_DISTANCE = 0.5f;
-    private static final float BLUR_FACTOR = 0.5f/48;
+    private static final float BLUR_FACTOR = 0.5f / 48;
 
     // Percent of actual icon size
-    private static final float KEY_SHADOW_DISTANCE = 1f/48;
+    private static final float KEY_SHADOW_DISTANCE = 1f / 48;
     private static final int KEY_SHADOW_ALPHA = 61;
 
     private static final int AMBIENT_SHADOW_ALPHA = 30;
@@ -58,28 +58,6 @@ public class ShadowGenerator {
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mBlurPaint.setMaskFilter(new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL));
         mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-    }
-
-    public synchronized Bitmap recreateIcon(Bitmap icon) {
-        int[] offset = new int[2];
-        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(mIconSize, mIconSize, Config.ARGB_8888);
-        mCanvas.setBitmap(result);
-
-        // Draw ambient shadow
-        mDrawPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
-
-        // Draw key shadow
-        mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
-
-        // Draw the icon
-        mDrawPaint.setAlpha(255);
-        mCanvas.drawBitmap(icon, 0, 0, mDrawPaint);
-
-        mCanvas.setBitmap(null);
-        return result;
     }
 
     public static ShadowGenerator getInstance() {
@@ -110,5 +88,27 @@ public class ShadowGenerator {
             scale = Math.min(scale, (HALF_DISTANCE - bottomSpace) / (HALF_DISTANCE - bounds.bottom));
         }
         return scale;
+    }
+
+    public synchronized Bitmap recreateIcon(Bitmap icon) {
+        int[] offset = new int[2];
+        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
+        Bitmap result = Bitmap.createBitmap(mIconSize, mIconSize, Config.ARGB_8888);
+        mCanvas.setBitmap(result);
+
+        // Draw ambient shadow
+        mDrawPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
+
+        // Draw key shadow
+        mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
+
+        // Draw the icon
+        mDrawPaint.setAlpha(255);
+        mCanvas.drawBitmap(icon, 0, 0, mDrawPaint);
+
+        mCanvas.setBitmap(null);
+        return result;
     }
 }

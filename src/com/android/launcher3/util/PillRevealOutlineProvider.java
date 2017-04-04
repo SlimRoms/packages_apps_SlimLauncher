@@ -29,13 +29,13 @@ import android.view.ViewOutlineProvider;
  */
 public class PillRevealOutlineProvider extends RevealOutlineAnimation {
 
+    protected Rect mPillRect;
     private int mCenterX;
     private int mCenterY;
-    protected Rect mPillRect;
 
     /**
-     * @param x reveal center x
-     * @param y reveal center y
+     * @param x        reveal center x
+     * @param y        reveal center y
      * @param pillRect round rect that represents the final pill shape
      */
     public PillRevealOutlineProvider(int x, int y, Rect pillRect) {

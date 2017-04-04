@@ -66,6 +66,67 @@ public class ColorPickerPreference extends Preference implements
         init(context, attrs);
     }
 
+    /**
+     * For custom purposes. Not used by ColorPickerPreferrence
+     *
+     * @param color
+     * @author Unknown
+     */
+    public static String convertToARGB(int color) {
+        String alpha = Integer.toHexString(Color.alpha(color));
+        String red = Integer.toHexString(Color.red(color));
+        String green = Integer.toHexString(Color.green(color));
+        String blue = Integer.toHexString(Color.blue(color));
+
+        if (alpha.length() == 1) {
+            alpha = "0" + alpha;
+        }
+
+        if (red.length() == 1) {
+            red = "0" + red;
+        }
+
+        if (green.length() == 1) {
+            green = "0" + green;
+        }
+
+        if (blue.length() == 1) {
+            blue = "0" + blue;
+        }
+
+        return "#" + alpha + red + green + blue;
+    }
+
+    /**
+     * For custom purposes. Not used by ColorPickerPreferrence
+     *
+     * @param argb
+     * @throws NumberFormatException
+     * @author Unknown
+     */
+    public static int convertToColorInt(String argb) throws NumberFormatException {
+
+        if (argb.startsWith("#")) {
+            argb = argb.replace("#", "");
+        }
+
+        int alpha = -1, red = -1, green = -1, blue = -1;
+
+        if (argb.length() == 8) {
+            alpha = Integer.parseInt(argb.substring(0, 2), 16);
+            red = Integer.parseInt(argb.substring(2, 4), 16);
+            green = Integer.parseInt(argb.substring(4, 6), 16);
+            blue = Integer.parseInt(argb.substring(6, 8), 16);
+        } else if (argb.length() == 6) {
+            alpha = 255;
+            red = Integer.parseInt(argb.substring(0, 2), 16);
+            green = Integer.parseInt(argb.substring(2, 4), 16);
+            blue = Integer.parseInt(argb.substring(4, 6), 16);
+        }
+
+        return Color.argb(alpha, red, green, blue);
+    }
+
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getInt(index, Color.BLACK);
@@ -115,7 +176,7 @@ public class ColorPickerPreference extends Preference implements
                 widgetFrameView.getPaddingTop(),
                 (int) (mDensity * 8),
                 widgetFrameView.getPaddingBottom()
-                );
+        );
         // remove already create preview image
         int count = widgetFrameView.getChildCount();
         if (count > 0) {
@@ -182,7 +243,6 @@ public class ColorPickerPreference extends Preference implements
         mDialog.show();
     }
 
-
     /**
      * Toggle Alpha Slider visibility (by default it's disabled)
      *
@@ -194,74 +254,13 @@ public class ColorPickerPreference extends Preference implements
 
     /**
      * For custom purposes. Not used by ColorPickerPreferrence
-     *
+     * <p>
      * set color preview value from outside
+     *
      * @author kufikugel
      */
     public void setNewPreviewColor(int color) {
         onColorChanged(color);
-    }
-
-    /**
-     * For custom purposes. Not used by ColorPickerPreferrence
-     *
-     * @param color
-     * @author Unknown
-     */
-    public static String convertToARGB(int color) {
-        String alpha = Integer.toHexString(Color.alpha(color));
-        String red = Integer.toHexString(Color.red(color));
-        String green = Integer.toHexString(Color.green(color));
-        String blue = Integer.toHexString(Color.blue(color));
-
-        if (alpha.length() == 1) {
-            alpha = "0" + alpha;
-        }
-
-        if (red.length() == 1) {
-            red = "0" + red;
-        }
-
-        if (green.length() == 1) {
-            green = "0" + green;
-        }
-
-        if (blue.length() == 1) {
-            blue = "0" + blue;
-        }
-
-        return "#" + alpha + red + green + blue;
-    }
-
-    /**
-     * For custom purposes. Not used by ColorPickerPreferrence
-     *
-     * @param argb
-     * @throws NumberFormatException
-     * @author Unknown
-     */
-    public static int convertToColorInt(String argb) throws NumberFormatException {
-
-        if (argb.startsWith("#")) {
-            argb = argb.replace("#", "");
-        }
-
-        int alpha = -1, red = -1, green = -1, blue = -1;
-
-        if (argb.length() == 8) {
-            alpha = Integer.parseInt(argb.substring(0, 2), 16);
-            red = Integer.parseInt(argb.substring(2, 4), 16);
-            green = Integer.parseInt(argb.substring(4, 6), 16);
-            blue = Integer.parseInt(argb.substring(6, 8), 16);
-        }
-        else if (argb.length() == 6) {
-            alpha = 255;
-            red = Integer.parseInt(argb.substring(0, 2), 16);
-            green = Integer.parseInt(argb.substring(2, 4), 16);
-            blue = Integer.parseInt(argb.substring(4, 6), 16);
-        }
-
-        return Color.argb(alpha, red, green, blue);
     }
 
     @Override
@@ -290,6 +289,17 @@ public class ColorPickerPreference extends Preference implements
     }
 
     private static class SavedState extends BaseSavedState {
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
         Bundle dialogBundle;
 
         public SavedState(Parcel source) {
@@ -297,26 +307,14 @@ public class ColorPickerPreference extends Preference implements
             dialogBundle = source.readBundle();
         }
 
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeBundle(dialogBundle);
         }
-
-        public SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

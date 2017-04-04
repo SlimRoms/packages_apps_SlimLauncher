@@ -33,31 +33,37 @@ import java.util.List;
  */
 public class Partner {
 
-    static final String TAG = "Launcher.Partner";
-
-    /** Marker action used to discover partner */
-    private static final String
-            ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
-
     public static final String RES_FOLDER = "partner_folder";
     public static final String RES_WALLPAPERS = "partner_wallpapers";
     public static final String RES_DEFAULT_LAYOUT = "partner_default_layout";
-
     public static final String RES_DEFAULT_WALLPAPER_HIDDEN = "default_wallpapper_hidden";
     public static final String RES_SYSTEM_WALLPAPER_DIR = "system_wallpaper_directory";
-
     public static final String RES_REQUIRE_FIRST_RUN_FLOW = "requires_first_run_flow";
-
-    /** These resources are used to override the device profile  */
+    /**
+     * These resources are used to override the device profile
+     */
     public static final String RES_GRID_NUM_ROWS = "grid_num_rows";
     public static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
     public static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
-
+    static final String TAG = "Launcher.Partner";
+    /**
+     * Marker action used to discover partner
+     */
+    private static final String
+            ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
     private static boolean sSearched = false;
     private static List<Partner> sPartners;
 
     static {
         sPartners = new ArrayList<Partner>();
+    }
+
+    private final String mPackageName;
+    private final Resources mResources;
+
+    private Partner(String packageName, Resources res) {
+        mPackageName = packageName;
+        mResources = res;
     }
 
     /**
@@ -80,14 +86,6 @@ public class Partner {
             sSearched = true;
         }
         return sPartners;
-    }
-
-    private final String mPackageName;
-    private final Resources mResources;
-
-    private Partner(String packageName, Resources res) {
-        mPackageName = packageName;
-        mResources = res;
     }
 
     public String getPackageName() {

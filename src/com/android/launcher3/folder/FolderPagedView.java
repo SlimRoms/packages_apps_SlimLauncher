@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2015 The Android Open Source Project
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -71,13 +71,11 @@ public class FolderPagedView extends PagedView {
     private static final int[] sTempPosArray = new int[2];
 
     public final boolean mIsRtl;
-
+    @Thunk
+    final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
-
-    @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountX;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -272,13 +270,13 @@ public class FolderPagedView extends PagedView {
     public void setFixedSize(int width, int height) {
         width -= (getPaddingLeft() + getPaddingRight());
         height -= (getPaddingTop() + getPaddingBottom());
-        for (int i = getChildCount() - 1; i >= 0; i --) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
             ((CellLayout) getChildAt(i)).setFixedSize(width, height);
         }
     }
 
     public void removeItem(View v) {
-        for (int i = getChildCount() - 1; i >= 0; i --) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
             getPageAt(i).removeView(v);
         }
     }
@@ -356,7 +354,7 @@ public class FolderPagedView extends PagedView {
                 }
             }
 
-            rank ++;
+            rank++;
             position++;
         }
 
@@ -384,8 +382,8 @@ public class FolderPagedView extends PagedView {
                 (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
-    public int getDesiredHeight()  {
-        return  getPageCount() > 0 ?
+    public int getDesiredHeight() {
+        return getPageCount() > 0 ?
                 (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
@@ -447,7 +445,7 @@ public class FolderPagedView extends PagedView {
      * @return the view for which the operator returned true.
      */
     public View iterateOverItems(ItemOperator op) {
-        for (int k = 0 ; k < getChildCount(); k++) {
+        for (int k = 0; k < getChildCount(); k++) {
             CellLayout page = getPageAt(k);
             for (int j = 0; j < page.getCountY(); j++) {
                 for (int i = 0; i < page.getCountX(); i++) {
@@ -644,10 +642,10 @@ public class FolderPagedView extends PagedView {
                         }
                     };
                     v.animate()
-                        .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
-                        .setDuration(REORDER_ANIMATION_DURATION)
-                        .setStartDelay(0)
-                        .withEndAction(endAction);
+                            .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
+                            .setDuration(REORDER_ANIMATION_DURATION)
+                            .setStartDelay(0)
+                            .withEndAction(endAction);
                     mPendingAnimations.put(v, endAction);
                 }
             }

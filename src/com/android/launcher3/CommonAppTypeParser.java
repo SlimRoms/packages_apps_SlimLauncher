@@ -25,7 +25,6 @@ import android.util.Log;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
-
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -36,24 +35,21 @@ import java.io.IOException;
  * A class that parses content values corresponding to some common app types.
  */
 public class CommonAppTypeParser implements LayoutParserCallback {
-    private static final String TAG = "CommonAppTypeParser";
-
     // Including TARGET_NONE
     public static final int SUPPORTED_TYPE_COUNT = 7;
-
-    private static final int RESTORE_FLAG_BIT_SHIFT = 4;
-
     public static final int TARGET_PHONE = 1;
     public static final int TARGET_MESSENGER = 2;
     public static final int TARGET_EMAIL = 3;
     public static final int TARGET_BROWSER = 4;
     public static final int TARGET_GALLERY = 5;
     public static final int TARGET_CAMERA = 6;
-
+    private static final String TAG = "CommonAppTypeParser";
+    private static final int RESTORE_FLAG_BIT_SHIFT = 4;
+    @Thunk
+    final int mResId;
+    @Thunk
+    final Context mContext;
     private final long mItemId;
-    @Thunk final int mResId;
-    @Thunk final Context mContext;
-
     ContentValues parsedValues;
     Intent parsedIntent;
     String parsedTitle;
@@ -62,64 +58,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         mItemId = itemId;
         mContext = context;
         mResId = getResourceForItemType(itemType);
-    }
-
-    @Override
-    public long generateNewItemId() {
-        return mItemId;
-    }
-
-    @Override
-    public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
-        parsedValues = values;
-
-        // Remove unwanted values
-        values.put(Favorites.ICON_PACKAGE, (String) null);
-        values.put(Favorites.ICON_RESOURCE, (String) null);
-        values.put(Favorites.ICON, (byte[]) null);
-        return 1;
-    }
-
-    /**
-     * Tries to find a suitable app to the provided app type.
-     */
-    public boolean findDefaultApp() {
-        if (mResId == 0) {
-            return false;
-        }
-
-        parsedIntent = null;
-        parsedValues = null;
-        new MyLayoutParser().parseValues();
-        return (parsedValues != null) && (parsedIntent != null);
-    }
-
-    private class MyLayoutParser extends DefaultLayoutParser {
-
-        public MyLayoutParser() {
-            super(CommonAppTypeParser.this.mContext, null, CommonAppTypeParser.this,
-                    CommonAppTypeParser.this.mContext.getResources(), mResId, TAG_RESOLVE);
-        }
-
-        @Override
-        protected long addShortcut(String title, Intent intent, int type) {
-            if (type == Favorites.ITEM_TYPE_APPLICATION) {
-                parsedIntent = intent;
-                parsedTitle = title;
-            }
-            return super.addShortcut(title, intent, type);
-        }
-
-        public void parseValues() {
-            XmlResourceParser parser = mSourceRes.getXml(mLayoutId);
-            try {
-                beginDocument(parser, mRootTag);
-                new ResolveParser().parseAndAdd(parser);
-            } catch (IOException | XmlPullParserException e) {
-                Log.e(TAG, "Unable to parse default app info", e);
-            }
-            parser.close();
-        }
     }
 
     public static int getResourceForItemType(int type) {
@@ -155,6 +93,36 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         return (flag & ShortcutInfo.FLAG_RESTORED_APP_TYPE) >> RESTORE_FLAG_BIT_SHIFT;
     }
 
+    @Override
+    public long generateNewItemId() {
+        return mItemId;
+    }
+
+    @Override
+    public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+        parsedValues = values;
+
+        // Remove unwanted values
+        values.put(Favorites.ICON_PACKAGE, (String) null);
+        values.put(Favorites.ICON_RESOURCE, (String) null);
+        values.put(Favorites.ICON, (byte[]) null);
+        return 1;
+    }
+
+    /**
+     * Tries to find a suitable app to the provided app type.
+     */
+    public boolean findDefaultApp() {
+        if (mResId == 0) {
+            return false;
+        }
+
+        parsedIntent = null;
+        parsedValues = null;
+        new MyLayoutParser().parseValues();
+        return (parsedValues != null) && (parsedIntent != null);
+    }
+
     public static class Favorite {
         static final int TARGET_NONE = 0;
         static final int TARGET_PHONE = 1;
@@ -163,6 +131,34 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         static final int TARGET_BROWSER = 4;
         static final int TARGET_GALLERY = 5;
         static final int TARGET_CAMERA = 6;
+    }
+
+    private class MyLayoutParser extends DefaultLayoutParser {
+
+        public MyLayoutParser() {
+            super(CommonAppTypeParser.this.mContext, null, CommonAppTypeParser.this,
+                    CommonAppTypeParser.this.mContext.getResources(), mResId, TAG_RESOLVE);
+        }
+
+        @Override
+        protected long addShortcut(String title, Intent intent, int type) {
+            if (type == Favorites.ITEM_TYPE_APPLICATION) {
+                parsedIntent = intent;
+                parsedTitle = title;
+            }
+            return super.addShortcut(title, intent, type);
+        }
+
+        public void parseValues() {
+            XmlResourceParser parser = mSourceRes.getXml(mLayoutId);
+            try {
+                beginDocument(parser, mRootTag);
+                new ResolveParser().parseAndAdd(parser);
+            } catch (IOException | XmlPullParserException e) {
+                Log.e(TAG, "Unable to parse default app info", e);
+            }
+            parser.close();
+        }
     }
 
 }

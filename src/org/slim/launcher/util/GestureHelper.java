@@ -30,10 +30,10 @@ import android.widget.Toast;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import org.slim.launcher.settings.SettingsActivity;
-import org.slim.launcher.settings.SettingsProvider;
 
 import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsActivity;
+import org.slim.launcher.settings.SettingsProvider;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -74,6 +74,26 @@ public class GestureHelper {
         mLauncher = launcher;
         init(launcher);
         updateGestures();
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean doesSwipeDownContainShowAllApps(Context context) {
+        return (SettingsProvider.getString(context,
+                SettingsProvider.LEFT_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
+                || SettingsProvider.getString(context,
+                SettingsProvider.MIDDLE_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
+                || SettingsProvider.getString(context,
+                SettingsProvider.RIGHT_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER));
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean doesSwipeUpContainShowAllApps(Context context) {
+        return (SettingsProvider.getString(context,
+                SettingsProvider.LEFT_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
+                || SettingsProvider.getString(context,
+                SettingsProvider.MIDDLE_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
+                || SettingsProvider.getString(context,
+                SettingsProvider.RIGHT_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER));
     }
 
     void init(Context context) {
@@ -124,7 +144,7 @@ public class GestureHelper {
     private void performGestureAction(String gestureAction, String gesture) {
         Workspace workspace = mLauncher.getWorkspace();
         switch (gestureAction) {
-            case  ACTION_DEFAULT_HOMESCREEN:
+            case ACTION_DEFAULT_HOMESCREEN:
                 workspace.setCurrentPage(workspace.getPageIndexForScreenId(-1));
                 break;
             case ACTION_OPEN_APP_DRAWER:
@@ -160,7 +180,7 @@ public class GestureHelper {
     }
 
     public boolean handleFling(MotionEvent start, MotionEvent finish) {
-        switch(identifyGesture(finish.getRawX(), finish.getRawY(),
+        switch (identifyGesture(finish.getRawX(), finish.getRawY(),
                 start.getRawX(), start.getRawY())) {
             case UP_LEFT:
                 performGestureAction(mLeftUpGestureAction, "left_up");
@@ -239,26 +259,6 @@ public class GestureHelper {
         }
 
         return Gesture.NONE;
-    }
-
-    @SuppressWarnings("unused")
-    public static boolean doesSwipeDownContainShowAllApps(Context context) {
-        return (SettingsProvider.getString(context,
-                SettingsProvider.LEFT_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
-                || SettingsProvider.getString(context,
-                SettingsProvider.MIDDLE_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
-                || SettingsProvider.getString(context,
-                SettingsProvider.RIGHT_DOWN_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER));
-    }
-
-    @SuppressWarnings("unused")
-    public static boolean doesSwipeUpContainShowAllApps(Context context) {
-        return (SettingsProvider.getString(context,
-                SettingsProvider.LEFT_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
-                || SettingsProvider.getString(context,
-                SettingsProvider.MIDDLE_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER)
-                || SettingsProvider.getString(context,
-                SettingsProvider.RIGHT_UP_GESTURE_ACTION, "").equals(ACTION_OPEN_APP_DRAWER));
     }
 
     public boolean isSwipeDOWN(float upY, float downY) {

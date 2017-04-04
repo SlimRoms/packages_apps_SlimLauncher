@@ -75,7 +75,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
-            Bundle options) {
+                                            Bundle options) {
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
     }
@@ -90,7 +90,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public void startConfigActivity(AppWidgetProviderInfo info, int widgetId, Activity activity,
-            AppWidgetHost host, int requestCode) {
+                                    AppWidgetHost host, int requestCode) {
         try {
             host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
         } catch (ActivityNotFoundException | SecurityException e) {
@@ -110,7 +110,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageWidth, int imageHeight) {
+                                 int imageWidth, int imageHeight) {
         if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
             return bitmap;
         }

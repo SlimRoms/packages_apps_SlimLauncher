@@ -38,7 +38,7 @@ import java.util.Locale;
 /**
  * Manages the creation of {@link LauncherEvent}.
  * To debug this class, execute following command before sideloading a new apk.
- *
+ * <p>
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
 public class UserEventDispatcher {
@@ -46,25 +46,18 @@ public class UserEventDispatcher {
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
 
     private final boolean mIsVerbose;
-
-    /**
-     * TODO: change the name of this interface to LogContainerProvider
-     * and the method name to fillInLogContainerData. Not changed to minimize CL diff
-     * in this branch.
-     *
-     * Implemented by containers to provide a launch source for a given child.
-     */
-    public interface LaunchSourceProvider {
-
-        /**
-         * Copies data from the source to the destination proto.
-         *
-         * @param v            source of the data
-         * @param info         source of the data
-         * @param target       dest of the data
-         * @param targetParent dest of the data
-         */
-        void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent);
+    private String TAG = "UserEvent";
+    private long mElapsedContainerMillis;
+    private long mElapsedSessionMillis;
+    private long mActionDurationMillis;
+    // Used for filling in predictedRank on {@link Target}s.
+    private List<ComponentKey> mPredictedApps;
+    public UserEventDispatcher() {
+        if (ProviderConfig.IS_DOGFOOD_BUILD) {
+            mIsVerbose = Utilities.isPropertyEnabled(TAG);
+        } else {
+            mIsVerbose = false;
+        }
     }
 
     /**
@@ -90,30 +83,6 @@ public class UserEventDispatcher {
         }
         return null;
     }
-
-    private String TAG = "UserEvent";
-
-    private long mElapsedContainerMillis;
-    private long mElapsedSessionMillis;
-    private long mActionDurationMillis;
-
-    // Used for filling in predictedRank on {@link Target}s.
-    private List<ComponentKey> mPredictedApps;
-
-    public UserEventDispatcher() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            mIsVerbose = Utilities.isPropertyEnabled(TAG);
-        } else {
-            mIsVerbose = false;
-        }
-    }
-
-    //                      APP_ICON    SHORTCUT    WIDGET
-    // --------------------------------------------------------------
-    // packageNameHash      required    optional    required
-    // componentNameHash    required                required
-    // intentHash                       required
-    // --------------------------------------------------------------
 
     protected LauncherEvent createLauncherEvent(View v, Intent intent) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
@@ -142,6 +111,13 @@ public class UserEventDispatcher {
         }
         return event;
     }
+
+    //                      APP_ICON    SHORTCUT    WIDGET
+    // --------------------------------------------------------------
+    // packageNameHash      required    optional    required
+    // componentNameHash    required                required
+    // intentHash                       required
+    // --------------------------------------------------------------
 
     public void logAppLaunch(View v, Intent intent) {
         LauncherEvent ev = createLauncherEvent(v, intent);
@@ -251,5 +227,25 @@ public class UserEventDispatcher {
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis));
+    }
+
+    /**
+     * TODO: change the name of this interface to LogContainerProvider
+     * and the method name to fillInLogContainerData. Not changed to minimize CL diff
+     * in this branch.
+     * <p>
+     * Implemented by containers to provide a launch source for a given child.
+     */
+    public interface LaunchSourceProvider {
+
+        /**
+         * Copies data from the source to the destination proto.
+         *
+         * @param v            source of the data
+         * @param info         source of the data
+         * @param target       dest of the data
+         * @param targetParent dest of the data
+         */
+        void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent);
     }
 }

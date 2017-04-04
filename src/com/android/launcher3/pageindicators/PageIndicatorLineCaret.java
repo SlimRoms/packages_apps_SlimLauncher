@@ -25,42 +25,19 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
- *
+ * <p>
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
 public class PageIndicatorLineCaret extends PageIndicator {
-    private static final String TAG = "PageIndicatorLine";
-
-    private static final int[] sTempCoords = new int[2];
-
-    private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
-    private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
     public static final int WHITE_ALPHA = (int) (0.70f * 255);
     public static final int BLACK_ALPHA = (int) (0.65f * 255);
-
+    private static final String TAG = "PageIndicatorLine";
+    private static final int[] sTempCoords = new int[2];
+    private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
+    private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
     private static final int LINE_ALPHA_ANIMATOR_INDEX = 0;
     private static final int NUM_PAGES_ANIMATOR_INDEX = 1;
     private static final int TOTAL_SCROLL_ANIMATOR_INDEX = 2;
-
-    private ValueAnimator[] mAnimators = new ValueAnimator[3];
-
-    private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
-
-    private boolean mShouldAutoHide = true;
-
-    // The alpha of the line when it is showing.
-    private int mActiveAlpha = 0;
-    // The alpha that the line is being animated to or already at (either 0 or mActiveAlpha).
-    private int mToAlpha;
-    // A float value representing the number of pages, to allow for an animation when it changes.
-    private float mNumPagesFloat;
-    private int mCurrentScroll;
-    private int mTotalScroll;
-    private Paint mLinePaint;
-    private Launcher mLauncher;
-    private final int mLineHeight;
-    private ImageView mAllAppsHandle;
-
     private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
             = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "paint_alpha") {
         @Override
@@ -74,7 +51,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
             obj.invalidate();
         }
     };
-
     private static final Property<PageIndicatorLineCaret, Float> NUM_PAGES
             = new Property<PageIndicatorLineCaret, Float>(Float.class, "num_pages") {
         @Override
@@ -88,7 +64,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
             obj.invalidate();
         }
     };
-
     private static final Property<PageIndicatorLineCaret, Integer> TOTAL_SCROLL
             = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "total_scroll") {
         @Override
@@ -102,7 +77,21 @@ public class PageIndicatorLineCaret extends PageIndicator {
             obj.invalidate();
         }
     };
-
+    private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
+    private final int mLineHeight;
+    private ValueAnimator[] mAnimators = new ValueAnimator[3];
+    private boolean mShouldAutoHide = true;
+    // The alpha of the line when it is showing.
+    private int mActiveAlpha = 0;
+    // The alpha that the line is being animated to or already at (either 0 or mActiveAlpha).
+    private int mToAlpha;
+    // A float value representing the number of pages, to allow for an animation when it changes.
+    private float mNumPagesFloat;
+    private int mCurrentScroll;
+    private int mTotalScroll;
+    private Paint mLinePaint;
+    private Launcher mLauncher;
+    private ImageView mAllAppsHandle;
     private Runnable mHideLineRunnable = new Runnable() {
         @Override
         public void run() {
@@ -260,7 +249,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     /**
      * Starts the given animator and stores it in the provided index in {@link #mAnimators} until
      * the animation ends.
-     *
+     * <p>
      * If an animator is already at the index (i.e. it is already playing), it is canceled and
      * replaced with the new animator.
      */

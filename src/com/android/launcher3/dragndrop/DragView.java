@@ -23,7 +23,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -38,11 +37,9 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Thunk;
-
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
 
@@ -50,28 +47,29 @@ public class DragView extends View {
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
-    @Thunk static float sDragAlpha = 1f;
-
-    private Bitmap mBitmap;
-    private Bitmap mCrossFadeBitmap;
-    @Thunk Paint mPaint;
+    @Thunk
+    static float sDragAlpha = 1f;
+    @Thunk
+    final DragController mDragController;
     private final int mRegistrationX;
     private final int mRegistrationY;
-
+    private final DragLayer mDragLayer;
+    @Thunk
+    Paint mPaint;
+    @Thunk
+    float mCrossFadeProgress = 0f;
+    ValueAnimator mAnim;
+    @Thunk
+    float[] mCurrentFilter;
+    private Bitmap mBitmap;
+    private Bitmap mCrossFadeBitmap;
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
-    private final DragLayer mDragLayer;
-    @Thunk final DragController mDragController;
     private boolean mHasDrawn = false;
-    @Thunk float mCrossFadeProgress = 0f;
     private boolean mAnimationCancelled = false;
-
-    ValueAnimator mAnim;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
-
-    @Thunk float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
 
     private int mLastTouchX;
@@ -84,8 +82,9 @@ public class DragView extends View {
      * <p>
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
-     * @param launcher The Launcher instance
-     * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
+     *
+     * @param launcher      The Launcher instance
+     * @param bitmap        The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
@@ -148,13 +147,20 @@ public class DragView extends View {
         }
     }
 
-    /** Sets the scale of the view over the normal workspace icon size. */
-    public void setIntrinsicIconScaleFactor(float scale) {
-        mIntrinsicIconScale = scale;
+    public static void setColorScale(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 
     public float getIntrinsicIconScaleFactor() {
         return mIntrinsicIconScale;
+    }
+
+    /**
+     * Sets the scale of the view over the normal workspace icon size.
+     */
+    public void setIntrinsicIconScaleFactor(float scale) {
+        mIntrinsicIconScale = scale;
     }
 
     public int getDragRegionLeft() {
@@ -173,20 +179,20 @@ public class DragView extends View {
         return mDragRegion.height();
     }
 
-    public void setDragVisualizeOffset(Point p) {
-        mDragVisualizeOffset = p;
-    }
-
     public Point getDragVisualizeOffset() {
         return mDragVisualizeOffset;
     }
 
-    public void setDragRegion(Rect r) {
-        mDragRegion = r;
+    public void setDragVisualizeOffset(Point p) {
+        mDragVisualizeOffset = p;
     }
 
     public Rect getDragRegion() {
         return mDragRegion;
+    }
+
+    public void setDragRegion(Rect r) {
+        mDragRegion = r;
     }
 
     @Override
@@ -205,13 +211,13 @@ public class DragView extends View {
 
     // Provides drag shadow metrics for system DND.
     public void provideDragShadowMetrics(Point size, Point touch) {
-        size.set((int)(mBitmap.getWidth() * getScaleX()), (int)(mBitmap.getHeight() * getScaleY()));
+        size.set((int) (mBitmap.getWidth() * getScaleX()), (int) (mBitmap.getHeight() * getScaleY()));
 
         final float xGrowth = mBitmap.getWidth() * (getScaleX() - 1);
         final float yGrowth = mBitmap.getHeight() * (getScaleY() - 1);
         touch.set(
-                mRegistrationX + (int)Math.round(xGrowth / 2),
-                mRegistrationY + (int)Math.round(yGrowth / 2));
+                mRegistrationX + (int) Math.round(xGrowth / 2),
+                mRegistrationY + (int) Math.round(yGrowth / 2));
     }
 
     @Override
@@ -383,10 +389,5 @@ public class DragView extends View {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
         }
-    }
-
-    public static void setColorScale(int color, ColorMatrix target) {
-        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 }

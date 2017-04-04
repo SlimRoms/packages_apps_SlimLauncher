@@ -3,7 +3,6 @@ package com.android.launcher3.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.CustomAppWidget;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -31,10 +29,10 @@ public class TestingUtils {
     public static void startTrackingMemory(Context context) {
         if (MEMORY_DUMP_ENABLED) {
             context.startService(new Intent()
-                .setComponent(new ComponentName(context.getPackageName(), MEMORY_TRACKER))
-                .setAction(ACTION_START_TRACKING)
-                .putExtra("pid", android.os.Process.myPid())
-                .putExtra("name", "L"));
+                    .setComponent(new ComponentName(context.getPackageName(), MEMORY_TRACKER))
+                    .setAction(ACTION_START_TRACKING)
+                    .putExtra("pid", android.os.Process.myPid())
+                    .putExtra("name", "L"));
         }
     }
 

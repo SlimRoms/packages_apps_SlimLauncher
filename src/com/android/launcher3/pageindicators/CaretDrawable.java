@@ -22,22 +22,19 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.R;
-
-import android.graphics.drawable.Drawable;
 
 public class CaretDrawable extends Drawable {
     public static final float PROGRESS_CARET_POINTING_UP = -1f;
     public static final float PROGRESS_CARET_POINTING_DOWN = 1f;
     public static final float PROGRESS_CARET_NEUTRAL = 0;
-
+    private final int mCaretSizePx;
     private float mCaretProgress = PROGRESS_CARET_NEUTRAL;
-
     private Paint mShadowPaint = new Paint();
     private Paint mCaretPaint = new Paint();
     private Path mPath = new Path();
-    private final int mCaretSizePx;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -99,24 +96,24 @@ public class CaretDrawable extends Drawable {
     }
 
     /**
-     * Sets the caret progress
-     *
-     * @param progress The progress ({@value #PROGRESS_CARET_POINTING_UP} for pointing up,
-     * {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
-     * for neutral)
-     */
-    public void setCaretProgress(float progress) {
-        mCaretProgress = progress;
-        invalidateSelf();
-    }
-
-    /**
      * Returns the caret progress
      *
      * @return The progress
      */
     public float getCaretProgress() {
         return mCaretProgress;
+    }
+
+    /**
+     * Sets the caret progress
+     *
+     * @param progress The progress ({@value #PROGRESS_CARET_POINTING_UP} for pointing up,
+     *                 {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
+     *                 for neutral)
+     */
+    public void setCaretProgress(float progress) {
+        mCaretProgress = progress;
+        invalidateSelf();
     }
 
     /**

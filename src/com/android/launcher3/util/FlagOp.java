@@ -2,12 +2,10 @@ package com.android.launcher3.util;
 
 public abstract class FlagOp {
 
-    public static FlagOp NO_OP = new FlagOp() {};
+    public static FlagOp NO_OP = new FlagOp() {
+    };
 
-    private FlagOp() {}
-
-    public int apply(int flags) {
-        return flags;
+    private FlagOp() {
     }
 
     public static FlagOp addFlag(final int flag) {
@@ -26,5 +24,9 @@ public abstract class FlagOp {
                 return flags & ~flag;
             }
         };
+    }
+
+    public int apply(int flags) {
+        return flags;
     }
 }

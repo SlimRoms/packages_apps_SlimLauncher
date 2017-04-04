@@ -13,35 +13,26 @@ import android.view.ViewConfiguration;
  */
 public class VerticalPullDetector {
 
-    private static final boolean DBG = false;
-    private static final String TAG = "VerticalPullDetector";
-
-    private float mTouchSlop;
-
-    private int mScrollConditions;
     public static final int DIRECTION_UP = 1 << 0;
     public static final int DIRECTION_DOWN = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_DOWN | DIRECTION_UP;
-
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
      */
     public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
-
     /**
      * The time constant used to calculate dampening in the low-pass filter of scroll velocity.
      * Cutoff frequency is set at 10 Hz.
      */
     public static final float SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * (float) Math.PI * 10);
-
+    private static final boolean DBG = false;
+    private static final String TAG = "VerticalPullDetector";
+    /* Client of this gesture detector can register a callback. */
+    Listener mListener;
+    private float mTouchSlop;
+    private int mScrollConditions;
     /* Scroll state, this is set to true during dragging and animation. */
     private ScrollState mState = ScrollState.IDLE;
-
-    enum ScrollState {
-        IDLE,
-        DRAGGING,      // onDragStart, onDrag
-        SETTLING       // onDragEnd
-    }
 
     ;
 
@@ -51,6 +42,33 @@ public class VerticalPullDetector {
     // DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
     // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
     // SETTLING -> (View settled) -> IDLE
+    private float mDownX;
+    private float mDownY;
+    private float mLastY;
+    private long mCurrentMillis;
+    private float mVelocity;
+    private float mLastDisplacement;
+    private float mDisplacementY;
+    private float mDisplacementX;
+    private float mSubtractDisplacement;
+    private boolean mIgnoreSlopWhenSettling;
+    public VerticalPullDetector(Context context) {
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+    }
+
+    /**
+     * Returns a time-dependent dampening factor using delta time.
+     */
+    private static float computeDampeningFactor(float deltaTime) {
+        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
+    }
+
+    /**
+     * Returns the linear interpolation between two values
+     */
+    private static float interpolate(float from, float to, float alpha) {
+        return (1.0f - alpha) * from + alpha * to;
+    }
 
     private void setState(ScrollState newState) {
         if (DBG) {
@@ -91,37 +109,8 @@ public class VerticalPullDetector {
         return mState == ScrollState.DRAGGING;
     }
 
-    private float mDownX;
-    private float mDownY;
-
-    private float mLastY;
-    private long mCurrentMillis;
-
-    private float mVelocity;
-    private float mLastDisplacement;
-    private float mDisplacementY;
-    private float mDisplacementX;
-
-    private float mSubtractDisplacement;
-    private boolean mIgnoreSlopWhenSettling;
-
-    /* Client of this gesture detector can register a callback. */
-    Listener mListener;
-
     public void setListener(Listener l) {
         mListener = l;
-    }
-
-    interface Listener {
-        void onDragStart(boolean start);
-
-        boolean onDrag(float displacement, float velocity);
-
-        void onDragEnd(float velocity, boolean fling);
-    }
-
-    public VerticalPullDetector(Context context) {
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
@@ -259,17 +248,17 @@ public class VerticalPullDetector {
         return mVelocity;
     }
 
-    /**
-     * Returns a time-dependent dampening factor using delta time.
-     */
-    private static float computeDampeningFactor(float deltaTime) {
-        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
+    enum ScrollState {
+        IDLE,
+        DRAGGING,      // onDragStart, onDrag
+        SETTLING       // onDragEnd
     }
 
-    /**
-     * Returns the linear interpolation between two values
-     */
-    private static float interpolate(float from, float to, float alpha) {
-        return (1.0f - alpha) * from + alpha * to;
+    interface Listener {
+        void onDragStart(boolean start);
+
+        boolean onDrag(float displacement, float velocity);
+
+        void onDragEnd(float velocity, boolean fling);
     }
 }

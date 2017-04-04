@@ -72,30 +72,24 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Indicates that this is a locally defined widget and hence has no system allocated id.
      */
     static final int CUSTOM_WIDGET_ID = -100;
-
+    public ComponentName providerName;
+    /**
+     * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
+     */
+    public Intent bindOptions;
     /**
      * Identifier for this widget when talking with
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
     int appWidgetId = NO_ID;
-
-    public ComponentName providerName;
-
     /**
      * Indicates the restore status of the widget.
      */
     int restoreStatus;
-
     /**
      * Indicates the installation progress of the widget provider
      */
     int installProgress = -1;
-
-    /**
-     * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
-     */
-    public Intent bindOptions;
-
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
     LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {

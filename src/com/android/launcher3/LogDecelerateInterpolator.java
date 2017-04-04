@@ -4,9 +4,9 @@ import android.animation.TimeInterpolator;
 
 public class LogDecelerateInterpolator implements TimeInterpolator {
 
+    final float mLogScale;
     int mBase;
     int mDrift;
-    final float mLogScale;
 
     public LogDecelerateInterpolator(int base, int drift) {
         mBase = base;

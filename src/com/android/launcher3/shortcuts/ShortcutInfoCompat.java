@@ -31,14 +31,13 @@ import com.android.launcher3.compat.UserManagerCompat;
 
 /**
  * Wrapper class for {@link android.content.pm.ShortcutInfo}, representing deep shortcuts into apps.
- *
+ * <p>
  * Not to be confused with {@link com.android.launcher3.ShortcutInfo}.
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutInfoCompat {
-    private static final String INTENT_CATEGORY = "com.android.launcher3.DEEP_SHORTCUT";
     public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
-
+    private static final String INTENT_CATEGORY = "com.android.launcher3.DEEP_SHORTCUT";
     private ShortcutInfo mShortcutInfo;
 
     public ShortcutInfoCompat(ShortcutInfo shortcutInfo) {

@@ -1,8 +1,7 @@
 package org.slim.launcher;
 
-import android.graphics.Rect;
-
 import com.android.launcher3.DeviceProfile;
+
 import org.slim.launcher.settings.SettingsProvider;
 
 public class SlimDeviceProfile {

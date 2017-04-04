@@ -32,7 +32,7 @@ import java.io.InvalidObjectException;
 
 /**
  * Utility class to update DB schema after it has been restored.
- *
+ * <p>
  * This task is executed when Launcher starts for the first time and not immediately after restore.
  * This helps keep the model consistent if the launcher updates between restore and first startup.
  */
@@ -47,7 +47,7 @@ public class RestoreDbTask {
     /**
      * When enabled all icons are kept on the home screen, even if they don't have an active
      * session. To enable use:
-     *      adb shell setprop log.tag.launcher_keep_all_icons VERBOSE
+     * adb shell setprop log.tag.launcher_keep_all_icons VERBOSE
      */
     private static final String KEEP_ALL_ICONS = "launcher_keep_all_icons";
 
@@ -66,14 +66,22 @@ public class RestoreDbTask {
         }
     }
 
+    public static boolean isPending(Context context) {
+        return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
+    }
+
+    public static void setPending(Context context, boolean isPending) {
+        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
+    }
+
     /**
      * Makes the following changes in the provider DB.
-     *   1. Removes all entries belonging to a managed profile as managed profiles
-     *      cannot be restored.
-     *   2. Marks all entries as restored. The flags are updated during first load or as
-     *      the restored apps get installed.
-     *   3. If the user serial for primary profile is different than that of the previous device,
-     *      update the entries to the new profile id.
+     * 1. Removes all entries belonging to a managed profile as managed profiles
+     * cannot be restored.
+     * 2. Marks all entries as restored. The flags are updated during first load or as
+     * the restored apps get installed.
+     * 3. If the user serial for primary profile is different than that of the previous device,
+     * update the entries to the new profile id.
      */
     private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db) throws Exception {
         long oldProfileId = getDefaultProfileId(db);
@@ -92,7 +100,7 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag
-        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
                 LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
                 LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
                 (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
@@ -126,7 +134,7 @@ public class RestoreDbTask {
      * Returns the profile id used in the favorites table of the provided db.
      */
     protected long getDefaultProfileId(SQLiteDatabase db) throws Exception {
-        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)){
+        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)) {
             int nameIndex = c.getColumnIndex(INFO_COLUMN_NAME);
             while (c.moveToNext()) {
                 if (Favorites.PROFILE_ID.equals(c.getString(nameIndex))) {
@@ -135,13 +143,5 @@ public class RestoreDbTask {
             }
             throw new InvalidObjectException("Table does not have a profile id column");
         }
-    }
-
-    public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
-    }
-
-    public static void setPending(Context context, boolean isPending) {
-        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
 }

@@ -28,25 +28,22 @@ import com.android.launcher3.Utilities;
  * Saves and loads colors extracted from the wallpaper, as well as the associated wallpaper id.
  */
 public class ExtractedColors {
-    private static final String TAG = "ExtractedColors";
-
     public static final int DEFAULT_LIGHT = Color.WHITE;
     public static final int DEFAULT_DARK = Color.BLACK;
     public static final int DEFAULT_COLOR = DEFAULT_LIGHT;
-
     // These color profile indices should NOT be changed, since they are used when saving and
     // loading extracted colors. New colors should always be added at the end.
     public static final int VERSION_INDEX = 0;
     public static final int HOTSEAT_INDEX = 1;
     public static final int STATUS_BAR_INDEX = 2;
+    public static final int NUM_COLOR_PROFILES = 2;
     // public static final int VIBRANT_INDEX = 2;
     // public static final int VIBRANT_DARK_INDEX = 3;
     // public static final int VIBRANT_LIGHT_INDEX = 4;
     // public static final int MUTED_INDEX = 5;
     // public static final int MUTED_DARK_INDEX = 6;
     // public static final int MUTED_LIGHT_INDEX = 7;
-
-    public static final int NUM_COLOR_PROFILES = 2;
+    private static final String TAG = "ExtractedColors";
     private static final int VERSION = 1;
 
     private static final String COLOR_SEPARATOR = ",";
@@ -104,7 +101,9 @@ public class ExtractedColors {
         }
     }
 
-    /** @param index must be one of the index values defined at the top of this class. */
+    /**
+     * @param index must be one of the index values defined at the top of this class.
+     */
     public int getColor(int index, int defaultColor) {
         if (index > VERSION_INDEX && index < mColors.length) {
             return mColors[index];
@@ -126,17 +125,17 @@ public class ExtractedColors {
             // but this is how we would add them if we ever need them.
 
             // setColorAtIndex(ExtractedColors.VIBRANT_INDEX,
-                // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
+            // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
             // setColorAtIndex(ExtractedColors.VIBRANT_DARK_INDEX,
-                // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
+            // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
             // setColorAtIndex(ExtractedColors.VIBRANT_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
+            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
             // setColorAtIndex(ExtractedColors.MUTED_INDEX,
-                // palette.getMutedColor(DEFAULT_COLOR));
+            // palette.getMutedColor(DEFAULT_COLOR));
             // setColorAtIndex(ExtractedColors.MUTED_DARK_INDEX,
-                // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
+            // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
             // setColorAtIndex(ExtractedColors.MUTED_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
+            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
         }
     }
 

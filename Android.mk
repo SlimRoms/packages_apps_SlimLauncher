@@ -30,7 +30,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v7-recyclerview \
     android-support-v7-palette
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src) \
+LOCAL_SRC_FILES := \
+    $(call all-java-files-under, src) \
     $(call all-java-files-under, source/src) \
     $(call all-java-files-under, src_config) \
     $(call all-proto-files-under, protos)
@@ -52,7 +53,6 @@ LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
 LOCAL_PACKAGE_NAME := SlimLauncher
 LOCAL_PRIVILEGED_MODULE := true
-#LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2
 

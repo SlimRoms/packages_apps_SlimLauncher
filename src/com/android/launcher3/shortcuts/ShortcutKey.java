@@ -17,10 +17,6 @@ public class ShortcutKey extends ComponentKey {
         super(new ComponentName(packageName, id), user);
     }
 
-    public String getId() {
-        return componentName.getClassName();
-    }
-
     public static ShortcutKey fromInfo(ShortcutInfoCompat shortcutInfo) {
         return new ShortcutKey(shortcutInfo.getPackage(), shortcutInfo.getUserHandle(),
                 shortcutInfo.getId());
@@ -34,5 +30,9 @@ public class ShortcutKey extends ComponentKey {
 
     public static ShortcutKey fromShortcutInfo(ShortcutInfo info) {
         return fromIntent(info.getPromisedIntent(), info.user);
+    }
+
+    public String getId() {
+        return componentName.getClassName();
     }
 }

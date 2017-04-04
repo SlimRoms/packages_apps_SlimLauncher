@@ -24,20 +24,6 @@ public class UninstallDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
-
-        setDrawable(R.drawable.ic_uninstall_launcher);
-    }
-
-    @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return supportsDrop(getContext(), info);
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
         if (Utilities.ATLEAST_JB_MR2) {
@@ -69,22 +55,6 @@ public class UninstallDropTarget extends ButtonDropTarget {
             }
         }
         return null;
-    }
-
-    @Override
-    public void onDrop(DragObject d) {
-        // Differ item deletion
-        if (d.dragSource instanceof DropTargetSource) {
-            ((DropTargetSource) d.dragSource).deferCompleteDropAfterUninstallActivity();
-        }
-        super.onDrop(d);
-    }
-
-    @Override
-    void completeDrop(final DragObject d) {
-        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
-                ? (DropTargetResultCallback) d.dragSource : null;
-        startUninstallActivity(mLauncher, d.dragInfo, callback);
     }
 
     public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {
@@ -120,7 +90,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
     /**
      * Notifies the {@param callback} whether the uninstall was successful or not.
-     *
+     * <p>
      * Since there is no direct callback for an uninstall request, we check the package existence
      * when the launch resumes next time. This assumes that the uninstall activity will finish only
      * after the task is completed
@@ -129,7 +99,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Launcher launcher, boolean activityStarted,
             final ComponentName cn, final UserHandleCompat user,
             final DropTargetResultCallback callback) {
-        if (activityStarted)  {
+        if (activityStarted) {
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
                 public void run() {
@@ -145,9 +115,40 @@ public class UninstallDropTarget extends ButtonDropTarget {
         }
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Get the hover color
+        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
+
+        setDrawable(R.drawable.ic_uninstall_launcher);
+    }
+
+    @Override
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
+        return supportsDrop(getContext(), info);
+    }
+
+    @Override
+    public void onDrop(DragObject d) {
+        // Differ item deletion
+        if (d.dragSource instanceof DropTargetSource) {
+            ((DropTargetSource) d.dragSource).deferCompleteDropAfterUninstallActivity();
+        }
+        super.onDrop(d);
+    }
+
+    @Override
+    void completeDrop(final DragObject d) {
+        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
+                ? (DropTargetResultCallback) d.dragSource : null;
+        startUninstallActivity(mLauncher, d.dragInfo, callback);
+    }
+
     public interface DropTargetResultCallback {
         /**
          * A drag operation was complete.
+         *
          * @param isRemoved true if the drag object should be removed, false otherwise.
          */
         void onDragObjectRemoved(boolean isRemoved);

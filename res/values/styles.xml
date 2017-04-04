@@ -138,6 +138,4 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="SearchButton"></style>
-
 </resources>

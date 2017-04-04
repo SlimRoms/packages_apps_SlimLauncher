@@ -65,7 +65,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);
@@ -423,7 +423,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     /**
      * Returns the available scroll height:
-     *   AvailableScrollHeight = Total height of the all items - last page height
+     * AvailableScrollHeight = Total height of the all items - last page height
      */
     @Override
     protected int getAvailableScrollHeight() {

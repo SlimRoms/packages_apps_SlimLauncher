@@ -37,14 +37,10 @@ import com.android.launcher3.folder.FolderIcon;
 public class DragPreviewProvider {
 
     public static final int DRAG_BITMAP_PADDING = 2;
-
-    private final Rect mTempRect = new Rect();
-
-    protected final View mView;
-
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
-
+    protected final View mView;
+    private final Rect mTempRect = new Rect();
     public Bitmap gerenatedDragOutline;
 
     public DragPreviewProvider(View view) {
@@ -57,6 +53,21 @@ public class DragPreviewProvider {
         } else {
             previewPadding = DRAG_BITMAP_PADDING;
         }
+    }
+
+    protected static Rect getDrawableBounds(Drawable d) {
+        Rect bounds = new Rect();
+        d.copyBounds(bounds);
+        if (bounds.width() == 0 || bounds.height() == 0) {
+            bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        } else {
+            bounds.offsetTo(0, 0);
+        }
+        if (d instanceof PreloadIconDrawable) {
+            int inset = -((PreloadIconDrawable) d).getOutset();
+            bounds.inset(inset, inset);
+        }
+        return bounds;
     }
 
     /**
@@ -141,21 +152,6 @@ public class DragPreviewProvider {
                 .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
-    }
-
-    protected static Rect getDrawableBounds(Drawable d) {
-        Rect bounds = new Rect();
-        d.copyBounds(bounds);
-        if (bounds.width() == 0 || bounds.height() == 0) {
-            bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        } else {
-            bounds.offsetTo(0, 0);
-        }
-        if (d instanceof PreloadIconDrawable) {
-            int inset = -((PreloadIconDrawable) d).getOutset();
-            bounds.inset(inset, inset);
-        }
-        return bounds;
     }
 
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {

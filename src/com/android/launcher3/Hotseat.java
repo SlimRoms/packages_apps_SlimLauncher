@@ -22,20 +22,15 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -44,13 +39,10 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LaunchSourceProvider {
 
-    private CellLayout mContent;
-
-    private Launcher mLauncher;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
-
+    private CellLayout mContent;
+    private Launcher mLauncher;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mBackgroundColor;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -125,7 +117,6 @@ public class Hotseat extends FrameLayout
 
     void resetLayout() {
         mContent.removeAllViewsInLayout();
-
         /*if (!FeatureFlags.NO_ALL_APPS_ICON) {
             // Add the Apps button
             Context context = getContext();

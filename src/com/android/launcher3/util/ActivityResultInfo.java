@@ -24,6 +24,16 @@ import android.os.Parcelable;
  */
 public class ActivityResultInfo implements Parcelable {
 
+    public static final Parcelable.Creator<ActivityResultInfo> CREATOR =
+            new Parcelable.Creator<ActivityResultInfo>() {
+                public ActivityResultInfo createFromParcel(Parcel source) {
+                    return new ActivityResultInfo(source);
+                }
+
+                public ActivityResultInfo[] newArray(int size) {
+                    return new ActivityResultInfo[size];
+                }
+            };
     public final int requestCode;
     public final int resultCode;
     public final Intent data;
@@ -56,15 +66,4 @@ public class ActivityResultInfo implements Parcelable {
             dest.writeInt(0);
         }
     }
-
-    public static final Parcelable.Creator<ActivityResultInfo> CREATOR =
-            new Parcelable.Creator<ActivityResultInfo>() {
-                public ActivityResultInfo createFromParcel(Parcel source) {
-                    return new ActivityResultInfo(source);
-                }
-
-                public ActivityResultInfo[] newArray(int size) {
-                    return new ActivityResultInfo[size];
-                }
-            };
 }

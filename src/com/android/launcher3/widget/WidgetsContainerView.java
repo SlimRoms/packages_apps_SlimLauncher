@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +32,6 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -45,6 +42,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -58,14 +57,12 @@ public class WidgetsContainerView extends BaseContainerView
         implements View.OnLongClickListener, View.OnClickListener, DragSource {
     private static final String TAG = "WidgetsContainerView";
     private static final boolean LOGD = false;
-
+    private final Rect mTmpBgPaddingRect = new Rect();
     /* Global instances that are used inside this container. */
-    @Thunk Launcher mLauncher;
+    @Thunk
+    Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
-
-    private final Rect mTmpBgPaddingRect = new Rect();
-
     /* Recycler view related member variables */
     private WidgetsRecyclerView mRecyclerView;
     private WidgetsListAdapter mAdapter;
@@ -295,7 +292,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (LOGD) {
             Log.d(TAG, "onDropCompleted");
         }

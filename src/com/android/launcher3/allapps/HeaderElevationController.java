@@ -33,7 +33,8 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
         onScroll(mCurrentY);
     }
 
-    public void updateBackgroundPadding(Rect bgPadding) { }
+    public void updateBackgroundPadding(Rect bgPadding) {
+    }
 
     abstract void onScroll(int scrollY);
 
@@ -48,7 +49,7 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
 
             mShadow = new View(header.getContext());
             mShadow.setBackground(new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM, new int[] {0x1E000000, 0x00000000}));
+                    GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0x1E000000, 0x00000000}));
             mShadow.setAlpha(0);
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(

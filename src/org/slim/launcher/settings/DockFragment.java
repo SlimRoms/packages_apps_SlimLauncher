@@ -19,6 +19,7 @@ package org.slim.launcher.settings;
 import android.os.Bundle;
 
 import com.android.launcher3.R;
+
 import org.slim.launcher.preference.NumberPickerPreference;
 
 public class DockFragment extends SettingsPreferenceFragment {

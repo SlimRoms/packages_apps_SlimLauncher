@@ -31,8 +31,6 @@ import java.util.HashSet;
  */
 public abstract class ItemInfoMatcher {
 
-    public abstract boolean matches(ItemInfo info, ComponentName cn);
-
     public static ItemInfoMatcher ofComponents(
             final HashSet<ComponentName> components, final UserHandleCompat user) {
         return new ItemInfoMatcher() {
@@ -62,4 +60,6 @@ public abstract class ItemInfoMatcher {
             }
         };
     }
+
+    public abstract boolean matches(ItemInfo info, ComponentName cn);
 }

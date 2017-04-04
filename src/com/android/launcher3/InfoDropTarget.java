@@ -39,22 +39,6 @@ public class InfoDropTarget extends UninstallDropTarget {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Get the hover color
-        mHoverColor = Utilities.getColorAccent(getContext());
-
-        setDrawable(R.drawable.ic_info_launcher);
-    }
-
-    @Override
-    void completeDrop(DragObject d) {
-        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
-                ? (DropTargetResultCallback) d.dragSource : null;
-        startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
-    }
-
     /**
      * @return Whether the activity was started.
      */
@@ -88,11 +72,6 @@ public class InfoDropTarget extends UninstallDropTarget {
         return result;
     }
 
-    @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsAppInfoDropTarget() && supportsDrop(info);
-    }
-
     public static boolean supportsDrop(ItemInfo info) {
         // Only show the App Info drop target if developer settings are enabled.
         ContentResolver resolver = LauncherAppState.getInstance().getContext().getContentResolver();
@@ -102,5 +81,26 @@ public class InfoDropTarget extends UninstallDropTarget {
                 && (info instanceof AppInfo || info instanceof ShortcutInfo
                 || info instanceof PendingAddItemInfo || info instanceof LauncherAppWidgetInfo)
                 && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Get the hover color
+        mHoverColor = Utilities.getColorAccent(getContext());
+
+        setDrawable(R.drawable.ic_info_launcher);
+    }
+
+    @Override
+    void completeDrop(DragObject d) {
+        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
+                ? (DropTargetResultCallback) d.dragSource : null;
+        startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
+    }
+
+    @Override
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
+        return source.supportsAppInfoDropTarget() && supportsDrop(info);
     }
 }

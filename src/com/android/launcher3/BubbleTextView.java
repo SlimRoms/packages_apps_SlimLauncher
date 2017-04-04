@@ -54,38 +54,31 @@ import java.text.NumberFormat;
 public class BubbleTextView extends TextView
         implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
 
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
-
     // Dimensions in DP
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
     private static final float KEY_SHADOW_RADIUS = 1f;
     private static final float KEY_SHADOW_OFFSET = 0.5f;
     private static final int AMBIENT_SHADOW_COLOR = 0x33000000;
     private static final int KEY_SHADOW_COLOR = 0x66000000;
-
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
-
+    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
     private final Launcher mLauncher;
-    private Drawable mIcon;
     private final boolean mCenterVertically;
     private final Drawable mBackground;
-    private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
-
-    private boolean mBackgroundSizeChanged;
-
-    private Bitmap mPressedBackground;
-
-    private float mSlop;
-
     private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
+    private Drawable mIcon;
+    private OnLongClickListener mOnLongClickListener;
+    private boolean mBackgroundSizeChanged;
+    private Bitmap mPressedBackground;
+    private float mSlop;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
 
@@ -154,12 +147,27 @@ public class BubbleTextView extends TextView
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
+    /**
+     * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
+     */
+    private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
+                                                   final FastBitmapDrawable.State toState) {
+        switch (toState) {
+            case NORMAL:
+                switch (fromState) {
+                    case FAST_SCROLL_HIGHLIGHTED:
+                        return FastBitmapDrawable.FAST_SCROLL_INACTIVE_DURATION / 4;
+                }
+        }
+        return 0;
+    }
+
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
         applyFromShortcutInfo(info, iconCache, false);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean promiseStateChanged) {
+                                      boolean promiseStateChanged) {
         applyIconAndLabel(info.getIcon(iconCache), info);
         setTag(info);
         if (promiseStateChanged || info.isPromise()) {
@@ -246,12 +254,28 @@ public class BubbleTextView extends TextView
         }
     }
 
-    /** Returns the icon for this view. */
+    /**
+     * Returns the icon for this view.
+     */
     public Drawable getIcon() {
         return mIcon;
     }
 
-    /** Returns whether the layout is horizontal. */
+    /**
+     * Sets the icon for this view based on the layout direction.
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void setIcon(Drawable icon) {
+        mIcon = icon;
+        if (mIconSize != -1) {
+            mIcon.setBounds(0, 0, mIconSize, mIconSize);
+        }
+        applyCompoundDrawables(mIcon);
+    }
+
+    /**
+     * Returns whether the layout is horizontal.
+     */
     public boolean isLayoutHorizontal() {
         return mLayoutHorizontal;
     }
@@ -270,14 +294,14 @@ public class BubbleTextView extends TextView
         }
     }
 
+    public OnLongClickListener getOnLongClickListener() {
+        return mOnLongClickListener;
+    }
+
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
         super.setOnLongClickListener(l);
         mOnLongClickListener = l;
-    }
-
-    public OnLongClickListener getOnLongClickListener() {
-        return mOnLongClickListener;
     }
 
     @Override
@@ -390,7 +414,7 @@ public class BubbleTextView extends TextView
             final int scrollY = getScrollY();
 
             if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
+                background.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
                 mBackgroundSizeChanged = false;
             }
 
@@ -492,8 +516,8 @@ public class BubbleTextView extends TextView
                             info.getInstallProgress() : 0)) : 100;
 
             setContentDescription(progressLevel > 0 ?
-                getContext().getString(R.string.app_downloading_title, info.title,
-                        NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
+                    getContext().getString(R.string.app_downloading_title, info.title,
+                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
                     getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
@@ -517,7 +541,7 @@ public class BubbleTextView extends TextView
         Object tag = getTag();
         int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
                 (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
+                : R.style.PreloadIcon;
         Theme theme = sPreloaderThemes.get(style);
         if (theme == null) {
             theme = getResources().newTheme();
@@ -525,18 +549,6 @@ public class BubbleTextView extends TextView
             sPreloaderThemes.put(style, theme);
         }
         return theme;
-    }
-
-    /**
-     * Sets the icon for this view based on the layout direction.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void setIcon(Drawable icon) {
-        mIcon = icon;
-        if (mIconSize != -1) {
-            mIcon.setBounds(0, 0, mIconSize, mIconSize);
-        }
-        applyCompoundDrawables(mIcon);
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
@@ -658,21 +670,6 @@ public class BubbleTextView extends TextView
      */
     public boolean hasDeepShortcuts() {
         return !mLauncher.getShortcutIdsForItem((ItemInfo) getTag()).isEmpty();
-    }
-
-    /**
-     * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
-     */
-    private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
-            final FastBitmapDrawable.State toState) {
-        switch (toState) {
-            case NORMAL:
-                switch (fromState) {
-                    case FAST_SCROLL_HIGHLIGHTED:
-                        return FastBitmapDrawable.FAST_SCROLL_INACTIVE_DURATION / 4;
-                }
-        }
-        return 0;
     }
 
     /**

@@ -3,6 +3,4 @@
 
     <dimen name="shortcut_picker_left_padding">70dip</dimen>
 
-    <dimen name="app_icon_size">64dp</dimen>
-
 </resources>

@@ -56,6 +56,34 @@ public class QsbContainerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
+     * provided by the same package which is set to be global search activity.
+     * If widgetCategory is not supported, or no such widget is found, returns the first widget
+     * provided by the package.
+     */
+    public static AppWidgetProviderInfo getSearchWidgetProvider(Context context) {
+        SearchManager searchManager =
+                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        ComponentName searchComponent = searchManager.getGlobalSearchActivity();
+        if (searchComponent == null) return null;
+        String providerPkg = searchComponent.getPackageName();
+
+        AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
+            if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
+                if ((info.widgetCategory & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
+                    return info;
+                } else if (defaultWidgetForSearchPackage == null) {
+                    defaultWidgetForSearchPackage = info;
+                }
+            }
+        }
+        return defaultWidgetForSearchPackage;
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(0, 0, 0, 0);
@@ -73,7 +101,7 @@ public class QsbContainerView extends FrameLayout {
 
         private AppWidgetProviderInfo mWidgetInfo;
         private LauncherAppWidgetHostView mQsb;
-
+        private FrameLayout mWrapper;
         private BroadcastReceiver mRebindReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -89,8 +117,6 @@ public class QsbContainerView extends FrameLayout {
             filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
             getActivity().registerReceiver(mRebindReceiver, filter);
         }
-
-        private FrameLayout mWrapper;
 
         @Override
         public View onCreateView(
@@ -237,33 +263,5 @@ public class QsbContainerView extends FrameLayout {
             v.findViewById(R.id.btn_qsb_search).setOnClickListener(this);
             return v;
         }
-    }
-
-    /**
-     * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
-     * provided by the same package which is set to be global search activity.
-     * If widgetCategory is not supported, or no such widget is found, returns the first widget
-     * provided by the package.
-     */
-    public static AppWidgetProviderInfo getSearchWidgetProvider(Context context) {
-        SearchManager searchManager =
-                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
-        ComponentName searchComponent = searchManager.getGlobalSearchActivity();
-        if (searchComponent == null) return null;
-        String providerPkg = searchComponent.getPackageName();
-
-        AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
-
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
-            if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
-                if ((info.widgetCategory & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
-                    return info;
-                } else if (defaultWidgetForSearchPackage == null) {
-                    defaultWidgetForSearchPackage = info;
-                }
-            }
-        }
-        return defaultWidgetForSearchPackage;
     }
 }

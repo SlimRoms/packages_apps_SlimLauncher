@@ -52,8 +52,6 @@ import java.util.List;
 public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
-    private static final boolean DEBUG = false;
-
     // A section break in the grid
     public static final int VIEW_TYPE_SECTION_BREAK = 1 << 0;
     // A normal icon
@@ -64,17 +62,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 3;
     // The message to continue to a market search when there are no filtered results
     public static final int VIEW_TYPE_SEARCH_MARKET = 1 << 4;
+    // A divider that separates the apps list and the search market button
+    public static final int VIEW_TYPE_SEARCH_MARKET_DIVIDER = 1 << 5;
 
     // We use various dividers for various purposes.  They share enough attributes to reuse layouts,
     // but differ in enough attributes to require different view types
-
-    // A divider that separates the apps list and the search market button
-    public static final int VIEW_TYPE_SEARCH_MARKET_DIVIDER = 1 << 5;
     // The divider under the search field
     public static final int VIEW_TYPE_SEARCH_DIVIDER = 1 << 6;
     // The divider that separates prediction icons from the app list
     public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 7;
-
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_DIVIDER
             | VIEW_TYPE_SEARCH_MARKET_DIVIDER
@@ -82,246 +78,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             | VIEW_TYPE_SECTION_BREAK;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
-
-
-    public interface BindViewCallback {
-        public void onBindView(ViewHolder holder);
-    }
-
-    /**
-     * ViewHolder for each icon.
-     */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public View mContent;
-
-        public ViewHolder(View v) {
-            super(v);
-            mContent = v;
-        }
-    }
-
-    /**
-     * A subclass of GridLayoutManager that overrides accessibility values during app search.
-     */
-    public class AppsGridLayoutManager extends GridLayoutManager {
-
-        public AppsGridLayoutManager(Context context) {
-            super(context, 1, GridLayoutManager.VERTICAL, false);
-        }
-
-        @Override
-        public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
-            super.onInitializeAccessibilityEvent(event);
-
-            // Ensure that we only report the number apps for accessibility not including other
-            // adapter views
-            final AccessibilityRecordCompat record = AccessibilityEventCompat
-                    .asRecord(event);
-            record.setItemCount(mApps.getNumFilteredApps());
-        }
-
-        @Override
-        public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                RecyclerView.State state) {
-            if (mApps.hasNoFilteredResults()) {
-                // Disregard the no-search-results text as a list item for accessibility
-                return 0;
-            } else {
-                return super.getRowCountForAccessibility(recycler, state);
-            }
-        }
-
-        @Override
-        public int getPaddingBottom() {
-            return mLauncher.getDragLayer().getInsets().bottom;
-        }
-    }
-
-    /**
-     * Helper class to size the grid items.
-     */
-    public class GridSpanSizer extends GridLayoutManager.SpanSizeLookup {
-
-        public GridSpanSizer() {
-            super();
-            setSpanIndexCacheEnabled(true);
-        }
-
-        @Override
-        public int getSpanSize(int position) {
-            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
-                return 1;
-            } else {
-                    // Section breaks span the full width
-                    return mAppsPerRow;
-            }
-        }
-    }
-
-    /**
-     * Helper class to draw the section headers
-     */
-    public class GridItemDecoration extends RecyclerView.ItemDecoration {
-
-        private static final boolean DEBUG_SECTION_MARGIN = false;
-        private static final boolean FADE_OUT_SECTIONS = false;
-
-        private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
-        private Rect mTmpBounds = new Rect();
-
-        @Override
-        public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-            if (mApps.hasFilter() || mAppsPerRow == 0) {
-                return;
-            }
-
-            if (DEBUG_SECTION_MARGIN) {
-                Paint p = new Paint();
-                p.setColor(0x33ff0000);
-                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mSectionNamesMargin,
-                        parent.getMeasuredHeight(), p);
-            }
-
-            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            boolean showSectionNames = mSectionNamesMargin > 0;
-            int childCount = parent.getChildCount();
-            int lastSectionTop = 0;
-            int lastSectionHeight = 0;
-            for (int i = 0; i < childCount; i++) {
-                View child = parent.getChildAt(i);
-                ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
-                if (!isValidHolderAndChild(holder, child, items)) {
-                    continue;
-                }
-
-                if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
-                    // At this point, we only draw sections for each section break;
-                    int viewTopOffset = (2 * child.getPaddingTop());
-                    int pos = holder.getPosition();
-                    AlphabeticalAppsList.AdapterItem item = items.get(pos);
-                    AlphabeticalAppsList.SectionInfo sectionInfo = item.sectionInfo;
-
-                    // Draw all the sections for this index
-                    String lastSectionName = item.sectionName;
-                    for (int j = item.sectionAppIndex; j < sectionInfo.numApps; j++, pos++) {
-                        AlphabeticalAppsList.AdapterItem nextItem = items.get(pos);
-                        String sectionName = nextItem.sectionName;
-                        if (nextItem.sectionInfo != sectionInfo) {
-                            break;
-                        }
-                        if (j > item.sectionAppIndex && sectionName.equals(lastSectionName)) {
-                            continue;
-                        }
-
-                        // Find the section name bounds
-                        PointF sectionBounds = getAndCacheSectionBounds(sectionName);
-
-                        // Calculate where to draw the section
-                        int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
-                        int x = mIsRtl ?
-                                parent.getWidth() - mBackgroundPadding.left - mSectionNamesMargin :
-                                mBackgroundPadding.left;
-                        x += (int) ((mSectionNamesMargin - sectionBounds.x) / 2f);
-                        int y = child.getTop() + sectionBaseline;
-
-                        // Determine whether this is the last row with apps in that section, if
-                        // so, then fix the section to the row allowing it to scroll past the
-                        // baseline, otherwise, bound it to the baseline so it's in the viewport
-                        int appIndexInSection = items.get(pos).sectionAppIndex;
-                        int nextRowPos = Math.min(items.size() - 1,
-                                pos + mAppsPerRow - (appIndexInSection % mAppsPerRow));
-                        AlphabeticalAppsList.AdapterItem nextRowItem = items.get(nextRowPos);
-                        boolean fixedToRow = !sectionName.equals(nextRowItem.sectionName);
-                        if (!fixedToRow) {
-                            y = Math.max(sectionBaseline, y);
-                        }
-
-                        // In addition, if it overlaps with the last section that was drawn, then
-                        // offset it so that it does not overlap
-                        if (lastSectionHeight > 0 && y <= (lastSectionTop + lastSectionHeight)) {
-                            y += lastSectionTop - y + lastSectionHeight;
-                        }
-
-                        // Draw the section header
-                        if (FADE_OUT_SECTIONS) {
-                            int alpha = 255;
-                            if (fixedToRow) {
-                                alpha = Math.min(255,
-                                        (int) (255 * (Math.max(0, y) / (float) sectionBaseline)));
-                            }
-                            mSectionTextPaint.setAlpha(alpha);
-                        }
-                        c.drawText(sectionName, x, y, mSectionTextPaint);
-
-                        lastSectionTop = y;
-                        lastSectionHeight = (int) (sectionBounds.y + mSectionHeaderOffset);
-                        lastSectionName = sectionName;
-                    }
-                    i += (sectionInfo.numApps - item.sectionAppIndex);
-                }
-            }
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                RecyclerView.State state) {
-            // Do nothing
-        }
-
-        /**
-         * Given a section name, return the bounds of the given section name.
-         */
-        private PointF getAndCacheSectionBounds(String sectionName) {
-            PointF bounds = mCachedSectionBounds.get(sectionName);
-            if (bounds == null) {
-                mSectionTextPaint.getTextBounds(sectionName, 0, sectionName.length(), mTmpBounds);
-                bounds = new PointF(mSectionTextPaint.measureText(sectionName), mTmpBounds.height());
-                mCachedSectionBounds.put(sectionName, bounds);
-            }
-            return bounds;
-        }
-
-        /**
-         * Returns whether we consider this a valid view holder for us to draw a divider or section for.
-         */
-        private boolean isValidHolderAndChild(ViewHolder holder, View child,
-                List<AlphabeticalAppsList.AdapterItem> items) {
-            // Ensure item is not already removed
-            GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
-                    child.getLayoutParams();
-            if (lp.isItemRemoved()) {
-                return false;
-            }
-            // Ensure we have a valid holder
-            if (holder == null) {
-                return false;
-            }
-            // Ensure we have a holder position
-            int pos = holder.getPosition();
-            if (pos < 0 || pos >= items.size()) {
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * Returns whether to draw the section for the given child.
-         */
-        private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
-                List<AlphabeticalAppsList.AdapterItem> items) {
-            int pos = holder.getPosition();
-            AlphabeticalAppsList.AdapterItem item = items.get(pos);
-
-            // Ensure it's an icon
-            if (item.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
-                return false;
-            }
-            // Draw the section header for the first item in each section
-            return (childIndex == 0) ||
-                    (items.get(pos - 1).viewType == AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK);
-        }
-    }
-
+    private static final boolean DEBUG = false;
     private final Launcher mLauncher;
     private final LayoutInflater mLayoutInflater;
     private final AlphabeticalAppsList mApps;
@@ -330,23 +87,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final GridItemDecoration mItemDecoration;
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
-
     private final Rect mBackgroundPadding = new Rect();
     private final boolean mIsRtl;
-
     // Section drawing
     @Deprecated
     private final int mSectionNamesMargin;
     @Deprecated
     private final int mSectionHeaderOffset;
     private final Paint mSectionTextPaint;
-
     private int mAppsPerRow;
-
     private BindViewCallback mBindViewCallback;
     private AllAppsSearchBarController mSearchController;
     private OnFocusChangeListener mIconFocusListener;
-
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
@@ -546,5 +298,243 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public int getItemViewType(int position) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
+    }
+
+    public interface BindViewCallback {
+        public void onBindView(ViewHolder holder);
+    }
+
+    /**
+     * ViewHolder for each icon.
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public View mContent;
+
+        public ViewHolder(View v) {
+            super(v);
+            mContent = v;
+        }
+    }
+
+    /**
+     * A subclass of GridLayoutManager that overrides accessibility values during app search.
+     */
+    public class AppsGridLayoutManager extends GridLayoutManager {
+
+        public AppsGridLayoutManager(Context context) {
+            super(context, 1, GridLayoutManager.VERTICAL, false);
+        }
+
+        @Override
+        public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+            super.onInitializeAccessibilityEvent(event);
+
+            // Ensure that we only report the number apps for accessibility not including other
+            // adapter views
+            final AccessibilityRecordCompat record = AccessibilityEventCompat
+                    .asRecord(event);
+            record.setItemCount(mApps.getNumFilteredApps());
+        }
+
+        @Override
+        public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
+                                               RecyclerView.State state) {
+            if (mApps.hasNoFilteredResults()) {
+                // Disregard the no-search-results text as a list item for accessibility
+                return 0;
+            } else {
+                return super.getRowCountForAccessibility(recycler, state);
+            }
+        }
+
+        @Override
+        public int getPaddingBottom() {
+            return mLauncher.getDragLayer().getInsets().bottom;
+        }
+    }
+
+    /**
+     * Helper class to size the grid items.
+     */
+    public class GridSpanSizer extends GridLayoutManager.SpanSizeLookup {
+
+        public GridSpanSizer() {
+            super();
+            setSpanIndexCacheEnabled(true);
+        }
+
+        @Override
+        public int getSpanSize(int position) {
+            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
+                return 1;
+            } else {
+                // Section breaks span the full width
+                return mAppsPerRow;
+            }
+        }
+    }
+
+    /**
+     * Helper class to draw the section headers
+     */
+    public class GridItemDecoration extends RecyclerView.ItemDecoration {
+
+        private static final boolean DEBUG_SECTION_MARGIN = false;
+        private static final boolean FADE_OUT_SECTIONS = false;
+
+        private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
+        private Rect mTmpBounds = new Rect();
+
+        @Override
+        public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            if (mApps.hasFilter() || mAppsPerRow == 0) {
+                return;
+            }
+
+            if (DEBUG_SECTION_MARGIN) {
+                Paint p = new Paint();
+                p.setColor(0x33ff0000);
+                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mSectionNamesMargin,
+                        parent.getMeasuredHeight(), p);
+            }
+
+            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            boolean showSectionNames = mSectionNamesMargin > 0;
+            int childCount = parent.getChildCount();
+            int lastSectionTop = 0;
+            int lastSectionHeight = 0;
+            for (int i = 0; i < childCount; i++) {
+                View child = parent.getChildAt(i);
+                ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
+                if (!isValidHolderAndChild(holder, child, items)) {
+                    continue;
+                }
+
+                if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
+                    // At this point, we only draw sections for each section break;
+                    int viewTopOffset = (2 * child.getPaddingTop());
+                    int pos = holder.getPosition();
+                    AlphabeticalAppsList.AdapterItem item = items.get(pos);
+                    AlphabeticalAppsList.SectionInfo sectionInfo = item.sectionInfo;
+
+                    // Draw all the sections for this index
+                    String lastSectionName = item.sectionName;
+                    for (int j = item.sectionAppIndex; j < sectionInfo.numApps; j++, pos++) {
+                        AlphabeticalAppsList.AdapterItem nextItem = items.get(pos);
+                        String sectionName = nextItem.sectionName;
+                        if (nextItem.sectionInfo != sectionInfo) {
+                            break;
+                        }
+                        if (j > item.sectionAppIndex && sectionName.equals(lastSectionName)) {
+                            continue;
+                        }
+
+                        // Find the section name bounds
+                        PointF sectionBounds = getAndCacheSectionBounds(sectionName);
+
+                        // Calculate where to draw the section
+                        int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
+                        int x = mIsRtl ?
+                                parent.getWidth() - mBackgroundPadding.left - mSectionNamesMargin :
+                                mBackgroundPadding.left;
+                        x += (int) ((mSectionNamesMargin - sectionBounds.x) / 2f);
+                        int y = child.getTop() + sectionBaseline;
+
+                        // Determine whether this is the last row with apps in that section, if
+                        // so, then fix the section to the row allowing it to scroll past the
+                        // baseline, otherwise, bound it to the baseline so it's in the viewport
+                        int appIndexInSection = items.get(pos).sectionAppIndex;
+                        int nextRowPos = Math.min(items.size() - 1,
+                                pos + mAppsPerRow - (appIndexInSection % mAppsPerRow));
+                        AlphabeticalAppsList.AdapterItem nextRowItem = items.get(nextRowPos);
+                        boolean fixedToRow = !sectionName.equals(nextRowItem.sectionName);
+                        if (!fixedToRow) {
+                            y = Math.max(sectionBaseline, y);
+                        }
+
+                        // In addition, if it overlaps with the last section that was drawn, then
+                        // offset it so that it does not overlap
+                        if (lastSectionHeight > 0 && y <= (lastSectionTop + lastSectionHeight)) {
+                            y += lastSectionTop - y + lastSectionHeight;
+                        }
+
+                        // Draw the section header
+                        if (FADE_OUT_SECTIONS) {
+                            int alpha = 255;
+                            if (fixedToRow) {
+                                alpha = Math.min(255,
+                                        (int) (255 * (Math.max(0, y) / (float) sectionBaseline)));
+                            }
+                            mSectionTextPaint.setAlpha(alpha);
+                        }
+                        c.drawText(sectionName, x, y, mSectionTextPaint);
+
+                        lastSectionTop = y;
+                        lastSectionHeight = (int) (sectionBounds.y + mSectionHeaderOffset);
+                        lastSectionName = sectionName;
+                    }
+                    i += (sectionInfo.numApps - item.sectionAppIndex);
+                }
+            }
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            // Do nothing
+        }
+
+        /**
+         * Given a section name, return the bounds of the given section name.
+         */
+        private PointF getAndCacheSectionBounds(String sectionName) {
+            PointF bounds = mCachedSectionBounds.get(sectionName);
+            if (bounds == null) {
+                mSectionTextPaint.getTextBounds(sectionName, 0, sectionName.length(), mTmpBounds);
+                bounds = new PointF(mSectionTextPaint.measureText(sectionName), mTmpBounds.height());
+                mCachedSectionBounds.put(sectionName, bounds);
+            }
+            return bounds;
+        }
+
+        /**
+         * Returns whether we consider this a valid view holder for us to draw a divider or section for.
+         */
+        private boolean isValidHolderAndChild(ViewHolder holder, View child,
+                                              List<AlphabeticalAppsList.AdapterItem> items) {
+            // Ensure item is not already removed
+            GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
+                    child.getLayoutParams();
+            if (lp.isItemRemoved()) {
+                return false;
+            }
+            // Ensure we have a valid holder
+            if (holder == null) {
+                return false;
+            }
+            // Ensure we have a holder position
+            int pos = holder.getPosition();
+            if (pos < 0 || pos >= items.size()) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Returns whether to draw the section for the given child.
+         */
+        private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
+                                              List<AlphabeticalAppsList.AdapterItem> items) {
+            int pos = holder.getPosition();
+            AlphabeticalAppsList.AdapterItem item = items.get(pos);
+
+            // Ensure it's an icon
+            if (item.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
+                return false;
+            }
+            // Draw the section header for the first item in each section
+            return (childIndex == 0) ||
+                    (items.get(pos - 1).viewType == AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK);
+        }
     }
 }

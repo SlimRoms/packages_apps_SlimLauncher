@@ -60,9 +60,11 @@
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
-        android:allowBackup="false"
+        android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
+        android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
@@ -139,7 +141,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
             </intent-filter>
         </receiver>
-
         <!--
         The settings provider contains Home's data, like the workspace favorites. The permissions
         should be changed to what is defined above. The authorities should also be changed to

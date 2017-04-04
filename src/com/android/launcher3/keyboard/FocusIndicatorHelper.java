@@ -42,9 +42,6 @@ import com.android.launcher3.R;
 public abstract class FocusIndicatorHelper implements
         OnFocusChangeListener, AnimatorUpdateListener {
 
-    private static final float MIN_VISIBLE_ALPHA = 0.2f;
-    private static final long ANIM_DURATION = 150;
-
     public static final Property<FocusIndicatorHelper, Float> ALPHA =
             new Property<FocusIndicatorHelper, Float>(Float.TYPE, "alpha") {
                 @Override
@@ -57,7 +54,6 @@ public abstract class FocusIndicatorHelper implements
                     return object.mAlpha;
                 }
             };
-
     public static final Property<FocusIndicatorHelper, Float> SHIFT =
             new Property<FocusIndicatorHelper, Float>(
                     Float.TYPE, "shift") {
@@ -72,7 +68,8 @@ public abstract class FocusIndicatorHelper implements
                     return object.mShift;
                 }
             };
-
+    private static final float MIN_VISIBLE_ALPHA = 0.2f;
+    private static final long ANIM_DURATION = 150;
     private static final RectEvaluator RECT_EVALUATOR = new RectEvaluator(new Rect());
     private static final Rect sTempRect1 = new Rect();
     private static final Rect sTempRect2 = new Rect();

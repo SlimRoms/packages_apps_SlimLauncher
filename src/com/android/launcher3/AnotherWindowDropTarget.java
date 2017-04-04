@@ -27,10 +27,14 @@ import android.graphics.Rect;
 public class AnotherWindowDropTarget implements DropTarget {
     final Launcher mLauncher;
 
-    public AnotherWindowDropTarget (Context context) { mLauncher = (Launcher) context; }
+    public AnotherWindowDropTarget(Context context) {
+        mLauncher = (Launcher) context;
+    }
 
     @Override
-    public boolean isDropEnabled() { return true; }
+    public boolean isDropEnabled() {
+        return true;
+    }
 
     @Override
     public void onDrop(DragObject dragObject) {
@@ -39,16 +43,20 @@ public class AnotherWindowDropTarget implements DropTarget {
     }
 
     @Override
-    public void onDragEnter(DragObject dragObject) {}
+    public void onDragEnter(DragObject dragObject) {
+    }
 
     @Override
-    public void onDragOver(DragObject dragObject) {}
+    public void onDragOver(DragObject dragObject) {
+    }
 
     @Override
-    public void onDragExit(DragObject dragObject) {}
+    public void onDragExit(DragObject dragObject) {
+    }
 
     @Override
-    public void onFlingToDelete(DragObject dragObject, PointF vec) {}
+    public void onFlingToDelete(DragObject dragObject, PointF vec) {
+    }
 
     @Override
     public boolean acceptDrop(DragObject dragObject) {
@@ -56,9 +64,11 @@ public class AnotherWindowDropTarget implements DropTarget {
     }
 
     @Override
-    public void prepareAccessibilityDrop() {}
+    public void prepareAccessibilityDrop() {
+    }
 
     // These methods are implemented in Views
     @Override
-    public void getHitRectRelativeToDragLayer(Rect outRect) {}
+    public void getHitRectRelativeToDragLayer(Rect outRect) {
+    }
 }

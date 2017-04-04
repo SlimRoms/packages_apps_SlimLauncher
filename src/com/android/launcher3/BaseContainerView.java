@@ -34,14 +34,12 @@ import com.android.launcher3.config.FeatureFlags;
 public abstract class BaseContainerView extends FrameLayout
         implements DeviceProfile.LauncherLayoutChangeListener {
 
+    protected final Drawable mBaseDrawable;
     protected int mContainerPaddingLeft;
     protected int mContainerPaddingRight;
     protected int mContainerPaddingTop;
     protected int mContainerPaddingBottom;
-
     private InsetDrawable mRevealDrawable;
-    protected final Drawable mBaseDrawable;
-
     private View mRevealView;
     private View mContent;
 

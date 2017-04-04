@@ -19,9 +19,7 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.android.launcher3.Utilities;
@@ -31,23 +29,11 @@ import java.util.List;
 
 public abstract class LauncherAppsCompat {
 
-    public interface OnAppsChangedCallbackCompat {
-        void onPackageRemoved(String packageName, UserHandleCompat user);
-        void onPackageAdded(String packageName, UserHandleCompat user);
-        void onPackageChanged(String packageName, UserHandleCompat user);
-        void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
-        void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
-        void onPackagesSuspended(String[] packageNames, UserHandleCompat user);
-        void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user);
-        void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
-                UserHandleCompat user);
-    }
+    private static LauncherAppsCompat sInstance;
+    private static Object sInstanceLock = new Object();
 
     protected LauncherAppsCompat() {
     }
-
-    private static LauncherAppsCompat sInstance;
-    private static Object sInstanceLock = new Object();
 
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
@@ -63,16 +49,43 @@ public abstract class LauncherAppsCompat {
     }
 
     public abstract List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user);
+                                                                     UserHandleCompat user);
+
     public abstract LauncherActivityInfoCompat resolveActivity(Intent intent,
-            UserHandleCompat user);
+                                                               UserHandleCompat user);
+
     public abstract void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts);
+                                                 Rect sourceBounds, Bundle opts);
+
     public abstract void showAppDetailsForProfile(ComponentName component, UserHandleCompat user);
+
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
+
     public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
+
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);
+
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
-            UserHandleCompat user);
+                                                        UserHandleCompat user);
+
     public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
+
+    public interface OnAppsChangedCallbackCompat {
+        void onPackageRemoved(String packageName, UserHandleCompat user);
+
+        void onPackageAdded(String packageName, UserHandleCompat user);
+
+        void onPackageChanged(String packageName, UserHandleCompat user);
+
+        void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+
+        void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+
+        void onPackagesSuspended(String[] packageNames, UserHandleCompat user);
+
+        void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user);
+
+        void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+                                UserHandleCompat user);
+    }
 }

@@ -30,34 +30,25 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
     private static final int INITIAL_TOUCH_SETTLING_DURATION = 100;
     private static final int REPEAT_TOUCH_SETTLING_DURATION = 200;
     private static final float FAST_SCROLL_TOUCH_VELOCITY_BARRIER = 1900f;
-
-    private AllAppsRecyclerView mRv;
-    private AlphabeticalAppsList mApps;
-
+    @Thunk
+    final int[] mFastScrollFrames = new int[10];
     // Keeps track of the current and targetted fast scroll section (the section to scroll to after
     // the initial delay)
     int mTargetFastScrollPosition = -1;
-    @Thunk String mCurrentFastScrollSection;
-    @Thunk String mTargetFastScrollSection;
-
-    // The settled states affect the delay before the fast scroll animation is applied
-    private boolean mHasFastScrollTouchSettled;
-    private boolean mHasFastScrollTouchSettledAtLeastOnce;
-
-    // Set of all views animated during fast scroll.  We keep track of these ourselves since there
-    // is no way to reset a view once it gets scrapped or recycled without other hacks
-    private HashSet<BaseRecyclerViewFastScrollBar.FastScrollFocusableView> mTrackedFastScrollViews =
-            new HashSet<>();
-
+    @Thunk
+    String mCurrentFastScrollSection;
+    @Thunk
+    String mTargetFastScrollSection;
     // Smooth fast-scroll animation frames
-    @Thunk int mFastScrollFrameIndex;
-    @Thunk final int[] mFastScrollFrames = new int[10];
-
+    @Thunk
+    int mFastScrollFrameIndex;
+    private AllAppsRecyclerView mRv;
     /**
      * This runnable runs a single frame of the smooth scroll animation and posts the next frame
      * if necessary.
      */
-    @Thunk Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
+    @Thunk
+    Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
         @Override
         public void run() {
             if (mFastScrollFrameIndex < mFastScrollFrames.length) {
@@ -67,7 +58,14 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
             }
         }
     };
-
+    private AlphabeticalAppsList mApps;
+    // The settled states affect the delay before the fast scroll animation is applied
+    private boolean mHasFastScrollTouchSettled;
+    private boolean mHasFastScrollTouchSettledAtLeastOnce;
+    // Set of all views animated during fast scroll.  We keep track of these ourselves since there
+    // is no way to reset a view once it gets scrapped or recycled without other hacks
+    private HashSet<BaseRecyclerViewFastScrollBar.FastScrollFocusableView> mTrackedFastScrollViews =
+            new HashSet<>();
     /**
      * This runnable updates the current fast scroll section to the target fastscroll section.
      */
@@ -97,7 +95,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      * @return whether the fastscroller can scroll to the new section.
      */
     public boolean smoothScrollToSection(int scrollY, int availableScrollHeight,
-            AlphabeticalAppsList.FastScrollSectionInfo info) {
+                                         AlphabeticalAppsList.FastScrollSectionInfo info) {
         if (mTargetFastScrollPosition != info.fastScrollToItem.position) {
             mTargetFastScrollPosition = info.fastScrollToItem.position;
             smoothSnapToPosition(scrollY, availableScrollHeight, info);
@@ -111,7 +109,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      * ourselves and animating the scroll on the recycler view.
      */
     private void smoothSnapToPosition(int scrollY, int availableScrollHeight,
-            AlphabeticalAppsList.FastScrollSectionInfo info) {
+                                      AlphabeticalAppsList.FastScrollSectionInfo info) {
         mRv.removeCallbacks(mSmoothSnapNextFrameRunnable);
         mRv.removeCallbacks(mFastScrollToTargetSectionRunnable);
 
@@ -149,8 +147,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
                 mApps.getFastScrollerSections();
         int newPosition = info.fastScrollToItem.position;
         int newScrollY = fastScrollSections.size() > 0 && fastScrollSections.get(0) == info
-                        ? 0
-                        : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
+                ? 0
+                : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
         int numFrames = mFastScrollFrames.length;
         int deltaY = newScrollY - scrollY;
         float ySign = Math.signum(deltaY);

@@ -28,7 +28,9 @@ import com.android.launcher3.config.ProviderConfig;
  * Settings related utilities.
  */
 public class LauncherSettings {
-    /** Columns required on table staht will be subject to backup and restore. */
+    /**
+     * Columns required on table staht will be subject to backup and restore.
+     */
     static interface ChangeLogColumns extends BaseColumns {
         /**
          * The time of the last update to this row.
@@ -54,7 +56,7 @@ public class LauncherSettings {
 
         /**
          * The type of the gesture
-         *
+         * <p>
          * <P>Type: INTEGER</P>
          */
         public static final String ITEM_TYPE = "itemType";
@@ -90,7 +92,7 @@ public class LauncherSettings {
 
     /**
      * Workspace Screens.
-     *
+     * <p>
      * Tracks the order of workspace screens.
      */
     public static final class WorkspaceScreens implements ChangeLogColumns {
@@ -122,12 +124,98 @@ public class LauncherSettings {
          */
         public static final Uri CONTENT_URI = Uri.parse("content://" +
                 ProviderConfig.AUTHORITY + "/" + TABLE_NAME);
+        /**
+         * The container holding the favorite
+         * <P>Type: INTEGER</P>
+         */
+        public static final String CONTAINER = "container";
+        /**
+         * The icon is a resource identified by a package name and an integer id.
+         */
+        public static final int CONTAINER_DESKTOP = -100;
+        public static final int CONTAINER_HOTSEAT = -101;
+        /**
+         * The screen holding the favorite (if container is CONTAINER_DESKTOP)
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SCREEN = "screen";
+        /**
+         * The X coordinate of the cell holding the favorite
+         * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
+         * <P>Type: INTEGER</P>
+         */
+        public static final String CELLX = "cellX";
+        /**
+         * The Y coordinate of the cell holding the favorite
+         * (if container is CONTAINER_DESKTOP)
+         * <P>Type: INTEGER</P>
+         */
+        public static final String CELLY = "cellY";
+        /**
+         * The X span of the cell holding the favorite
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SPANX = "spanX";
+        /**
+         * The Y span of the cell holding the favorite
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SPANY = "spanY";
+        /**
+         * The profile id of the item in the cell.
+         * <p>
+         * Type: INTEGER
+         * </P>
+         */
+        public static final String PROFILE_ID = "profileId";
+        /**
+         * The favorite is a user created folder
+         */
+        public static final int ITEM_TYPE_FOLDER = 2;
+        /**
+         * The favorite is a widget
+         */
+        public static final int ITEM_TYPE_APPWIDGET = 4;
+        /**
+         * The favorite is a custom widget provided by the launcher
+         */
+        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+        /**
+         * The gesture is an application created deep shortcut
+         */
+        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+        /**
+         * The appWidgetId of the widget
+         * <p>
+         * <P>Type: INTEGER</P>
+         */
+        public static final String APPWIDGET_ID = "appWidgetId";
+        /**
+         * The ComponentName of the widget provider
+         * <p>
+         * <P>Type: STRING</P>
+         */
+        public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
+        /**
+         * Boolean indicating that his item was restored and not yet successfully bound.
+         * <P>Type: INTEGER</P>
+         */
+        public static final String RESTORED = "restored";
+        /**
+         * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
+         * <p>Type: INTEGER</p>
+         */
+        public static final String RANK = "rank";
+        /**
+         * Stores general flag based options for {@link ItemInfo}s.
+         * <p>Type: INTEGER</p>
+         */
+        public static final String OPTIONS = "options";
 
         /**
          * The content:// style URL for a given row, identified by its id.
          *
          * @param id The row id.
-         *
          * @return The unique content URL for the specified row.
          */
         public static Uri getContentUri(long id) {
@@ -135,117 +223,16 @@ public class LauncherSettings {
                     "/" + TABLE_NAME + "/" + id);
         }
 
-        /**
-         * The container holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        public static final String CONTAINER = "container";
-
-        /**
-         * The icon is a resource identified by a package name and an integer id.
-         */
-        public static final int CONTAINER_DESKTOP = -100;
-        public static final int CONTAINER_HOTSEAT = -101;
-
         static final String containerToString(int container) {
             switch (container) {
-                case CONTAINER_DESKTOP: return "desktop";
-                case CONTAINER_HOTSEAT: return "hotseat";
-                default: return String.valueOf(container);
+                case CONTAINER_DESKTOP:
+                    return "desktop";
+                case CONTAINER_HOTSEAT:
+                    return "hotseat";
+                default:
+                    return String.valueOf(container);
             }
         }
-
-        /**
-         * The screen holding the favorite (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SCREEN = "screen";
-
-        /**
-         * The X coordinate of the cell holding the favorite
-         * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
-         * <P>Type: INTEGER</P>
-         */
-        public static final String CELLX = "cellX";
-
-        /**
-         * The Y coordinate of the cell holding the favorite
-         * (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
-         */
-        public static final String CELLY = "cellY";
-
-        /**
-         * The X span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SPANX = "spanX";
-
-        /**
-         * The Y span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SPANY = "spanY";
-
-        /**
-         * The profile id of the item in the cell.
-         * <P>
-         * Type: INTEGER
-         * </P>
-         */
-        public static final String PROFILE_ID = "profileId";
-
-        /**
-         * The favorite is a user created folder
-         */
-        public static final int ITEM_TYPE_FOLDER = 2;
-
-        /**
-         * The favorite is a widget
-         */
-        public static final int ITEM_TYPE_APPWIDGET = 4;
-
-        /**
-         * The favorite is a custom widget provided by the launcher
-         */
-        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
-
-        /**
-         * The gesture is an application created deep shortcut
-         */
-        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
-
-        /**
-         * The appWidgetId of the widget
-         *
-         * <P>Type: INTEGER</P>
-         */
-        public static final String APPWIDGET_ID = "appWidgetId";
-
-        /**
-         * The ComponentName of the widget provider
-         *
-         * <P>Type: STRING</P>
-         */
-        public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
-
-        /**
-         * Boolean indicating that his item was restored and not yet successfully bound.
-         * <P>Type: INTEGER</P>
-         */
-        public static final String RESTORED = "restored";
-
-        /**
-         * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
-         * <p>Type: INTEGER</p>
-         */
-        public static final String RANK = "rank";
-
-        /**
-         * Stores general flag based options for {@link ItemInfo}s.
-         * <p>Type: INTEGER</p>
-         */
-        public static final String OPTIONS = "options";
 
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";

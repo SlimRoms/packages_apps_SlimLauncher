@@ -36,26 +36,24 @@ import com.android.launcher3.util.Thunk;
  */
 public class BaseRecyclerViewFastScrollBar {
 
-    public interface FastScrollFocusableView {
-        void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated);
-    }
-
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
-
-    @Thunk BaseRecyclerView mRv;
+    @Thunk
+    BaseRecyclerView mRv;
+    @Thunk
+    Point mThumbOffset = new Point(-1, -1);
+    @Thunk
+    Paint mThumbPaint;
+    @Thunk
+    int mThumbWidth;
+    @Thunk
+    int mThumbHeight;
     private BaseRecyclerViewFastScrollPopup mPopup;
-
     private AnimatorSet mScrollbarAnimator;
-
     private int mThumbInactiveColor;
     private int mThumbActiveColor;
-    @Thunk Point mThumbOffset = new Point(-1, -1);
-    @Thunk Paint mThumbPaint;
     private int mThumbMinWidth;
     private int mThumbMaxWidth;
-    @Thunk int mThumbWidth;
-    @Thunk int mThumbHeight;
     private int mThumbCurvature;
     private Path mThumbPath = new Path();
     private Paint mTrackPaint;
@@ -67,14 +65,11 @@ public class BaseRecyclerViewFastScrollBar {
     private boolean mIsThumbDetached;
     private boolean mCanThumbDetach;
     private boolean mIgnoreDragGesture;
-
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
     private int mTouchOffset;
-
     private Rect mInvalidateRect = new Rect();
     private Rect mTmpRect = new Rect();
-
     public BaseRecyclerViewFastScrollBar(BaseRecyclerView rv, Resources res) {
         mRv = rv;
         mPopup = new BaseRecyclerViewFastScrollPopup(rv, res);
@@ -118,6 +113,10 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbOffset;
     }
 
+    public int getThumbWidth() {
+        return mThumbWidth;
+    }
+
     // Setter/getter for the thumb bar width for animations
     public void setThumbWidth(int width) {
         mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, mThumbOffset.y,
@@ -129,8 +128,8 @@ public class BaseRecyclerViewFastScrollBar {
         mRv.invalidate(mInvalidateRect);
     }
 
-    public int getThumbWidth() {
-        return mThumbWidth;
+    public int getTrackWidth() {
+        return mTrackWidth;
     }
 
     // Setter/getter for the track bar width for animations
@@ -142,10 +141,6 @@ public class BaseRecyclerViewFastScrollBar {
         mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
                 mRv.getVisibleHeight());
         mRv.invalidate(mInvalidateRect);
-    }
-
-    public int getTrackWidth() {
-        return mTrackWidth;
     }
 
     public int getThumbHeight() {
@@ -293,5 +288,9 @@ public class BaseRecyclerViewFastScrollBar {
                 mThumbOffset.y + mThumbHeight);
         mTmpRect.inset(mTouchInset, mTouchInset);
         return mTmpRect.contains(x, y);
+    }
+
+    public interface FastScrollFocusableView {
+        void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated);
     }
 }

@@ -65,14 +65,78 @@ public class IconNormalizer {
     }
 
     /**
+     * Modifies {@param xCordinates} to represent a convex border. Fills in all missing values
+     * (except on either ends) with appropriate values.
+     *
+     * @param xCordinates map of x coordinate per y.
+     * @param direction   1 for left border and -1 for right border.
+     * @param topY        the first Y position (inclusive) with a valid value.
+     * @param bottomY     the last Y position (inclusive) with a valid value.
+     */
+    private static void convertToConvexArray(
+            float[] xCordinates, int direction, int topY, int bottomY) {
+        int total = xCordinates.length;
+        // The tangent at each pixel.
+        float[] angles = new float[total - 1];
+
+        int first = topY; // First valid y coordinate
+        int last = -1;    // Last valid y coordinate which didn't have a missing value
+
+        float lastAngle = Float.MAX_VALUE;
+
+        for (int i = topY + 1; i <= bottomY; i++) {
+            if (xCordinates[i] <= -1) {
+                continue;
+            }
+            int start;
+
+            if (lastAngle == Float.MAX_VALUE) {
+                start = first;
+            } else {
+                float currentAngle = (xCordinates[i] - xCordinates[last]) / (i - last);
+                start = last;
+                // If this position creates a concave angle, keep moving up until we find a
+                // position which creates a convex angle.
+                if ((currentAngle - lastAngle) * direction < 0) {
+                    while (start > first) {
+                        start--;
+                        currentAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
+                        if ((currentAngle - angles[start]) * direction >= 0) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Reset from last check
+            lastAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
+            // Update all the points from start.
+            for (int j = start; j < i; j++) {
+                angles[j] = lastAngle;
+                xCordinates[j] = xCordinates[start] + lastAngle * (j - start);
+            }
+            last = i;
+        }
+    }
+
+    public static IconNormalizer getInstance() {
+        synchronized (LOCK) {
+            if (sIconNormalizer == null) {
+                sIconNormalizer = new IconNormalizer();
+            }
+        }
+        return sIconNormalizer;
+    }
+
+    /**
      * Returns the amount by which the {@param d} should be scaled (in both dimensions) so that it
      * matches the design guidelines for a launcher icon.
-     *
+     * <p>
      * We first calculate the convex hull of the visible portion of the icon.
      * This hull then compared with the bounding rectangle of the hull to find how closely it
      * resembles a circle and a square, by comparing the ratio of the areas. Note that this is not an
      * ideal solution but it gives satisfactory result without affecting the performance.
-     *
+     * <p>
      * This closeness is used to determine the ratio of hull area to the full icon size.
      * Refer {@link #MAX_CIRCLE_AREA_FACTOR} and {@link #MAX_SQUARE_AREA_FACTOR}
      *
@@ -168,7 +232,7 @@ public class IconNormalizer {
         if (hullByRect < CIRCLE_AREA_BY_RECT) {
             scaleRequired = MAX_CIRCLE_AREA_FACTOR;
         } else {
-            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1  - hullByRect);
+            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1 - hullByRect);
         }
 
         if (outBounds != null) {
@@ -183,68 +247,5 @@ public class IconNormalizer {
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
         return scale;
-    }
-
-    /**
-     * Modifies {@param xCordinates} to represent a convex border. Fills in all missing values
-     * (except on either ends) with appropriate values.
-     * @param xCordinates map of x coordinate per y.
-     * @param direction 1 for left border and -1 for right border.
-     * @param topY the first Y position (inclusive) with a valid value.
-     * @param bottomY the last Y position (inclusive) with a valid value.
-     */
-    private static void convertToConvexArray(
-            float[] xCordinates, int direction, int topY, int bottomY) {
-        int total = xCordinates.length;
-        // The tangent at each pixel.
-        float[] angles = new float[total - 1];
-
-        int first = topY; // First valid y coordinate
-        int last = -1;    // Last valid y coordinate which didn't have a missing value
-
-        float lastAngle = Float.MAX_VALUE;
-
-        for (int i = topY + 1; i <= bottomY; i++) {
-            if (xCordinates[i] <= -1) {
-                continue;
-            }
-            int start;
-
-            if (lastAngle == Float.MAX_VALUE) {
-                start = first;
-            } else {
-                float currentAngle = (xCordinates[i] - xCordinates[last]) / (i - last);
-                start = last;
-                // If this position creates a concave angle, keep moving up until we find a
-                // position which creates a convex angle.
-                if ((currentAngle - lastAngle) * direction < 0) {
-                    while (start > first) {
-                        start --;
-                        currentAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
-                        if ((currentAngle - angles[start]) * direction >= 0) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Reset from last check
-            lastAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
-            // Update all the points from start.
-            for (int j = start; j < i; j++) {
-                angles[j] = lastAngle;
-                xCordinates[j] = xCordinates[start] + lastAngle * (j - start);
-            }
-            last = i;
-        }
-    }
-
-    public static IconNormalizer getInstance() {
-        synchronized (LOCK) {
-            if (sIconNormalizer == null) {
-                sIconNormalizer = new IconNormalizer();
-            }
-        }
-        return sIconNormalizer;
     }
 }

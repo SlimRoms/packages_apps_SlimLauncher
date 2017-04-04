@@ -20,12 +20,11 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceCallbacks;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
-import org.slim.launcher.settings.SettingsActivity;
-import org.slim.launcher.settings.SettingsProvider;
-
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
 
+import org.slim.launcher.settings.SettingsActivity;
+import org.slim.launcher.settings.SettingsProvider;
 import org.slim.launcher.util.GestureHelper;
 
 import java.io.FileDescriptor;
@@ -39,6 +38,10 @@ public class SlimLauncher extends Launcher {
 
     private SlimDeviceProfile mSlimProfile;
     private GestureHelper mGestureHelper;
+
+    public static SlimLauncher getInstance() {
+        return sLauncher;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,7 @@ public class SlimLauncher extends Launcher {
     private void updateAppDrawerSearchBar() {
         boolean searchEnabled = SettingsProvider.getBoolean(this,
                 SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
-        getAppsView().setSearchBarContainerViewVisibility(searchEnabled ? View.VISIBLE :View.GONE);
+        getAppsView().setSearchBarContainerViewVisibility(searchEnabled ? View.VISIBLE : View.GONE);
     }
 
     private void updateWorkspaceGridSize() {
@@ -109,7 +112,7 @@ public class SlimLauncher extends Launcher {
         View favorite = super.createShortcut(parent, info);
         if (info.getIntent().getAction() != null
                 && info.getIntent().getAction().equals(
-                        ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
+                ShortcutHelper.ACTION_SLIM_LAUNCHER_SHORTCUT)) {
             info.launcherAction = true;
         }
         return favorite;
@@ -182,10 +185,6 @@ public class SlimLauncher extends Launcher {
     public void onClickSettingsButton(View v) {
         Intent i = new Intent(SlimLauncher.this, SettingsActivity.class);
         startActivity(i);
-    }
-
-    public static SlimLauncher getInstance() {
-        return sLauncher;
     }
 
     private class SlimLauncherCallbacks implements LauncherCallbacks {
@@ -395,7 +394,7 @@ public class SlimLauncher extends Launcher {
                         //Log.d("TEST", "scale=" + scale);
                         if (scale < 0.5) {
                             mGestureHelper.handleGestureAction(GestureHelper.Gesture.PINCH);
-                        } else if (scale > 2.2){
+                        } else if (scale > 2.2) {
                             mGestureHelper.handleGestureAction(GestureHelper.Gesture.SPREAD);
                         }
                     }

@@ -42,48 +42,37 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
-
-    private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
-    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
-    private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final ScrollInterpolator mScrollInterpolator = new ScrollInterpolator();
-
     private static final float ANIMATION_DURATION = 1200;
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final float FAST_FLING_PX_MS = 10;
     private static final int SINGLE_FRAME_MS = 16;
-
+    private static final float DEFAULT_SHIFT_RANGE = 10;
+    private static final float RECATCH_REJECTION_FRACTION = .0875f;
+    private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
+    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
+    private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
+    private final ScrollInterpolator mScrollInterpolator = new ScrollInterpolator();
+    private final Launcher mLauncher;
+    private final VerticalPullDetector mDetector;
+    private final ArgbEvaluator mEvaluator;
     private AllAppsContainerView mAppsView;
     private int mAllAppsBackgroundColor;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
     private int mHotseatBackgroundColor;
 
-    private AllAppsCaretController mCaretController;
-
-    private float mStatusBarHeight;
-
-    private final Launcher mLauncher;
-    private final VerticalPullDetector mDetector;
-    private final ArgbEvaluator mEvaluator;
-
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
     // {@link mShiftRange}.
-
+    private AllAppsCaretController mCaretController;
+    private float mStatusBarHeight;
     // When {@link mProgress} is 0, all apps container is pulled up.
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
-
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
-
-    private static final float DEFAULT_SHIFT_RANGE = 10;
-
-    private static final float RECATCH_REJECTION_FRACTION = .0875f;
-
     private int mBezelSwipeUpHeight;
     private long mAnimationDuration;
 
@@ -285,8 +274,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mLauncher.activateLightStatusBar(forceLight);
     }
 
+    public float getProgress() {
+        return mProgress;
+    }
+
     /**
-     * @param progress       value between 0 and 1, 0 shows all apps and 1 shows workspace
+     * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      */
     public void setProgress(float progress) {
         float shiftPrevious = mProgress * mShiftRange;
@@ -328,10 +321,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         mCaretController.updateCaret(progress, mContainerVelocity, mDetector.isDraggingState());
         updateLightStatusBar(shiftCurrent);
-    }
-
-    public float getProgress() {
-        return mProgress;
     }
 
     private void calculateDuration(float velocity, float disp) {
@@ -522,7 +511,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
-            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mShiftRange = top;
         } else {

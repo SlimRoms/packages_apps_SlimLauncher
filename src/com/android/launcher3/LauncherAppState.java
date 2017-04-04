@@ -39,50 +39,18 @@ import java.lang.ref.WeakReference;
 public class LauncherAppState {
 
     public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
-
+    private static WeakReference<LauncherProvider> sLauncherProvider;
+    private static Context sContext;
+    private static LauncherAppState INSTANCE;
+    @Thunk
+    final LauncherModel mModel;
     private final AppFilter mAppFilter;
-    @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final DeepShortcutManager mDeepShortcutManager;
-
-    @Thunk boolean mWallpaperChangedSinceLastCheck;
-
-    private static WeakReference<LauncherProvider> sLauncherProvider;
-    private static Context sContext;
-
-    private static LauncherAppState INSTANCE;
-
+    @Thunk
+    boolean mWallpaperChangedSinceLastCheck;
     private InvariantDeviceProfile mInvariantDeviceProfile;
-
-    public static LauncherAppState getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new LauncherAppState();
-        }
-        return INSTANCE;
-    }
-
-    public static LauncherAppState getInstanceNoCreate() {
-        return INSTANCE;
-    }
-
-    public Context getContext() {
-        return sContext;
-    }
-
-    static void setLauncherProvider(LauncherProvider provider) {
-        if (sLauncherProvider != null) {
-            Log.w(Launcher.TAG, "setLauncherProvider called twice! old=" +
-                    sLauncherProvider.get() + " new=" + provider);
-        }
-        sLauncherProvider = new WeakReference<>(provider);
-
-        // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created. Initializing application context here ensures
-        // that LauncherAppState always exists in the main process.
-        sContext = provider.getContext().getApplicationContext();
-        FileLog.setDir(sContext.getFilesDir());
-    }
 
     private LauncherAppState() {
         if (sContext == null) {
@@ -134,6 +102,35 @@ public class LauncherAppState {
         new ConfigMonitor(sContext).register();
 
         ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
+    }
+
+    public static LauncherAppState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LauncherAppState();
+        }
+        return INSTANCE;
+    }
+
+    public static LauncherAppState getInstanceNoCreate() {
+        return INSTANCE;
+    }
+
+    static void setLauncherProvider(LauncherProvider provider) {
+        if (sLauncherProvider != null) {
+            Log.w(Launcher.TAG, "setLauncherProvider called twice! old=" +
+                    sLauncherProvider.get() + " new=" + provider);
+        }
+        sLauncherProvider = new WeakReference<>(provider);
+
+        // The content provider exists for the entire duration of the launcher main process and
+        // is the first component to get created. Initializing application context here ensures
+        // that LauncherAppState always exists in the main process.
+        sContext = provider.getContext().getApplicationContext();
+        FileLog.setDir(sContext.getFilesDir());
+    }
+
+    public Context getContext() {
+        return sContext;
     }
 
     /**

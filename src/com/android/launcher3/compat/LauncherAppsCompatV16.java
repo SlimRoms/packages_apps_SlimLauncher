@@ -22,18 +22,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 
@@ -57,10 +54,10 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mPm = context.getPackageManager();
         mContext = context;
         mPackageMonitor = new PackageMonitor();
-   }
+    }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         mainIntent.setPackage(packageName);
@@ -82,7 +79,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     }
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+                                        Rect sourceBounds, Bundle opts) {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         launchIntent.setComponent(component);
@@ -149,11 +146,13 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mContext.registerReceiver(mPackageMonitor, filter);
     }
 
-    @Thunk synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
+    @Thunk
+    synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
         return new ArrayList<OnAppsChangedCallbackCompat>(mCallbacks);
     }
 
-    @Thunk class PackageMonitor extends BroadcastReceiver {
+    @Thunk
+    class PackageMonitor extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             final UserHandleCompat user = UserHandleCompat.myUserHandle();

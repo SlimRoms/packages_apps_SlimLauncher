@@ -81,7 +81,8 @@ public class AppNameComparator {
     /**
      * Compares two titles with the same return value semantics as Comparator.
      */
-    @Thunk int compareTitles(String titleA, String titleB) {
+    @Thunk
+    int compareTitles(String titleA, String titleB) {
         // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
         boolean aStartsWithLetter = (titleA.length() > 0) &&
                 Character.isLetterOrDigit(titleA.codePointAt(0));

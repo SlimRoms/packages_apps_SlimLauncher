@@ -84,9 +84,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private final int mStartDragThreshold;
     private final ShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
     private final boolean mIsRtl;
-
-    private BubbleTextView mDeferredDragIcon;
     private final Rect mTempRect = new Rect();
+    private BubbleTextView mDeferredDragIcon;
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
@@ -113,6 +112,32 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     public DeepShortcutsContainer(Context context) {
         this(context, null, 0);
+    }
+
+    /**
+     * Shows the shortcuts container for {@param icon}
+     *
+     * @return the container if shown or null.
+     */
+    public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
+        Launcher launcher = Launcher.getLauncher(icon.getContext());
+        if (launcher.getOpenShortcutsContainer() != null) {
+            // There is already a shortcuts container open, so don't open this one.
+            icon.clearFocus();
+            return null;
+        }
+        List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
+        if (!ids.isEmpty()) {
+            // There are shortcuts associated with the app, so defer its drag.
+            final DeepShortcutsContainer container =
+                    (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
+                            R.layout.deep_shortcuts_container, launcher.getDragLayer(), false);
+            container.setVisibility(View.INVISIBLE);
+            launcher.getDragLayer().addView(container);
+            container.populateAndShow(icon, ids);
+            return container;
+        }
+        return null;
     }
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> ids) {
@@ -174,23 +199,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
             }
         });
-    }
-
-    /** Updates the child of this container at the given index based on the given shortcut info. */
-    private class UpdateShortcutChild implements Runnable {
-        private int mShortcutChildIndex;
-        private UnbadgedShortcutInfo mShortcutChildInfo;
-
-        public UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
-            mShortcutChildIndex = shortcutChildIndex;
-            mShortcutChildInfo = shortcutChildInfo;
-        }
-
-        @Override
-        public void run() {
-            getShortcutAt(mShortcutChildIndex)
-                    .applyShortcutInfo(mShortcutChildInfo, DeepShortcutsContainer.this);
-        }
     }
 
     private DeepShortcutView getShortcutAt(int index) {
@@ -273,13 +281,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
-     *
+     * <p>
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
      * - Below and right-aligned
-     *
+     * <p>
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
@@ -347,8 +355,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Adds an arrow view pointing at the original icon.
+     *
      * @param horizontalOffset the horizontal offset of the arrow, so that it
-     *                              points at the center of the original icon
+     *                         points at the center of the original icon
      */
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
         LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
@@ -386,7 +395,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Determines when the deferred drag should be started.
-     *
+     * <p>
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
      */
@@ -483,7 +492,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (!success) {
             d.dragView.remove();
             mLauncher.showWorkspace(true);
@@ -631,31 +640,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     /**
-     * Shows the shortcuts container for {@param icon}
-     * @return the container if shown or null.
-     */
-    public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
-        Launcher launcher = Launcher.getLauncher(icon.getContext());
-        if (launcher.getOpenShortcutsContainer() != null) {
-            // There is already a shortcuts container open, so don't open this one.
-            icon.clearFocus();
-            return null;
-        }
-        List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
-        if (!ids.isEmpty()) {
-            // There are shortcuts associated with the app, so defer its drag.
-            final DeepShortcutsContainer container =
-                    (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
-                            R.layout.deep_shortcuts_container, launcher.getDragLayer(), false);
-            container.setVisibility(View.INVISIBLE);
-            launcher.getDragLayer().addView(container);
-            container.populateAndShow(icon, ids);
-            return container;
-        }
-        return null;
-    }
-
-    /**
      * Extension of {@link ShortcutInfo} which does not badge the icons.
      */
     static class UnbadgedShortcutInfo extends ShortcutInfo {
@@ -668,8 +652,27 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         @Override
         protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
-                IconCache cache, Context context) {
+                                       IconCache cache, Context context) {
             return unbadgedBitmap;
+        }
+    }
+
+    /**
+     * Updates the child of this container at the given index based on the given shortcut info.
+     */
+    private class UpdateShortcutChild implements Runnable {
+        private int mShortcutChildIndex;
+        private UnbadgedShortcutInfo mShortcutChildInfo;
+
+        public UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
+            mShortcutChildIndex = shortcutChildIndex;
+            mShortcutChildInfo = shortcutChildInfo;
+        }
+
+        @Override
+        public void run() {
+            getShortcutAt(mShortcutChildIndex)
+                    .applyShortcutInfo(mShortcutChildInfo, DeepShortcutsContainer.this);
         }
     }
 }

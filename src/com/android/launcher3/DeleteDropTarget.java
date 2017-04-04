@@ -40,6 +40,27 @@ public class DeleteDropTarget extends ButtonDropTarget {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @return true for items that should have a "Remove" action in accessibility.
+     */
+    public static boolean supportsAccessibleDrop(ItemInfo info) {
+        return (info instanceof ShortcutInfo)
+                || (info instanceof LauncherAppWidgetInfo)
+                || (info instanceof FolderInfo);
+    }
+
+    /**
+     * Removes the item from the workspace. If the view is not null, it also removes the view.
+     */
+    public static void removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
+        // Remove the item from launcher and the db, we can ignore the containerInfo in this call
+        // because we already remove the drag view from the folder (if the drag originated from
+        // a folder) in Folder.beginDrag()
+        launcher.removeItem(view, item, true /* deleteFromDb */);
+        launcher.getWorkspace().stripEmptyScreens();
+        launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -53,13 +74,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         super.onDragStart(dragObject, options);
         setTextBasedOnDragSource(dragObject.dragSource);
-    }
-
-    /** @return true for items that should have a "Remove" action in accessibility. */
-    public static boolean supportsAccessibleDrop(ItemInfo info) {
-        return (info instanceof ShortcutInfo)
-                || (info instanceof LauncherAppWidgetInfo)
-                || (info instanceof FolderInfo);
     }
 
     @Override
@@ -78,23 +92,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    @Thunk void completeDrop(DragObject d) {
+    @Thunk
+    void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
         }
-    }
-
-    /**
-     * Removes the item from the workspace. If the view is not null, it also removes the view.
-     */
-    public static void removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
-        // Remove the item from launcher and the db, we can ignore the containerInfo in this call
-        // because we already remove the drag view from the folder (if the drag originated from
-        // a folder) in Folder.beginDrag()
-        launcher.removeItem(view, item, true /* deleteFromDb */);
-        launcher.getWorkspace().stripEmptyScreens();
-        launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
     }
 
     @Override
@@ -106,7 +109,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         FlingAnimation fling = new FlingAnimation(d, vel,
                 getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                         mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
-                        dragLayer);
+                dragLayer);
 
         final int duration = fling.getDuration();
         final long startTime = AnimationUtils.currentAnimationTimeMillis();

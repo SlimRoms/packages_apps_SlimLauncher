@@ -86,6 +86,69 @@ public class ImportDataTask {
         mOtherFavoritesUri = Uri.parse("content://" + sourceAuthority + "/" + Favorites.TABLE_NAME);
     }
 
+    private static final String getPackage(Intent intent) {
+        return intent.getComponent() != null ? intent.getComponent().getPackageName()
+                : intent.getPackage();
+    }
+
+    /**
+     * Performs data import if possible.
+     *
+     * @return true on successful data import, false if it was not available
+     * @throws Exception if the import failed
+     */
+    public static boolean performImportIfPossible(Context context) throws Exception {
+        SharedPreferences devicePrefs = getDevicePrefs(context);
+        String sourcePackage = devicePrefs.getString(KEY_DATA_IMPORT_SRC_PKG, "");
+        String sourceAuthority = devicePrefs.getString(KEY_DATA_IMPORT_SRC_AUTHORITY, "");
+
+        if (TextUtils.isEmpty(sourcePackage) || TextUtils.isEmpty(sourceAuthority)) {
+            return false;
+        }
+
+        // Synchronously clear the migration flags. This ensures that we do not try migration
+        // again and thus prevents potential crash loops due to migration failure.
+        devicePrefs.edit().remove(KEY_DATA_IMPORT_SRC_PKG).remove(KEY_DATA_IMPORT_SRC_AUTHORITY).commit();
+
+        if (!Settings.call(context.getContentResolver(), Settings.METHOD_WAS_EMPTY_DB_CREATED)
+                .getBoolean(Settings.EXTRA_VALUE, false)) {
+            // Only migration if a new DB was created.
+            return false;
+        }
+
+        for (ProviderInfo info : context.getPackageManager().queryContentProviders(
+                null, context.getApplicationInfo().uid, 0)) {
+
+            if (sourcePackage.equals(info.packageName)) {
+                if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    // Only migrate if the source launcher is also on system image.
+                    return false;
+                }
+
+                // Wait until we found a provider with matching authority.
+                if (sourceAuthority.equals(info.authority)) {
+                    if (TextUtils.isEmpty(info.readPermission) ||
+                            context.checkPermission(info.readPermission, Process.myPid(),
+                                    Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+                        // All checks passed, run the import task.
+                        return new ImportDataTask(context, sourceAuthority).importWorkspace();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static SharedPreferences getDevicePrefs(Context c) {
+        return c.getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
+    private static final int getMyHotseatLayoutId() {
+        return LauncherAppState.getInstance().getInvariantDeviceProfile().numHotseatIcons <= 5
+                ? R.xml.dw_phone_hotseat
+                : R.xml.dw_tablet_hotseat;
+    }
+
     public boolean importWorkspace() throws Exception {
         ArrayList<Long> allScreens = LauncherDbUtils.getScreenIdsFromCursor(
                 mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
@@ -249,7 +312,7 @@ public class ImportDataTask {
                             values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
                             values.put(Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                         }
-                        values.put(Favorites.ICON,  c.getBlob(iconIndex));
+                        values.put(Favorites.ICON, c.getBlob(iconIndex));
                         values.put(Favorites.INTENT, intent.toUri(0));
                         values.put(Favorites.RANK, c.getInt(rankIndex));
 
@@ -321,68 +384,6 @@ public class ImportDataTask {
                         insertOperations);
             }
         }
-    }
-
-    private static final String getPackage(Intent intent) {
-        return intent.getComponent() != null ? intent.getComponent().getPackageName()
-                : intent.getPackage();
-    }
-
-    /**
-     * Performs data import if possible.
-     * @return true on successful data import, false if it was not available
-     * @throws Exception if the import failed
-     */
-    public static boolean performImportIfPossible(Context context) throws Exception {
-        SharedPreferences devicePrefs = getDevicePrefs(context);
-        String sourcePackage = devicePrefs.getString(KEY_DATA_IMPORT_SRC_PKG, "");
-        String sourceAuthority = devicePrefs.getString(KEY_DATA_IMPORT_SRC_AUTHORITY, "");
-
-        if (TextUtils.isEmpty(sourcePackage) || TextUtils.isEmpty(sourceAuthority)) {
-            return false;
-        }
-
-        // Synchronously clear the migration flags. This ensures that we do not try migration
-        // again and thus prevents potential crash loops due to migration failure.
-        devicePrefs.edit().remove(KEY_DATA_IMPORT_SRC_PKG).remove(KEY_DATA_IMPORT_SRC_AUTHORITY).commit();
-
-        if (!Settings.call(context.getContentResolver(), Settings.METHOD_WAS_EMPTY_DB_CREATED)
-                .getBoolean(Settings.EXTRA_VALUE, false)) {
-            // Only migration if a new DB was created.
-            return false;
-        }
-
-        for (ProviderInfo info : context.getPackageManager().queryContentProviders(
-                null, context.getApplicationInfo().uid, 0)) {
-
-            if (sourcePackage.equals(info.packageName)) {
-                if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                    // Only migrate if the source launcher is also on system image.
-                    return false;
-                }
-
-                // Wait until we found a provider with matching authority.
-                if (sourceAuthority.equals(info.authority)) {
-                    if (TextUtils.isEmpty(info.readPermission) ||
-                            context.checkPermission(info.readPermission, Process.myPid(),
-                                    Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
-                        // All checks passed, run the import task.
-                        return new ImportDataTask(context, sourceAuthority).importWorkspace();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static SharedPreferences getDevicePrefs(Context c) {
-        return c.getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
-    private static final int getMyHotseatLayoutId() {
-        return LauncherAppState.getInstance().getInvariantDeviceProfile().numHotseatIcons <= 5
-                ? R.xml.dw_phone_hotseat
-                : R.xml.dw_tablet_hotseat;
     }
 
     /**

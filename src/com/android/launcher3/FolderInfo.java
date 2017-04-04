@@ -119,21 +119,14 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
-    public interface FolderListener {
-        public void onAdd(ShortcutInfo item);
-        public void onRemove(ShortcutInfo item);
-        public void onTitleChanged(CharSequence title);
-        public void onItemsChanged(boolean animate);
-    }
-
     public boolean hasOption(int optionFlag) {
         return (options & optionFlag) != 0;
     }
 
     /**
-     * @param option flag to set or clear
+     * @param option    flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param context if not null, save changes to the db.
+     * @param context   if not null, save changes to the db.
      */
     public void setOption(int option, boolean isEnabled, Context context) {
         int oldOptions = options;
@@ -145,5 +138,15 @@ public class FolderInfo extends ItemInfo {
         if (context != null && oldOptions != options) {
             LauncherModel.updateItemInDatabase(context, this);
         }
+    }
+
+    public interface FolderListener {
+        public void onAdd(ShortcutInfo item);
+
+        public void onRemove(ShortcutInfo item);
+
+        public void onTitleChanged(CharSequence title);
+
+        public void onItemsChanged(boolean animate);
     }
 }

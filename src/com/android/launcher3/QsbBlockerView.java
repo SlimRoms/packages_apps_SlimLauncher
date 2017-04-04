@@ -46,6 +46,16 @@ public class QsbBlockerView extends View implements Workspace.OnStateChangeListe
         mBgPaint.setAlpha(0);
     }
 
+    private static int getAlphaForState(State state) {
+        switch (state) {
+            case SPRING_LOADED:
+            case OVERVIEW:
+            case OVERVIEW_HIDDEN:
+                return VISIBLE_ALPHA;
+        }
+        return 0;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -71,16 +81,6 @@ public class QsbBlockerView extends View implements Workspace.OnStateChangeListe
             });
             targetAnim.play(anim);
         }
-    }
-
-    private static int getAlphaForState(State state) {
-        switch (state) {
-            case SPRING_LOADED:
-            case OVERVIEW:
-            case OVERVIEW_HIDDEN:
-                return VISIBLE_ALPHA;
-        }
-        return 0;
     }
 
     @Override

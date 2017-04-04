@@ -120,6 +120,13 @@ public class ItemInfo {
         LauncherModel.checkItemInfo(this);
     }
 
+    static void writeBitmap(ContentValues values, Bitmap bitmap) {
+        if (bitmap != null) {
+            byte[] data = Utilities.flattenBitmap(bitmap);
+            values.put(LauncherSettings.Favorites.ICON, data);
+        }
+    }
+
     public void copyFrom(ItemInfo info) {
         id = info.id;
         cellX = info.cellX;
@@ -178,13 +185,6 @@ public class ItemInfo {
         if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
             // We should never persist an item on the extra empty screen.
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
-        }
-    }
-
-    static void writeBitmap(ContentValues values, Bitmap bitmap) {
-        if (bitmap != null) {
-            byte[] data = Utilities.flattenBitmap(bitmap);
-            values.put(LauncherSettings.Favorites.ICON, data);
         }
     }
 

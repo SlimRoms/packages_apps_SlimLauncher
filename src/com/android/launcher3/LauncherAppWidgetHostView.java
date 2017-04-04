@@ -39,20 +39,16 @@ import java.util.ArrayList;
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView implements TouchCompleteListener {
 
+    protected int mErrorViewId = R.layout.appwidget_error;
     LayoutInflater mInflater;
-
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
     private Context mContext;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mPreviousOrientation;
-
     private float mSlop;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
-
-    protected int mErrorViewId = R.layout.appwidget_error;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -84,9 +80,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         // Re-inflate is required if the orientation has changed since last inflated.
         int orientation = mContext.getResources().getConfiguration().orientation;
         if (mPreviousOrientation != orientation) {
-           return true;
-       }
-       return false;
+            return true;
+        }
+        return false;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {

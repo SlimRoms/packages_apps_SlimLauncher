@@ -88,7 +88,7 @@ public class HolographicOutlineHelper {
     }
 
     public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas,
-            boolean clipAlpha) {
+                                              boolean clipAlpha) {
         if (ProviderConfig.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
             throw new RuntimeException("Outline blue is only supported on alpha bitmaps");
         }
@@ -164,7 +164,7 @@ public class HolographicOutlineHelper {
     }
 
     Bitmap createMediumDropShadow(Drawable drawable, float scaleX, float scaleY,
-                boolean shouldCache) {
+                                  boolean shouldCache) {
         if (drawable == null) {
             return null;
         }
