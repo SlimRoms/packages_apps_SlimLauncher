@@ -22,7 +22,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -31,6 +34,7 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.R;
 
+@SuppressWarnings("WeakerAccess")
 public class ColorPickerDialog
         extends
         Dialog
@@ -43,24 +47,12 @@ public class ColorPickerDialog
     private ColorPickerPanelView mOldColor;
     private ColorPickerPanelView mNewColor;
 
-    private ColorPickerPanelView mWhite;
-    private ColorPickerPanelView mBlack;
-    private ColorPickerPanelView mCyan;
-    private ColorPickerPanelView mRed;
-    private ColorPickerPanelView mGreen;
-    private ColorPickerPanelView mYellow;
-
     private EditText mHex;
-    private ImageButton mSetButton;
 
     private ImageButton mResetButton;
     private int mDefaultColor = -1;
 
     private OnColorChangedListener mListener;
-
-    public interface OnColorChangedListener {
-        public void onColorChanged(int color);
-    }
 
     public ColorPickerDialog(Context context, int initialColor) {
         super(context);
@@ -70,18 +62,14 @@ public class ColorPickerDialog
 
     private void init(int color) {
         // To fight color branding.
-        getWindow().setFormat(PixelFormat.RGBA_8888);
+        if (getWindow() != null) getWindow().setFormat(PixelFormat.RGBA_8888);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setUp(color);
 
     }
 
     private void setUp(int color) {
-
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-
-        View layout = inflater.inflate(R.layout.dialog_color_picker, null);
+        View layout = View.inflate(getContext(), R.layout.dialog_color_picker, null);
 
         setContentView(layout);
 
@@ -91,23 +79,28 @@ public class ColorPickerDialog
         mOldColor = (ColorPickerPanelView) layout.findViewById(R.id.old_color_panel);
         mNewColor = (ColorPickerPanelView) layout.findViewById(R.id.new_color_panel);
 
-        mWhite = (ColorPickerPanelView) layout.findViewById(R.id.white_panel);
-        mBlack = (ColorPickerPanelView) layout.findViewById(R.id.black_panel);
-        mCyan = (ColorPickerPanelView) layout.findViewById(R.id.cyan_panel);
-        mRed = (ColorPickerPanelView) layout.findViewById(R.id.red_panel);
-        mGreen = (ColorPickerPanelView) layout.findViewById(R.id.green_panel);
-        mYellow = (ColorPickerPanelView) layout.findViewById(R.id.yellow_panel);
+        ColorPickerPanelView p1 = (ColorPickerPanelView) layout.findViewById(R.id.white_panel);
+        ColorPickerPanelView p2 = (ColorPickerPanelView) layout.findViewById(R.id.black_panel);
+        ColorPickerPanelView p3 = (ColorPickerPanelView) layout.findViewById(R.id.cyan_panel);
+        ColorPickerPanelView p4 = (ColorPickerPanelView) layout.findViewById(R.id.red_panel);
+        ColorPickerPanelView p5 = (ColorPickerPanelView) layout.findViewById(R.id.green_panel);
+        ColorPickerPanelView p6 = (ColorPickerPanelView) layout.findViewById(R.id.yellow_panel);
 
         mHex = (EditText) layout.findViewById(R.id.hex);
-        mSetButton = (ImageButton) layout.findViewById(R.id.enter);
+        ImageButton setButton = (ImageButton) layout.findViewById(R.id.enter);
         mResetButton = (ImageButton) layout.findViewById(R.id.reset);
+
+        int foreground = getAttrColor(android.R.attr.colorForeground);
+        mResetButton.setColorFilter(foreground);
+        setButton.setColorFilter(foreground);
+
 
         ((LinearLayout) mOldColor.getParent()).setPadding(
                 Math.round(mColorPicker.getDrawingOffset()),
                 0,
                 Math.round(mColorPicker.getDrawingOffset()),
                 0
-                );
+        );
 
         mOldColor.setOnClickListener(this);
         mNewColor.setOnClickListener(this);
@@ -115,48 +108,47 @@ public class ColorPickerDialog
         mOldColor.setColor(color);
         mColorPicker.setColor(color, true);
 
-        setColorAndClickAction(mWhite, Color.WHITE);
-        setColorAndClickAction(mBlack, Color.BLACK);
-        setColorAndClickAction(mCyan, 0xff33b5e5);
-        setColorAndClickAction(mRed, Color.RED);
-        setColorAndClickAction(mGreen, Color.GREEN);
-        setColorAndClickAction(mYellow, Color.YELLOW);
+        setColorAndClickAction(p1, Color.WHITE);
+        setColorAndClickAction(p2, Color.BLACK);
+        setColorAndClickAction(p3, 0xff4285F4);
+        setColorAndClickAction(p4, 0xffea4335);
+        setColorAndClickAction(p5, 0xfffbbc05);
+        setColorAndClickAction(p6, 0xff34a853);
 
         if (mHex != null) {
             mHex.setText(ColorPickerPreference.convertToARGB(color));
         }
-        if (mSetButton != null) {
-           mSetButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    String text = mHex.getText().toString();
-                    try {
-                        int newColor = ColorPickerPreference.convertToColorInt(text);
-                        mColorPicker.setColor(newColor, true);
-                    } catch (Exception e) {
-                    }
+        setButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = mHex.getText().toString();
+                try {
+                    int newColor = ColorPickerPreference.convertToColorInt(text);
+                    mColorPicker.setColor(newColor, true);
+                } catch (Exception e) {
+                    // ignore
                 }
-            });
-        }
+            }
+        });
         mResetButton.setVisibility(View.GONE);
+    }
+
+    private int getAttrColor(@AttrRes int attr) {
+        TypedValue tv = new TypedValue();
+        getContext().getTheme().resolveAttribute(attr, tv, true);
+        return ContextCompat.getColor(getContext(), tv.resourceId);
     }
 
     @Override
     public void onColorChanged(int color) {
-
         mNewColor.setColor(color);
         try {
             if (mHex != null) {
                 mHex.setText(ColorPickerPreference.convertToARGB(color));
             }
         } catch (Exception e) {
-
+            // ignore
         }
-        /*
-         * if (mListener != null) { mListener.onColorChanged(color); }
-         */
-
     }
 
     public void setDefaultColor(int color) {
@@ -179,7 +171,7 @@ public class ColorPickerDialog
                 public void onClick(View v) {
                     try {
                         mColorPicker.setColor(color, true);
-                    } catch (Exception e) {
+                    } catch (Exception ignore) {
                     }
                 }
             });
@@ -188,8 +180,6 @@ public class ColorPickerDialog
 
     /**
      * Set a OnColorChangedListener to get notified when the color selected by the user has changed.
-     *
-     * @param listener
      */
     public void setOnColorChangedListener(OnColorChangedListener listener) {
         mListener = listener;
@@ -209,11 +199,12 @@ public class ColorPickerDialog
         } else if (v.getId() == R.id.reset) {
             try {
                 mColorPicker.setColor(mDefaultColor, true);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }
 
+    @NonNull
     @Override
     public Bundle onSaveInstanceState() {
         Bundle state = super.onSaveInstanceState();
@@ -223,10 +214,14 @@ public class ColorPickerDialog
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mOldColor.setColor(savedInstanceState.getInt("old_color"));
         mColorPicker.setColor(savedInstanceState.getInt("new_color"), true);
+    }
+
+    public interface OnColorChangedListener {
+        void onColorChanged(int color);
     }
 
 }
