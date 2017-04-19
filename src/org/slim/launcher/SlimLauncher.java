@@ -54,6 +54,10 @@ public class SlimLauncher extends Launcher {
         getWorkspace().setWorkspaceCallbacks(new SlimWorkspaceCallbacks());
     }
 
+    public SlimDeviceProfile getSlimDeviceProfile() {
+        return mSlimProfile;
+    }
+
     public void updateDynamicGrid() {
         mSlimProfile.updateFromPreferences();
         getDeviceProfile().layout(this, true);
@@ -86,8 +90,7 @@ public class SlimLauncher extends Launcher {
     private void updateAppDrawerSearchBar() {
         boolean searchEnabled = SettingsProvider.getBoolean(this,
                 SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
-        getAppsView().setSearchBarContainerViewVisibility(searchEnabled ? View.VISIBLE :View.GONE);
-        getAppsView().setSearchBarVisible(searchEnabled);
+        getAppsView().setSearchBarContainerViewVisibility(searchEnabled ? View.VISIBLE : View.GONE);
     }
 
     private void updateWorkspaceGridSize() {

@@ -28,13 +28,11 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
@@ -59,9 +57,6 @@ import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
-
-import org.slim.launcher.SlimLauncher;
-import org.slim.launcher.settings.SettingsProvider;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -316,15 +311,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public void setSearchBarContainerViewVisibility(int visibility) {
         mSearchContainer.setVisibility(visibility);
-        MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
-
-        Rect insets = mLauncher.getDragLayer().getInsets();
-        getContentView().setPadding(0, 0, 0, 0);
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        mlp.topMargin = insets.top + (visibility == VISIBLE ? grid.hotseatCellHeightPx : 0);
-        mAppsRecyclerView.setLayoutParams(mlp);
-        mApps.updateAdapterItems();
-        mAdapter.notifyDataSetChanged();
+        //updatePaddingsAndMargins();
     }
 
     @Override
@@ -499,10 +486,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 getContentView().setPadding(0, 0, 0, 0);
                 int height = insets.top + grid.hotseatCellHeightPx;
 
-                //mlp.topMargin = height;
-                //mAppsRecyclerView.setLayoutParams(mlp);
-                SlimLauncher.getInstance().preferenceChanged(
-                        SettingsProvider.KEY_DRAWER_SEARCH_ENABLED);
+                mlp.topMargin = height;
+                mAppsRecyclerView.setLayoutParams(mlp);
 
                 mSearchContainer.setPadding(
                         mSearchContainer.getPaddingLeft(),

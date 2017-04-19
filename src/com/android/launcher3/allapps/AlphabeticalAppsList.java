@@ -26,8 +26,6 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.ComponentKey;
 
-import org.slim.launcher.settings.SettingsProvider;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -269,7 +267,7 @@ public class AlphabeticalAppsList {
      * Updates the set of filtered apps with the current filter.  At this point, we expect
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
-    public void updateAdapterItems() {
+    private void updateAdapterItems() {
         SectionInfo lastSectionInfo = null;
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
@@ -296,10 +294,7 @@ public class AlphabeticalAppsList {
         }
 
         // Add the search divider
-        if (SettingsProvider.getBoolean(mLauncher,
-                SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true)) {
-            mAdapterItems.add(AdapterItem.asSearchDivder(position++));
-        }
+        mAdapterItems.add(AdapterItem.asSearchDivder(position++));
 
         // Process the predicted app components
         mPredictedApps.clear();
