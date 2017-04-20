@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,6 +47,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.IconCache;
+import com.android.launcher3.IconPickerActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -57,6 +60,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -65,6 +69,8 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
+import org.slim.launcher.SlimLauncher;
 
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +81,8 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.N)
 public class DeepShortcutsContainer extends LinearLayout implements View.OnLongClickListener,
         View.OnTouchListener, DragSource, DragController.DragListener {
+
+    @SuppressWarnings("unused")
     private static final String TAG = "ShortcutsContainer";
 
     private final Point mIconShift = new Point();
@@ -127,7 +135,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             return null;
         }
         List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
-        if (!ids.isEmpty()) {
+        if (!ids.isEmpty() || !(icon.getParent() instanceof AllAppsRecyclerView)) {
             // There are shortcuts associated with the app, so defer its drag.
             final DeepShortcutsContainer container =
                     (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
@@ -153,14 +161,39 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
         int numShortcuts = Math.min(ids.size(), ShortcutFilter.MAX_SHORTCUTS);
+
         for (int i = 0; i < numShortcuts; i++) {
             final DeepShortcutView shortcut =
                     (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
-            if (i < numShortcuts - 1) {
+            if (i < numShortcuts -
+                    ((originalIcon.getParent() instanceof AllAppsRecyclerView) ? 1 : 0)) {
                 ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
             }
             shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
             addView(shortcut);
+        }
+
+        // show Edit action here
+        final DeepShortcutView editShortcut =
+                (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
+        if (!(originalIcon.getParent() instanceof AllAppsRecyclerView)) {
+            addView(editShortcut);
+            final UnbadgedShortcutInfo editInfo = new UnbadgedShortcutInfo(null, getContext());
+            editInfo.title = "Edit";
+            editInfo.setIcon(IconPickerActivity.drawableToBitmap(
+                    getContext().getDrawable(R.drawable.edit_target_selector)));
+            editShortcut.applyShortcutInfo(editInfo, this);
+
+            editShortcut.getBubbleText().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (originalIcon.getTag() instanceof ShortcutInfo) {
+                        SlimLauncher.get(getContext())
+                                .updateShortcut((ItemInfo) originalIcon.getTag());
+                    }
+                    DeepShortcutsContainer.this.close();
+                }
+            });
         }
         setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
                 numShortcuts, originalIcon.getContentDescription().toString()));
@@ -291,6 +324,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
+    @SuppressWarnings("ResourceType")
     private void orientAboutIcon(BubbleTextView icon, int arrowHeight) {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight() + arrowHeight;
@@ -359,6 +393,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * @param horizontalOffset the horizontal offset of the arrow, so that it
      *                         points at the center of the original icon
      */
+    @SuppressLint("RtlHardcoded")
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
         LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
         if (mIsLeftAligned) {
@@ -449,6 +484,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Long clicked on a shortcut.
         mDeferContainerRemoval = true;
         DeepShortcutView sv = (DeepShortcutView) v.getParent();
+
+        if (sv.getFinalInfo().intent == null) return false;
         sv.setWillDrawIcon(false);
 
         // Move the icon to align with the center-top of the touch point
@@ -643,9 +680,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * Extension of {@link ShortcutInfo} which does not badge the icons.
      */
     static class UnbadgedShortcutInfo extends ShortcutInfo {
-        public final ShortcutInfoCompat mDetail;
+        final ShortcutInfoCompat mDetail;
 
-        public UnbadgedShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+        UnbadgedShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
             super(shortcutInfo, context);
             mDetail = shortcutInfo;
         }
@@ -664,7 +701,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         private int mShortcutChildIndex;
         private UnbadgedShortcutInfo mShortcutChildInfo;
 
-        public UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
+        private UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
             mShortcutChildIndex = shortcutChildIndex;
             mShortcutChildInfo = shortcutChildInfo;
         }

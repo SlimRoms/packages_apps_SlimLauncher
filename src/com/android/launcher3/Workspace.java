@@ -124,6 +124,7 @@ public class Workspace extends PagedView
     private static final boolean MAP_NO_RECURSE = false;
     private static final boolean MAP_RECURSE = true;
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
+
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -1142,7 +1143,7 @@ public class Workspace extends PagedView
         }
 
         // Get the canonical child id to uniquely represent this view in this screen
-        ItemInfo info = (ItemInfo) child.getTag();
+        final ItemInfo info = (ItemInfo) child.getTag();
         int childId = mLauncher.getViewIdForItem(info);
 
         boolean markCellsAsOccupied = !(child instanceof Folder);

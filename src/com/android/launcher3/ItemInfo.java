@@ -188,6 +188,20 @@ public class ItemInfo {
         }
     }
 
+    static void writeBitmap(ContentValues values, Bitmap bitmap, boolean customIcon) {
+        byte[] data;
+        if (bitmap != null) {
+            data = Utilities.flattenBitmap(bitmap);
+        } else {
+            data = new byte[0];
+        }
+        if (customIcon) {
+            values.put(LauncherSettings.Favorites.CUSTOM_ICON, data);
+        } else {
+            values.put(LauncherSettings.Favorites.ICON, data);
+        }
+    }
+
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "(" + dumpProperties() + ")";

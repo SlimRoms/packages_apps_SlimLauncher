@@ -35,7 +35,7 @@ public class AccessibilityHelper extends AccessibilityDelegate {
     public void onInitializeAccessibilityNodeInfo (View view,
                                                    AccessibilityNodeInfo accessibilityNodeInfo) {
         super.onInitializeAccessibilityNodeInfo(view, accessibilityNodeInfo);
-        if (SlimLauncher.getInstance().getClient().isConnected()) {
+        if (SlimLauncher.get(view.getContext()).getClient().isConnected()) {
             accessibilityNodeInfo.addAction(new AccessibilityAction(R.string.title_show_google_app,
                     AccessibilityHelper.getShowGoogleAppText(view.getContext())));
         }
@@ -46,7 +46,7 @@ public class AccessibilityHelper extends AccessibilityDelegate {
         if (i != R.string.title_show_google_app) {
             return super.performAccessibilityAction(view, i, bundle);
         }
-        SlimLauncher.getInstance().getClient().openOverlay(true);
+        SlimLauncher.get(view.getContext()).getClient().openOverlay(true);
         return true;
     }
 }

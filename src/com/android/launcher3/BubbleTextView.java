@@ -27,9 +27,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -41,6 +43,8 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.PackageItemInfo;
 
@@ -52,7 +56,8 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView,
+        ShortcutInfo.ShortcutListener {
 
     // Dimensions in DP
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
@@ -170,6 +175,8 @@ public class BubbleTextView extends TextView
                                       boolean promiseStateChanged) {
         applyIconAndLabel(info.getIcon(iconCache), info);
         setTag(info);
+        info.setListener(this);
+
         if (promiseStateChanged || info.isPromise()) {
             applyState(promiseStateChanged);
         }
@@ -183,6 +190,8 @@ public class BubbleTextView extends TextView
 
         // Verify high res immediately
         verifyHighRes();
+
+        info.addListener(this);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -195,11 +204,13 @@ public class BubbleTextView extends TextView
     }
 
     private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
+        if (icon != null) {
+            FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
+            if (info.isDisabled()) {
+                iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
+            }
+            setIcon(iconDrawable);
         }
-        setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
@@ -669,7 +680,32 @@ public class BubbleTextView extends TextView
      * Returns true if the view can show custom shortcuts.
      */
     public boolean hasDeepShortcuts() {
-        return !mLauncher.getShortcutIdsForItem((ItemInfo) getTag()).isEmpty();
+        return !mLauncher.getShortcutIdsForItem((ItemInfo) getTag()).isEmpty()
+                || !(getParent() instanceof AllAppsRecyclerView);
+    }
+
+    @Override
+    public void onTitleChanged(ItemInfo item) {
+        setText(item.title);
+    }
+
+    @Override
+    public void onIconChanged(ItemInfo item) {
+        Bitmap b = null;
+        if (item instanceof ShortcutInfo) {
+            b = ((ShortcutInfo) item).getIcon(null);
+        } else if (item instanceof AppInfo) {
+            b = ((AppInfo) item).iconBitmap;
+        }
+        if (b != null) {
+            final Bitmap bp = b;
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    setIcon(new BitmapDrawable(getResources(), bp));
+                }
+            });
+        }
     }
 
     /**

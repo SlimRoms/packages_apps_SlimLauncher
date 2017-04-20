@@ -76,6 +76,6 @@ public class SettingsActivity extends PreferenceActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         //LauncherAppState.setSettingsChanged();
-        SlimLauncher.getInstance().preferenceChanged(key);
+        SlimLauncher.get(this).preferenceChanged(key);
     }
 }
