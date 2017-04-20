@@ -21,7 +21,9 @@ import android.content.Intent.ShortcutIconResource;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -33,6 +35,7 @@ public class CursorIconInfo {
     public final int iconPackageIndex;
     public final int iconResourceIndex;
     public final int iconIndex;
+    public final int customIconIndex;
 
     public final int titleIndex;
 
@@ -44,6 +47,7 @@ public class CursorIconInfo {
         iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
         iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
+        customIconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CUSTOM_ICON);
 
         titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
     }
@@ -81,5 +85,9 @@ public class CursorIconInfo {
     public String getTitle(Cursor c) {
         String title = c.getString(titleIndex);
         return TextUtils.isEmpty(title) ? "" : Utilities.trim(c.getString(titleIndex));
+    }
+
+    public Bitmap loadCustomIcon(Cursor c) {
+        return Utilities.createIconBitmap(c, customIconIndex, mContext);
     }
 }

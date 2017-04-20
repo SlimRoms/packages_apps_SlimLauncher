@@ -19,6 +19,11 @@ package org.slim.launcher.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.ArraySet;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class SettingsProvider implements SettingsKeys {
 
@@ -88,6 +93,21 @@ public class SettingsProvider implements SettingsKeys {
 
     public static void putInt(Context context, String key, int value) {
         put(context).putInt(key, value);
+    }
+
+    public static void putStringArray(Context context, String key, ArrayList<String> array) {
+        ArraySet<String> set = new ArraySet<>();
+        set.addAll(array);
+        put(context).putStringSet(key, set);
+    }
+
+    public static ArrayList<String> getStringArray(Context context, String key) {
+        ArrayList<String> array = new ArrayList<>();
+        Set<String> set = get(context).getStringSet(key, new ArraySet<String>());
+        if (!set.isEmpty()) {
+            array.addAll(set);
+        }
+        return array;
     }
 
     public static boolean shouldFinish(String key) {

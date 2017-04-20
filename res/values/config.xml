@@ -75,7 +75,7 @@
      should be targeting. Can be empty. -->
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false"></string>
+    <string name="icon_provider_class" translatable="false">org.slim.launcher.SlimIconProvider</string>
 
     <!-- Package name of the default wallpaper picker. -->
 

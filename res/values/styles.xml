@@ -26,9 +26,9 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme" />
 
-    <style name="Theme" parent="@style/LauncherTheme"></style>
+    <style name="Theme" parent="@style/LauncherTheme" />
 
     <!-- Theme for the widget container. Overridden on API 25. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
@@ -138,4 +138,5 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="Theme.IconPicker" parent="android:Theme.DeviceDefault.Wallpaper" />
 </resources>

@@ -74,7 +74,8 @@ public class LauncherProvider extends ContentProvider {
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 28;
+
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
     private final ChangeListenerWrapper mListenerWrapper = new ChangeListenerWrapper();
@@ -835,7 +836,9 @@ public class LauncherProvider extends ContentProvider {
                             !LauncherDbUtils.prepareScreenZeroToHostQsb(db)) {
                         break;
                     }
-                case 27: {
+                case 27:
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN customIcon BLOB;");
+                case 28: {
                     // DB Upgraded successfully
                     return;
                 }

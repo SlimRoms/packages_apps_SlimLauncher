@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
@@ -32,6 +33,8 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+
+import java.util.ArrayList;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -69,6 +72,15 @@ public class ShortcutInfo extends ItemInfo {
      * Upto 15 different types supported.
      */
     public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
+
+    private Bitmap mCustomIcon;
+    public boolean useCustomIcon;
+
+    /**
+     * Title change listener
+     */
+    private ArrayList<ShortcutListener> mListeners = new ArrayList<>();
+
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
      */
@@ -147,6 +159,8 @@ public class ShortcutInfo extends ItemInfo {
      */
     private int mInstallProgress;
 
+    public boolean customIcon = false;
+
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -200,10 +214,12 @@ public class ShortcutInfo extends ItemInfo {
      */
     @TargetApi(Build.VERSION_CODES.N)
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
-        user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         flags = 0;
-        updateFromDeepShortcutInfo(shortcutInfo, context);
+        if (shortcutInfo != null) {
+            user = shortcutInfo.getUserHandle();
+            updateFromDeepShortcutInfo(shortcutInfo, context);
+        }
     }
 
     @Override
@@ -219,10 +235,32 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void setIcon(Bitmap b) {
-        mIcon = b;
+        if (useCustomIcon) {
+            mCustomIcon = b;
+        } else {
+            mIcon = b;
+        }
+        for (ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
+    }
+
+    public void removeCustomIcon() {
+        useCustomIcon = false;
+        mCustomIcon = null;
     }
 
     public Bitmap getIcon(IconCache iconCache) {
+        if (mIcon == null) {
+            updateIcon(iconCache);
+        }
+        if (mCustomIcon == null) {
+            return mIcon;
+        }
+        return mCustomIcon;
+    }
+
+    public Bitmap getDefaultIcon(IconCache iconCache) {
         if (mIcon == null) {
             updateIcon(iconCache);
         }
@@ -240,6 +278,19 @@ public class ShortcutInfo extends ItemInfo {
         updateIcon(iconCache, shouldUseLowResIcon());
     }
 
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        for (ShortcutListener i : mListeners) {
+            i.onTitleChanged(this);
+        }
+    }
+
+    public void setListener(ShortcutListener listener) {
+        if (!mListeners.contains(listener) && listener != null) {
+            mListeners.add(listener);
+        }
+    }
+
     @Override
     void onAddToDatabase(Context context, ContentValues values) {
         super.onAddToDatabase(context, values);
@@ -253,8 +304,13 @@ public class ShortcutInfo extends ItemInfo {
         values.put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingFallbackIcon && !usingLowResIcon) {
-            writeBitmap(values, mIcon);
+            writeBitmap(values, mIcon, false);
         }
+
+        if (useCustomIcon) {
+            writeBitmap(values, mCustomIcon, true);
+        }
+
         if (iconResource != null) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
                     iconResource.packageName);
@@ -342,6 +398,11 @@ public class ShortcutInfo extends ItemInfo {
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+    }
+
+    interface ShortcutListener {
+        void onTitleChanged(ItemInfo item);
+        void onIconChanged(ItemInfo item);
     }
 
     @Override

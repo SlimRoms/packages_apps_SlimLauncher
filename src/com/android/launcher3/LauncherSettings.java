@@ -88,6 +88,8 @@ public class LauncherSettings {
          * <P>Type: BLOB</P>
          */
         public static final String ICON = "icon";
+
+        public static final String CUSTOM_ICON = "customIcon";
     }
 
     /**
@@ -251,6 +253,7 @@ public class LauncherSettings {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
+                    "customIcon BLOB," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
