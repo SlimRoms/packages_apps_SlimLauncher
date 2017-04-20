@@ -501,7 +501,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
                 //mlp.topMargin = height;
                 //mAppsRecyclerView.setLayoutParams(mlp);
-                SlimLauncher.getInstance().preferenceChanged(
+                SlimLauncher.get(getContext()).preferenceChanged(
                         SettingsProvider.KEY_DRAWER_SEARCH_ENABLED);
 
                 mSearchContainer.setPadding(

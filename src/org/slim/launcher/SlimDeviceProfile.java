@@ -14,10 +14,6 @@ public class SlimDeviceProfile {
 
     public void updateFromPreferences() {
 
-        boolean showSearchBar = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
-                SettingsProvider.KEY_SHOW_SEARCH_BAR, true);
-
-        DeviceProfile profile = SlimLauncher.getInstance().getDeviceProfile();
 
         //Rect searchBarBounds = profile.getSearchBarBounds(false);
 

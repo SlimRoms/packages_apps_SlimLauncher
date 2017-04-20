@@ -60,6 +60,7 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
     private ButtonDropTarget mDeleteDropTarget;
     private ButtonDropTarget mAppInfoDropTarget;
     private ButtonDropTarget mUninstallDropTarget;
+    private ButtonDropTarget mEditDropTarget;
 
     public DropTargetBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,10 +78,12 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         mDeleteDropTarget = (ButtonDropTarget) findViewById(R.id.delete_target_text);
         mAppInfoDropTarget = (ButtonDropTarget) findViewById(R.id.info_target_text);
         mUninstallDropTarget = (ButtonDropTarget) findViewById(R.id.uninstall_target_text);
+        mEditDropTarget = (ButtonDropTarget) findViewById(R.id.edit_drop_target);
 
         mDeleteDropTarget.setDropTargetBar(this);
         mAppInfoDropTarget.setDropTargetBar(this);
         mUninstallDropTarget.setDropTargetBar(this);
+        mEditDropTarget.setDropTargetBar(this);
 
         // Initialize with hidden state
         setAlpha(0f);
@@ -93,10 +96,12 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         dragController.addDragListener(mDeleteDropTarget);
         dragController.addDragListener(mAppInfoDropTarget);
         dragController.addDragListener(mUninstallDropTarget);
+        dragController.addDragListener(mEditDropTarget);
 
         dragController.addDropTarget(mDeleteDropTarget);
         dragController.addDropTarget(mAppInfoDropTarget);
         dragController.addDropTarget(mUninstallDropTarget);
+        dragController.addDropTarget(mEditDropTarget);
     }
 
     private void animateToVisibility(boolean isVisible) {

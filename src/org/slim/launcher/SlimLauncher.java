@@ -1,22 +1,36 @@
 package org.slim.launcher;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.IconPickerActivity;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceCallbacks;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
@@ -26,6 +40,7 @@ import com.android.launcher3.util.ComponentKey;
 import org.slim.launcher.settings.SettingsActivity;
 import org.slim.launcher.settings.SettingsProvider;
 import org.slim.launcher.util.GestureHelper;
+import org.slim.launcher.util.SlimUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -34,18 +49,27 @@ import java.util.List;
 
 public class SlimLauncher extends Launcher {
 
-    private static SlimLauncher sLauncher;
+    public static final int REQUEST_PICK_ICON = 1013;
 
     private SlimDeviceProfile mSlimProfile;
     private GestureHelper mGestureHelper;
 
-    public static SlimLauncher getInstance() {
-        return sLauncher;
+    private ImageButton mDialogIcon;
+    private ItemInfo mEditItemInfo;
+
+    public static SlimLauncher get(Context context) {
+        if (context instanceof SlimLauncher)
+            return (SlimLauncher) context;
+        if (context instanceof ContextWrapper) {
+            if (((ContextWrapper) context).getBaseContext() instanceof SlimLauncher) {
+                return ((SlimLauncher) ((ContextWrapper) context).getBaseContext());
+            }
+        }
+        return null;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        sLauncher = this;
         setLauncherCallbacks(new SlimLauncherCallbacks());
         super.onCreate(savedInstanceState);
         setInitialPreferences();
@@ -63,6 +87,111 @@ public class SlimLauncher extends Launcher {
         updateDynamicGrid();
         updateWorkspaceGridSize();
         updateHotseatCellCount();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_PICK_ICON) {
+            if (resultCode == RESULT_OK) {
+                if (data == null) {
+                    // Set default icon
+                    Bitmap b;
+                    if (mEditItemInfo != null) {
+                        b = Utilities.createIconBitmap(
+                                LauncherAppState.getInstance().getIconCache()
+                                .getDefaultIconForItemInfo(mEditItemInfo), null);
+                        if (b != null) {
+                            mDialogIcon.setImageBitmap(b);
+                            mDialogIcon.setTag("default");
+                        }
+                    }
+                } else {
+                    mDialogIcon.setImageBitmap((Bitmap) data.getParcelableExtra(
+                            IconPickerActivity.SELECTED_BITMAP_EXTRA));
+                    mDialogIcon.setTag(data.getStringExtra(
+                            IconPickerActivity.SELECTED_RESOURCE_EXTRA));
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    public void updateShortcut(final ItemInfo info) {
+        if (info instanceof ShortcutInfo || info instanceof AppInfo) {
+            mEditItemInfo = info;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View layout = View.inflate(this, R.layout.dialog_edit, null);
+            mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
+            mDialogIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            if (info instanceof ShortcutInfo) {
+                mDialogIcon.setImageBitmap(((ShortcutInfo) info).getIcon(
+                        LauncherAppState.getInstance().getIconCache()));
+            } else {
+                mDialogIcon.setImageBitmap(((AppInfo) info).iconBitmap);
+            }
+            mDialogIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDialogIcon.setTag(info);
+                    IconPackHelper.pickIconPack(SlimLauncher.this, true);
+                }
+            });
+            final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
+            title.setText(info.title);
+            builder.setView(layout)
+                    .setTitle(info.title)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (info instanceof ShortcutInfo) {
+                                ShortcutInfo sInfo = (ShortcutInfo) info;
+                                if (!sInfo.title.equals(title.getText().toString())) {
+                                    sInfo.setTitle(title.getText().toString());
+                                }
+                                if (mDialogIcon.getTag() != null) {
+                                    String dRes = (String) mDialogIcon.getTag();
+                                    Drawable d;
+                                    if (dRes.equals("default")) {
+                                        sInfo.removeCustomIcon();
+                                        d = new BitmapDrawable(getResources(), sInfo.getIcon(
+                                                LauncherAppState.getInstance().getIconCache()));
+                                    } else {
+                                        d = SlimUtils.getDrawableForCustomIcon(
+                                                SlimLauncher.this, dRes);
+                                    }
+                                    if (d != null) {
+                                        Bitmap b = Utilities.createIconBitmap(d, SlimLauncher.this);
+                                        sInfo.useCustomIcon = true;
+                                        sInfo.setIcon(b);
+                                        LauncherModel.updateItemInDatabase(
+                                                SlimLauncher.this, sInfo);
+                                        LauncherAppState.getInstance().getModel().forceReload();
+                                    }
+                                }
+                            } else {
+                                AppInfo aInfo = (AppInfo) info;
+                                if (!info.title.equals(title.getText().toString())) {
+                                    aInfo.title = title.getText().toString();
+                                }
+                                if (mDialogIcon.getTag() != null) {
+                                    String dRes = (String) mDialogIcon.getTag();
+                                    Drawable d = SlimUtils.getDrawableForCustomIcon(
+                                            SlimLauncher.this, dRes);
+                                    if (d != null) {
+                                        aInfo.iconBitmap =
+                                                Utilities.createIconBitmap(d, SlimLauncher.this);
+                                        LauncherAppState.getInstance()
+                                                .getIconCache().putCustomIconInDB(d, info);
+                                    }
+                                }
+                            }
+                            mEditItemInfo = null;
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+        }
     }
 
     public void preferenceChanged(String key) {
@@ -193,7 +322,6 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            sLauncher = SlimLauncher.this;
         }
 
         @Override
@@ -218,7 +346,6 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public void onDestroy() {
-            sLauncher = null;
         }
 
         @Override
@@ -238,7 +365,8 @@ public class SlimLauncher extends Launcher {
         }
 
         @Override
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        public void onRequestPermissionsResult(
+                int requestCode, String[] permissions, int[] grantResults) {
         }
 
         @Override
@@ -292,7 +420,8 @@ public class SlimLauncher extends Launcher {
         }
 
         @Override
-        public boolean startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData) {
+        public boolean startSearch(String initialQuery,
+                                   boolean selectInitialQuery, Bundle appSearchData) {
             return false;
         }
 
@@ -376,7 +505,6 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public boolean onInterceptTouchEvent(MotionEvent event) {
-            //Log.d("TEST", "pointers=" + event.getPointerCount());
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if (event.getPointerCount() > 1) {
@@ -386,9 +514,7 @@ public class SlimLauncher extends Launcher {
                 case MotionEvent.ACTION_MOVE:
                     if (event.getPointerCount() > 1) {
                         float newDistance = getSpacing(event);
-                        //Log.d("TEST", "space=" + newDistance);
                         float scale = newDistance / mInitialDistance;
-                        //Log.d("TEST", "scale=" + scale);
                         if (scale < 0.5) {
                             mGestureHelper.handleGestureAction(GestureHelper.Gesture.PINCH);
                         } else if (scale > 2.2) {

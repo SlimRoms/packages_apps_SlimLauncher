@@ -102,12 +102,13 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         mIconView.setBackground(mBubbleText.getIcon());
 
         // Use the long label as long as it exists and fits.
-        CharSequence longLabel = info.mDetail.getLongLabel();
+        CharSequence longLabel = info.mDetail != null ? info.mDetail.getLongLabel() : "";
         int availableWidth = mBubbleText.getWidth() - mBubbleText.getTotalPaddingLeft()
                 - mBubbleText.getTotalPaddingRight();
         boolean usingLongLabel = !TextUtils.isEmpty(longLabel)
                 && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
-        mBubbleText.setText(usingLongLabel ? longLabel : info.mDetail.getShortLabel());
+        mBubbleText.setText(usingLongLabel ? longLabel :
+                info.mDetail != null ? info.mDetail.getShortLabel() : info.title);
 
         // TODO: Add the click handler to this view directly and not the child view.
         mBubbleText.setOnClickListener(Launcher.getLauncher(getContext()));
@@ -119,6 +120,7 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
      * Returns the shortcut info that is suitable to be added on the homescreen
      */
     public ShortcutInfo getFinalInfo() {
+        if (mInfo.intent == null) return mInfo;
         ShortcutInfo badged = new ShortcutInfo(mInfo);
         // Queue an update task on the worker thread. This ensures that the badged
         // shortcut eventually gets its icon updated.
