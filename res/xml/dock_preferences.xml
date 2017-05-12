@@ -11,4 +11,17 @@
         launcher:min="1"
         launcher:max="7" />
 
+    <org.slim.launcher.preference.NumberPickerPreference
+        android:key="dock_padding"
+        android:title="Padding"
+        android:summary="Increase space between folders"
+        launcher:min="5"
+        launcher:max="40" />
+
+    <CheckBoxPreference
+        android:title="Background"
+        android:summary="Hide dock background"
+        android:key="dock_hide_background"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

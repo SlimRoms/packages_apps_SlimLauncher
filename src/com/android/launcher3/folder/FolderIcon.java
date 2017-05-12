@@ -70,6 +70,9 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.ArrayList;
 
 /**
@@ -691,8 +694,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                           int availableSpace, int topPadding) {
             mInvalidateDelegate = invalidateDelegate;
 
+            int padding = SettingsProvider.getDockPadding(SlimLauncher.getInstance(),
+                    SettingsProvider.KEY_DOCK_PADDING, 0);
+
             final int previewSize = grid.folderIconSizePx;
-            final int previewPadding = grid.folderIconPreviewPadding;
+            final int previewPadding = grid.folderIconPreviewPadding + padding;
 
             this.previewSize = (previewSize - 2 * previewPadding);
 
