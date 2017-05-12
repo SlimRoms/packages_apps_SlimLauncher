@@ -30,6 +30,18 @@ public class SettingsProvider implements SettingsKeys {
         return get(context).edit();
     }
 
+    public static int getDockPadding(Context context, String key, int def) {
+        return get(context).getInt(key, def);
+    }
+
+    public static boolean getFullscreen(Context context, String key, boolean def) {
+        return get(context).getBoolean(key, def);
+    }
+
+    public static boolean getHideDockBackground(Context context, String key, boolean def) {
+        return get(context).getBoolean(key, def);
+    }
+
     public static int getCellCountX(Context context, String key, int def) {
         String[] values = get(context).getString(key, "0|" + def).split("\\|");
         try {

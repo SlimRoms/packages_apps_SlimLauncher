@@ -24,12 +24,15 @@ public interface SettingsKeys {
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     String KEY_HOMESCREEN_GRID = "homescreen_grid";
     String KEY_SHOW_SHADOW = "show_shadow";
+    String KEY_FULLSCREEN = "show_fullscreen";
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
 
     // Dock
     String KEY_DOCK_ICONS = "dock_icon_count";
+    String KEY_DOCK_HIDE_BACKGROUND = "dock_hide_background";
+    String KEY_DOCK_PADDING = "dock_padding";
 
     // Gestures
     String LEFT_UP_GESTURE_ACTION = "left_up_gesture_action";
