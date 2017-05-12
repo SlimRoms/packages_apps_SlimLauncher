@@ -48,4 +48,10 @@
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
+
+
+    <color name="hidden_true">#40424242</color>
+    <color name="hidden_false">#00424242</color>
+
+
 </resources>

@@ -1104,7 +1104,7 @@ public class Workspace extends PagedView
             layout = mLauncher.getHotseat().getLayout();
             child.setOnKeyListener(new HotseatIconKeyEventListener());
 
-            // Hide folder title in the hotseat
+            // AllAppsActivity folder title in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(false);
             }

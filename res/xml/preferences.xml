@@ -35,4 +35,9 @@
         android:id="@+id/slim_application_version"
         android:summary="@string/slim_application_copyright" />-->
 
+    <header
+        android:fragment="org.slim.launcher.settings.RestartFragment"
+        android:id="@+id/pref_restart"
+        android:title="Restart to apply changes" />
+
 </preference-headers>
