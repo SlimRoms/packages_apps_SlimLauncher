@@ -18,12 +18,17 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.StringFilter;
+
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.util.AllAppsActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -112,14 +117,22 @@ class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info) {
+
+        Context context = SlimLauncher.getInstance();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String ha = sharedPref.getString("hiddenApps", "");
+
         if (mAppFilter != null && !mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findActivity(data, info.componentName, info.user)) {
             return;
         }
-        data.add(info);
-        added.add(info);
+
+        if (!ha.contains(info.componentName.getPackageName())) {
+            data.add(info);
+            added.add(info);
+        }
     }
 
     public void clear() {

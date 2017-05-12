@@ -503,7 +503,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         // Either the original icon or one of the shortcuts was dragged.
-        // Hide the container, but don't remove it yet because that interferes with touch events.
+        // AllAppsActivity the container, but don't remove it yet because that interferes with touch events.
         animateClose();
     }
 

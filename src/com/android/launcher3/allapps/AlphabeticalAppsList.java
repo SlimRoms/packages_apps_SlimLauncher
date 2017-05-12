@@ -593,7 +593,7 @@ public class AlphabeticalAppsList {
         public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
-        // The associated AppInfo for the app
+        // The associated ApplicationAdapter for the app
         public AppInfo appInfo = null;
         // The index of this app not including sections
         public int appIndex = -1;
