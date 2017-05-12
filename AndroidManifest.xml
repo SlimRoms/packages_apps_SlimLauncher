@@ -119,6 +119,13 @@
             android:theme="@android:style/Theme.Material.Settings"
             android:autoRemoveFromRecents="true" />
 
+        <activity
+            android:name="org.slim.launcher.util.AllAppsActivity"
+            android:icon="@mipmap/ic_launcher_settings"
+            android:label="Hide apps"
+            android:theme="@android:style/Theme.Material.Settings"
+            android:autoRemoveFromRecents="true" />
+
         <!-- Launcher shortcuts -->
         <activity android:name="org.slim.launcher.CreateShortcut"
             android:label="@string/shortcut_picker_title"

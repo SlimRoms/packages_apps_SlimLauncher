@@ -342,7 +342,7 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    // Hide the reveal view
+                    // AllAppsActivity the reveal view
                     revealView.setVisibility(View.INVISIBLE);
 
                     // Disable all necessary layers
@@ -520,7 +520,7 @@ public class LauncherStateTransitionAnimation {
                     }
 
                     public void onAnimationEnd(Animator animation) {
-                        // Hide the reveal view
+                        // AllAppsActivity the reveal view
                         revealView.setVisibility(View.INVISIBLE);
 
                         // Show the all apps button, and focus it
@@ -554,7 +554,7 @@ public class LauncherStateTransitionAnimation {
                             final View revealView, final View widgetsButtonView) {
                         return new AnimatorListenerAdapter() {
                             public void onAnimationEnd(Animator animation) {
-                                // Hide the reveal view
+                                // AllAppsActivity the reveal view
                                 revealView.setVisibility(View.INVISIBLE);
                             }
                         };

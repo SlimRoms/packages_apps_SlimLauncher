@@ -8,4 +8,8 @@
         android:title="@string/drawer_search_bar_title"
         android:defaultValue="true" />
 
+    <Preference
+        android:key="hide_apps"
+        android:title="Hide Apps" />
+
 </PreferenceScreen>

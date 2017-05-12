@@ -185,7 +185,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             android.os.Debug.startMethodTracing("Launcher");
         }
 
-        // Hide soft keyboard, if visible
+        // AllAppsActivity soft keyboard, if visible
         if (mInputMethodManager == null) {
             mInputMethodManager = (InputMethodManager)
                     mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE);
