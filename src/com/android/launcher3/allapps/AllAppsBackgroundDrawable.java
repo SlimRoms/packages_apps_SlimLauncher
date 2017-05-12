@@ -49,13 +49,13 @@ class TransformedImageDrawable {
         mGravity = gravity;
     }
 
-    public int getAlpha() {
-        return mAlpha;
-    }
-
     public void setAlpha(int alpha) {
         mImage.setAlpha(alpha);
         mAlpha = alpha;
+    }
+
+    public int getAlpha() {
+        return mAlpha;
     }
 
     public void updateBounds(Rect bounds) {
@@ -86,8 +86,6 @@ class TransformedImageDrawable {
  */
 public class AllAppsBackgroundDrawable extends Drawable {
 
-    private final TransformedImageDrawable mHand;
-    private final TransformedImageDrawable[] mIcons;
     private final int mWidth;
     private final int mHeight;
 
@@ -95,17 +93,7 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     public AllAppsBackgroundDrawable(Context context) {
         Resources res = context.getResources();
-        mHand = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_hand,
-                0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
-        mIcons = new TransformedImageDrawable[4];
-        mIcons[0] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_1,
-                0.375f, 0, Gravity.CENTER_HORIZONTAL);
-        mIcons[1] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_2,
-                0.3125f, 0.2f, Gravity.CENTER_HORIZONTAL);
-        mIcons[2] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_3,
-                0.475f, 0.26f, Gravity.CENTER_HORIZONTAL);
-        mIcons[3] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_4,
-                0.7f, 0.125f, Gravity.CENTER_HORIZONTAL);
+
         mWidth = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_width);
         mHeight = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_height);
     }
@@ -146,35 +134,21 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        mHand.draw(canvas);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].draw(canvas);
-        }
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        mHand.updateBounds(bounds);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].updateBounds(bounds);
-        }
-        invalidateSelf();
-    }
 
-    @Override
-    public int getAlpha() {
-        return mHand.getAlpha();
+        invalidateSelf();
     }
 
     @Override
     public void setAlpha(int alpha) {
-        mHand.setAlpha(alpha);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].setAlpha(alpha);
-        }
+
         invalidateSelf();
     }
+
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {

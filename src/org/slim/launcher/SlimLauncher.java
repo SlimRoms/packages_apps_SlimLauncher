@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.CellLayout;
@@ -46,6 +47,15 @@ public class SlimLauncher extends Launcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         sLauncher = this;
+
+        boolean fullscreen = SettingsProvider.getFullscreen(SlimLauncher.this,
+                SettingsProvider.KEY_FULLSCREEN, false);
+
+        if (fullscreen) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+
         setLauncherCallbacks(new SlimLauncherCallbacks());
         super.onCreate(savedInstanceState);
         setInitialPreferences();
