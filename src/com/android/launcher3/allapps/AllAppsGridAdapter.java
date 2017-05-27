@@ -43,6 +43,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -234,8 +237,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 });
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_SEARCH_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_search_divider, parent, false));
+                boolean searchEnabled = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
+
+                if (searchEnabled) {
+                    return new ViewHolder(mLayoutInflater.inflate(
+                            R.layout.all_apps_search_divider, parent, false));
+                } else {
+                    return new ViewHolder(mLayoutInflater.inflate(
+                            R.layout.all_apps_search_divider_null, parent, false));
+                }
+
+
             case VIEW_TYPE_PREDICTION_DIVIDER:
                 /* falls through */
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
