@@ -267,7 +267,7 @@ public class AlphabeticalAppsList {
      * Updates the set of filtered apps with the current filter.  At this point, we expect
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
-    private void updateAdapterItems() {
+    public void updateAdapterItems() {
         SectionInfo lastSectionInfo = null;
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
