@@ -344,6 +344,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
 
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            mSearchInput.setTextColor(getResources().getColor(R.color.quantum_panel_text_color_light));
+        } else {
+            mSearchInput.setTextColor(getResources().getColor(R.color.quantum_panel_text_color));
+        }
+
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon
         // using span. The second space is used for a singe space character between the hint

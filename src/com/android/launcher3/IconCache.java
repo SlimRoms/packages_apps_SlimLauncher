@@ -52,6 +52,9 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,7 +117,15 @@ public class IconCache {
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
-        mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color_light);
+        } else {
+            mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
+        }
+
         TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.colorSecondary});
         mPackageBgColor = ta.getColor(0, 0);
         ta.recycle();

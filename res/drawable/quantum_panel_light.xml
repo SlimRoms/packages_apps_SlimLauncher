@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/quantum_panel_shape_dark"
+    android:drawable="@drawable/quantum_panel_shape_light"
     android:insetBottom="@dimen/quantum_panel_outer_padding"
     android:insetLeft="@dimen/quantum_panel_outer_padding"
     android:insetRight="@dimen/quantum_panel_outer_padding"
