@@ -84,6 +84,9 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -242,9 +245,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(
-                FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
-                        ? R.layout.user_folder : R.layout.user_folder_icon_normalized, null);
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            return (Folder) launcher.getLayoutInflater().inflate(
+                    FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
+                            ? R.layout.user_folder_light: R.layout.user_folder_icon_normalized_light, null);
+        } else {
+            return (Folder) launcher.getLayoutInflater().inflate(
+                    FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
+                            ? R.layout.user_folder : R.layout.user_folder_icon_normalized, null);
+        }
+
     }
 
     @Override

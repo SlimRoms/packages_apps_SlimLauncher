@@ -15,10 +15,4 @@
         launcher:pickerTitle1="@string/grid_size_rows_title"
         launcher:pickerTitle2="@string/grid_size_columns_title" />
 
-    <CheckBoxPreference
-        android:title="Fullscreen"
-        android:summary="Enable fullscreen mode"
-        android:key="show_fullscreen"
-        android:defaultValue="false" />
-
 </PreferenceScreen>

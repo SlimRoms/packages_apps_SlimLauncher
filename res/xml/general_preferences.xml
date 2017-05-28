@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:title="General Settings">
+
+
+    <CheckBoxPreference
+        android:title="Fullscreen"
+        android:summary="Enable fullscreen mode"
+        android:key="show_fullscreen"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:title="Light theme"
+        android:summary="Use light theme as dafault"
+        android:key="light_theme"
+        android:defaultValue="false" />
+
+
+
+</PreferenceScreen>

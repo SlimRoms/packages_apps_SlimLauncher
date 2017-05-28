@@ -54,4 +54,17 @@
     <color name="hidden_false">#00424242</color>
 
 
+
+    <color name="quantum_panel_text_color_light">#FF666666</color>
+    <color name="quantum_panel_bg_color_light">#FFF5F5F5</color>
+
+    <color name="outline_color_light">#FFFFFFFF</color>
+    <color name="all_apps_divider_color_light">#1E000000</color>
+    <color name="all_apps_caret_color_light">#FFFFFFFF</color>
+    <color name="all_apps_caret_shadow_color_light">#22000000</color>
+    <color name="all_apps_container_color_light">#FFF2F2F2</color>
+    <color name="all_apps_navbar_color_light">#28000000</color>
+
+
+
 </resources>

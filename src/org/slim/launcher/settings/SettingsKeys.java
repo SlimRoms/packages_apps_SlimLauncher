@@ -20,11 +20,14 @@ public interface SettingsKeys {
 
     String DEFAULT_HOMESCREEN = "default_homescreen";
 
+    // General
+    String KEY_FULLSCREEN = "show_fullscreen";
+    String KEY_LIGHT = "light_theme";
+
     // Homescreen
     String KEY_SHOW_SEARCH_BAR = "show_search_bar";
     String KEY_HOMESCREEN_GRID = "homescreen_grid";
     String KEY_SHOW_SHADOW = "show_shadow";
-    String KEY_FULLSCREEN = "show_fullscreen";
 
     // Drawer
     String KEY_DRAWER_SEARCH_ENABLED = "drawer_search_bar";
