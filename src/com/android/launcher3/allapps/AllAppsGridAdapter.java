@@ -206,8 +206,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
                 /* falls through */
             case VIEW_TYPE_PREDICTION_ICON: {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
+                BubbleTextView icon;
+
+                boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_LIGHT, true);
+
+                if (getLight) {
+                    icon = (BubbleTextView) mLayoutInflater.inflate(
+                            R.layout.all_apps_icon_light, parent, false);
+                } else {
+                    icon = (BubbleTextView) mLayoutInflater.inflate(
+                            R.layout.all_apps_icon, parent, false);
+                }
+
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
@@ -224,8 +235,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return new ViewHolder(icon);
             }
             case VIEW_TYPE_EMPTY_SEARCH:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
-                        parent, false));
+                boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_LIGHT, true);
+
+                if (getLight) {
+                    return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search_light,
+                            parent, false));
+                } else {
+                    return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
+                            parent, false));
+                }
+
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);

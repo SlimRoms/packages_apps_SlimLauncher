@@ -38,6 +38,9 @@ import android.widget.FrameLayout;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
  * allows it to contain the logic for {@link Fragment#startActivityForResult(Intent, int)}.
@@ -177,7 +180,15 @@ public class QsbContainerView extends FrameLayout {
                 mQsb = (LauncherAppWidgetHostView)
                         widgetHost.createView(launcher, widgetId, mWidgetInfo);
                 mQsb.setId(R.id.qsb_widget);
-                mQsb.mErrorViewId = R.layout.qsb_default_view;
+
+                boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_LIGHT, true);
+
+                if (getLight) {
+                    mQsb.mErrorViewId = R.layout.qsb_default_view_light;
+                } else {
+                    mQsb.mErrorViewId = R.layout.qsb_default_view;
+                }
 
                 if (!Utilities.containsAll(AppWidgetManager.getInstance(launcher)
                         .getAppWidgetOptions(widgetId), opts)) {
@@ -254,7 +265,17 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private View getDefaultView(LayoutInflater inflater, ViewGroup parent, boolean showSetup) {
-            View v = inflater.inflate(R.layout.qsb_default_view, parent, false);
+            View v;
+
+            boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                    SettingsProvider.KEY_LIGHT, true);
+
+            if (getLight) {
+                v = inflater.inflate(R.layout.qsb_default_view_light, parent, false);
+            } else {
+                v = inflater.inflate(R.layout.qsb_default_view, parent, false);
+            }
+
             if (showSetup) {
                 View setupButton = v.findViewById(R.id.btn_qsb_setup);
                 setupButton.setVisibility(View.VISIBLE);

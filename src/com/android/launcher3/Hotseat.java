@@ -36,6 +36,9 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LaunchSourceProvider {
 
@@ -61,8 +64,18 @@ public class Hotseat extends FrameLayout
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        mBackgroundColor = ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            mBackgroundColor = ColorUtils.setAlphaComponent(
+                    ContextCompat.getColor(context, R.color.all_apps_container_color_light), 0);
+        } else {
+            mBackgroundColor = ColorUtils.setAlphaComponent(
+                    ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+        }
+
         mBackground = new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }

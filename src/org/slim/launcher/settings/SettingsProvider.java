@@ -34,6 +34,10 @@ public class SettingsProvider implements SettingsKeys {
         return get(context).getInt(key, def);
     }
 
+    public static boolean getLight(Context context, String key, boolean def) {
+        return get(context).getBoolean(key, def);
+    }
+
     public static boolean getFullscreen(Context context, String key, boolean def) {
         return get(context).getBoolean(key, def);
     }
