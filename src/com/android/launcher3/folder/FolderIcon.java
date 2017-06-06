@@ -942,7 +942,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             final float scale0 = mTmpParams.scale;
             final float transX0 = mTmpParams.transX;
-            final float transY0 = mTmpParams.transY;
+            final float transY0 = mTmpParams.transY + 88;
 
             mValueAnimator = LauncherAnimUtils.ofFloat(FolderIcon.this, 0f, 1.0f);
             mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
