@@ -40,7 +40,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     /**
-     * @return the component name and flags if {@param info} is an AppInfo or an app shortcut.
+     * @return the component name and flags if {@param info} is an ApplicationAdapter or an app shortcut.
      */
     private static Pair<ComponentName, Integer> getAppInfoFlags(Object item) {
         if (item instanceof AppInfo) {

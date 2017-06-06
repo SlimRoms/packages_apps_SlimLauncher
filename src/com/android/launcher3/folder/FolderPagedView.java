@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,6 +48,9 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Thunk;
+
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -227,8 +231,19 @@ public class FolderPagedView extends PagedView {
 
     @SuppressLint("InflateParams")
     public View createNewView(ShortcutInfo item) {
-        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
-                R.layout.folder_application, null, false);
+        final BubbleTextView textView;
+
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            textView = (BubbleTextView) mInflater.inflate(
+                    R.layout.folder_application_light, null, false);
+        } else {
+            textView = (BubbleTextView) mInflater.inflate(
+                    R.layout.folder_application, null, false);
+        }
+
         textView.applyFromShortcutInfo(item, mIconCache);
         textView.setOnClickListener(mFolder);
         textView.setOnLongClickListener(mFolder);

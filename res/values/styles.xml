@@ -70,9 +70,30 @@
         <item name="customShadows">false</item>
     </style>
 
+    <style name="Icon.AllApps.Light">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/quantum_panel_text_color_light</item>
+        <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="customShadows">false</item>
+    </style>
+
     <style name="Icon.Folder">
         <item name="android:background">@null</item>
         <item name="android:textColor">@color/quantum_panel_text_color</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:textSize">@dimen/folder_child_text_size</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="customShadows">false</item>
+        <item name="iconDisplay">folder</item>
+    </style>
+
+    <style name="Icon.Folder.Light">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/quantum_panel_text_color_light</item>
         <item name="android:shadowRadius">0</item>
         <item name="android:textSize">@dimen/folder_child_text_size</item>
         <item name="android:gravity">center_horizontal</item>

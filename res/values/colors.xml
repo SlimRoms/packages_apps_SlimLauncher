@@ -18,31 +18,29 @@
 */
 -->
 <resources>
-    <!-- The color tints to apply to the text and drag view when hovering
-         over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
     <color name="uninstall_target_hover_tint">#FFF0592B</color>
 
     <color name="focused_background">#80c6c5c5</color>
 
-    <color name="workspace_icon_text_color">#FFF</color>
+    <color name="workspace_icon_text_color">#FFF5F5F5</color>
 
-    <color name="workspace_edge_effect_color">#FFFFFFFF</color>
+    <color name="workspace_edge_effect_color">#FFF5F5F5</color>
     <color name="folder_edge_effect_color">#FF757575</color>
     <color name="page_indicator_dot_color">#FFDDDDDD</color>
 
-    <color name="quantum_panel_text_color">#FF666666</color>
-    <color name="quantum_panel_bg_color">#FFF5F5F5</color>
+    <color name="quantum_panel_text_color">#FFF5F5F5</color>
+    <color name="quantum_panel_bg_color">#FF424242</color>
 
-    <color name="outline_color">#FFFFFFFF</color>
+    <color name="outline_color">#FF424242</color>
     <color name="all_apps_divider_color">#1E000000</color>
-    <color name="all_apps_caret_color">#FFFFFFFF</color>
+    <color name="all_apps_caret_color">#FFF5F5F5</color>
     <color name="all_apps_caret_shadow_color">#22000000</color>
-    <color name="all_apps_container_color">#FFF2F2F2</color>
+    <color name="all_apps_container_color">#FF424242</color>
     <color name="all_apps_navbar_color">#28000000</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
-    <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
+    <color name="spring_loaded_highlighted_panel_border_color">#FFF5F5F5</color>
 
     <!-- Widgets view -->
     <color name="widgets_view_section_text_color">#FFFFFF</color>
@@ -50,4 +48,23 @@
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
+
+
+    <color name="hidden_true">#40424242</color>
+    <color name="hidden_false">#00424242</color>
+
+
+
+    <color name="quantum_panel_text_color_light">#FF666666</color>
+    <color name="quantum_panel_bg_color_light">#FFF5F5F5</color>
+
+    <color name="outline_color_light">#FFFFFFFF</color>
+    <color name="all_apps_divider_color_light">#1E000000</color>
+    <color name="all_apps_caret_color_light">#FFFFFFFF</color>
+    <color name="all_apps_caret_shadow_color_light">#22000000</color>
+    <color name="all_apps_container_color_light">#FFF2F2F2</color>
+    <color name="all_apps_navbar_color_light">#28000000</color>
+
+
+
 </resources>

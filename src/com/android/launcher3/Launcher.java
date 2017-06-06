@@ -129,6 +129,8 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -554,7 +556,14 @@ public class Launcher extends Activity
         // TODO: do this in pre-N as well, once the extraction part is complete.
         if (Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
-            mHotseat.updateColor(mExtractedColors, !mPaused);
+
+            boolean hide_background = SettingsProvider.getHideDockBackground(Launcher.this,
+                    SettingsProvider.KEY_DOCK_HIDE_BACKGROUND, false);
+
+            if (!hide_background) {
+                mHotseat.updateColor(mExtractedColors, !mPaused);
+            }
+
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
             // It's possible that All Apps is visible when this is run,
             // so always use light status bar in that case.
@@ -680,7 +689,7 @@ public class Launcher extends Activity
     }
 
     /**
-     * Invoked by subclasses to signal a change to the {@link #addCustomContentToLeft} value to
+     * Invoked by subclasses to signal a change to the {@link #//addCustomContentToLeft} value to
      * ensure the custom content page is added or removed if necessary.
      */
     protected void invalidateHasCustomContentToLeft() {
@@ -4228,17 +4237,6 @@ public class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public void lockScreenOrientation() {
-        if (mRotationEnabled) {
-            if (Utilities.ATLEAST_JB_MR2) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-            } else {
-                setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                        .getConfiguration().orientation));
-            }
-        }
-    }
 
     public void unlockScreenOrientation(boolean immediate) {
         if (mRotationEnabled) {

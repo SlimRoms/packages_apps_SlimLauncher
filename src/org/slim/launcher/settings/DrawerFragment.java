@@ -16,9 +16,13 @@
 
 package org.slim.launcher.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 
 import com.android.launcher3.R;
+
+import org.slim.launcher.util.AllAppsActivity;
 
 public class DrawerFragment extends SettingsPreferenceFragment {
 
@@ -27,5 +31,20 @@ public class DrawerFragment extends SettingsPreferenceFragment {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.drawer_preferences);
+        addHideAppsListener();
+    }
+
+    private void addHideAppsListener() {
+
+        Preference reset = findPreference("hide_apps");
+        reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference pref) {
+
+                startActivity(new Intent(getActivity(), AllAppsActivity.class));
+                getActivity().finish();
+
+                return true;
+            }
+        });
     }
 }

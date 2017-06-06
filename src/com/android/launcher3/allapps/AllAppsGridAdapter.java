@@ -43,6 +43,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -203,8 +206,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
                 /* falls through */
             case VIEW_TYPE_PREDICTION_ICON: {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
+                BubbleTextView icon;
+
+                boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_LIGHT, true);
+
+                if (getLight) {
+                    icon = (BubbleTextView) mLayoutInflater.inflate(
+                            R.layout.all_apps_icon_light, parent, false);
+                } else {
+                    icon = (BubbleTextView) mLayoutInflater.inflate(
+                            R.layout.all_apps_icon, parent, false);
+                }
+
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
@@ -221,8 +235,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return new ViewHolder(icon);
             }
             case VIEW_TYPE_EMPTY_SEARCH:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
-                        parent, false));
+                boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_LIGHT, true);
+
+                if (getLight) {
+                    return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search_light,
+                            parent, false));
+                } else {
+                    return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
+                            parent, false));
+                }
+
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
@@ -234,8 +257,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 });
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_SEARCH_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_search_divider, parent, false));
+                boolean searchEnabled = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                        SettingsProvider.KEY_DRAWER_SEARCH_ENABLED, true);
+
+                if (searchEnabled) {
+                    return new ViewHolder(mLayoutInflater.inflate(
+                            R.layout.all_apps_search_divider, parent, false));
+                } else {
+                    return new ViewHolder(mLayoutInflater.inflate(
+                            R.layout.all_apps_search_divider_null, parent, false));
+                }
+
+
             case VIEW_TYPE_PREDICTION_DIVIDER:
                 /* falls through */
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:

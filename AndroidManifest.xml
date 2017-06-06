@@ -85,6 +85,12 @@
             android:resumeWhilePausing="true"
             android:taskAffinity=""
             android:enabled="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -112,6 +118,15 @@
             android:label="@string/settings_button_text"
             android:theme="@android:style/Theme.Material.Settings"
             android:autoRemoveFromRecents="true" />
+
+        <activity
+            android:name="org.slim.launcher.util.AllAppsActivity"
+            android:icon="@mipmap/ic_launcher_settings"
+            android:label="Hide apps"
+            android:theme="@android:style/Theme.Material.Settings"
+            android:autoRemoveFromRecents="true" />
+
+
 
         <!-- Launcher shortcuts -->
         <activity android:name="org.slim.launcher.CreateShortcut"

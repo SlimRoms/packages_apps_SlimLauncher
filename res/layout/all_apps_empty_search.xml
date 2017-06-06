@@ -25,7 +25,7 @@
     android:paddingRight="16dp"
     android:fontFamily="sans-serif-medium"
     android:textSize="14sp"
-    android:textColor="#212121"
+    android:textColor="@color/quantum_panel_text_color"
     android:alpha="0.56"
     android:focusable="false" />
 

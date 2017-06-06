@@ -27,6 +27,9 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.TouchController;
 
+import org.slim.launcher.SlimLauncher;
+import org.slim.launcher.settings.SettingsProvider;
+
 /**
  * Handles AllApps view transition.
  * 1) Slides all apps view using direct manipulation
@@ -93,7 +96,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 R.dimen.all_apps_bezel_swipe_height);
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+
+        boolean getLight = SettingsProvider.getBoolean(SlimLauncher.getInstance(),
+                SettingsProvider.KEY_LIGHT, true);
+
+        if (getLight) {
+            mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color_light);
+        } else {
+            mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+        }
+
+
     }
 
     @Override
