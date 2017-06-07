@@ -39,6 +39,11 @@
   <string name="gestures_right_down_gesture_title">Pyyhkäise alaoikeaan</string>
   <string name="gestures_pinch_gesture_title">Nipistä</string>
   <string name="gestures_spread_gesture_title">Levitä</string>
+  <string name="gestures_double_tap_gesture_title">Kaksoisnapautus</string>
+  <string name="no_last_app">Viimeisintä sovellusta ei löytynyt.</string>
+  <string name="gesture_target_nothing">Ei mitään</string>
+  <string name="gesture_target_homescreen">Mene oletuskotinäkymään</string>
+  <string name="gesture_target_drawer">Avaa sovellusvalikko</string>
   <string name="gesture_target_previews">Näytä esikatselut</string>
   <string name="gesture_target_settings">Avaa kotinäkymän asetukset</string>
   <string name="gesture_target_last_app">Viimeisin sovellus</string>
