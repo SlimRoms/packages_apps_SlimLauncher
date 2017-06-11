@@ -311,6 +311,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public void setSearchBarContainerViewVisibility(int visibility) {
         mSearchContainer.setVisibility(visibility);
+        mApps.updateAdapterItems();
+        mAdapter.notifyDataSetChanged();
         //updatePaddingsAndMargins();
     }
 

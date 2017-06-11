@@ -50,4 +50,7 @@
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
+
+    <color name="deep_shortcut_background_color">#FFFFFFFF</color>
+    <color name="deep_shortcut_drag_handle_color">#4D000000</color>
 </resources>

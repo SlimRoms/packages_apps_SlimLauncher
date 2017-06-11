@@ -38,7 +38,7 @@ public class ExtractionUtils {
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
     private static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
-    private static final float MIN_CONTRAST_RATIO = 2f;
+    private static final float MIN_CONTRAST_RATIO = 1.5f;
 
     /**
      * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.

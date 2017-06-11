@@ -44,7 +44,7 @@ public class ExtractedColors {
     // public static final int MUTED_DARK_INDEX = 6;
     // public static final int MUTED_LIGHT_INDEX = 7;
     private static final String TAG = "ExtractedColors";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -146,13 +146,16 @@ public class ExtractedColors {
      * - 25% white otherwise
      */
     public void updateHotseatPalette(Palette hotseatPalette) {
+        Log.d("TEST", "updateHotseatPalette");
         int hotseatColor;
         if (hotseatPalette != null && ExtractionUtils.isSuperLight(hotseatPalette)) {
+            Log.d("TEST", "super light");
             hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
         } else if (hotseatPalette != null && ExtractionUtils.isSuperDark(hotseatPalette)) {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
+            Log.d("TEST", "super dark");
+            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.15f * 255));
         } else {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
+            hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.25f * 255));
         }
         setColorAtIndex(HOTSEAT_INDEX, hotseatColor);
     }
