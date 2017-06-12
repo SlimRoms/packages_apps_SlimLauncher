@@ -17,10 +17,14 @@ package org.slim.launcher.util;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Point;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -35,8 +39,11 @@ import org.slim.launcher.SlimLauncher;
 import org.slim.launcher.settings.SettingsActivity;
 import org.slim.launcher.settings.SettingsProvider;
 
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class GestureHelper {
 
@@ -50,6 +57,9 @@ public class GestureHelper {
     public static final String ACTION_LAUNCHER_SETTINGS = "show_settings";
     public static final String ACTION_LAST_APP = "last_app";
     public static final String ACTION_CUSTOM = "custom";
+
+    public static final String ACTION_NOT = "not";
+    public static final String ACTION_screen_off = "screen_off";
 
     // gesture constants
     private static final String DOUBLE_TAP_GESTURE = "double_tap";
@@ -163,6 +173,50 @@ public class GestureHelper {
             case ACTION_LAST_APP:
                 getLastApp(mLauncher);
                 break;
+
+            case ACTION_NOT:
+                try {
+                    Object sbservice = mLauncher.getSystemService( "statusbar" );
+                    Class<?> statusbarManager = Class.forName( "android.app.StatusBarManager" );
+                    Method showsb;
+                    showsb = statusbarManager.getMethod("expandNotificationsPanel");
+                    showsb.invoke( sbservice );
+
+                } catch (Exception e) {
+                    //accessibility is Enable
+                }
+                break;
+
+            case ACTION_screen_off:
+                try {
+
+                    final int ADMIN_INTENT = 15;
+                    final String description = "Sample Administrator description";
+                    DevicePolicyManager mDevicePolicyManager;
+                    ComponentName mComponentName;
+
+                    mDevicePolicyManager = (DevicePolicyManager)mLauncher.getSystemService(
+                            Context.DEVICE_POLICY_SERVICE);
+                    mComponentName = new ComponentName(mLauncher, MyAdminReceiver.class);
+
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mComponentName);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,description);
+                    mLauncher.startActivityForResult(intent, ADMIN_INTENT);
+
+                    boolean isAdmin = mDevicePolicyManager.isAdminActive(mComponentName);
+                    if (isAdmin) {
+                        mDevicePolicyManager.lockNow();
+                    }else{
+                        Toast.makeText(mLauncher, "Not Registered as admin", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } catch (Exception e) {
+                    //accessibility is Enable
+                }
+                break;
+
             case ACTION_CUSTOM:
                 String uri = SettingsProvider.getString(mLauncher,
                         gesture + "_gesture_action_custom", "");
@@ -178,6 +232,7 @@ public class GestureHelper {
                 break;
         }
     }
+
 
     public boolean handleFling(MotionEvent start, MotionEvent finish) {
         switch (identifyGesture(finish.getRawX(), finish.getRawY(),
