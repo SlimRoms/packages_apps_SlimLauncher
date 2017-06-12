@@ -59,6 +59,8 @@
     <string name="gesture_target_settings">Open launcher settings</string>
     <string name="gesture_target_last_app">Last app</string>
     <string name="gesture_target_custom">Custom</string>
+    <string name="gesture_target_not">Open notifications</string>
+    <string name="gesture_screen_off">Lock screen</string>
 
     <!-- SlimLauncher actions -->
     <string name="shortcut_picker_title">SlimLauncher shortcuts</string>

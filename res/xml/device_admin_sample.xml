@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <uses-policies>
+        <limit-password />
+        <watch-login />
+        <reset-password />
+        <force-lock />
+        <wipe-data />
+        <expire-password />
+        <encrypted-storage />
+        <disable-camera />
+    </uses-policies>
