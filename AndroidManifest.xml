@@ -58,6 +58,8 @@
     <uses-permission android:name="${packageName}.permission.RECEIVE_LAUNCH_BROADCASTS" />
     <uses-permission android:name="${packageName}.permission.RECEIVE_FIRST_LOAD_BROADCAST" />
 
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -167,6 +169,18 @@
             android:exported="true"
             android:writePermission="${packageName}.permission.WRITE_SETTINGS"
             android:readPermission="${packageName}.permission.READ_SETTINGS" />
+
+        <receiver
+            android:name="org.slim.launcher.util.MyAdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/admin"/>
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
 
         <!-- ENABLE_FOR_TESTING
 
