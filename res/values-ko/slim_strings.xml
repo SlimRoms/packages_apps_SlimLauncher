@@ -23,6 +23,7 @@
   <string name="homescreen_title">홈 화면</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">서랍</string>
+  <string name="drawer_search_bar_title">검색 바 사용</string>
   <!-- Dock Settings -->
   <string name="dock_title">도크</string>
   <string name="dock_icons_title">도크 아이콘</string>
