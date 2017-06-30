@@ -2,6 +2,7 @@ package org.slim.launcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import com.android.launcher3.WorkspaceCallbacks;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
+import com.google.android.libraries.launcherclient.LauncherClient;
 
 import org.slim.launcher.settings.SettingsActivity;
 import org.slim.launcher.settings.SettingsProvider;
@@ -38,6 +40,7 @@ public class SlimLauncher extends Launcher {
 
     private SlimDeviceProfile mSlimProfile;
     private GestureHelper mGestureHelper;
+    private LauncherClient mLauncherClient;
 
     public static SlimLauncher getInstance() {
         return sLauncher;
@@ -49,6 +52,29 @@ public class SlimLauncher extends Launcher {
         setLauncherCallbacks(new SlimLauncherCallbacks());
         super.onCreate(savedInstanceState);
         setInitialPreferences();
+
+        mLauncherClient = new LauncherClient(this, getPackageName(), true);
+        setLauncherOverlay(new LauncherOverlay() {
+            @Override
+            public void onScrollInteractionBegin() {
+                mLauncherClient.startMove();
+            }
+
+            @Override
+            public void onScrollInteractionEnd() {
+                mLauncherClient.endMove();
+            }
+
+            @Override
+            public void onScrollChange(float progress, boolean rtl) {
+                mLauncherClient.updateMove(progress);
+            }
+
+            @Override
+            public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks) {
+
+            }
+        });
 
         mGestureHelper = new GestureHelper(this);
         getWorkspace().setWorkspaceCallbacks(new SlimWorkspaceCallbacks());
@@ -141,6 +167,10 @@ public class SlimLauncher extends Launcher {
         super.onNewIntent(intent);
     }
 
+    public LauncherClient getClient() {
+        return mLauncherClient;
+    }
+
     public void onClickLauncherAction(View view, Intent intent) {
         String value = intent.getStringExtra(ShortcutHelper.SHORTCUT_VALUE);
         switch (value) {
@@ -205,23 +235,28 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public void onResume() {
+            mLauncherClient.onResume();
         }
 
         @Override
         public void onStart() {
+            mLauncherClient.onStart();
         }
 
         @Override
         public void onStop() {
+            mLauncherClient.onStop();
         }
 
         @Override
         public void onPause() {
+            mLauncherClient.onPause();
         }
 
         @Override
         public void onDestroy() {
             sLauncher = null;
+            mLauncherClient.onDestroy();
         }
 
         @Override
@@ -250,10 +285,12 @@ public class SlimLauncher extends Launcher {
 
         @Override
         public void onAttachedToWindow() {
+            mLauncherClient.onAttachedToWindow();
         }
 
         @Override
         public void onDetachedFromWindow() {
+            mLauncherClient.onDetachedFromWindow();
         }
 
         @Override

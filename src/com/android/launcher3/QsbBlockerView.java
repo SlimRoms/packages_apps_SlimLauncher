@@ -25,16 +25,28 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.android.launcher3.Workspace.State;
+
+import org.slim.launcher.pixel.OnWeatherInfoListener;
+import org.slim.launcher.pixel.ShadowHostView;
+import org.slim.launcher.pixel.WeatherInfo;
+import org.slim.launcher.pixel.WeatherThing;
 
 /**
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
-public class QsbBlockerView extends View implements Workspace.OnStateChangeListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnWeatherInfoListener {
 
     private static final int VISIBLE_ALPHA = 100;
+
+    private View mView;
+    private int mState = 0;
+    private static final boolean DEBUG = false;
 
     private final Paint mBgPaint;
 
@@ -63,6 +75,12 @@ public class QsbBlockerView extends View implements Workspace.OnStateChangeListe
         Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
         w.setOnStateChangeListener(this);
         prepareStateChange(w.getState(), null);
+
+        WeatherInfo weatherInfo =
+                WeatherThing.getInstance(getContext()).getWeatherInfoAndAddListener(this);
+        if (weatherInfo != null) {
+            onWeatherInfo(weatherInfo);
+        }
     }
 
     @Override
@@ -86,5 +104,51 @@ public class QsbBlockerView extends View implements Workspace.OnStateChangeListe
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawPaint(mBgPaint);
+    }
+
+    @Override
+    public void onWeatherInfo(WeatherInfo weatherInfo) {
+        View view = mView;
+        int i = mState;
+        mView = ShadowHostView.bG(weatherInfo, this, mView);
+        mState = 2;
+        if (mView == null) {
+            View inflate;
+            mState = 1;
+            if (view == null || i != 1) {
+                inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+            } else {
+                inflate = view;
+            }
+            mView = inflate;
+        }
+        if (i != mState) {
+            if (view != null) {
+                view.animate().setDuration(200).alpha(0.0f).withEndAction(new QsbBlockerViewViewRemover(this, view));
+            }
+            addView(mView);
+            mView.setAlpha(0.0f);
+            mView.animate().setDuration(200).alpha(1.0f);
+        } else if (view != mView) {
+            if (view != null) {
+                removeView(view);
+            }
+            addView(mView);
+        }
+    }
+
+    private final class QsbBlockerViewViewRemover implements Runnable {
+        final QsbBlockerView mQsbBlockerView;
+        final View mView;
+
+        QsbBlockerViewViewRemover(QsbBlockerView qsbBlockerView, View view) {
+            mQsbBlockerView = qsbBlockerView;
+            mView = view;
+        }
+
+        @Override
+        public void run() {
+            mQsbBlockerView.removeView(mView);
+        }
     }
 }
