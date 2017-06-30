@@ -1364,7 +1364,7 @@ public class Workspace extends PagedView
     }
 
     protected void onScrollInteractionBegin() {
-        super.onScrollInteractionEnd();
+        super.onScrollInteractionBegin();
         mScrollInteractionBegan = true;
     }
 
