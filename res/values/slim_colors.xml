@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="qsb_connector">#fff2f2f2</color>
+    <color name="qsb_background">#ffffffff</color>
+</resources>

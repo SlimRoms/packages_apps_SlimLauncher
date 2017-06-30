@@ -67,4 +67,10 @@
     <string name="shortcut_action_launcher_settings">Launcher settings</string>
     <string name="shortcut_action_launcher_homescreen">Default homescreen</string>
 
+    <string name="title_show_google_app">Show %1$s</string>
+    <string name="title_show_google_app_default">Show Google app</string>
+    <string name="label_search">Search</string>
+    <string name="label_voice_search">Voice search</string>
+    <string name="week_day_format">%1$s, %2$s</string>
+
 </resources>
