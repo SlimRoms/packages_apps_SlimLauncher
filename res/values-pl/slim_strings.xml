@@ -23,6 +23,7 @@
   <string name="homescreen_title">Pulpit domowy</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Szuflada aplikacji</string>
+  <string name="drawer_search_bar_title">Włącz pasek wyszukiwania</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dok</string>
   <string name="dock_icons_title">Ikony w doku</string>

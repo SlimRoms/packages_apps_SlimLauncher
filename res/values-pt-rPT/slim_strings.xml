@@ -23,6 +23,7 @@
   <string name="homescreen_title">Ecrã inicial</string>
   <!-- Drawer Settings -->
   <string name="drawer_title">Gaveta de aplicações</string>
+  <string name="drawer_search_bar_title">Ativar a barra de pesquisa</string>
   <!-- Dock Settings -->
   <string name="dock_title">Dock</string>
   <string name="dock_icons_title">Ícones da dock</string>
