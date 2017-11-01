@@ -18,6 +18,7 @@ package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -26,6 +27,7 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
@@ -143,6 +145,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void onNotificationFullRefresh() {
+        Log.d("TEST", "onNotificationFullRefresh");
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_FULL_REFRESH).sendToTarget();
     }
 
@@ -219,11 +222,12 @@ public class NotificationListener extends NotificationListenerService {
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
-        if (!mTempRanking.canShowBadge()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !mTempRanking.canShowBadge()) {
             return true;
         }
         Notification notification = sbn.getNotification();
-        if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
             // Special filtering for the default, legacy "Miscellaneous" channel.
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return true;

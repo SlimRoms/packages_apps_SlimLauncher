@@ -50,6 +50,19 @@ public class PackageManagerHelper {
         mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 
+    public static boolean isAppEnabled(PackageManager pm, String packageName) {
+        return isAppEnabled(pm, packageName, 0);
+    }
+
+    public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
+        try {
+            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
+            return info != null && info.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
      * guarantee that the app is on SD card.

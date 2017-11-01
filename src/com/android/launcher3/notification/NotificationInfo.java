@@ -29,6 +29,7 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.PackageUserKey;
@@ -65,7 +66,7 @@ public class NotificationInfo implements View.OnClickListener {
         title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
 
-        mBadgeIcon = notification.getBadgeIconType();
+        mBadgeIcon = Utilities.isAtLeastO() ? notification.getBadgeIconType() : 0;
         // Load the icon. Since it is backed by ashmem, we won't copy the entire bitmap
         // into our process as long as we don't touch it and it exists in systemui.
         Icon icon = mBadgeIcon == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
@@ -84,7 +85,7 @@ public class NotificationInfo implements View.OnClickListener {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
                     .getInstance(context).getIconCache()
                     .getDefaultIcon(statusBarNotification.getUser()));
-            mBadgeIcon = Notification.BADGE_ICON_NONE;
+            mBadgeIcon = Utilities.isAtLeastO() ? Notification.BADGE_ICON_NONE : 0;
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
@@ -129,7 +130,7 @@ public class NotificationInfo implements View.OnClickListener {
     public boolean shouldShowIconInBadge() {
         // If the icon we're using for this notification matches what the Notification
         // specified should show in the badge, then return true.
-        return mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_LARGE
-                || !mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_SMALL;
+        return mIsIconLarge && mBadgeIcon == 2
+                || !mIsIconLarge && mBadgeIcon == 1;
     }
 }

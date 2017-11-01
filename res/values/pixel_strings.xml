@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_show_google_app">Show %1$s</string>
+    <string name="title_show_google_app_default">Show Google app</string>
+    <string name="label_search">Search</string>
+    <string name="label_voice_search">Voice search</string>
+    <string name="week_day_format">%1$s, %2$s</string>
+</resources>

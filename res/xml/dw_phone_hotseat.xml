@@ -32,6 +32,14 @@
         launcher:screen="1"
         launcher:x="1"
         launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_CONTACTS;end" />
+    </resolve>
+
+    <resolve
+        launcher:container="-101"
+        launcher:screen="2"
+        launcher:x="2"
+        launcher:y="0" >
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MESSAGING;end" />
         <favorite launcher:uri="sms:" />
         <favorite launcher:uri="smsto:" />
@@ -39,16 +47,13 @@
         <favorite launcher:uri="mmsto:" />
     </resolve>
 
-    <!-- All Apps -->
-
     <resolve
         launcher:container="-101"
         launcher:screen="3"
         launcher:x="3"
         launcher:y="0" >
-        <favorite
-            launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
-        <favorite launcher:uri="http://www.example.com/" />
+        <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
+        <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
     </resolve>
 
     <resolve
@@ -56,8 +61,9 @@
         launcher:screen="4"
         launcher:x="4"
         launcher:y="0" >
-        <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
-        <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
+        <favorite
+            launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
+        <favorite launcher:uri="http://www.example.com/" />
     </resolve>
 
 </favorites>

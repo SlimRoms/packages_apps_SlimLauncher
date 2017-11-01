@@ -9,6 +9,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -22,10 +23,13 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
+
+import org.slim.launcher.ColorUtil;
 
 /**
  * Handles AllApps view transition.
@@ -100,7 +104,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
+        mAllAppsBackgroundColor = l.getColor(R.color.popup_background_color);
     }
 
     @Override
@@ -260,7 +264,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         // Use a light status bar (dark icons) if all apps is behind at least half of the status
         // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
         boolean forceLight = shift <= mStatusBarHeight / 2;
-        mLauncher.activateLightSystemBars(forceLight, true /* statusBar */, true /* navBar */);
+        if (!forceLight) {
+            Log.d("TEST", "here");
+            mLauncher.onExtractedColorsChanged();
+        } else {
+            Log.d("TEST", "here1");
+            mLauncher.activateLightSystemBars(!ColorUtil.isDarkColor(mAllAppsBackgroundColor),
+                    true /* statusBar */, true /* navBar */);
+        }
     }
 
     /**

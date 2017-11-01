@@ -28,7 +28,7 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_USE_SYSTEM_DRAG_DRIVER = true;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
-    public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = false;
+    public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = true;
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled while all-apps open, the soft input will be set to adjust resize .
@@ -40,9 +40,9 @@ public final class FeatureFlags {
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = true;
     // When enabled fling down gesture on the first workspace triggers search.
-    public static final boolean PULLDOWN_SEARCH = false;
+    public static final boolean PULLDOWN_SEARCH = true;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
-    public static final boolean LIGHT_STATUS_BAR = false;
+    public static final boolean LIGHT_STATUS_BAR = true;
     // When enabled icons are badged with the number of notifications associated with that app.
     public static final boolean BADGE_ICONS = true;
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in this class.

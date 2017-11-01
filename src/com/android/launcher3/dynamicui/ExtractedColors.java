@@ -125,7 +125,7 @@ public class ExtractedColors {
         } else if (hotseatPalette != null && ExtractionUtils.isSuperDark(hotseatPalette)) {
             hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
         } else {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
+            hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.25f * 255));
         }
         setColorAtIndex(HOTSEAT_INDEX, hotseatColor);
     }

@@ -2889,6 +2889,8 @@ public class Launcher extends BaseActivity
             mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                     Workspace.State.NORMAL, animated, onCompleteRunnable);
 
+            loadExtractedColorsAndColorItems();
+
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
                 mAllAppsButton.requestFocus();

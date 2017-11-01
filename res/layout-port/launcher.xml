@@ -29,7 +29,6 @@
         android:clipChildren="false"
         android:importantForAccessibility="no"
         android:clipToPadding="false"
-        android:background="@drawable/workspace_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -64,7 +63,7 @@
             layout="@layout/drop_target_bar_horz" />
 
         <include
-            layout="@layout/qsb_container"
+            layout="@layout/pixel_qsb_container"
             android:id="@+id/qsb_container" />
 
         <include layout="@layout/widgets_view"

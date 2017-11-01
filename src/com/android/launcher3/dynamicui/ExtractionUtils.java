@@ -39,7 +39,7 @@ public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
-    private static final float MIN_CONTRAST_RATIO = 2f;
+    private static final float MIN_CONTRAST_RATIO = 1.6f;
 
     /**
      * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.

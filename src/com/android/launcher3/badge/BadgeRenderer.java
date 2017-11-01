@@ -38,7 +38,7 @@ import com.android.launcher3.graphics.ShadowGenerator;
  */
 public class BadgeRenderer {
 
-    private static final boolean DOTS_ONLY = true;
+    private static final boolean DOTS_ONLY = false;
 
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
@@ -127,7 +127,7 @@ public class BadgeRenderer {
         // Prepare the background and shadow and possible stacking effect.
         mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
-        boolean shouldStack = !isDot && badgeInfo != null
+        /*boolean shouldStack = !isDot && badgeInfo != null
                 && badgeInfo.getNotificationKeys().size() > 1;
         if (shouldStack) {
             int offsetDiffX = mStackOffsetX - mOffset;
@@ -136,7 +136,7 @@ public class BadgeRenderer {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
             canvas.translate(-offsetDiffX, -offsetDiffY);
-        }
+        }*/
 
         if (isText) {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
