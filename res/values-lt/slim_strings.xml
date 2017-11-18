@@ -6,17 +6,17 @@
   <string name="set_string">Nustayti</string>
   <string name="error_message_title">Klaida</string>
   <!-- App picker -->
-  <string name="profile_applist_title">Aplikacijos</string>
+  <string name="profile_applist_title">Programėlės</string>
   <string name="picker_activities">Veiksmai</string>
-  <string name="select_custom_app_title">Pasir. indiv. programą</string>
-  <string name="select_custom_activity_title">Pasir. indiv. veiksmą</string>
+  <string name="select_custom_app_title">Pasirinkite tinkintą programą</string>
+  <string name="select_custom_activity_title">Pasirinkite tinkintą veiklą</string>
   <!-- Grid Size -->
   <string name="grid_size_title">Tinklelio dydis</string>
-  <string name="grid_size_summary">Pasirinkti stulp./eil. skaičių</string>
+  <string name="grid_size_summary">Pasirinkti eilučių/stulpelių skaičių</string>
   <string name="grid_size_rows_title">Eilutės</string>
   <string name="grid_size_columns_title">Stulpeliai</string>
   <!-- Color Picker -->
-  <string name="dialog_color_picker">Spalvų parinkiklis</string>
+  <string name="dialog_color_picker">Spalvos parinkimas</string>
   <string name="press_color_to_apply">Paspauskite ant spalvos, kad nustatyti</string>
   <string name="hex">Hex:</string>
   <!-- Homescreen Settings -->
@@ -42,8 +42,8 @@
   <string name="gestures_double_tap_gesture_title">Dvigubas bakstelėjimas</string>
   <string name="no_last_app">Paskutinė programa nerasta.</string>
   <string name="gesture_target_nothing">Nieko</string>
-  <string name="gesture_target_homescreen">Eiti į numat. puslapį</string>
-  <string name="gesture_target_drawer">Atidaryti programų langą</string>
+  <string name="gesture_target_homescreen">Eiti į numatytajį ekraną</string>
+  <string name="gesture_target_drawer">Atidaryti programų stalčių</string>
   <string name="gesture_target_previews">Rodyti peržiūras</string>
   <string name="gesture_target_settings">Atidaryti \"SlimLauncher\" nustatymus</string>
   <string name="gesture_target_last_app">Paskutinė programa</string>
