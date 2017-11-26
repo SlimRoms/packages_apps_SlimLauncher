@@ -21,11 +21,11 @@ import android.text.TextUtils;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.LauncherDumpProto;
-import com.android.launcher3.model.LauncherDumpProto.ContainerType;
-import com.android.launcher3.model.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.model.LauncherDumpProto.ItemType;
-import com.android.launcher3.model.LauncherDumpProto.UserType;
+import com.android.launcher3.model.nano.LauncherDumpProto;
+import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
+import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
+import com.android.launcher3.model.nano.LauncherDumpProto.ItemType;
+import com.android.launcher3.model.nano.LauncherDumpProto.UserType;
 
 import java.util.ArrayList;
 import java.util.List;
