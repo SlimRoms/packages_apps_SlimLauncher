@@ -11,6 +11,7 @@
   <string name="select_custom_app_title">Özəl tətbiqi seç</string>
   <string name="select_custom_activity_title">Özəl fəaliyyət seç</string>
   <!-- Grid Size -->
+  <string name="grid_size_title">Tor ölçüsü</string>
   <string name="grid_size_summary">Sətir/sütun sayını seç</string>
   <string name="grid_size_rows_title">Sətirlər</string>
   <string name="grid_size_columns_title">Sütunlar</string>
@@ -21,8 +22,12 @@
   <!-- Homescreen Settings -->
   <string name="homescreen_title">Əsas ekran</string>
   <!-- Drawer Settings -->
+  <string name="drawer_title">Tətbiq Menyusu</string>
   <string name="drawer_search_bar_title">Axtarış sətrini fəallaşdır</string>
   <!-- Dock Settings -->
+  <string name="dock_title">Yuva</string>
+  <string name="dock_icons_title">Yuva ikonları</string>
+  <string name="dock_icons_summary">Yuvadakı ikonların sayı</string>
   <!-- Gestures -->
   <string name="gestures_title">Jestlər</string>
   <string name="gesture_default">heçnə</string>
