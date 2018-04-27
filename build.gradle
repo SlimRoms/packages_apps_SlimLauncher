@@ -4,8 +4,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.2'
     }
 }
 
@@ -14,10 +14,10 @@ apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -30,10 +30,13 @@ android {
         }
     }
 
+    flavorDimensions 'slim'
+
     productFlavors {
-        aosp {
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+        slim {
+            dimension 'slim'
+            applicationId 'org.slim.launcher'
+            testApplicationId 'org.slim.launcher.tests'
         }
 
         l3go {
@@ -58,7 +61,7 @@ android {
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
-        aosp {
+        slim {
             java.srcDirs = ['src_flags']
             manifest.srcFile "AndroidManifest.xml"
         }
