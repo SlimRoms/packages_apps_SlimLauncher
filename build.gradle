@@ -17,7 +17,7 @@ android {
     buildToolsVersion '26.0.0'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -31,7 +31,7 @@ android {
     }
 
     productFlavors {
-        aosp {
+        slimlauncher {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
@@ -58,7 +58,7 @@ android {
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
-        aosp {
+        slimlauncher {
             java.srcDirs = ['src_flags']
             manifest.srcFile "AndroidManifest.xml"
         }
